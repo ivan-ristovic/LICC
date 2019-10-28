@@ -22,10 +22,11 @@ namespace RICC
             Parser parser;
             using (var fin = new FileStream("Tests/test.c", FileMode.Open, FileAccess.Read))
                 parser = listener.CreateParser(fin);
-            listener.Walk(parser);
 
             listener.TranslationUnitEnterEvent += TranslationUnitEnter;
             listener.TranslationUnitEnterEvent += TranslationUnitLeave;
+
+            listener.Walk(parser);
             // end test
 
             Log.Information("Done! Press any key to exit...");

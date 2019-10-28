@@ -28,6 +28,7 @@ namespace RICC.Adapters.C
                 Log.Fatal("Parser type mismatch. Expected CParser, got {ParserType}", parser.GetType());
         }
 
+
         public void EnterTranslationUnit([NotNull] CParser.TranslationUnitContext ctx)
         {
             Log.Debug("Entered translation unit: {Context}", ctx);
