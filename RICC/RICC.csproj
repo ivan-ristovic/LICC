@@ -12,4 +12,10 @@
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.2-dev-00824" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Tests\test.c">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

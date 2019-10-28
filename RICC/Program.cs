@@ -1,7 +1,9 @@
 ﻿using System;
+using System.IO;
 using Antlr4.Runtime;
-using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
+using RICC.Adapters;
+using RICC.Adapters.C;
+using RICC.Context;
 using Serilog;
 
 namespace RICC
@@ -14,49 +16,41 @@ namespace RICC
 
             // TODO parse args
 
-            string sampleCode = @"
-                #include <stdio.h>
 
-                int main() 
-                {
-                    int x = 1;
-                    printf(""Hello world! %d\n"", x);
-                    return 0;
-                }
-            ";
+            // begin test
+            Listener listener = new CListenerAdapter();
+            Parser parser;
+            using (var fin = new FileStream("Tests/test.c", FileMode.Open, FileAccess.Read))
+                parser = listener.CreateParser(fin);
+            listener.Walk(parser);
 
-
-            var parser = new CParser(new CommonTokenStream(new CLexer(CharStreams.fromstring(sampleCode))));
-            parser.BuildParseTree = true;
-            ParseTreeWalker.Default.Walk(new Listener(), parser.translationUnit());
+            listener.TranslationUnitEnterEvent += TranslationUnitEnter;
+            listener.TranslationUnitEnterEvent += TranslationUnitLeave;
+            // end test
 
             Log.Information("Done! Press any key to exit...");
             Console.ReadKey();
         }
 
 
+        private static void TranslationUnitEnter(object? sender, EnterTranslationUnitEventArgs? e)
+        {
+            Log.Debug("Translation unit enter event fired");
+        }
+
+        private static void TranslationUnitLeave(object? sender, EnterTranslationUnitEventArgs? e)
+        {
+            Log.Debug("Translation unit leave event fired");
+        }
+
         private static void SetupLogger()
         {
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.Console()
+                .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
                 .MinimumLevel.Verbose()
                 .Enrich.FromLogContext()
                 .CreateLogger()
                 ;
-        }
-
-
-        private class Listener : CBaseListener
-        {
-            public override void EnterPrimaryExpression([NotNull] CParser.PrimaryExpressionContext ctx)
-            {
-                Log.Debug("Entered primary expression: {Context}", ctx);
-            }
-
-            public override void EnterTranslationUnit([NotNull] CParser.TranslationUnitContext ctx)
-            {
-                Log.Debug("Entered translation unit: {Context}", ctx);
-            }
         }
     }
 }
