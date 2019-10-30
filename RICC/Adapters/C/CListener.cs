@@ -8,19 +8,17 @@ using Serilog;
 
 namespace RICC.Adapters.C
 {
-    public sealed class CListenerAdapter : Listener, ICListener
+    public sealed class CListener : ParserListener, ICListener
     {
-        public override Parser CreateParser(Stream input)
+        public override Parser CreateParser(string path)
         {
-            using (var sr = new StreamReader(input)) {
-                string code = sr.ReadToEnd();
-                var parser = new CParser(new CommonTokenStream(new CLexer(CharStreams.fromstring(code))));
-                parser.BuildParseTree = true;
-                return parser;
-            }
+            string code = File.ReadAllText(path);
+            var parser = new CParser(new CommonTokenStream(new CLexer(CharStreams.fromstring(code))));
+            parser.BuildParseTree = true;
+            return parser;
         }
 
-        public override void Walk(Parser parser)
+        public override void ListenParse(Parser parser)
         {
             if (parser is CParser cparser)
                 ParseTreeWalker.Default.Walk(this, cparser.translationUnit());
