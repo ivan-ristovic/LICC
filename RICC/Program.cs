@@ -1,9 +1,6 @@
 ﻿using System;
-using System.IO;
-using Antlr4.Runtime;
-using RICC.Adapters;
-using RICC.Adapters.C;
-using RICC.Context;
+using RICC.AST;
+using RICC.AST.Nodes;
 using RICC.Core;
 using Serilog;
 
@@ -18,7 +15,9 @@ namespace RICC
             // TODO parse args
 
             // begin test
-            var comparer = new ComparerAlgorithm("Tests/test.c", "Tests/test.c");
+            ASTNode srcTree = ASTFactory.BuildFromSource("Tests/test.c");
+            ASTNode dstTree = ASTFactory.BuildFromSource("Tests/test.c");
+            var comparer = new ComparerAlgorithm(srcTree, dstTree);
             comparer.Execute();
             // end test
 

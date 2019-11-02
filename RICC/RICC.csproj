@@ -13,6 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Tests\block.c">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Tests\test.c">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
