@@ -4,13 +4,7 @@ using System.Linq;
 
 namespace RICC.AST.Nodes
 {
-    public abstract class ASTNode
-    {
-        public int Location { get; set; }
-        public IReadOnlyList<ASTNode>? Children { get; set; }
-        public ASTNode? Parent { get; set; }
-    }
-
+    /*
     public class DeclarationListNode : ASTNode
     {
         public IReadOnlyList<DeclarationNode> Declarations { get; set; }
@@ -81,4 +75,5 @@ namespace RICC.AST.Nodes
     {
         public T? Value { get; set; } = default;
     }
+    */
 }

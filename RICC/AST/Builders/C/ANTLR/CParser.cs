@@ -226,6 +226,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitPrimaryExpression(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitPrimaryExpression(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -355,6 +361,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitGenericSelection(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitGenericSelection(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -406,6 +418,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitGenericAssocList(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitGenericAssocList(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -489,6 +507,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitGenericAssociation(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitGenericAssociation(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -592,6 +616,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitPostfixExpression(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitPostfixExpression(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -780,6 +810,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitArgumentExpressionList(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitArgumentExpressionList(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -876,6 +912,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitUnaryExpression(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitUnaryExpression(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -966,6 +1008,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitUnaryOperator(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitUnaryOperator(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -1025,6 +1073,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitCastExpression(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitCastExpression(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -1099,6 +1153,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitMultiplicativeExpression(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitMultiplicativeExpression(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -1206,6 +1266,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitAdditiveExpression(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitAdditiveExpression(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -1303,6 +1369,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitShiftExpression(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitShiftExpression(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -1399,6 +1471,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitRelationalExpression(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitRelationalExpression(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -1515,6 +1593,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitEqualityExpression(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitEqualityExpression(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -1612,6 +1696,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitAndExpression(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitAndExpression(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -1694,6 +1784,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitExclusiveOrExpression(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitExclusiveOrExpression(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -1778,6 +1874,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitInclusiveOrExpression(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitInclusiveOrExpression(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -1861,6 +1963,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitLogicalAndExpression(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitLogicalAndExpression(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -1943,6 +2051,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitLogicalOrExpression(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitLogicalOrExpression(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -2031,6 +2145,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitConditionalExpression(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitConditionalExpression(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -2098,6 +2218,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitAssignmentExpression(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitAssignmentExpression(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -2154,6 +2280,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitAssignmentOperator(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitAssignmentOperator(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -2208,6 +2340,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitExpression(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitExpression(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -2288,6 +2426,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitConstantExpression(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitConstantExpression(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -2338,6 +2482,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitDeclaration(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitDeclaration(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -2404,6 +2554,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitDeclarationSpecifiers(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitDeclarationSpecifiers(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -2468,6 +2624,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitDeclarationSpecifiers2(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitDeclarationSpecifiers2(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -2546,6 +2708,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitDeclarationSpecifier(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitDeclarationSpecifier(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -2617,6 +2785,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitInitDeclaratorList(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitInitDeclaratorList(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -2701,6 +2875,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitInitDeclarator(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitInitDeclarator(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -2751,6 +2931,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitStorageClassSpecifier(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitStorageClassSpecifier(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -2826,6 +3012,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitTypeSpecifier(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitTypeSpecifier(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -2976,6 +3168,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitStructOrUnionSpecifier(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitStructOrUnionSpecifier(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -3039,6 +3237,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitStructOrUnion(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitStructOrUnion(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -3093,6 +3297,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitStructDeclarationList(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitStructDeclarationList(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -3179,6 +3389,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitStructDeclaration(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitStructDeclaration(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -3277,6 +3493,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitSpecifierQualifierList(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitSpecifierQualifierList(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -3349,6 +3571,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitStructDeclaratorList(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitStructDeclaratorList(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -3433,6 +3661,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitStructDeclarator(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitStructDeclarator(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -3497,6 +3731,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitEnumSpecifier(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitEnumSpecifier(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -3587,6 +3827,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitEnumeratorList(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitEnumeratorList(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -3670,6 +3916,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitEnumerator(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitEnumerator(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -3722,6 +3974,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitEnumerationConstant(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitEnumerationConstant(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -3765,6 +4023,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitAtomicTypeSpecifier(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitAtomicTypeSpecifier(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -3806,6 +4070,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitTypeQualifier(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitTypeQualifier(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -3858,6 +4128,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitFunctionSpecifier(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitFunctionSpecifier(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -3937,6 +4213,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitAlignmentSpecifier(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitAlignmentSpecifier(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -4007,6 +4289,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitDeclarator(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitDeclarator(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -4106,6 +4394,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitDirectDeclarator(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitDirectDeclarator(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -4327,6 +4621,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitGccDeclaratorExtension(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitGccDeclaratorExtension(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -4398,6 +4698,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitGccAttributeSpecifier(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitGccAttributeSpecifier(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -4449,6 +4755,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitGccAttributeList(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitGccAttributeList(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -4516,6 +4828,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitGccAttribute(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitGccAttribute(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -4717,6 +5035,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitNestedParenthesesBlock(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitNestedParenthesesBlock(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -4912,6 +5236,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitPointer(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitPointer(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -5016,6 +5346,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitTypeQualifierList(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitTypeQualifierList(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -5094,6 +5430,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitParameterTypeList(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitParameterTypeList(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -5152,6 +5494,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitParameterList(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitParameterList(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -5244,6 +5592,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitParameterDeclaration(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitParameterDeclaration(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -5306,6 +5660,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitIdentifierList(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitIdentifierList(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -5390,6 +5750,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitTypeName(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitTypeName(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -5454,6 +5820,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitAbstractDeclarator(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitAbstractDeclarator(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -5557,6 +5929,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitDirectAbstractDeclarator(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitDirectAbstractDeclarator(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -5837,6 +6215,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitTypedefName(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitTypedefName(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -5883,6 +6267,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitInitializer(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitInitializer(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -5954,6 +6344,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitInitializerList(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitInitializerList(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -6053,6 +6449,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitDesignation(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitDesignation(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -6100,6 +6502,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitDesignatorList(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitDesignatorList(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -6180,6 +6588,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitDesignator(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitDesignator(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -6242,6 +6656,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitStaticAssertDeclaration(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitStaticAssertDeclaration(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -6332,6 +6752,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitStatement(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitStatement(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -6494,6 +6920,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitLabeledStatement(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitLabeledStatement(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -6561,6 +6993,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitCompoundStatement(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitCompoundStatement(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -6618,6 +7056,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitBlockItemList(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitBlockItemList(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -6701,6 +7145,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitBlockItem(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitBlockItem(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -6753,6 +7203,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitExpressionStatement(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitExpressionStatement(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -6814,6 +7270,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitSelectionStatement(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitSelectionStatement(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -6897,6 +7359,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitIterationStatement(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitIterationStatement(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -6983,6 +7451,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitForCondition(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitForCondition(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -7090,6 +7564,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitForDeclaration(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitForDeclaration(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -7147,6 +7627,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitForExpression(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitForExpression(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -7231,6 +7717,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitJumpStatement(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitJumpStatement(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -7318,6 +7810,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitCompilationUnit(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitCompilationUnit(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -7374,6 +7872,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitTranslationUnit(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitTranslationUnit(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
@@ -7457,6 +7961,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitExternalDeclaration(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitExternalDeclaration(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -7527,6 +8037,12 @@ namespace RICC.AST.Builders.C
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitFunctionDefinition(this);
             }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitFunctionDefinition(this);
+                else return visitor.VisitChildren(this);
+            }
         }
 
         [RuleVersion(0)]
@@ -7592,6 +8108,12 @@ namespace RICC.AST.Builders.C
             {
                 ICListener typedListener = listener as ICListener;
                 if (typedListener != null) typedListener.ExitDeclarationList(this);
+            }
+            public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor)
+            {
+                ICVisitor<TResult> typedVisitor = visitor as ICVisitor<TResult>;
+                if (typedVisitor != null) return typedVisitor.VisitDeclarationList(this);
+                else return visitor.VisitChildren(this);
             }
         }
 
