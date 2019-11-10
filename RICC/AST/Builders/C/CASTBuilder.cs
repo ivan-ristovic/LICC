@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
@@ -6,10 +7,11 @@ using Antlr4.Runtime.Tree;
 using RICC.AST.Nodes;
 using RICC.Extensions;
 using Serilog;
+using static RICC.AST.Builders.C.CParser;
 
 namespace RICC.AST.Builders.C
 {
-    public sealed class CASTBuilder : CBaseVisitor<ASTNode>, IASTBuilder
+    public sealed partial class CASTBuilder : CBaseVisitor<ASTNode>, IASTBuilder
     {
         public ASTNode BuildFromSource(string code)
         {
@@ -23,32 +25,18 @@ namespace RICC.AST.Builders.C
         }
 
 
-        public override ASTNode VisitCompilationUnit([NotNull] CParser.CompilationUnitContext ctx)
+        public override ASTNode VisitCompilationUnit([NotNull] CompilationUnitContext ctx)
         {
             LogObj.Context(ctx);
 
-            IParseTree translationUnit = ctx.children.First();
+            IParseTree translationUnit = ctx.children.FirstOrDefault();
             if (translationUnit is null)
                 return new TranslationUnitNode(Enumerable.Empty<ASTNode>());
 
-            ASTNode child = this.Visit(ctx.children.First());
-            return new TranslationUnitNode(new[] { child });
-        }
-
-        public override ASTNode VisitTranslationUnit([NotNull] CParser.TranslationUnitContext ctx)
-        {
-            return new TranslationUnitNode(ctx.children.Select(c => this.Visit(c)));
-        }
-
-        public override ASTNode VisitFunctionDefinition([NotNull] CParser.FunctionDefinitionContext ctx)
-        {
-            LogObj.Context(ctx);
-
-            // visit children and get info
-            string type = ctx.GetChild(1).GetText();
-            var body = new BlockStatementNode(ctx.Start.Line, Enumerable.Empty<ASTNode>());
-
-            return new FunctionDefinitionNode(ctx.Start.Line, "f", Enumerable.Empty<(string, Type)>(), null, body);
+            ASTNode child = this.Visit(translationUnit);
+            var compilationUnit = new TranslationUnitNode(new[] { child });
+            child.Parent = compilationUnit;
+            return compilationUnit;
         }
 
         // TODO

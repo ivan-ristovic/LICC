@@ -10,10 +10,11 @@ namespace RICC.AST.Nodes
         public IReadOnlyList<ASTNode> Children { get; }
 
 
-        protected ASTNode(int line, IEnumerable<ASTNode> children)
+        protected ASTNode(int line, IEnumerable<ASTNode> children, ASTNode? parent = null)
         {
             this.Line = line;
             this.Children = children.ToList().AsReadOnly();
+            this.Parent = parent;
         }
     }
 }

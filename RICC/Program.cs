@@ -1,6 +1,4 @@
 ﻿using System;
-using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
 using RICC.AST;
 using RICC.AST.Nodes;
 using RICC.Core;
@@ -17,8 +15,8 @@ namespace RICC
             // TODO parse args
 
             // begin test
-            ASTNode srcTree = ASTFactory.BuildFromSource("Tests/block.c");
-            ASTNode dstTree = ASTFactory.BuildFromSource("Tests/test.c");
+            ASTNode srcTree = ASTFactory.BuildFromSource("Samples/func.c");
+            ASTNode dstTree = ASTFactory.BuildFromSource("Samples/hello.c");
             var comparer = new ComparerAlgorithm(srcTree, dstTree);
             comparer.Execute();
             // end test

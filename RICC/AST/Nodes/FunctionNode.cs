@@ -9,6 +9,8 @@ namespace RICC.AST.Nodes
         public string Name { get; }
         public IReadOnlyList<(string Identifier, Type Type)> Arguments { get; }
         public Type? ReturnType { get; }
+        public bool IsStatic { get; set; }
+        public Access Access { get; set; }
 
 
         public FunctionDefinitionNode(int line, string name, IEnumerable<(string, Type)> args, Type? returnType, BlockStatementNode body) 
