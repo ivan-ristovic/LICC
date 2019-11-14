@@ -1,4 +1,4 @@
-﻿namespace RICC.AST.Nodes
+﻿namespace RICC.AST.Nodes.Common
 {
     public enum Access
     {

@@ -15,38 +15,47 @@ namespace RICC.AST.Builders.C
         {
             LogObj.Context(ctx);
 
-            // visit children and get info
-
-            string fname = ExtractFunctionName(ctx.GetChild<DeclaratorContext>(0));
-            BlockItemListContext defn = ctx.GetChild<CompoundStatementContext>(0).GetChild<BlockItemListContext>(0);
+            ASTNode declSpecs = this.Visit(ctx.children.First());
+            ASTNode identifier = this.Visit(ctx.GetChild<DeclaratorContext>(0));
+            ParameterTypeListContext pctx = ctx.GetChild<DeclaratorContext>(0)
+                                               .GetChild<DirectDeclaratorContext>(0)
+                                               .GetChild<ParameterTypeListContext>(0);
+            ASTNode? @params = pctx is null ? null : this.Visit(pctx);
+            BlockItemListContext defn = ctx.GetChild<CompoundStatementContext>(0)
+                                           .GetChild<BlockItemListContext>(0);
             var body = new BlockStatementNode(defn.Start.Line, defn.children.Select(c => this.Visit(c)));
 
-            return new FunctionDefinitionNode(ctx.Start.Line, fname, Enumerable.Empty<(string, Type)>(), null, body);
-
-
-            IReadOnlyList<string> ExtractDeclarationSpecifiers(DeclarationSpecifiersContext specs)
-            {
-                // TODO
-                return specs.children.Select(c => c.GetText()).ToList().AsReadOnly();
-            }
-
-            static string ExtractFunctionName(DeclaratorContext dctx)
-            {
-                DirectDeclaratorContext ddctx = dctx.GetChild<DirectDeclaratorContext>(0);
-                return GetDeepestDirectDeclaratorContext(ddctx).GetChild<TerminalNodeImpl>(0).GetText();
-
-                static DirectDeclaratorContext GetDeepestDirectDeclaratorContext(DirectDeclaratorContext ddctx)
-                {
-                    DirectDeclaratorContext? child = ddctx.GetChild<DirectDeclaratorContext>(0);
-                    return child is null ? ddctx : GetDeepestDirectDeclaratorContext(child);
-                }
-            }
-
-            IReadOnlyList<(string Type, string Arg)> ExtractFunctionArguments(DeclaratorContext dctx)
-            {
-                // TODO
-                return Enumerable.Empty<(string, string)>().ToList().AsReadOnly();
-            }
+            return new FunctionDefinitionNode(ctx.Start.Line, declSpecs, identifier, @params, body);
         }
+
+        public override ASTNode VisitDeclarator([NotNull] DeclaratorContext ctx) 
+            => this.Visit(ctx.GetChild<DirectDeclaratorContext>(0));
+
+        public override ASTNode VisitDirectDeclarator([NotNull] DirectDeclaratorContext ctx)
+        {
+            string identifier = ctx.Identifier()?.ToString() ?? string.Empty;
+            return ctx.Identifier() is null ? this.Visit(ctx.GetChild<DirectDeclaratorContext>(0)) : new IdentifierNode(ctx.Start.Line, identifier);
+        }
+
+        public override ASTNode VisitDeclarationSpecifiers([NotNull] DeclarationSpecifiersContext ctx) 
+            => new DeclarationSpecifiersNode(ctx.Start.Line, ctx.children.Select(c => c.GetText()));
+
+        #region Parameter overrides
+        public override ASTNode VisitParameterTypeList([NotNull] ParameterTypeListContext ctx) 
+            => this.Visit(ctx.children.First());
+
+        public override ASTNode VisitParameterList([NotNull] ParameterListContext ctx)
+        {
+            // TODO
+            return new FunctionParametersNode(ctx.Start.Line, ctx.children.Select(c => this.Visit(c)));
+        }
+
+        public override ASTNode VisitParameterDeclaration([NotNull] ParameterDeclarationContext ctx)
+        {
+            // TODO
+            ASTNode declSpecs = this.Visit(ctx.children.First());
+            return new FunctionParameterNode(ctx.Start.Line, declSpecs, this.Visit(ctx.GetChild<DeclaratorContext>(0)));
+        }
+        #endregion
     }
 }
