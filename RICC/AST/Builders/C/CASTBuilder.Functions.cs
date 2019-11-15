@@ -15,46 +15,48 @@ namespace RICC.AST.Builders.C
         {
             LogObj.Context(ctx);
 
-            ASTNode declSpecs = this.Visit(ctx.children.First());
-            ASTNode identifier = this.Visit(ctx.GetChild<DeclaratorContext>(0));
-            ParameterTypeListContext pctx = ctx.GetChild<DeclaratorContext>(0)
-                                               .GetChild<DirectDeclaratorContext>(0)
-                                               .GetChild<ParameterTypeListContext>(0);
+            ASTNode declSpecs = this.Visit(ctx.declarationSpecifiers());
+            ASTNode identifier = this.Visit(ctx.declarator());
+            ParameterTypeListContext pctx = ctx.declarator().directDeclarator().parameterTypeList();
             ASTNode? @params = pctx is null ? null : this.Visit(pctx);
-            BlockItemListContext defn = ctx.GetChild<CompoundStatementContext>(0)
-                                           .GetChild<BlockItemListContext>(0);
+            BlockItemListContext defn = ctx.compoundStatement().blockItemList();
             var body = new BlockStatementNode(defn.Start.Line, defn.children.Select(c => this.Visit(c)));
 
             return new FunctionDefinitionNode(ctx.Start.Line, declSpecs, identifier, @params, body);
         }
 
         public override ASTNode VisitDeclarator([NotNull] DeclaratorContext ctx) 
-            => this.Visit(ctx.GetChild<DirectDeclaratorContext>(0));
+            => this.Visit(ctx.directDeclarator());
 
         public override ASTNode VisitDirectDeclarator([NotNull] DirectDeclaratorContext ctx)
         {
             string identifier = ctx.Identifier()?.ToString() ?? string.Empty;
-            return ctx.Identifier() is null ? this.Visit(ctx.GetChild<DirectDeclaratorContext>(0)) : new IdentifierNode(ctx.Start.Line, identifier);
+            return ctx.Identifier() is null ? this.Visit(ctx.directDeclarator()) : new IdentifierNode(ctx.Start.Line, identifier);
         }
 
         public override ASTNode VisitDeclarationSpecifiers([NotNull] DeclarationSpecifiersContext ctx) 
             => new DeclarationSpecifiersNode(ctx.Start.Line, ctx.children.Select(c => c.GetText()));
 
         #region Parameter overrides
-        public override ASTNode VisitParameterTypeList([NotNull] ParameterTypeListContext ctx) 
-            => this.Visit(ctx.children.First());
+        public override ASTNode VisitParameterTypeList([NotNull] ParameterTypeListContext ctx)
+            => this.Visit(ctx.parameterList());
 
         public override ASTNode VisitParameterList([NotNull] ParameterListContext ctx)
         {
-            // TODO
-            return new FunctionParametersNode(ctx.Start.Line, ctx.children.Select(c => this.Visit(c)));
+            ASTNode param = this.Visit(ctx.parameterDeclaration());
+
+            if (ctx.parameterList() is null)
+                return new FunctionParametersNode(ctx.Start.Line, new[] { param });
+
+            var @params = (FunctionParametersNode)this.Visit(ctx.parameterList());
+            return new FunctionParametersNode(ctx.Start.Line, @params.Children.Concat(new[] { param }));
         }
 
         public override ASTNode VisitParameterDeclaration([NotNull] ParameterDeclarationContext ctx)
         {
-            // TODO
-            ASTNode declSpecs = this.Visit(ctx.children.First());
-            return new FunctionParameterNode(ctx.Start.Line, declSpecs, this.Visit(ctx.GetChild<DeclaratorContext>(0)));
+            ASTNode declSpecs = this.Visit(ctx.declarationSpecifiers());
+            ASTNode identifier = this.Visit(ctx.declarator());
+            return new FunctionParameterNode(ctx.Start.Line, declSpecs, identifier);
         }
         #endregion
     }
