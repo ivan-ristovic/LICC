@@ -29,7 +29,7 @@ namespace RICC.AST.Builders.C
         {
             LogObj.Context(ctx);
 
-            IParseTree translationUnit = ctx.children.FirstOrDefault();
+            IParseTree translationUnit = ctx.translationUnit();
             if (translationUnit is null)
                 return new TranslationUnitNode(Enumerable.Empty<ASTNode>());
 
