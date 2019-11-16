@@ -16,8 +16,7 @@ namespace RICC.AST.Builders.C
             ASTNode identifier = this.Visit(ctx.declarator());
             ParameterTypeListContext pctx = ctx.declarator().directDeclarator().parameterTypeList();
             ASTNode? @params = pctx is null ? null : this.Visit(pctx);
-            BlockItemListContext defn = ctx.compoundStatement().blockItemList();
-            var body = new BlockStatementNode(defn.Start.Line, defn.children.Select(c => this.Visit(c)));
+            ASTNode body = this.Visit(ctx.compoundStatement());
 
             var fn = new FunctionDefinitionNode(ctx.Start.Line, declSpecs, identifier, @params, body);
             declSpecs.Parent = identifier.Parent = body.Parent = fn;

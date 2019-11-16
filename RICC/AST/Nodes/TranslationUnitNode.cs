@@ -5,7 +5,7 @@ namespace RICC.AST.Nodes
     public sealed class TranslationUnitNode : ASTNode
     {
         public TranslationUnitNode(IEnumerable<ASTNode> children) 
-            : base(0, children)
+            : base(1, children)
         {
 
         }

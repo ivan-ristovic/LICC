@@ -9,7 +9,7 @@ namespace RICC.AST.Nodes
 
 
         public IdentifierNode(int line, string identifier, ASTNode? parent = null) 
-            : base(line, Enumerable.Empty<ASTNode>(), parent)
+            : base(line, parent)
         {
             if (string.IsNullOrWhiteSpace(identifier))
                 throw new ArgumentException("Identifier name must be set.");

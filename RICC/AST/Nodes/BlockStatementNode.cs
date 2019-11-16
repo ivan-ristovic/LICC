@@ -15,5 +15,11 @@ namespace RICC.AST.Nodes
         {
 
         }
+
+        public BlockStatementNode(int line, ASTNode? parent = null)
+            : base(line, parent)
+        {
+
+        }
     }
 }

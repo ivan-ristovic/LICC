@@ -38,7 +38,5 @@ namespace RICC.AST.Builders.C
             child.Parent = compilationUnit;
             return compilationUnit;
         }
-
-        // TODO
     }
 }

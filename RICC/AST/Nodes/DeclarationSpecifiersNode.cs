@@ -9,7 +9,7 @@ namespace RICC.AST.Nodes
 
 
         public DeclarationSpecifiersNode(int line, IEnumerable<string> specs, ASTNode? parent = null) 
-            : base(line, Enumerable.Empty<ASTNode>(), parent)
+            : base(line, parent)
         {
             this.Specifiers = specs.ToList().AsReadOnly();
         }
