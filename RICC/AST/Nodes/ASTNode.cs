@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using RICC.Exceptions;
 
 namespace RICC.AST.Nodes
 {
@@ -29,5 +30,9 @@ namespace RICC.AST.Nodes
         {
 
         }
+
+
+        public T As<T>() where T : ASTNode 
+            => this as T ?? throw new NodeMismatchException($"Expected: {typeof(T)}, got: {this.GetType()}");
     }
 }
