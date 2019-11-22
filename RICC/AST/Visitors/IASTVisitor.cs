@@ -12,6 +12,8 @@ namespace RICC.AST.Visitors
         TResult Visit(IdentifierNode node);
         TResult Visit(TranslationUnitNode node);
 
+        // TODO
+
         TResult Visit(ASTNode node)
             => this.Visit((dynamic)node);
     }

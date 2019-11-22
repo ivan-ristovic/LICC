@@ -42,9 +42,8 @@ namespace RICC.AST.Builders.C
         public override ASTNode VisitSelectionStatement([NotNull] SelectionStatementContext ctx)
         {
             // if
-
             // switch
-
+            // TODO
             return new IfStatementNode(0, null);
         }
 
@@ -52,14 +51,37 @@ namespace RICC.AST.Builders.C
 
         public override ASTNode VisitDeclaration([NotNull] DeclarationContext ctx)
         {
-            return new DeclarationStatementNode(ctx.Start.Line, Enumerable.Empty<ASTNode>());
+            // TODO static assert
+
+            DeclarationSpecifiersNode declSpecs = this.Visit(ctx.declarationSpecifiers()).As<DeclarationSpecifiersNode>();
+
+            // TODO if not null, also implement other decl types
+            VariableDeclarationNode decl = this.Visit(ctx.initDeclaratorList()).As<VariableDeclarationNode>();
+
+            return new DeclarationStatementNode(ctx.Start.Line, declSpecs, decl);
         }
 
-        public override ASTNode VisitJumpStatement([NotNull] JumpStatementContext context)
+        public override ASTNode VisitJumpStatement([NotNull] JumpStatementContext ctx)
         {
-            // return
-            return new EmptyStatementNode(0);
+            // return in current example - this will be used for break, continue as well
+            return new EmptyStatementNode(ctx.Start.Line);
         }
 
+        public override ASTNode VisitInitDeclaratorList([NotNull] InitDeclaratorListContext ctx)
+        {
+            // TODO support list
+            return this.Visit(ctx.initDeclarator());
+        }
+
+        public override ASTNode VisitInitDeclarator([NotNull] InitDeclaratorContext ctx)
+        {
+            IdentifierNode identifier = this.Visit(ctx.declarator()).As<IdentifierNode>();
+            object? value = null;
+            if (ctx.initializer() is { }) {
+                // TODO get value;
+            }
+
+            return new VariableDeclarationNode(ctx.Start.Line, identifier, value);
+        }
     }
 }

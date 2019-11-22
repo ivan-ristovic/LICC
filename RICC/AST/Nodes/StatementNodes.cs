@@ -57,15 +57,6 @@ namespace RICC.AST.Nodes
         }
     }
 
-    public sealed class DeclarationStatementNode : StatementNode
-    {
-        public DeclarationStatementNode(int line, IEnumerable<ASTNode> children, ASTNode? parent = null)
-            : base(line, children, parent)
-        {
-
-        }
-    }
-
     public sealed class IfStatementNode : CompoundStatementNode
     {
         public LogicExpressionNode Condition => this.Children[0].As<LogicExpressionNode>();

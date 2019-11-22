@@ -36,7 +36,7 @@ namespace RICC.AST.Builders.C
         }
 
         public override ASTNode VisitDeclarationSpecifiers([NotNull] DeclarationSpecifiersContext ctx)
-            => new DeclarationSpecifiersNode(ctx.Start.Line, ctx.children.Select(c => c.GetText()));
+            => new DeclarationSpecifiersNode(ctx.Start.Line, ctx.children.Select(c => c.GetText()));    // TODO
 
         #region Parameter overrides
         public override ASTNode VisitParameterTypeList([NotNull] ParameterTypeListContext ctx)

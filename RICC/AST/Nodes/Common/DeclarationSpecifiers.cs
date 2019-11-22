@@ -4,6 +4,15 @@ using System.Linq;
 
 namespace RICC.AST.Nodes.Common
 {
+    [Flags]
+    public enum DeclarationSpecifiersFlags
+    {
+        Private = 0,
+        Protected = 1,
+        Public = 2,
+        Static = 4,
+    }
+
     public static class DeclarationSpecifiers
     {
         public static DeclarationSpecifiersFlags Parse(IEnumerable<string> specs)
@@ -34,14 +43,5 @@ namespace RICC.AST.Nodes.Common
 
             return retval;
         }
-    }
-
-    [Flags]
-    public enum DeclarationSpecifiersFlags
-    {
-        Private = 0,
-        Protected = 1,
-        Public = 2,
-        Static = 4,
     }
 }
