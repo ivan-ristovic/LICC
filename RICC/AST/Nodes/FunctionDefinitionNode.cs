@@ -6,11 +6,8 @@ namespace RICC.AST.Nodes
 {
     public sealed class FunctionDefinitionNode : ASTNode
     {
-        // TODO
-        public bool IsStatic { get; }
-        public Access Access { get; }
-
-        public DeclarationSpecifiersNode DeclarationSpecifiers => this.Children[0].As<DeclarationSpecifiersNode>();
+        public DeclarationSpecifiersFlags DeclarationSpecifiers => this.Children[0].As<DeclarationSpecifiersNode>().Specifiers;
+        public string ReturnType => this.Children[0].As<DeclarationSpecifiersNode>().ReturnType;
         public string Identifier => this.Children[1].As<IdentifierNode>().Identifier;
         public FunctionParametersNode? Parameters => this.Children[2] as FunctionParametersNode ?? null;
         public BlockStatementNode Definition => this.Children[this.Children.Count - 1].As<BlockStatementNode>();
@@ -42,7 +39,8 @@ namespace RICC.AST.Nodes
 
     public class FunctionParameterNode : ASTNode
     {
-        public DeclarationSpecifiersNode DeclarationSpecifiers => this.Children.First().As<DeclarationSpecifiersNode>();
+        public DeclarationSpecifiersNode DeclarationSpecifiers => this.Children[0].As<DeclarationSpecifiersNode>();
+        public string Identifier => this.Children[1].As<IdentifierNode>().Identifier;
 
 
         public FunctionParameterNode(int line, DeclarationSpecifiersNode declSpecs, IdentifierNode identifier, ASTNode? parent = null)
