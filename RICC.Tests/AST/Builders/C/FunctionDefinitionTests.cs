@@ -12,6 +12,7 @@ namespace RICC.Tests.AST.Builders.C
         {
             ASTNode ast = CASTProvider.BuildFromSource("\nint f() { }");
             FunctionDefinitionNode f = ast.Children.Single().As<FunctionDefinitionNode>();
+            Assert.That(f.Parent, Is.EqualTo(ast));
             this.AssertFunctionSignature(f, 2, "f", "int", DeclarationSpecifiersFlags.Private);
         }
 
@@ -51,26 +52,28 @@ namespace RICC.Tests.AST.Builders.C
             this.AssertFunctionSignature(f, 2, "f", "int", @params: ("int", "x"));
 
             Assert.That(f.Definition, Is.Not.Null);
-            Assert.That(f.Definition.Children, Is.InstanceOf<BlockStatementNode>());
+            Assert.That(f.Definition, Is.InstanceOf<BlockStatementNode>());
+            Assert.That(f.Definition.Parent, Is.EqualTo(f));
             Assert.That(f.Definition.Children.Single(), Is.Not.Null);
-            Assert.That(f.Definition.Children.Single(), Is.InstanceOf<EmptyStatementNode>()); 
+            Assert.That(f.Definition.Children.Single(), Is.InstanceOf<EmptyStatementNode>());
         }
 
         [Test]
         public void ComplexDefinitionTest()
         {
             ASTNode ast = CASTProvider.BuildFromSource(@"
-                float f(int x, int y) {
+                float f(int x, ...) {
                     int z = 4;
                     return 3f;
                 }
             ");
             FunctionDefinitionNode f = ast.Children.Single().As<FunctionDefinitionNode>();
-            this.AssertFunctionSignature(f, 2, "f", "int", @params: ("int", "x"));
+            this.AssertFunctionSignature(f, 2, "f", "float", @params: ("int", "x"));
 
             Assert.That(f.Definition, Is.Not.Null);
-            Assert.That(f.Definition.Children, Is.Not.Null);
-            Assert.That(f.Definition.Children, Is.InstanceOf<BlockStatementNode>());
+            Assert.That(f.Definition, Is.Not.Null);
+            Assert.That(f.Definition, Is.InstanceOf<BlockStatementNode>());
+            Assert.That(f.Definition.Parent, Is.EqualTo(f));
             Assert.That(f.Definition.Children, Has.Count.EqualTo(2));
         }
 
