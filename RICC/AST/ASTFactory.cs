@@ -9,7 +9,7 @@ namespace RICC.AST
 {
     public static class ASTFactory
     {
-        public static ASTNode BuildFromPath(string path)
+        public static ASTNode BuildFromFile(string path)
         {
             Log.Information("Creating AST for file: {Path}", path);
             IASTBuilder builder = DeduceBuilderTypeForFile(path);

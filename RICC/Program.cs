@@ -15,8 +15,8 @@ namespace RICC
             // TODO parse args
 
             // begin test
-            ASTNode srcTree = ASTFactory.BuildFromPath("Samples/func.c");
-            ASTNode dstTree = ASTFactory.BuildFromPath("Samples/hello.c");
+            ASTNode srcTree = ASTFactory.BuildFromFile("Samples/func.c");
+            ASTNode dstTree = ASTFactory.BuildFromFile("Samples/hello.c");
             var comparer = new ComparerAlgorithm(srcTree, dstTree);
             comparer.Execute();
             // end test

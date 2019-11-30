@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using NUnit.Framework;
 using RICC.AST.Nodes;
 using RICC.AST.Nodes.Common;
@@ -11,17 +10,76 @@ namespace RICC.Tests.AST.Builders.C
         [Test]
         public void NoParametersTest()
         {
-            ASTNode ast = CASTProvider.BuildFromSource(@"void f() { }");
-            FunctionDefinitionNode f = ast.Children.First().As<FunctionDefinitionNode>();
-            this.AssertFunctionSignature(f, 1, DeclarationSpecifiersFlags.Private, "f", "void");
+            ASTNode ast = CASTProvider.BuildFromSource("\nint f() { }");
+            FunctionDefinitionNode f = ast.Children.Single().As<FunctionDefinitionNode>();
+            this.AssertFunctionSignature(f, 2, "f", "int", DeclarationSpecifiersFlags.Private);
+        }
+
+        [Test]
+        public void ModifierTest()
+        {
+            ASTNode ast = CASTProvider.BuildFromSource(@"extern static time_t f_1() { }");
+            FunctionDefinitionNode f = ast.Children.Single().As<FunctionDefinitionNode>();
+            this.AssertFunctionSignature(f, 1, "f_1", "time_t", DeclarationSpecifiersFlags.Private | DeclarationSpecifiersFlags.Static);
+        }
+
+        [Test]
+        public void SingleParameterTest()
+        {
+            ASTNode ast = CASTProvider.BuildFromSource("\n\n\nvoid f(int x) { }");
+            FunctionDefinitionNode f = ast.Children.Single().As<FunctionDefinitionNode>();
+            this.AssertFunctionSignature(f, 4, "f", @params: ("int", "x"));
+        }
+
+        [Test]
+        public void MultipleParametersTest()
+        {
+            ASTNode ast = CASTProvider.BuildFromSource(@"void f(int x, double y, float z, Point t) { }");
+            FunctionDefinitionNode f = ast.Children.Single().As<FunctionDefinitionNode>();
+            this.AssertFunctionSignature(f, 1, "f", @params: new[] { ("int", "x"), ("double", "y"), ("float", "z"), ("Point", "t") });
+        }
+
+        [Test]
+        public void SimpleDefinitionTest()
+        {
+            ASTNode ast = CASTProvider.BuildFromSource(@"
+                int f(int x) { 
+                    return x;
+                }
+            ");
+            FunctionDefinitionNode f = ast.Children.Single().As<FunctionDefinitionNode>();
+            this.AssertFunctionSignature(f, 2, "f", "int", @params: ("int", "x"));
+
+            Assert.That(f.Definition, Is.Not.Null);
+            Assert.That(f.Definition.Children, Is.InstanceOf<BlockStatementNode>());
+            Assert.That(f.Definition.Children.Single(), Is.Not.Null);
+            Assert.That(f.Definition.Children.Single(), Is.InstanceOf<EmptyStatementNode>()); 
+        }
+
+        [Test]
+        public void ComplexDefinitionTest()
+        {
+            ASTNode ast = CASTProvider.BuildFromSource(@"
+                float f(int x, int y) {
+                    int z = 4;
+                    return 3f;
+                }
+            ");
+            FunctionDefinitionNode f = ast.Children.Single().As<FunctionDefinitionNode>();
+            this.AssertFunctionSignature(f, 2, "f", "int", @params: ("int", "x"));
+
+            Assert.That(f.Definition, Is.Not.Null);
+            Assert.That(f.Definition.Children, Is.Not.Null);
+            Assert.That(f.Definition.Children, Is.InstanceOf<BlockStatementNode>());
+            Assert.That(f.Definition.Children, Has.Count.EqualTo(2));
         }
 
 
         private void AssertFunctionSignature(FunctionDefinitionNode f,
                                              int line,
-                                             DeclarationSpecifiersFlags declSpecs,
                                              string fname,
                                              string returnType = "void",
+                                             DeclarationSpecifiersFlags declSpecs = DeclarationSpecifiersFlags.Private,
                                              params (string Type, string Identifier)[] @params)
         {
             Assert.That(f, Is.Not.Null);
@@ -34,7 +92,7 @@ namespace RICC.Tests.AST.Builders.C
             Assert.That(f.ReturnType, Is.EqualTo(returnType));
             if (@params?.Any() ?? false) {
                 Assert.That(f.Parameters, Is.Not.Null);
-                Assert.That(f.Parameters!.Parameters.Select(p => (p.Identifier, p.DeclarationSpecifiers.Type)), Is.EqualTo(@params));
+                Assert.That(f.Parameters!.Parameters.Select(p => (p.DeclarationSpecifiers.Type, p.Identifier)), Is.EqualTo(@params));
             }
         }
     }
