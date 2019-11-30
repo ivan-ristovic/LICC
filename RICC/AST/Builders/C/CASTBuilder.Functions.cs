@@ -53,7 +53,7 @@ namespace RICC.AST.Builders.C
                 return @params;
             }
 
-            @params = (FunctionParametersNode)this.Visit(ctx.parameterList());
+            @params = this.Visit(ctx.parameterList()).As<FunctionParametersNode>();
             param.Parent = @params;
             return new FunctionParametersNode(ctx.Start.Line, @params.Parameters.Concat(new[] { param }));
         }

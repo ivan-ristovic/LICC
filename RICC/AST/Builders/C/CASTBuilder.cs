@@ -25,15 +25,23 @@ namespace RICC.AST.Builders.C
         public override ASTNode VisitCompilationUnit([NotNull] CompilationUnitContext ctx)
         {
             LogObj.Context(ctx);
+            return ctx.translationUnit() is null ? new TranslationUnitNode(Enumerable.Empty<ASTNode>()) : this.Visit(ctx.translationUnit());
+        }
 
-            IParseTree translationUnit = ctx.translationUnit();
-            if (translationUnit is null)
-                return new TranslationUnitNode(Enumerable.Empty<ASTNode>());
+        public override ASTNode VisitTranslationUnit([NotNull] TranslationUnitContext ctx)
+        {
+            TranslationUnitNode tu;
+            ASTNode decl = this.Visit(ctx.externalDeclaration());
 
-            ASTNode child = this.Visit(translationUnit);
-            var compilationUnit = new TranslationUnitNode(new[] { child });
-            child.Parent = compilationUnit;
-            return compilationUnit;
+            if (ctx.translationUnit() is null) {
+                tu = new TranslationUnitNode(new[] { decl });
+                decl.Parent = tu;
+                return tu;
+            }
+
+            tu = this.Visit(ctx.translationUnit()).As<TranslationUnitNode>();
+            decl.Parent = tu;
+            return new TranslationUnitNode(tu.Children.Concat(new[] { decl }));
         }
     }
 }
