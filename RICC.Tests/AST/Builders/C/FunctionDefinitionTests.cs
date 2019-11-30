@@ -21,7 +21,7 @@ namespace RICC.Tests.AST.Builders.C
         {
             ASTNode ast = CASTProvider.BuildFromSource(@"extern static time_t f_1() { }");
             FunctionDefinitionNode f = ast.Children.Single().As<FunctionDefinitionNode>();
-            this.AssertFunctionSignature(f, 1, "f_1", "time_t", DeclarationSpecifiersFlags.Private | DeclarationSpecifiersFlags.Static);
+            this.AssertFunctionSignature(f, 1, "f_1", "time_t", DeclarationSpecifiersFlags.Public | DeclarationSpecifiersFlags.Static);
         }
 
         [Test]
@@ -44,12 +44,12 @@ namespace RICC.Tests.AST.Builders.C
         public void SimpleDefinitionTest()
         {
             ASTNode ast = CASTProvider.BuildFromSource(@"
-                int f(int x) { 
+                unsigned int f(int x) { 
                     return x;
                 }
             ");
             FunctionDefinitionNode f = ast.Children.Single().As<FunctionDefinitionNode>();
-            this.AssertFunctionSignature(f, 2, "f", "int", @params: ("int", "x"));
+            this.AssertFunctionSignature(f, 2, "f", "unsigned int", @params: ("int", "x"));
 
             Assert.That(f.Definition, Is.Not.Null);
             Assert.That(f.Definition, Is.InstanceOf<BlockStatementNode>());
@@ -62,13 +62,13 @@ namespace RICC.Tests.AST.Builders.C
         public void ComplexDefinitionTest()
         {
             ASTNode ast = CASTProvider.BuildFromSource(@"
-                float f(int x, ...) {
+                float f(unsigned int x, ...) {
                     int z = 4;
                     return 3f;
                 }
             ");
             FunctionDefinitionNode f = ast.Children.Single().As<FunctionDefinitionNode>();
-            this.AssertFunctionSignature(f, 2, "f", "float", @params: ("int", "x"));
+            this.AssertFunctionSignature(f, 2, "f", "float", @params: ("unsigned int", "x"));
 
             Assert.That(f.Definition, Is.Not.Null);
             Assert.That(f.Definition, Is.Not.Null);
