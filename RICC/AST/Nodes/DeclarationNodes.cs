@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace RICC.AST.Nodes
@@ -30,6 +31,7 @@ namespace RICC.AST.Nodes
 
     public sealed class VariableDeclarationNode : DeclarationNode
     {
+        public string Identifier => this.Children.Single().As<IdentifierNode>().Identifier;
         public object? Value { get; }
 
 

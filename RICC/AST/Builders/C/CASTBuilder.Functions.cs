@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Antlr4.Runtime.Misc;
 using RICC.AST.Nodes;
 using RICC.Extensions;
@@ -36,7 +37,12 @@ namespace RICC.AST.Builders.C
         }
 
         public override ASTNode VisitDeclarationSpecifiers([NotNull] DeclarationSpecifiersContext ctx)
-            => new DeclarationSpecifiersNode(ctx.Start.Line, ctx.children.Select(c => c.GetText()));    // TODO
+        {
+            string[] specs = ctx.children.Select(c => c.GetText()).ToArray();
+            int unsignedIndex = Array.IndexOf(specs, "unsigned");
+            string type = unsignedIndex != -1 ? string.Join(" ", specs[unsignedIndex..]) : specs.Last();
+            return new DeclarationSpecifiersNode(ctx.Start.Line, type, specs);
+        }
 
         #region Parameter overrides
         public override ASTNode VisitParameterTypeList([NotNull] ParameterTypeListContext ctx)

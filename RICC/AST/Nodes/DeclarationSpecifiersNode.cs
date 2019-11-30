@@ -10,11 +10,11 @@ namespace RICC.AST.Nodes
         public string Type { get; }
 
 
-        public DeclarationSpecifiersNode(int line, IEnumerable<string> specs, ASTNode? parent = null) 
+        public DeclarationSpecifiersNode(int line, string type, IEnumerable<string> specs, ASTNode? parent = null) 
             : base(line, parent)
         {
             this.Specifiers = DeclarationSpecifiers.Parse(specs);
-            this.Type = specs.Last();
+            this.Type = type;
         }
     }
 }

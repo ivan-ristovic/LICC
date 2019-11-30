@@ -31,10 +31,10 @@ namespace RICC.AST.Builders.C
         }
 
         public override ASTNode VisitBlockItem([NotNull] BlockItemContext ctx)
-            => this.Visit(ctx.children.First());
+            => this.Visit(ctx.children.Single());
 
         public override ASTNode VisitStatement([NotNull] StatementContext ctx)
-            => this.Visit(ctx.children.First());
+            => this.Visit(ctx.children.Single());
 
         public override ASTNode VisitExpressionStatement([NotNull] ExpressionStatementContext ctx)
             => ctx.expression() is null ? new EmptyStatementNode(ctx.Start.Line) : this.Visit(ctx.expression());
@@ -56,9 +56,12 @@ namespace RICC.AST.Builders.C
             DeclarationSpecifiersNode declSpecs = this.Visit(ctx.declarationSpecifiers()).As<DeclarationSpecifiersNode>();
 
             // TODO if not null, also implement other decl types
-            VariableDeclarationNode decl = this.Visit(ctx.initDeclaratorList()).As<VariableDeclarationNode>();
+            VariableDeclarationNode var = this.Visit(ctx.initDeclaratorList()).As<VariableDeclarationNode>();
 
-            return new DeclarationStatementNode(ctx.Start.Line, declSpecs, decl);
+            var decl = new DeclarationStatementNode(ctx.Start.Line, declSpecs, var);
+            declSpecs.Parent = decl;
+            var.Parent = decl;
+            return decl;
         }
 
         public override ASTNode VisitJumpStatement([NotNull] JumpStatementContext ctx)

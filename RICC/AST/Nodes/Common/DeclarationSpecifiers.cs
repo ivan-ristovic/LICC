@@ -32,7 +32,7 @@ namespace RICC.AST.Nodes.Common
                 .Distinct()
                 .ToArray();
 
-            if (split.Contains("public"))
+            if (split.Contains("public") || split.Contains("extern"))
                 retval |= DeclarationSpecifiersFlags.Public;
             if (split.Contains("protected"))
                 retval |= DeclarationSpecifiersFlags.Protected;
