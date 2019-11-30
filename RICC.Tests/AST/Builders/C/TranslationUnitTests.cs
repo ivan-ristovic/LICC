@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Linq;
+using NUnit.Framework;
 using RICC.AST.Nodes;
 
 namespace RICC.Tests.AST.Builders.C
@@ -26,6 +27,28 @@ namespace RICC.Tests.AST.Builders.C
                 }
             ");
             this.AssertTranslationUnit(ast.As<TranslationUnitNode>());
+            Assert.That(ast.Children, Is.All.InstanceOf<FunctionDefinitionNode>());
+        }
+
+        [Test]
+        public void MixedDeclarationTest()
+        {
+            ASTNode ast = CASTProvider.BuildFromSource(@"
+                int f(int x) { 
+                    int y = 3;
+                    return x + y;
+                }
+
+                extern static unsigned int x, y = 5;
+
+                static float st_x() {
+                    return 3.5f;
+                }
+            ");
+            this.AssertTranslationUnit(ast.As<TranslationUnitNode>());
+            Assert.That(ast.Children.ElementAt(0), Is.InstanceOf<FunctionDefinitionNode>());
+            Assert.That(ast.Children.ElementAt(1), Is.InstanceOf<DeclarationStatementNode>());
+            Assert.That(ast.Children.ElementAt(2), Is.InstanceOf<FunctionDefinitionNode>());
         }
 
         [Test]
