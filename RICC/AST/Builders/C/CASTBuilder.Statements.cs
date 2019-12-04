@@ -56,7 +56,7 @@ namespace RICC.AST.Builders.C
             DeclarationSpecifiersNode declSpecs = this.Visit(ctx.declarationSpecifiers()).As<DeclarationSpecifiersNode>();
 
             // TODO if not null, also implement other decl types
-            VariableDeclarationNode var = this.Visit(ctx.initDeclaratorList()).As<VariableDeclarationNode>();
+            DeclarationListNode var = this.Visit(ctx.initDeclaratorList()).As<DeclarationListNode>();
 
             var decl = new DeclarationStatementNode(ctx.Start.Line, declSpecs, var);
             declSpecs.Parent = decl;
@@ -72,8 +72,18 @@ namespace RICC.AST.Builders.C
 
         public override ASTNode VisitInitDeclaratorList([NotNull] InitDeclaratorListContext ctx)
         {
-            // TODO support list
-            return this.Visit(ctx.initDeclarator());
+            DeclarationListNode list;
+            DeclarationNode decl = this.Visit(ctx.initDeclarator()).As<DeclarationNode>();
+
+            if (ctx.initDeclaratorList() is null) {
+                list = new DeclarationListNode(ctx.Start.Line, new[] { decl });
+                decl.Parent = list;
+                return list;
+            }
+
+            list = this.Visit(ctx.initDeclaratorList()).As<DeclarationListNode>();
+            decl.Parent = list;
+            return new DeclarationListNode(ctx.Start.Line, list.Declarations.Concat(new[] { decl }));
         }
 
         public override ASTNode VisitInitDeclarator([NotNull] InitDeclaratorContext ctx)

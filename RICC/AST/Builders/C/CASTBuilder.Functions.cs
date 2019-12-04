@@ -31,9 +31,19 @@ namespace RICC.AST.Builders.C
 
         public override ASTNode VisitDirectDeclarator([NotNull] DirectDeclaratorContext ctx)
         {
-            // TODO
-            string identifier = ctx.Identifier()?.ToString() ?? string.Empty;
-            return ctx.Identifier() is null ? this.Visit(ctx.directDeclarator()) : new IdentifierNode(ctx.Start.Line, identifier);
+            if (ctx.declarator() is { })
+                return this.Visit(ctx.declarator());
+
+            if (ctx.Identifier() is { })
+                return new IdentifierNode(ctx.Start.Line, ctx.Identifier()?.ToString() ?? "<unknown_name>");
+
+            if (ctx.parameterTypeList() is { } || ctx.identifierList() is { }) {
+                // TODO function declaration
+            }
+
+            // TODO array declaration
+
+            return this.Visit(ctx.directDeclarator());
         }
 
         public override ASTNode VisitDeclarationSpecifiers([NotNull] DeclarationSpecifiersContext ctx)
