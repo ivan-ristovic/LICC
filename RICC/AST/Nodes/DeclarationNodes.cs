@@ -44,14 +44,14 @@ namespace RICC.AST.Nodes
 
     public sealed class VariableDeclarationNode : DeclarationNode
     {
-        public string Identifier => this.Children.Single().As<IdentifierNode>().Identifier;
-        public object? Value { get; }
+        public string Identifier => this.Children.ElementAt(0).As<IdentifierNode>().Identifier;
+        public ExpressionNode? Initializer => this.Children.ElementAt(1).As<ExpressionNode>();
 
 
-        public VariableDeclarationNode(int line, IdentifierNode identifier, object? value, ASTNode? parent = null)
-            : base(line, new[] { identifier }, parent)
+        public VariableDeclarationNode(int line, IdentifierNode identifier, ExpressionNode? initializer, ASTNode? parent = null)
+            : base(line, initializer is null ? new ASTNode[] { identifier } : new ASTNode[] { identifier, initializer }, parent)
         {
-            this.Value = value;
+
         }
     }
 

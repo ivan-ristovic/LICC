@@ -65,4 +65,32 @@ namespace RICC.AST.Nodes
 
         }
     }
+
+    public sealed class IdentifierNode : ExpressionNode
+    {
+        public string Identifier { get; }
+
+
+        public IdentifierNode(int line, string identifier, ASTNode? parent = null)
+            : base(line, parent)
+        {
+            if (string.IsNullOrWhiteSpace(identifier))
+                throw new ArgumentException("Identifier name must be set.");
+            this.Identifier = identifier;
+        }
+    }
+
+    public sealed class LiteralNode : ExpressionNode
+    {
+        public string Value { get; }
+
+
+        public LiteralNode(int line, string value, ASTNode? parent = null)
+            : base(line, parent)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentException("Value must be set.");
+            this.Value = value;
+        }
+    }
 }

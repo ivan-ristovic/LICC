@@ -89,12 +89,16 @@ namespace RICC.AST.Builders.C
         public override ASTNode VisitInitDeclarator([NotNull] InitDeclaratorContext ctx)
         {
             IdentifierNode identifier = this.Visit(ctx.declarator()).As<IdentifierNode>();
-            object? value = null;
+            ExpressionNode? init = null;
             if (ctx.initializer() is { }) {
                 // TODO get value;
+                init = this.Visit(ctx.initializer()).As<ExpressionNode>();
+                // TODO set parent
             }
 
-            return new VariableDeclarationNode(ctx.Start.Line, identifier, value);
+            return new VariableDeclarationNode(ctx.Start.Line, identifier, init);
         }
+
+        public override ASTNode VisitInitializer([NotNull] InitializerContext ctx) => this.Visit(ctx.assignmentExpression()); // TODO
     }
 }

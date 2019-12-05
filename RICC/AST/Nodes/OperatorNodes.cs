@@ -1,4 +1,6 @@
-﻿namespace RICC.AST.Nodes
+﻿using System;
+
+namespace RICC.AST.Nodes
 {
     public abstract class OperatorNode : ASTNode
     {

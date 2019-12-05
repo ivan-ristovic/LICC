@@ -54,7 +54,7 @@ namespace RICC.Tests.AST.Builders.C
                 ast.Children.First(),
                 "int",
                 DeclarationSpecifiersFlags.Private | DeclarationSpecifiersFlags.Static,
-                ("x", null), ("y", null), ("z", null) // TODO 5 for z when initializers are done
+                ("x", null), ("y", null), ("z", null)
             );
         }
 
