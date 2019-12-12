@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using RICC.AST.Nodes.Common;
 using RICC.Exceptions;
 
 namespace RICC.AST.Nodes
@@ -18,6 +19,21 @@ namespace RICC.AST.Nodes
         {
 
         }
+
+
+        public abstract object Evaluate();
+
+        public bool EvaluateAs<T>(out T? result) where T : struct
+        {
+            object res = this.Evaluate();
+            if (res is T castRes) {
+                result = castRes;
+                return true; 
+            } else {
+                result = default;
+                return false;
+            }
+        }
     }
 
     public class UnaryExpressionNode : ExpressionNode
@@ -31,6 +47,9 @@ namespace RICC.AST.Nodes
         {
 
         }
+
+
+        public override object Evaluate() => this.Operator.ApplyTo(this.Operand);
     }
 
     public abstract class BinaryExpressionNode : ExpressionNode
@@ -38,7 +57,6 @@ namespace RICC.AST.Nodes
         public BinaryOperatorNode Operator => this.Children[1].As<BinaryOperatorNode>();
         public ExpressionNode LeftOperand => this.Children[0].As<ExpressionNode>();
         public ExpressionNode RightOperand => this.Children[2].As<ExpressionNode>();
-
 
 
         protected BinaryExpressionNode(int line, ExpressionNode left, BinaryOperatorNode @operator, ExpressionNode right, ASTNode? parent = null) 
@@ -55,6 +73,9 @@ namespace RICC.AST.Nodes
         {
 
         }
+
+
+        public override object Evaluate() => this.Operator.As<ArithmeticOperatorNode>().ApplyTo(this.LeftOperand.Evaluate(), this.RightOperand.Evaluate());
     }
 
     public sealed class LogicExpressionNode : BinaryExpressionNode
@@ -63,6 +84,15 @@ namespace RICC.AST.Nodes
             : base(line, left, @operator, right, parent)
         {
 
+        }
+
+
+        public override object Evaluate()
+        {
+            if (!this.LeftOperand.EvaluateAs(out bool? left) || !this.RightOperand.EvaluateAs(out bool? right))
+                throw new Exception("TODO"); // TODO new exception type for this
+
+            return this.Operator.As<LogicOperatorNode>().ApplyTo(left ?? false, right ?? false);
         }
     }
 
@@ -78,19 +108,23 @@ namespace RICC.AST.Nodes
                 throw new ArgumentException("Identifier name must be set.");
             this.Identifier = identifier;
         }
+
+
+        public override object Evaluate() => throw new NotImplementedException();   // TODO
     }
 
-    public sealed class LiteralNode : ExpressionNode
+    public sealed class LiteralNode<TValue> : ExpressionNode
     {
-        public string Value { get; }
+        public TValue Value { get; }
 
 
-        public LiteralNode(int line, string value, ASTNode? parent = null)
+        public LiteralNode(int line, TValue value, ASTNode? parent = null)
             : base(line, parent)
         {
-            if (string.IsNullOrWhiteSpace(value))
-                throw new ArgumentException("Value must be set.");
             this.Value = value;
         }
+
+
+        public override object Evaluate() => this.Value ?? new object();    // FIXME
     }
 }

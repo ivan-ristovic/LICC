@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Antlr4.Runtime.Misc;
 using RICC.AST.Nodes;
+using RICC.AST.Nodes.Common;
 using static RICC.AST.Builders.C.CParser;
 
 namespace RICC.AST.Builders.C
@@ -33,8 +34,8 @@ namespace RICC.AST.Builders.C
         {
             if (ctx.ChildCount > 1) {
                 ExpressionNode left = this.Visit(ctx.additiveExpression()).As<ExpressionNode>();
-                var op = new ArithmeticOperatorNode(ctx.Start.Line, "+");
                 ExpressionNode right = this.Visit(ctx.multiplicativeExpression()).As<ExpressionNode>();
+                var op = new ArithmeticOperatorNode(ctx.Start.Line, "+", BinaryOperations.AddPrimitive);
                 return new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
             } else {
                 return this.Visit(ctx.multiplicativeExpression());
@@ -55,7 +56,7 @@ namespace RICC.AST.Builders.C
             if (ctx.Identifier() is { })
                 return new IdentifierNode(ctx.Start.Line, ctx.Identifier().GetText());
             else if (ctx.Constant() is { })
-                return new LiteralNode(ctx.Start.Line, ctx.Constant().GetText());
+                return new LiteralNode<int>(ctx.Start.Line, int.Parse(ctx.Constant().GetText())); // TODO
             else // TODO
                 return null; 
         }

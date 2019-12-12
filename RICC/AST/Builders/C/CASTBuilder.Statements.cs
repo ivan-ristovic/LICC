@@ -91,7 +91,7 @@ namespace RICC.AST.Builders.C
             IdentifierNode identifier = this.Visit(ctx.declarator()).As<IdentifierNode>();
             ExpressionNode? init = null;
             if (ctx.initializer() is { }) {
-                // TODO get value;
+                // TODO get value
                 init = this.Visit(ctx.initializer()).As<ExpressionNode>();
                 // TODO set parent
             }

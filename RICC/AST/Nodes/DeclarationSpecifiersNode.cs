@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using RICC.AST.Nodes.Common;
 
 namespace RICC.AST.Nodes
@@ -7,7 +7,7 @@ namespace RICC.AST.Nodes
     public class DeclarationSpecifiersNode : ASTNode
     {
         public DeclarationSpecifiersFlags Specifiers { get; }
-        public string Type { get; }
+        public string Type { get; set; }
 
 
         public DeclarationSpecifiersNode(int line, string type, IEnumerable<string> specs, ASTNode? parent = null) 
