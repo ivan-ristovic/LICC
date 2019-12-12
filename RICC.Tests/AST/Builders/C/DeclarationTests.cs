@@ -12,29 +12,26 @@ namespace RICC.Tests.AST.Builders.C
         public void SimpleDeclarationTest()
         {
             ASTNode ast = CASTProvider.BuildFromSource("int x; float y; Point z;time_t y_y;");
-            this.AssertVariableDeclaration(ast.Children.ElementAt(0), "int", "x");
-            this.AssertVariableDeclaration(ast.Children.ElementAt(1), "float", "y");
-            this.AssertVariableDeclaration(ast.Children.ElementAt(2), "Point", "z");
-            this.AssertVariableDeclaration(ast.Children.ElementAt(3), "time_t", "y_y");
+            this.AssertVariableDeclaration(ast.Children.ElementAt(0), "x", "int");
+            this.AssertVariableDeclaration(ast.Children.ElementAt(1), "y", "float");
+            this.AssertVariableDeclaration(ast.Children.ElementAt(2), "z", "Point");
+            this.AssertVariableDeclaration(ast.Children.ElementAt(3), "y_y", "time_t");
         }
 
         [Test]
         public void DeclarationSpecifierTest()
         {
             ASTNode ast2 = CASTProvider.BuildFromSource("static time_t x;");
-            this.AssertVariableDeclaration(ast2.Children.First(), "time_t", "x", DeclarationSpecifiersFlags.Private | DeclarationSpecifiersFlags.Static);
+            this.AssertVariableDeclaration(ast2.Children.First(), "x", "time_t", DeclarationSpecifiersFlags.Private | DeclarationSpecifiersFlags.Static);
             ASTNode ast1 = CASTProvider.BuildFromSource("static extern unsigned int x;");
-            this.AssertVariableDeclaration(ast1.Children.First(), "unsigned int", "x", DeclarationSpecifiersFlags.Public | DeclarationSpecifiersFlags.Static);
+            this.AssertVariableDeclaration(ast1.Children.First(), "x", "unsigned int", DeclarationSpecifiersFlags.Public | DeclarationSpecifiersFlags.Static);
         }
 
         [Test]
         public void InitializerDeclarationTest()
         {
-            // TODO when initializers are done
-            Assert.Inconclusive();
-
             ASTNode ast = CASTProvider.BuildFromSource("static int x = 5;");
-            this.AssertVariableDeclaration(ast.Children.First(), "int", "x", DeclarationSpecifiersFlags.Private | DeclarationSpecifiersFlags.Static, 5);
+            this.AssertVariableDeclaration(ast.Children.First(), "x", "int", DeclarationSpecifiersFlags.Private | DeclarationSpecifiersFlags.Static, 5);
         }
 
         [Test]
@@ -61,24 +58,21 @@ namespace RICC.Tests.AST.Builders.C
         [Test]
         public void DeclarationListWithInitializersTest()
         {
-            // TODO when initializers are done
-            Assert.Inconclusive();
-
-            ASTNode ast = CASTProvider.BuildFromSource("extern static double x, y = 7.2, z = 3.0;");
+            ASTNode ast = CASTProvider.BuildFromSource("extern static int x, y = 7 + 4, z = 3;");
             this.AssertVariableDeclarationList(
                 ast.Children.First(),
-                "double",
+                "int",
                 DeclarationSpecifiersFlags.Public | DeclarationSpecifiersFlags.Static,
-                ("x", null), ("y", 7.2), ("z", 3.0) 
+                ("x", null), ("y", 11), ("z", 3) 
             );
         }
 
 
         private void AssertVariableDeclaration(ASTNode node, 
-                                               string type, 
                                                string identifier,
+                                               string type,
                                                DeclarationSpecifiersFlags declSpecs = DeclarationSpecifiersFlags.Private,
-                                               object? value = null)
+                                               object? value = null) 
         {
             DeclarationStatementNode decl = node.As<DeclarationStatementNode>();
             Assert.That(decl.Children, Has.Count.EqualTo(2));
@@ -93,9 +87,13 @@ namespace RICC.Tests.AST.Builders.C
             Assert.That(declList.Parent, Is.EqualTo(decl));
             VariableDeclarationNode var = declList.Declarations.First().As<VariableDeclarationNode>();
             Assert.That(var.Parent, Is.EqualTo(declList));
-            Assert.That(var.Value, Is.EqualTo(value));
             Assert.That(var.Identifier, Is.EqualTo(identifier));
-            Assert.That(var.Children.Single().As<IdentifierNode>().Identifier, Is.EqualTo(identifier));
+            Assert.That(var.Children.First().As<IdentifierNode>().Identifier, Is.EqualTo(identifier));
+            if (var.Initializer is { }) {
+                object? res = var.Initializer.Evaluate();
+                Assert.That(res, Is.Not.Null);
+                Assert.That(res, Is.EqualTo(value));
+            }
         }
 
         private void AssertVariableDeclarationList(ASTNode node,
@@ -120,7 +118,7 @@ namespace RICC.Tests.AST.Builders.C
             static (string, object?) ExtractIdentifierAndValue(DeclarationNode declNode)
             {
                 VariableDeclarationNode var = declNode.As<VariableDeclarationNode>();
-                return (var.Identifier, var.Value);
+                return (var.Identifier, var.Initializer?.Evaluate());
             }
         }
     }
