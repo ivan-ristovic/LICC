@@ -2,6 +2,7 @@
 using Antlr4.Runtime.Misc;
 using RICC.AST.Nodes;
 using RICC.AST.Nodes.Common;
+using Serilog;
 using static RICC.AST.Builders.C.CParser;
 
 namespace RICC.AST.Builders.C
@@ -77,7 +78,10 @@ namespace RICC.AST.Builders.C
 
         public override ASTNode VisitUnaryExpression([NotNull] UnaryExpressionContext ctx) => this.Visit(ctx.postfixExpression());
 
-        public override ASTNode VisitPostfixExpression([NotNull] PostfixExpressionContext ctx) => this.Visit(ctx.primaryExpression());
+        public override ASTNode VisitPostfixExpression([NotNull] PostfixExpressionContext ctx)
+        {
+            return this.Visit(ctx.primaryExpression());
+        }
 
         public override ASTNode VisitPrimaryExpression([NotNull] PrimaryExpressionContext ctx)
         {
@@ -86,6 +90,10 @@ namespace RICC.AST.Builders.C
                 return new IdentifierNode(ctx.Start.Line, ctx.Identifier().GetText());
             else if (ctx.Constant() is { })
                 return ASTNodeFactory.CreateLiteralNode(ctx.Start.Line, ctx.Constant().GetText());
+            else if (ctx.StringLiteral() is { }) 
+                return new LiteralNode<string>(ctx.Start.Line, string.Join("", ctx.StringLiteral().Select(t => t.GetText()[1..^1])));
+            else if (ctx.expression() is { })
+                return this.Visit(ctx.expression());
             else // TODO
                 return null; 
         }
