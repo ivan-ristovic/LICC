@@ -65,24 +65,36 @@ namespace RICC.Tests.AST.Builders.C
         [Test]
         public void IntDeclarationListWithInitializersTest()
         {
-            ASTNode ast = CASTProvider.BuildFromSource("extern static int x, y = 7 + 4, z = 3, w = 3*4 + 7*5, t = 2 >> 3 << 4;");
+            ASTNode ast = CASTProvider.BuildFromSource("extern static int x, y = 7 + (4 - 3), z = 3, w = 3*4 + 7*5, t = 2 >> (3 << 4);");
             this.AssertVariableDeclarationList(
                 ast.Children.First(),
                 "int",
                 DeclarationSpecifiersFlags.Public | DeclarationSpecifiersFlags.Static,
-                ("x", null), ("y", 11), ("z", 3), ("w", 47), ("t", 2 >> 3 << 4) 
+                ("x", null), ("y", 7 + (4 - 3)), ("z", 3), ("w", 47), ("t", 2 >> (3 << 4)) 
             );
         }
 
         [Test]
         public void FloatDeclarationListWithInitializersTest()
         {
-            ASTNode ast = CASTProvider.BuildFromSource("float x, y = 7.1 + 4.2, z = 3.0, w = 3.2*4.45 + 7.2*5.11 - 5.0/2.5;");
+            ASTNode ast = CASTProvider.BuildFromSource("float x, y = 7.1 + 4.2, z = 3.0, w = 3.2*4.45 + 7.2*5.11 - (5.0/2.5);");
             this.AssertVariableDeclarationList(
                 ast.Children.First(),
                 "float",
                 DeclarationSpecifiersFlags.Private,
                 ("x", null), ("y", 11.3), ("z", 3.0), ("w", 49.032)
+            );
+        }
+
+        [Test]
+        public void StringDeclarationListWithInitializersTest()
+        {
+            ASTNode ast = CASTProvider.BuildFromSource(@"char* w1, w2 = ""abc"", w3 = ""aa"" + ""bb"";");
+            this.AssertVariableDeclarationList(
+                ast.Children.First(),
+                "char*",
+                DeclarationSpecifiersFlags.Private,
+                ("w1", null), ("w2", "abc"), ("w3", "aabb")
             );
         }
 
