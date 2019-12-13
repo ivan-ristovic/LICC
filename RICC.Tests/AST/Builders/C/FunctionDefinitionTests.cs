@@ -95,7 +95,7 @@ namespace RICC.Tests.AST.Builders.C
             Assert.That(f.ReturnType, Is.EqualTo(returnType));
             if (@params?.Any() ?? false) {
                 Assert.That(f.Parameters, Is.Not.Null);
-                Assert.That(f.Parameters!.Parameters.Select(p => (p.DeclarationSpecifiers.Type, p.Identifier)), Is.EqualTo(@params));
+                Assert.That(f.Parameters!.Parameters.Select(p => (p.DeclarationSpecifiers.TypeName, p.Identifier)), Is.EqualTo(@params));
             }
         }
     }
