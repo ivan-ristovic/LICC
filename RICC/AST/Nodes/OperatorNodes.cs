@@ -4,20 +4,20 @@ namespace RICC.AST.Nodes
 {
     public abstract class OperatorNode : ASTNode
     {
-        public string Sign { get; }
+        public string Symbol { get; }
 
 
-        protected OperatorNode(int line, string sign, ASTNode? parent = null) 
+        protected OperatorNode(int line, string symbol, ASTNode? parent = null) 
             : base(line, parent)
         {
-            this.Sign = sign;
+            this.Symbol = symbol;
         }
     }
 
     public abstract class BinaryOperatorNode : OperatorNode
     {
-        protected BinaryOperatorNode(int line, string sign, ASTNode? parent = null)
-            : base(line, sign, parent)
+        protected BinaryOperatorNode(int line, string symbol, ASTNode? parent = null)
+            : base(line, symbol, parent)
         {
 
         }
@@ -28,8 +28,8 @@ namespace RICC.AST.Nodes
         public Func<object, object> ApplyTo { get; set; }
 
 
-        public UnaryOperatorNode(int line, string sign, Func<object, object> logic, ASTNode? parent = null)
-            : base(line, sign, parent)
+        public UnaryOperatorNode(int line, string symbol, Func<object, object> logic, ASTNode? parent = null)
+            : base(line, symbol, parent)
         {
             this.ApplyTo = logic;
         }
@@ -40,8 +40,8 @@ namespace RICC.AST.Nodes
         public Func<object, object, object> ApplyTo { get; set; }
 
 
-        public ArithmeticOperatorNode(int line, string sign, Func<object, object, object> logic, ASTNode? parent = null)
-            : base(line, sign, parent)
+        public ArithmeticOperatorNode(int line, string symbol, Func<object, object, object> logic, ASTNode? parent = null)
+            : base(line, symbol, parent)
         {
             this.ApplyTo = logic;
         }
@@ -52,8 +52,8 @@ namespace RICC.AST.Nodes
         public Func<bool, bool, bool> ApplyTo { get; set; }
 
 
-        public LogicOperatorNode(int line, string sign, Func<bool, bool, bool> logic, ASTNode? parent = null)
-            : base(line, sign, parent)
+        public LogicOperatorNode(int line, string symbol, Func<bool, bool, bool> logic, ASTNode? parent = null)
+            : base(line, symbol, parent)
         {
             this.ApplyTo = logic;
         }

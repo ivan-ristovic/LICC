@@ -58,7 +58,8 @@ namespace RICC.AST.Nodes
     public sealed class FunctionDeclarationNode : DeclarationNode
     {
         public DeclarationSpecifiersFlags DeclarationSpecifiers => this.Children[0].As<DeclarationSpecifiersNode>().Specifiers;
-        public string ReturnType => this.Children[0].As<DeclarationSpecifiersNode>().Type;
+        public string ReturnTypeName => this.Children[0].As<DeclarationSpecifiersNode>().TypeName;
+        public Type? ReturnType => this.Children[0].As<DeclarationSpecifiersNode>().Type;
         public string Identifier => this.Children[1].As<IdentifierNode>().Identifier;
         public FunctionParametersNode? Parameters => this.Children[2] as FunctionParametersNode ?? null;
 

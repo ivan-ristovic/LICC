@@ -28,21 +28,50 @@ namespace RICC.AST.Builders.C
 
         public override ASTNode VisitRelationalExpression([NotNull] RelationalExpressionContext ctx) => this.Visit(ctx.shiftExpression());
 
-        public override ASTNode VisitShiftExpression([NotNull] ShiftExpressionContext ctx) => this.Visit(ctx.additiveExpression());
+        public override ASTNode VisitShiftExpression([NotNull] ShiftExpressionContext ctx)
+        {
+            if (ctx.ChildCount > 1) {
+                ExpressionNode left = this.Visit(ctx.shiftExpression()).As<ExpressionNode>();
+                ExpressionNode right = this.Visit(ctx.additiveExpression()).As<ExpressionNode>();
+                string sign = ctx.children[1].GetText();
+                var op = new ArithmeticOperatorNode(ctx.Start.Line, sign, BinaryOperations.DetermineFromSign(sign));
+                var expr = new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
+                left.Parent = right.Parent = op.Parent = expr;
+                return expr;
+            } else {
+                return this.Visit(ctx.additiveExpression());
+            }
+        }
 
         public override ASTNode VisitAdditiveExpression([NotNull] AdditiveExpressionContext ctx)
         {
             if (ctx.ChildCount > 1) {
                 ExpressionNode left = this.Visit(ctx.additiveExpression()).As<ExpressionNode>();
                 ExpressionNode right = this.Visit(ctx.multiplicativeExpression()).As<ExpressionNode>();
-                var op = new ArithmeticOperatorNode(ctx.Start.Line, "+", BinaryOperations.AddPrimitive);
-                return new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
+                string sign = ctx.children[1].GetText();
+                var op = new ArithmeticOperatorNode(ctx.Start.Line, sign, BinaryOperations.DetermineFromSign(sign));
+                var expr = new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
+                left.Parent = right.Parent = op.Parent = expr;
+                return expr;
             } else {
                 return this.Visit(ctx.multiplicativeExpression());
             }
         }
 
-        public override ASTNode VisitMultiplicativeExpression([NotNull] MultiplicativeExpressionContext ctx) => this.Visit(ctx.castExpression());
+        public override ASTNode VisitMultiplicativeExpression([NotNull] MultiplicativeExpressionContext ctx)
+        {
+            if (ctx.ChildCount > 1) {
+                ExpressionNode left = this.Visit(ctx.multiplicativeExpression()).As<ExpressionNode>();
+                ExpressionNode right = this.Visit(ctx.castExpression()).As<ExpressionNode>();
+                string sign = ctx.children[1].GetText();
+                var op = new ArithmeticOperatorNode(ctx.Start.Line, sign, BinaryOperations.DetermineFromSign(sign));
+                var expr = new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
+                left.Parent = right.Parent = op.Parent = expr;
+                return expr;
+            } else {
+                return this.Visit(ctx.castExpression());
+            }
+        }
 
         public override ASTNode VisitCastExpression([NotNull] CastExpressionContext ctx) => this.Visit(ctx.unaryExpression());
 
@@ -56,7 +85,7 @@ namespace RICC.AST.Builders.C
             if (ctx.Identifier() is { })
                 return new IdentifierNode(ctx.Start.Line, ctx.Identifier().GetText());
             else if (ctx.Constant() is { })
-                return new LiteralNode<int>(ctx.Start.Line, int.Parse(ctx.Constant().GetText())); // TODO
+                return ASTNodeFactory.CreateLiteralNode(ctx.Start.Line, ctx.Constant().GetText());
             else // TODO
                 return null; 
         }

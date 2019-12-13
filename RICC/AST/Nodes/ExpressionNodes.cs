@@ -28,7 +28,7 @@ namespace RICC.AST.Nodes
             object res = this.Evaluate();
             if (res is T castRes) {
                 result = castRes;
-                return true; 
+                return true;
             } else {
                 result = default;
                 return false;
@@ -59,7 +59,7 @@ namespace RICC.AST.Nodes
         public ExpressionNode RightOperand => this.Children[2].As<ExpressionNode>();
 
 
-        protected BinaryExpressionNode(int line, ExpressionNode left, BinaryOperatorNode @operator, ExpressionNode right, ASTNode? parent = null) 
+        protected BinaryExpressionNode(int line, ExpressionNode left, BinaryOperatorNode @operator, ExpressionNode right, ASTNode? parent = null)
             : base(line, new ASTNode[] { left, @operator, right }, parent)
         {
 
@@ -90,7 +90,7 @@ namespace RICC.AST.Nodes
         public override object Evaluate()
         {
             if (!this.LeftOperand.EvaluateAs(out bool? left) || !this.RightOperand.EvaluateAs(out bool? right))
-                throw new Exception("TODO"); // TODO new exception type for this
+                throw new EvaluationException("Logic expression not returning bool!");
 
             return this.Operator.As<LogicOperatorNode>().ApplyTo(left ?? false, right ?? false);
         }
@@ -125,6 +125,41 @@ namespace RICC.AST.Nodes
         }
 
 
-        public override object Evaluate() => this.Value ?? new object();    // FIXME
+        public override object Evaluate() => this.Value ?? throw new EvaluationException("Literal value not set.");
+    }
+
+
+    public static class ASTNodeFactory
+    {
+        public static ExpressionNode CreateLiteralNode(int line, string value, ASTNode? parent = null)
+        {
+            // TODO order
+            if (int.TryParse(value, out int res_int))
+                return new LiteralNode<int>(line, res_int, parent);
+            else if (bool.TryParse(value, out bool res_bool))
+                return new LiteralNode<bool>(line, res_bool, parent);
+            else if (byte.TryParse(value, out byte res_byte))
+                return new LiteralNode<byte>(line, res_byte, parent);
+            else if (char.TryParse(value, out char res_char))
+                return new LiteralNode<char>(line, res_char, parent);
+            else if (short.TryParse(value, out short res_short))
+                return new LiteralNode<short>(line, res_short, parent);
+            else if (ushort.TryParse(value, out ushort res_ushort))
+                return new LiteralNode<ushort>(line, res_ushort, parent);
+            else if (uint.TryParse(value, out uint res_uint))
+                return new LiteralNode<uint>(line, res_uint, parent);
+            else if (long.TryParse(value, out long res_long))
+                return new LiteralNode<long>(line, res_long, parent);
+            else if (ulong.TryParse(value, out ulong res_ulong))
+                return new LiteralNode<ulong>(line, res_ulong, parent);
+            else if (double.TryParse(value, out double res_double))
+                return new LiteralNode<double>(line, res_double, parent);
+            else if (float.TryParse(value, out float res_float))
+                return new LiteralNode<float>(line, res_float, parent);
+            else if (decimal.TryParse(value, out decimal res_decimal))
+                return new LiteralNode<decimal>(line, res_decimal, parent);
+
+            return new LiteralNode<string>(line, value, parent);
+        }
     }
 }
