@@ -46,7 +46,19 @@ namespace RICC.AST.Nodes
             this.ApplyTo = logic;
         }
     }
-    
+
+    public sealed class RelationalOperatorNode : BinaryOperatorNode
+    {
+        public Func<object, object, bool> ApplyTo { get; set; }
+
+
+        public RelationalOperatorNode(int line, string symbol, Func<object, object, bool> logic, ASTNode? parent = null)
+            : base(line, symbol, parent)
+        {
+            this.ApplyTo = logic;
+        }
+    }
+
     public sealed class LogicOperatorNode : BinaryOperatorNode
     {
         public Func<bool, bool, bool> ApplyTo { get; set; }

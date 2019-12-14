@@ -96,6 +96,18 @@ namespace RICC.AST.Nodes
         }
     }
 
+    public sealed class RelationalExpressionNode : BinaryExpressionNode
+    {
+        public RelationalExpressionNode(int line, ExpressionNode left, RelationalOperatorNode @operator, ExpressionNode right, ASTNode? parent = null)
+            : base(line, left, @operator, right, parent)
+        {
+
+        }
+
+
+        public override object Evaluate() => this.Operator.As<RelationalOperatorNode>().ApplyTo(this.LeftOperand.Evaluate(), this.RightOperand.Evaluate());
+    }
+
     public sealed class IdentifierNode : ExpressionNode
     {
         public string Identifier { get; }

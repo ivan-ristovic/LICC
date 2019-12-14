@@ -12,5 +12,6 @@ extern int foo(
 	float bar
 )
 {
+	bool b = 3 > 4;
 	return 5;
 }
