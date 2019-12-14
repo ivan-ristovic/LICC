@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using NUnit.Framework;
 using RICC.AST.Nodes;
 using RICC.AST.Nodes.Common;
@@ -83,6 +82,18 @@ namespace RICC.Tests.AST.Builders.C
                 "float",
                 DeclarationSpecifiersFlags.Private,
                 ("x", null), ("y", 11.3), ("z", 3.0), ("w", 49.032)
+            );
+        }
+
+        [Test]
+        public void BoolDeclarationListWithInitializersTest()
+        {
+            ASTNode ast = CASTProvider.BuildFromSource("bool x, y = 1 == 1, z = 3 <= 4, w = 4 != (3 + 1);");
+            this.AssertVariableDeclarationList(
+                ast.Children.First(),
+                "bool",
+                DeclarationSpecifiersFlags.Private,
+                ("x", null), ("y", true), ("z", true), ("w", false)
             );
         }
 
