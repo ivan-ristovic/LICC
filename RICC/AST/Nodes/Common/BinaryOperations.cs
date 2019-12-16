@@ -37,27 +37,33 @@ namespace RICC.AST.Nodes.Common
         {
             ThrowIfNotPrimitiveTypes(x, y);
 
-            if (x is string || y is string) {
+            if (x is string || y is string)
                 return (string)x + (string)y;
-            } else if (x is decimal || y is decimal) {
-                return (decimal)x + (decimal)y;
-            } else if (x is double || y is double) {
-                return (double)x + (double)y;
-            } else if (x is ulong || y is ulong) {
-                return (ulong)x + (ulong)y;
-            } else if (x is long || y is long) {
-                return (long)x + (long)y;
-            } else if (x is uint || y is uint) {
-                return (uint)x + (uint)y;
-            } else if (x is int || y is int) {
-                return (int)x + (int)y;
-            } else if (x is char || y is char) {
-                return (char)x + (char)y;
-            } else if (x is byte || y is byte) {
-                return (byte)x + (byte)y;
-            } else if (x is sbyte || y is sbyte) {
-                return (sbyte)x + (sbyte)y;
-            } else
+            else if (x is decimal || y is decimal)
+                return Convert.ToDecimal(x) + Convert.ToDecimal(y);
+            else if (x is double || y is double)
+                return Convert.ToDouble(x) + Convert.ToDouble(y);
+            else if (x is float || y is float)
+                return Convert.ToSingle(x) + Convert.ToSingle(y);
+            else if (x is ulong || y is ulong)
+                return Convert.ToUInt64(x) + Convert.ToUInt64(y);
+            else if (x is long || y is long)
+                return Convert.ToInt64(x) + Convert.ToInt64(y);
+            else if (x is uint || y is uint)
+                return Convert.ToUInt32(x) + Convert.ToUInt32(y);
+            else if (x is int || y is int)
+                return Convert.ToInt32(x) + Convert.ToInt32(y);
+            else if (x is ushort || y is ushort)
+                return Convert.ToUInt16(x) + Convert.ToUInt16(y);
+            else if (x is short || y is short)
+                return Convert.ToInt16(x) + Convert.ToInt16(y);
+            else if (x is char || y is char)
+                return Convert.ToChar(x) + Convert.ToChar(y);
+            else if (x is byte || y is byte)
+                return Convert.ToByte(x) + Convert.ToByte(y);
+            else if (x is sbyte || y is sbyte)
+                return Convert.ToSByte(x) + Convert.ToSByte(y);
+            else
                 throw new EvaluationException("Cannot add non-primitive types");
         }
 
@@ -65,25 +71,31 @@ namespace RICC.AST.Nodes.Common
         {
             ThrowIfNotPrimitiveTypes(x, y);
 
-            if (x is decimal || y is decimal) {
-                return (decimal)x - (decimal)y;
-            } else if (x is double || y is double) {
-                return (double)x - (double)y;
-            } else if (x is ulong || y is ulong) {
-                return (ulong)x - (ulong)y;
-            } else if (x is long || y is long) {
-                return (long)x - (long)y;
-            } else if (x is uint || y is uint) {
-                return (uint)x - (uint)y;
-            } else if (x is int || y is int) {
-                return (int)x - (int)y;
-            } else if (x is char || y is char) {
-                return (char)x - (char)y;
-            } else if (x is byte || y is byte) {
-                return (byte)x - (byte)y;
-            } else if (x is sbyte || y is sbyte) {
-                return (sbyte)x - (sbyte)y;
-            } else
+            if (x is decimal || y is decimal)
+                return Convert.ToDecimal(x) - Convert.ToDecimal(y);
+            else if (x is double || y is double)
+                return Convert.ToDouble(x) - Convert.ToDouble(y);
+            else if (x is float || y is float)
+                return Convert.ToSingle(x) - Convert.ToSingle(y);
+            else if (x is ulong || y is ulong)
+                return Convert.ToUInt64(x) - Convert.ToUInt64(y);
+            else if (x is long || y is long)
+                return Convert.ToInt64(x) - Convert.ToInt64(y);
+            else if (x is uint || y is uint)
+                return Convert.ToUInt32(x) - Convert.ToUInt32(y);
+            else if (x is int || y is int)
+                return Convert.ToInt32(x) - Convert.ToInt32(y);
+            else if (x is ushort || y is ushort)
+                return Convert.ToUInt16(x) - Convert.ToUInt16(y);
+            else if (x is short || y is short)
+                return Convert.ToInt16(x) - Convert.ToInt16(y);
+            else if (x is char || y is char)
+                return Convert.ToChar(x) - Convert.ToChar(y);
+            else if (x is byte || y is byte)
+                return Convert.ToByte(x) - Convert.ToByte(y);
+            else if (x is sbyte || y is sbyte)
+                return Convert.ToSByte(x) - Convert.ToSByte(y);
+            else
                 throw new EvaluationException("Cannot subtract non-primitive types");
         }
 
@@ -91,25 +103,31 @@ namespace RICC.AST.Nodes.Common
         {
             ThrowIfNotPrimitiveTypes(x, y);
 
-            if (x is decimal || y is decimal) {
-                return (decimal)x * (decimal)y;
-            } else if (x is double || y is double) {
-                return (double)x * (double)y;
-            } else if (x is ulong || y is ulong) {
-                return (ulong)x * (ulong)y;
-            } else if (x is long || y is long) {
-                return (long)x * (long)y;
-            } else if (x is uint || y is uint) {
-                return (uint)x * (uint)y;
-            } else if (x is int || y is int) {
-                return (int)x * (int)y;
-            } else if (x is char || y is char) {
-                return (char)x * (char)y;
-            } else if (x is byte || y is byte) {
-                return (byte)x * (byte)y;
-            } else if (x is sbyte || y is sbyte) {
-                return (sbyte)x * (sbyte)y;
-            } else
+            if (x is decimal || y is decimal)
+                return Convert.ToDecimal(x) * Convert.ToDecimal(y);
+            else if (x is double || y is double)
+                return Convert.ToDouble(x) * Convert.ToDouble(y);
+            else if (x is float || y is float)
+                return Convert.ToSingle(x) * Convert.ToSingle(y);
+            else if (x is ulong || y is ulong)
+                return Convert.ToUInt64(x) * Convert.ToUInt64(y);
+            else if (x is long || y is long)
+                return Convert.ToInt64(x) * Convert.ToInt64(y);
+            else if (x is uint || y is uint)
+                return Convert.ToUInt32(x) * Convert.ToUInt32(y);
+            else if (x is int || y is int)
+                return Convert.ToInt32(x) * Convert.ToInt32(y);
+            else if (x is ushort || y is ushort)
+                return Convert.ToUInt16(x) * Convert.ToUInt16(y);
+            else if (x is short || y is short)
+                return Convert.ToInt16(x) * Convert.ToInt16(y);
+            else if (x is char || y is char)
+                return Convert.ToChar(x) * Convert.ToChar(y);
+            else if (x is byte || y is byte)
+                return Convert.ToByte(x) * Convert.ToByte(y);
+            else if (x is sbyte || y is sbyte)
+                return Convert.ToSByte(x) * Convert.ToSByte(y);
+            else
                 throw new EvaluationException("Cannot multiply non-primitive types");
         }
 
@@ -117,25 +135,31 @@ namespace RICC.AST.Nodes.Common
         {
             ThrowIfNotPrimitiveTypes(x, y);
 
-            if (x is decimal || y is decimal) {
-                return (decimal)x / (decimal)y;
-            } else if (x is double || y is double) {
-                return (double)x / (double)y;
-            } else if (x is ulong || y is ulong) {
-                return (ulong)x / (ulong)y;
-            } else if (x is long || y is long) {
-                return (long)x / (long)y;
-            } else if (x is uint || y is uint) {
-                return (uint)x / (uint)y;
-            } else if (x is int || y is int) {
-                return (int)x / (int)y;
-            } else if (x is char || y is char) {
-                return (char)x / (char)y;
-            } else if (x is byte || y is byte) {
-                return (byte)x / (byte)y;
-            } else if (x is sbyte || y is sbyte) {
-                return (sbyte)x / (sbyte)y;
-            } else
+            if (x is decimal || y is decimal)
+                return Convert.ToDecimal(x) / Convert.ToDecimal(y);
+            else if (x is double || y is double)
+                return Convert.ToDouble(x) / Convert.ToDouble(y);
+            else if (x is float || y is float)
+                return Convert.ToSingle(x) / Convert.ToSingle(y);
+            else if (x is ulong || y is ulong)
+                return Convert.ToUInt64(x) / Convert.ToUInt64(y);
+            else if (x is long || y is long)
+                return Convert.ToInt64(x) / Convert.ToInt64(y);
+            else if (x is uint || y is uint)
+                return Convert.ToUInt32(x) / Convert.ToUInt32(y);
+            else if (x is int || y is int)
+                return Convert.ToInt32(x) / Convert.ToInt32(y);
+            else if (x is ushort || y is ushort)
+                return Convert.ToUInt16(x) / Convert.ToUInt16(y);
+            else if (x is short || y is short)
+                return Convert.ToInt16(x) / Convert.ToInt16(y);
+            else if (x is char || y is char)
+                return Convert.ToChar(x) / Convert.ToChar(y);
+            else if (x is byte || y is byte)
+                return Convert.ToByte(x) / Convert.ToByte(y);
+            else if (x is sbyte || y is sbyte)
+                return Convert.ToSByte(x) / Convert.ToSByte(y);
+            else
                 throw new EvaluationException("Cannot divide non-primitive types");
         }
 
@@ -143,19 +167,21 @@ namespace RICC.AST.Nodes.Common
         {
             ThrowIfNotPrimitiveTypes(x, y);
 
-            if (y is int || y is char || y is sbyte || y is byte) {
+            if (y is int || y is char || y is sbyte || y is byte)
                 return x switch
                 {
-                    ulong _ => (ulong)x << (int)y,
-                    long _ => (long)x << (int)y,
-                    uint _ => (uint)x << (int)y,
-                    int _ => (int)x << (int)y,
-                    char _ => (char)x << (int)y,
-                    sbyte _ => (sbyte)x << (int)y,
-                    byte _ => (byte)x << (int)y,
+                    ulong _ => Convert.ToUInt64(x) << Convert.ToInt32(y),
+                    long _ => Convert.ToInt64(x) << Convert.ToInt32(y),
+                    uint _ => Convert.ToUInt32(x) << Convert.ToInt32(y),
+                    int _ => Convert.ToInt32(x) << Convert.ToInt32(y),
+                    ushort _ => Convert.ToUInt16(x) << Convert.ToInt16(y),
+                    short _ => Convert.ToInt16(x) << Convert.ToInt16(y),
+                    char _ => Convert.ToChar(x) << Convert.ToInt32(y),
+                    sbyte _ => Convert.ToSByte(x) << Convert.ToInt32(y),
+                    byte _ => Convert.ToByte(x) << Convert.ToInt32(y),
                     _ => throw new EvaluationException("Cannot shift non-integer types"),
                 };
-            } else {
+            else {
                 throw new EvaluationException("Cannot shift by non-integer amount");
             }
         }
@@ -164,19 +190,21 @@ namespace RICC.AST.Nodes.Common
         {
             ThrowIfNotPrimitiveTypes(x, y);
 
-            if (y is int || y is char || y is sbyte || y is byte) {
+            if (y is int || y is char || y is sbyte || y is byte)
                 return x switch
                 {
-                    ulong _ => (ulong)x >> (int)y,
-                    long _ => (long)x >> (int)y,
-                    uint _ => (uint)x >> (int)y,
-                    int _ => (int)x >> (int)y,
-                    char _ => (char)x >> (int)y,
-                    sbyte _ => (sbyte)x >> (int)y,
-                    byte _ => (byte)x >> (int)y,
+                    ulong _ => Convert.ToUInt64(x) >> Convert.ToInt32(y),
+                    long _ => Convert.ToInt64(x) >> Convert.ToInt32(y),
+                    uint _ => Convert.ToUInt32(x) >> Convert.ToInt32(y),
+                    int _ => Convert.ToInt32(x) >> Convert.ToInt32(y),
+                    ushort _ => Convert.ToUInt16(x) >> Convert.ToInt16(y),
+                    short _ => Convert.ToInt16(x) >> Convert.ToInt16(y),
+                    char _ => Convert.ToChar(x) >> Convert.ToInt32(y),
+                    sbyte _ => Convert.ToSByte(x) >> Convert.ToInt32(y),
+                    byte _ => Convert.ToByte(x) >> Convert.ToInt32(y),
                     _ => throw new EvaluationException("Cannot shift non-integer types"),
                 };
-            } else {
+            else {
                 throw new EvaluationException("Cannot shift by non-integer amount");
             }
         }
@@ -185,25 +213,31 @@ namespace RICC.AST.Nodes.Common
         {
             ThrowIfNotPrimitiveTypes(x, y);
 
-            if (x is decimal || y is decimal) {
-                return (decimal)x < (decimal)y;
-            } else if (x is double || y is double) {
-                return (double)x < (double)y;
-            } else if (x is ulong || y is ulong) {
-                return (ulong)x < (ulong)y;
-            } else if (x is long || y is long) {
-                return (long)x < (long)y;
-            } else if (x is uint || y is uint) {
-                return (uint)x < (uint)y;
-            } else if (x is int || y is int) {
-                return (int)x < (int)y;
-            } else if (x is char || y is char) {
-                return (char)x < (char)y;
-            } else if (x is byte || y is byte) {
-                return (byte)x < (byte)y;
-            } else if (x is sbyte || y is sbyte) {
-                return (sbyte)x < (sbyte)y;
-            } else
+            if (x is decimal || y is decimal)
+                return Convert.ToDecimal(x) < Convert.ToDecimal(y);
+            else if (x is double || y is double)
+                return Convert.ToDouble(x) < Convert.ToDouble(y);
+            else if (x is float || y is float)
+                return Convert.ToSingle(x) < Convert.ToSingle(y);
+            else if (x is ulong || y is ulong)
+                return Convert.ToUInt64(x) < Convert.ToUInt64(y);
+            else if (x is long || y is long)
+                return Convert.ToInt64(x) < Convert.ToInt64(y);
+            else if (x is uint || y is uint)
+                return Convert.ToUInt32(x) < Convert.ToUInt32(y);
+            else if (x is int || y is int)
+                return Convert.ToInt32(x) < Convert.ToInt32(y);
+            else if (x is ushort || y is ushort)
+                return Convert.ToUInt16(x) < Convert.ToUInt16(y);
+            else if (x is short || y is short)
+                return Convert.ToInt16(x) < Convert.ToInt16(y);
+            else if (x is char || y is char)
+                return Convert.ToChar(x) < Convert.ToChar(y);
+            else if (x is byte || y is byte)
+                return Convert.ToByte(x) < Convert.ToByte(y);
+            else if (x is sbyte || y is sbyte)
+                return Convert.ToSByte(x) < Convert.ToSByte(y);
+            else
                 throw new EvaluationException("Cannot compare non-primitive types");
         }
 
@@ -212,25 +246,31 @@ namespace RICC.AST.Nodes.Common
         {
             ThrowIfNotPrimitiveTypes(x, y);
 
-            if (x is decimal || y is decimal) {
-                return (decimal)x <= (decimal)y;
-            } else if (x is double || y is double) {
-                return (double)x <= (double)y;
-            } else if (x is ulong || y is ulong) {
-                return (ulong)x <= (ulong)y;
-            } else if (x is long || y is long) {
-                return (long)x <= (long)y;
-            } else if (x is uint || y is uint) {
-                return (uint)x <= (uint)y;
-            } else if (x is int || y is int) {
-                return (int)x <= (int)y;
-            } else if (x is char || y is char) {
-                return (char)x <= (char)y;
-            } else if (x is byte || y is byte) {
-                return (byte)x <= (byte)y;
-            } else if (x is sbyte || y is sbyte) {
-                return (sbyte)x <= (sbyte)y;
-            } else
+            if (x is decimal || y is decimal)
+                return Convert.ToDecimal(x) <= Convert.ToDecimal(y);
+            else if (x is double || y is double)
+                return Convert.ToDouble(x) <= Convert.ToDouble(y);
+            else if (x is float || y is float)
+                return Convert.ToSingle(x) <= Convert.ToSingle(y);
+            else if (x is ulong || y is ulong)
+                return Convert.ToUInt64(x) <= Convert.ToUInt64(y);
+            else if (x is long || y is long)
+                return Convert.ToInt64(x) <= Convert.ToInt64(y);
+            else if (x is uint || y is uint)
+                return Convert.ToUInt32(x) <= Convert.ToUInt32(y);
+            else if (x is int || y is int)
+                return Convert.ToInt32(x) <= Convert.ToInt32(y);
+            else if (x is ushort || y is ushort)
+                return Convert.ToUInt16(x) <= Convert.ToUInt16(y);
+            else if (x is short || y is short)
+                return Convert.ToInt16(x) <= Convert.ToInt16(y);
+            else if (x is char || y is char)
+                return Convert.ToChar(x) <= Convert.ToChar(y);
+            else if (x is byte || y is byte)
+                return Convert.ToByte(x) <= Convert.ToByte(y);
+            else if (x is sbyte || y is sbyte)
+                return Convert.ToSByte(x) <= Convert.ToSByte(y);
+            else
                 throw new EvaluationException("Cannot compare non-primitive types");
         }
         
@@ -238,25 +278,31 @@ namespace RICC.AST.Nodes.Common
         {
             ThrowIfNotPrimitiveTypes(x, y);
 
-            if (x is decimal || y is decimal) {
-                return (decimal)x > (decimal)y;
-            } else if (x is double || y is double) {
-                return (double)x > (double)y;
-            } else if (x is ulong || y is ulong) {
-                return (ulong)x > (ulong)y;
-            } else if (x is long || y is long) {
-                return (long)x > (long)y;
-            } else if (x is uint || y is uint) {
-                return (uint)x > (uint)y;
-            } else if (x is int || y is int) {
-                return (int)x > (int)y;
-            } else if (x is char || y is char) {
-                return (char)x > (char)y;
-            } else if (x is byte || y is byte) {
-                return (byte)x > (byte)y;
-            } else if (x is sbyte || y is sbyte) {
-                return (sbyte)x > (sbyte)y;
-            } else
+            if (x is decimal || y is decimal)
+                return Convert.ToDecimal(x) > Convert.ToDecimal(y);
+            else if (x is double || y is double)
+                return Convert.ToDouble(x) > Convert.ToDouble(y);
+            else if (x is float || y is float)
+                return Convert.ToSingle(x) > Convert.ToSingle(y);
+            else if (x is ulong || y is ulong)
+                return Convert.ToUInt64(x) > Convert.ToUInt64(y);
+            else if (x is long || y is long)
+                return Convert.ToInt64(x) > Convert.ToInt64(y);
+            else if (x is uint || y is uint)
+                return Convert.ToUInt32(x) > Convert.ToUInt32(y);
+            else if (x is int || y is int)
+                return Convert.ToInt32(x) > Convert.ToInt32(y);
+            else if (x is ushort || y is ushort)
+                return Convert.ToUInt16(x) > Convert.ToUInt16(y);
+            else if (x is short || y is short)
+                return Convert.ToInt16(x) > Convert.ToInt16(y);
+            else if (x is char || y is char)
+                return Convert.ToChar(x) > Convert.ToChar(y);
+            else if (x is byte || y is byte)
+                return Convert.ToByte(x) > Convert.ToByte(y);
+            else if (x is sbyte || y is sbyte)
+                return Convert.ToSByte(x) > Convert.ToSByte(y);
+            else
                 throw new EvaluationException("Cannot compare non-primitive types");
         }
 
@@ -264,25 +310,31 @@ namespace RICC.AST.Nodes.Common
         {
             ThrowIfNotPrimitiveTypes(x, y);
 
-            if (x is decimal || y is decimal) {
-                return (decimal)x >= (decimal)y;
-            } else if (x is double || y is double) {
-                return (double)x >= (double)y;
-            } else if (x is ulong || y is ulong) {
-                return (ulong)x >= (ulong)y;
-            } else if (x is long || y is long) {
-                return (long)x >= (long)y;
-            } else if (x is uint || y is uint) {
-                return (uint)x >= (uint)y;
-            } else if (x is int || y is int) {
-                return (int)x >= (int)y;
-            } else if (x is char || y is char) {
-                return (char)x >= (char)y;
-            } else if (x is byte || y is byte) {
-                return (byte)x >= (byte)y;
-            } else if (x is sbyte || y is sbyte) {
-                return (sbyte)x >= (sbyte)y;
-            } else
+            if (x is decimal || y is decimal)
+                return Convert.ToDecimal(x) >= Convert.ToDecimal(y);
+            else if (x is double || y is double)
+                return Convert.ToDouble(x) >= Convert.ToDouble(y);
+            else if (x is float || y is float)
+                return Convert.ToSingle(x) >= Convert.ToSingle(y);
+            else if (x is ulong || y is ulong)
+                return Convert.ToUInt64(x) >= Convert.ToUInt64(y);
+            else if (x is long || y is long)
+                return Convert.ToInt64(x) >= Convert.ToInt64(y);
+            else if (x is uint || y is uint)
+                return Convert.ToUInt32(x) >= Convert.ToUInt32(y);
+            else if (x is int || y is int)
+                return Convert.ToInt32(x) >= Convert.ToInt32(y);
+            else if (x is ushort || y is ushort)
+                return Convert.ToUInt16(x) >= Convert.ToUInt16(y);
+            else if (x is short || y is short)
+                return Convert.ToInt16(x) >= Convert.ToInt16(y);
+            else if (x is char || y is char)
+                return Convert.ToChar(x) >= Convert.ToChar(y);
+            else if (x is byte || y is byte)
+                return Convert.ToByte(x) >= Convert.ToByte(y);
+            else if (x is sbyte || y is sbyte)
+                return Convert.ToSByte(x) >= Convert.ToSByte(y);
+            else
                 throw new EvaluationException("Cannot compare non-primitive types");
         }
 

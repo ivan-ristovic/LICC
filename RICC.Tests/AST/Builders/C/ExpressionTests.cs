@@ -26,6 +26,14 @@ namespace RICC.Tests.AST.Builders.C
         }
 
         [Test]
+        public void ArithmeticExpressionImplicitCastTest()
+        {
+            AssertExpressionValue("double x = 1 << (1 + 1 * 2) >> 3", 1);
+            AssertExpressionValue("float y = 2.3 + 4 / 2", 4.3);
+            AssertExpressionValue("double z = 3.3 + (4.1 - 1.1) * 2", 9.3);
+        }
+
+        [Test]
         public void RelationalExpressionTest()
         {
             AssertExpressionValue("bool a = 1 > 1", false);
