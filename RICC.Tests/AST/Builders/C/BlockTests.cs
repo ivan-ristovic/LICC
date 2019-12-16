@@ -37,10 +37,12 @@ namespace RICC.Tests.AST.Builders.C
                 void f() {  // line 2
                     int x;  // line 3, block begins
                     if (x) {
-                        int z; y + 4;
+                        int z = y + 4;
+                        ;
                     } else {
-                        float x, y;
-                        x + 3;
+                        float x, y = x + 3;
+                        ;
+                        ;
                     }
 
                     float w, h;

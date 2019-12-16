@@ -13,5 +13,17 @@ extern int foo(
 )
 {
 	bool b = 3 > 4 && 3 < 5 || 4 > 2;
+	if (5 > 3) {
+		int x;
+	} else {
+		float y;
+	}
+
+	if (3) {
+		bool c = 1 != 2;
+	}
+
+	;
+
 	return 5;
 }

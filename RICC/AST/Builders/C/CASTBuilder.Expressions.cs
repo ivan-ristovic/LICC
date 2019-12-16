@@ -12,18 +12,17 @@ namespace RICC.AST.Builders.C
     {
         public override ASTNode VisitExpression([NotNull] ExpressionContext ctx) => this.Visit(ctx.assignmentExpression()); // TODO list
 
-        public override ASTNode VisitAssignmentExpression([NotNull] AssignmentExpressionContext ctx) => this.Visit(ctx.conditionalExpression());
+        public override ASTNode VisitAssignmentExpression([NotNull] AssignmentExpressionContext ctx) => this.Visit(ctx.conditionalExpression());    // TODO
 
-        public override ASTNode VisitConditionalExpression([NotNull] ConditionalExpressionContext ctx) => this.Visit(ctx.logicalOrExpression());
+        public override ASTNode VisitConditionalExpression([NotNull] ConditionalExpressionContext ctx) => this.Visit(ctx.logicalOrExpression());    // TODO
 
         public override ASTNode VisitLogicalOrExpression([NotNull] LogicalOrExpressionContext ctx)
         {
-
             if (ctx.ChildCount > 1) {
                 ExpressionNode left = this.Visit(ctx.logicalOrExpression()).As<ExpressionNode>();
                 ExpressionNode right = this.Visit(ctx.logicalAndExpression()).As<ExpressionNode>();
-                string sign = ctx.children[1].GetText();
-                var op = new LogicOperatorNode(ctx.Start.Line, sign, (x, y) => x || y);
+                string symbol = ctx.children[1].GetText();
+                var op = new LogicOperatorNode(ctx.Start.Line, symbol, (x, y) => x || y);
                 var expr = new LogicExpressionNode(ctx.Start.Line, left, op, right);
                 left.Parent = right.Parent = op.Parent = expr;
                 return expr;
@@ -37,8 +36,8 @@ namespace RICC.AST.Builders.C
             if (ctx.ChildCount > 1) {
                 ExpressionNode left = this.Visit(ctx.logicalAndExpression()).As<ExpressionNode>();
                 ExpressionNode right = this.Visit(ctx.inclusiveOrExpression()).As<ExpressionNode>();
-                string sign = ctx.children[1].GetText();
-                var op = new LogicOperatorNode(ctx.Start.Line, sign, (x, y) => x && y);
+                string symbol = ctx.children[1].GetText();
+                var op = new LogicOperatorNode(ctx.Start.Line, symbol, (x, y) => x && y);
                 var expr = new LogicExpressionNode(ctx.Start.Line, left, op, right);
                 left.Parent = right.Parent = op.Parent = expr;
                 return expr;
@@ -47,11 +46,11 @@ namespace RICC.AST.Builders.C
             }
         }
 
-        public override ASTNode VisitInclusiveOrExpression([NotNull] InclusiveOrExpressionContext ctx) => this.Visit(ctx.exclusiveOrExpression());
+        public override ASTNode VisitInclusiveOrExpression([NotNull] InclusiveOrExpressionContext ctx) => this.Visit(ctx.exclusiveOrExpression());  // TODO
 
-        public override ASTNode VisitExclusiveOrExpression([NotNull] ExclusiveOrExpressionContext ctx) => this.Visit(ctx.andExpression());
+        public override ASTNode VisitExclusiveOrExpression([NotNull] ExclusiveOrExpressionContext ctx) => this.Visit(ctx.andExpression());          // TODO
 
-        public override ASTNode VisitAndExpression([NotNull] AndExpressionContext ctx) => this.Visit(ctx.equalityExpression());
+        public override ASTNode VisitAndExpression([NotNull] AndExpressionContext ctx) => this.Visit(ctx.equalityExpression());                     // TODO
 
         public override ASTNode VisitEqualityExpression([NotNull] EqualityExpressionContext ctx)
         {
@@ -60,8 +59,8 @@ namespace RICC.AST.Builders.C
 
             ExpressionNode left = this.Visit(ctx.equalityExpression()).As<ExpressionNode>();
             ExpressionNode right = this.Visit(ctx.relationalExpression()).As<ExpressionNode>();
-            string sign = ctx.children[1].GetText();
-            var op = new RelationalOperatorNode(ctx.Start.Line, sign, BinaryOperations.RelationalFromSymbol(sign));
+            string symbol = ctx.children[1].GetText();
+            var op = new RelationalOperatorNode(ctx.Start.Line, symbol, BinaryOperations.RelationalFromSymbol(symbol));
             var expr = new RelationalExpressionNode(ctx.Start.Line, left, op, right);
             left.Parent = right.Parent = op.Parent = expr;
             return expr;
@@ -74,8 +73,8 @@ namespace RICC.AST.Builders.C
 
             ExpressionNode left = this.Visit(ctx.relationalExpression()).As<ExpressionNode>();
             ExpressionNode right = this.Visit(ctx.shiftExpression()).As<ExpressionNode>();
-            string sign = ctx.children[1].GetText();
-            var op = new RelationalOperatorNode(ctx.Start.Line, sign, BinaryOperations.RelationalFromSymbol(sign));
+            string symbol = ctx.children[1].GetText();
+            var op = new RelationalOperatorNode(ctx.Start.Line, symbol, BinaryOperations.RelationalFromSymbol(symbol));
             var expr = new RelationalExpressionNode(ctx.Start.Line, left, op, right);
             left.Parent = right.Parent = op.Parent = expr;
             return expr;
@@ -86,8 +85,8 @@ namespace RICC.AST.Builders.C
             if (ctx.ChildCount > 1) {
                 ExpressionNode left = this.Visit(ctx.shiftExpression()).As<ExpressionNode>();
                 ExpressionNode right = this.Visit(ctx.additiveExpression()).As<ExpressionNode>();
-                string sign = ctx.children[1].GetText();
-                var op = new ArithmeticOperatorNode(ctx.Start.Line, sign, BinaryOperations.ArithmeticFromSymbol(sign));
+                string symbol = ctx.children[1].GetText();
+                var op = new ArithmeticOperatorNode(ctx.Start.Line, symbol, BinaryOperations.ArithmeticFromSymbol(symbol));
                 var expr = new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
                 left.Parent = right.Parent = op.Parent = expr;
                 return expr;
@@ -101,8 +100,8 @@ namespace RICC.AST.Builders.C
             if (ctx.ChildCount > 1) {
                 ExpressionNode left = this.Visit(ctx.additiveExpression()).As<ExpressionNode>();
                 ExpressionNode right = this.Visit(ctx.multiplicativeExpression()).As<ExpressionNode>();
-                string sign = ctx.children[1].GetText();
-                var op = new ArithmeticOperatorNode(ctx.Start.Line, sign, BinaryOperations.ArithmeticFromSymbol(sign));
+                string symbol = ctx.children[1].GetText();
+                var op = new ArithmeticOperatorNode(ctx.Start.Line, symbol, BinaryOperations.ArithmeticFromSymbol(symbol));
                 var expr = new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
                 left.Parent = right.Parent = op.Parent = expr;
                 return expr;
@@ -116,8 +115,8 @@ namespace RICC.AST.Builders.C
             if (ctx.ChildCount > 1) {
                 ExpressionNode left = this.Visit(ctx.multiplicativeExpression()).As<ExpressionNode>();
                 ExpressionNode right = this.Visit(ctx.castExpression()).As<ExpressionNode>();
-                string sign = ctx.children[1].GetText();
-                var op = new ArithmeticOperatorNode(ctx.Start.Line, sign, BinaryOperations.ArithmeticFromSymbol(sign));
+                string symbol = ctx.children[1].GetText();
+                var op = new ArithmeticOperatorNode(ctx.Start.Line, symbol, BinaryOperations.ArithmeticFromSymbol(symbol));
                 var expr = new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
                 left.Parent = right.Parent = op.Parent = expr;
                 return expr;

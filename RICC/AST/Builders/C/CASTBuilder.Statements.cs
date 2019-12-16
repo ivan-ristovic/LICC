@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Antlr4.Runtime.Misc;
 using RICC.AST.Nodes;
+using RICC.AST.Nodes.Common;
 using static RICC.AST.Builders.C.CParser;
 
 namespace RICC.AST.Builders.C
@@ -41,10 +43,31 @@ namespace RICC.AST.Builders.C
 
         public override ASTNode VisitSelectionStatement([NotNull] SelectionStatementContext ctx)
         {
-            // if
-            // switch
-            // TODO
-            return new IfStatementNode(0, null);
+            switch (ctx.children.First().GetText()) {
+                case "if":
+                    ExpressionNode expr = this.Visit(ctx.expression()).As<ExpressionNode>();
+                    StatementContext[] statements = ctx.statement();
+                    BlockStatementNode thenBlock = this.Visit(statements.First()).As<BlockStatementNode>();
+                    BlockStatementNode? elseBlock = statements.Length > 1 ? this.Visit(statements.Last()).As<BlockStatementNode>() : null;
+
+                    if (expr is LogicExpressionNode) {
+                        LogicExpressionNode condition = expr.As<LogicExpressionNode>();
+                        return new IfStatementNode(ctx.Start.Line, condition, thenBlock, elseBlock);
+                    } else if (expr is RelationalExpressionNode) {
+                        RelationalExpressionNode condition = expr.As<RelationalExpressionNode>();
+                        return new IfStatementNode(ctx.Start.Line, condition, thenBlock, elseBlock);
+                    } else {
+                        var op = new RelationalOperatorNode(expr.Line, "!=", BinaryOperations.NotEqualsPrimitive);
+                        var right = new LiteralNode<int>(expr.Line, 0);
+                        var condition = new RelationalExpressionNode(expr.Line, expr, op, right);
+                        return new IfStatementNode(ctx.Start.Line, condition, thenBlock, elseBlock);
+                    }
+
+                case "switch":
+                    throw new NotImplementedException();  // TODO
+                default:
+                    throw new Exception("???");           // TODO
+            }
         }
 
         public override ASTNode VisitIterationStatement([NotNull] IterationStatementContext ctx) => base.VisitIterationStatement(ctx);
@@ -90,13 +113,13 @@ namespace RICC.AST.Builders.C
         {
             IdentifierNode identifier = this.Visit(ctx.declarator()).As<IdentifierNode>();
             ExpressionNode? init = null;
-            if (ctx.initializer() is { }) {
-                // TODO get value
+            if (ctx.initializer() is { }) 
                 init = this.Visit(ctx.initializer()).As<ExpressionNode>();
-                // TODO set parent
-            }
 
-            return new VariableDeclarationNode(ctx.Start.Line, identifier, init);
+            var decl = new VariableDeclarationNode(ctx.Start.Line, identifier, init);
+            if (init is { })
+                init.Parent = decl;
+            return decl;
         }
 
         public override ASTNode VisitInitializer([NotNull] InitializerContext ctx) => this.Visit(ctx.assignmentExpression()); // TODO
