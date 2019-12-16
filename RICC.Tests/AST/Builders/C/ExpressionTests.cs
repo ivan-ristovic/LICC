@@ -48,6 +48,37 @@ namespace RICC.Tests.AST.Builders.C
             AssertExpressionValue("bool j = 3.0 + 0.1 > 3.0", true);
             AssertExpressionValue("bool k = 1.01 != 1.0", true);
             AssertExpressionValue("bool l = (1 << 1) == 2", true);
+            AssertExpressionValue("bool m = (2 >> 1) == 1", true);
+        }
+
+        [Test]
+        public void BooleanExpressionTest()
+        {
+            AssertExpressionValue("bool a = 1 > 1 && 2 < 3", false);
+            AssertExpressionValue("bool b = 1 >= 1 && 2 < 3", true);
+            AssertExpressionValue("bool b = 1 >= 1 || 3 < 3", true);
+            AssertExpressionValue("bool b = 1 > 1 || 3 >= 3", true);
+            AssertExpressionValue("bool b = 1 > 1 || 3 > 3", false);
+            AssertExpressionValue("bool c = 2 > 1 && 1 != 2 && 2 <= 3", true);
+            AssertExpressionValue("bool c = 2 > 1 && 1 != 2 && 2 > 3", false);
+            AssertExpressionValue("bool d = 3 < 1 || 2 < 1 || 1 > 1", false);
+            AssertExpressionValue("bool d = 3 < 1 || 2 > 1 || 1 == 1", true);
+            AssertExpressionValue("bool e = 1 != 1 || 1 == 1", true);
+            AssertExpressionValue("bool f = (1 + 1) == 2 || 2 == 2", true);
+            AssertExpressionValue("bool g = 1.1 > 1.0 && 1.0 > 1.02", false);
+            AssertExpressionValue("bool g = 1.1 > 1.0 || 1.0 > 1.02", true);
+            AssertExpressionValue("bool h = 1.101 >= 1.1 && (7 > 3.2 || 2 > 3)", true);
+            AssertExpressionValue("bool i = (1 + 3 * 2 > 3 && 4 != 2.0) && 8 > 7", true);
+            AssertExpressionValue("bool j = 1 != 0 && 1 > 1 || 1 == 1", true);
+            AssertExpressionValue("bool j = 1 != 0 && (1 == 1 || 1 == 3)", true);
+            AssertExpressionValue("bool j = 1 != 0 && (1 != 1 || 1 == 3)", false);
+            AssertExpressionValue("bool k = 3 > 2 || 3 > 1 && 1 > 1", true);
+            AssertExpressionValue("bool k = (3 > 2 || 3 > 1) && 1 > 1", false);
+            AssertExpressionValue("bool l = (1 << 1) == 2 && (3 / 2 == 1)", true);
+            AssertExpressionValue("bool l = (1 << 1) == 2 && (3 / 2 != 1)", false);
+            AssertExpressionValue("bool l = (1 << 1) == 2 || (3 / 2 != 1)", true);
+            AssertExpressionValue("bool l = (1 << 2) == 2 || (3 / 2 != 1)", false);
+            AssertExpressionValue("bool l = (1 << 1) == (4 >> 1) || 1 != 1", true);
         }
 
 

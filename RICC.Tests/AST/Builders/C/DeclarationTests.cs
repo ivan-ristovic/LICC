@@ -132,6 +132,7 @@ namespace RICC.Tests.AST.Builders.C
             Assert.That(var.Identifier, Is.EqualTo(identifier));
             Assert.That(var.Children.First().As<IdentifierNode>().Identifier, Is.EqualTo(identifier));
             if (var.Initializer is { }) {
+                Assert.That(var.Initializer.Parent, Is.EqualTo(var.Identifier));
                 object? res = var.Initializer.Evaluate();
                 Assert.That(res, Is.Not.Null);
                 Assert.That(res, Is.EqualTo(value).Within(1e-10));

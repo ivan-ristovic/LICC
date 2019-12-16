@@ -16,9 +16,36 @@ namespace RICC.AST.Builders.C
 
         public override ASTNode VisitConditionalExpression([NotNull] ConditionalExpressionContext ctx) => this.Visit(ctx.logicalOrExpression());
 
-        public override ASTNode VisitLogicalOrExpression([NotNull] LogicalOrExpressionContext ctx) => this.Visit(ctx.logicalAndExpression());
+        public override ASTNode VisitLogicalOrExpression([NotNull] LogicalOrExpressionContext ctx)
+        {
 
-        public override ASTNode VisitLogicalAndExpression([NotNull] LogicalAndExpressionContext ctx) => this.Visit(ctx.inclusiveOrExpression());
+            if (ctx.ChildCount > 1) {
+                ExpressionNode left = this.Visit(ctx.logicalOrExpression()).As<ExpressionNode>();
+                ExpressionNode right = this.Visit(ctx.logicalAndExpression()).As<ExpressionNode>();
+                string sign = ctx.children[1].GetText();
+                var op = new LogicOperatorNode(ctx.Start.Line, sign, (x, y) => x || y);
+                var expr = new LogicExpressionNode(ctx.Start.Line, left, op, right);
+                left.Parent = right.Parent = op.Parent = expr;
+                return expr;
+            } else {
+                return this.Visit(ctx.logicalAndExpression());
+            }
+        }
+
+        public override ASTNode VisitLogicalAndExpression([NotNull] LogicalAndExpressionContext ctx)
+        {
+            if (ctx.ChildCount > 1) {
+                ExpressionNode left = this.Visit(ctx.logicalAndExpression()).As<ExpressionNode>();
+                ExpressionNode right = this.Visit(ctx.inclusiveOrExpression()).As<ExpressionNode>();
+                string sign = ctx.children[1].GetText();
+                var op = new LogicOperatorNode(ctx.Start.Line, sign, (x, y) => x && y);
+                var expr = new LogicExpressionNode(ctx.Start.Line, left, op, right);
+                left.Parent = right.Parent = op.Parent = expr;
+                return expr;
+            } else {
+                return this.Visit(ctx.inclusiveOrExpression());
+            }
+        }
 
         public override ASTNode VisitInclusiveOrExpression([NotNull] InclusiveOrExpressionContext ctx) => this.Visit(ctx.exclusiveOrExpression());
 
@@ -99,9 +126,9 @@ namespace RICC.AST.Builders.C
             }
         }
 
-        public override ASTNode VisitCastExpression([NotNull] CastExpressionContext ctx) => this.Visit(ctx.unaryExpression());
+        public override ASTNode VisitCastExpression([NotNull] CastExpressionContext ctx) => this.Visit(ctx.unaryExpression());          // TODO
 
-        public override ASTNode VisitUnaryExpression([NotNull] UnaryExpressionContext ctx) => this.Visit(ctx.postfixExpression());
+        public override ASTNode VisitUnaryExpression([NotNull] UnaryExpressionContext ctx) => this.Visit(ctx.postfixExpression());      // TODO
 
         public override ASTNode VisitPostfixExpression([NotNull] PostfixExpressionContext ctx)
         {
