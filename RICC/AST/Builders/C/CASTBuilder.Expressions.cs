@@ -12,7 +12,19 @@ namespace RICC.AST.Builders.C
     {
         public override ASTNode VisitExpression([NotNull] ExpressionContext ctx) => this.Visit(ctx.assignmentExpression()); // TODO list
 
-        public override ASTNode VisitAssignmentExpression([NotNull] AssignmentExpressionContext ctx) => this.Visit(ctx.conditionalExpression());    // TODO
+        public override ASTNode VisitAssignmentExpression([NotNull] AssignmentExpressionContext ctx)
+        {
+            if (ctx.conditionalExpression() is { })
+                return this.Visit(ctx.conditionalExpression());
+
+            ExpressionNode unary = this.Visit(ctx.unaryExpression()).As<ExpressionNode>();
+            var op = new AssignmentOperatorNode(ctx.Start.Line, ctx.children[1].GetText(), (a, b) => b);
+            ExpressionNode expr = this.Visit(ctx.assignmentExpression()).As<ExpressionNode>();
+
+            var assignment = new AssignmentExpressionNode(ctx.Start.Line, unary, op, expr);
+            unary.Parent = expr.Parent = op.Parent = assignment;
+            return assignment;
+        }
 
         public override ASTNode VisitConditionalExpression([NotNull] ConditionalExpressionContext ctx) => this.Visit(ctx.logicalOrExpression());    // TODO
 

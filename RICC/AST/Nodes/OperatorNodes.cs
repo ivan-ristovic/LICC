@@ -70,4 +70,16 @@ namespace RICC.AST.Nodes
             this.ApplyTo = logic;
         }
     }
+
+    public sealed class AssignmentOperatorNode : BinaryOperatorNode
+    {
+        public Func<object, object, object> ApplyTo { get; set; }
+
+
+        public AssignmentOperatorNode(int line, string symbol, Func<object, object, object> logic, ASTNode? parent = null)
+            : base(line, symbol, parent)
+        {
+            this.ApplyTo = logic;
+        }
+    }
 }

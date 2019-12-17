@@ -14,13 +14,15 @@ extern int foo(
 {
 	bool b = 3 > 4 && 3 < 5 || 4 > 2;
 	if (5 > 3) {
-		int x;
+		b = 1 != 1
 	} else {
 		float y;
+		y = 3.2;
 	}
 
 	if (3) {
 		bool c = 1 != 2;
+		c = b;
 	}
 
 	;

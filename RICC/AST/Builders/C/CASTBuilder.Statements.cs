@@ -19,17 +19,17 @@ namespace RICC.AST.Builders.C
         public override ASTNode VisitBlockItemList([NotNull] BlockItemListContext ctx)
         {
             BlockStatementNode block;
-            StatementNode item = this.Visit(ctx.blockItem()).As<StatementNode>();
+            ASTNode item = this.Visit(ctx.blockItem());
 
             if (ctx.blockItemList() is null) {
-                block = new BlockStatementNode(ctx.Start.Line, item);
+                block = new BlockStatementNode(ctx.Start.Line, children: item);
                 item.Parent = block;
                 return block;
             }
 
             block = this.Visit(ctx.blockItemList()).As<BlockStatementNode>();
             item.Parent = block;
-            return new BlockStatementNode(ctx.Start.Line, block.Statements.Concat(new[] { item }));
+            return new BlockStatementNode(ctx.Start.Line, block.Children.Concat(new[] { item }));
         }
 
         public override ASTNode VisitBlockItem([NotNull] BlockItemContext ctx)

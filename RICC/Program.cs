@@ -25,6 +25,7 @@ namespace RICC
             Console.ReadKey();
         }
 
+
         private static void SetupLogger()
         {
             Log.Logger = new LoggerConfiguration()

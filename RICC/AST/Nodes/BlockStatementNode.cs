@@ -5,16 +5,13 @@ namespace RICC.AST.Nodes
 {
     public sealed class BlockStatementNode : ASTNode
     {
-        public IReadOnlyList<StatementNode> Statements => this.Children.Cast<StatementNode>().ToList().AsReadOnly();
-
-
-        public BlockStatementNode(int line, IEnumerable<StatementNode> children, ASTNode? parent = null)
+        public BlockStatementNode(int line, IEnumerable<ASTNode> children, ASTNode? parent = null)
             : base(line, children, parent)
         {
 
         }
 
-        public BlockStatementNode(int line, params StatementNode[] children)
+        public BlockStatementNode(int line, params ASTNode[] children)
             : base(line, children)
         {
 
