@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using RICC.AST.Nodes;
 using RICC.AST.Nodes.Common;
+using RICC.AST.Visitors;
 
 namespace RICC.Tests.AST.Builders.C
 {
@@ -133,9 +134,9 @@ namespace RICC.Tests.AST.Builders.C
             Assert.That(var.Children.First().As<IdentifierNode>().Identifier, Is.EqualTo(identifier));
             if (var.Initializer is { }) {
                 Assert.That(var.Initializer.Parent, Is.EqualTo(var));
-                object? res = var.Initializer.Evaluate();
-                Assert.That(res, Is.Not.Null);
-                Assert.That(res, Is.EqualTo(value).Within(1e-10));
+                Assert.That(ExpressionEvaluator.TryEvaluateAs(var.Initializer, out object? result));
+                Assert.That(result, Is.Not.Null);
+                Assert.That(result, Is.EqualTo(value).Within(1e-10));
             }
         }
 
@@ -161,7 +162,8 @@ namespace RICC.Tests.AST.Builders.C
             static (string, object?) ExtractIdentifierAndValue(DeclarationNode declNode)
             {
                 VariableDeclarationNode var = declNode.As<VariableDeclarationNode>();
-                return (var.Identifier, var.Initializer?.Evaluate());
+                return var.Initializer is null ? (var.Identifier, (object?)null)
+                                               : (var.Identifier, ExpressionEvaluator.Evaluate(var.Initializer));
             }
         }
     }
