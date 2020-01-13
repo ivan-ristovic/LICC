@@ -150,13 +150,21 @@ namespace RICC.AST.Builders.C
                 string token = ctx.children[1].GetText();
                 switch (token) {
                     case "(":
-                        break;
                         IdentifierNode name = this.Visit(ctx.postfixExpression()).As<IdentifierNode>();
-                        
-                        if (ctx.argumentExpressionList() is { })
+                        ExpressionListNode? args = null;
+                        if (ctx.argumentExpressionList() is { }) 
+                            args = this.Visit(ctx.argumentExpressionList()).As<ExpressionListNode>();
 
+                        FunctionCallExpressionNode fcall;
+                        if (args is { }) {
+                            fcall = new FunctionCallExpressionNode(ctx.Start.Line, name, args, name);
+                            args.Parent = fcall;
+                        } else {
+                            fcall = new FunctionCallExpressionNode(ctx.Start.Line, name);
+                        }
 
-                        return new FunctionCallExpressionNode(ctx.Start.Line, name);
+                        name.Parent = fcall;
+                        return fcall;
                     case "[": throw new NotImplementedException();     // TODO array access
                     case ".": throw new NotImplementedException();     // TODO struct field access
                     case "->": throw new NotImplementedException();    // TODO pointer
@@ -185,10 +193,20 @@ namespace RICC.AST.Builders.C
                 return null; 
         }
 
-        public override ASTNode VisitArgumentExpressionList([NotNull] ArgumentExpressionListContext context)
+        public override ASTNode VisitArgumentExpressionList([NotNull] ArgumentExpressionListContext ctx)
         {
-            // TODO
-            return null;
+            ExpressionListNode args;
+            ExpressionNode arg = this.Visit(ctx.assignmentExpression()).As<ExpressionNode>();
+
+            if (ctx.argumentExpressionList() is null) {
+                args = new ExpressionListNode(ctx.Start.Line, arg );
+                arg.Parent = args;
+                return args;
+            }
+
+            args = this.Visit(ctx.argumentExpressionList()).As<ExpressionListNode>();
+            arg.Parent = args;
+            return new ExpressionListNode(ctx.Start.Line, args.Expressions.Concat(new[] { arg }));
         }
     }
 }

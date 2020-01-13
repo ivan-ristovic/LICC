@@ -57,6 +57,22 @@ namespace RICC.AST.Nodes
         }
     }
 
+    public sealed class ExpressionListNode : ExpressionNode
+    {
+        public IReadOnlyList<ExpressionNode> Expressions => this.Children.Cast<ExpressionNode>().ToList().AsReadOnly();
+     
+        
+        public ExpressionListNode(int line, params ExpressionNode[] expressions) : base(line, expressions)
+        {
+
+        }
+
+        public ExpressionListNode(int line, IEnumerable<ExpressionNode> expressions, ASTNode? parent = null) : base(line, expressions, parent)
+        {
+
+        }
+    }
+
     public class UnaryExpressionNode : ExpressionNode
     {
         public UnaryOperatorNode Operator => this.Children[0].As<UnaryOperatorNode>();
@@ -142,6 +158,7 @@ namespace RICC.AST.Nodes
     public sealed class FunctionCallExpressionNode : ExpressionNode
     {
         public string Identifier => this.Children[0].As<IdentifierNode>().Identifier;
+        public ExpressionListNode? Arguments => this.Children.ElementAtOrDefault(1)?.As<ExpressionListNode>();
 
 
         public FunctionCallExpressionNode(int line, IdentifierNode identifier, ASTNode? parent = null)
@@ -150,8 +167,8 @@ namespace RICC.AST.Nodes
 
         }
 
-        public FunctionCallExpressionNode(int line, IdentifierNode identifier, params ExpressionNode[] args)
-            : base(line, new ExpressionNode[] { identifier }.Concat(args))
+        public FunctionCallExpressionNode(int line, IdentifierNode identifier, ExpressionListNode parameters, ASTNode? parent = null)
+            : base(line, new ExpressionNode[] { identifier, parameters }, parent )
         {
 
         }

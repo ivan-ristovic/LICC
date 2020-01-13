@@ -55,6 +55,11 @@ namespace RICC.AST.Nodes
         public IReadOnlyList<DeclarationNode> Declarations => this.Children.Cast<DeclarationNode>().ToList().AsReadOnly();
 
 
+        public DeclarationListNode(int line, params DeclarationNode[] declarations) : base(line, declarations)
+        {
+
+        }
+
         public DeclarationListNode(int line, IEnumerable<DeclarationNode> declarations, ASTNode? parent = null)
             : base(line, declarations, parent)
         {

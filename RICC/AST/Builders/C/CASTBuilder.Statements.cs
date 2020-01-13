@@ -99,7 +99,7 @@ namespace RICC.AST.Builders.C
             DeclarationNode decl = this.Visit(ctx.initDeclarator()).As<DeclarationNode>();
 
             if (ctx.initDeclaratorList() is null) {
-                list = new DeclarationListNode(ctx.Start.Line, new[] { decl });
+                list = new DeclarationListNode(ctx.Start.Line, decl );
                 decl.Parent = list;
                 return list;
             }
