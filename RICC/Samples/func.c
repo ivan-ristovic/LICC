@@ -23,6 +23,7 @@ extern int foo(
 	if (3) {
 		bool c = 1 != 2;
 		c = b;
+		f(3, 4);
 	}
 
 	;

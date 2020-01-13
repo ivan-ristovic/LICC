@@ -148,16 +148,22 @@ namespace RICC.AST.Builders.C
 
             if (ctx.postfixExpression() is { }) {
                 string token = ctx.children[1].GetText();
-                return token switch
-                {
-                    "[" => throw new NotImplementedException(),     // TODO array access
-                    "(" => throw new NotImplementedException(),     // TODO function call
-                    "." => throw new NotImplementedException(),     // TODO struct field access
-                    "->" => throw new NotImplementedException(),    // TODO pointer
-                    "++" => throw new NotImplementedException(),    // TODO ++
-                    "--" => throw new NotImplementedException(),    // TODO --
-                    _ => throw new NotImplementedException()
-                };
+                switch (token) {
+                    case "(":
+                        break;
+                        IdentifierNode name = this.Visit(ctx.postfixExpression()).As<IdentifierNode>();
+                        
+                        if (ctx.argumentExpressionList() is { })
+
+
+                        return new FunctionCallExpressionNode(ctx.Start.Line, name);
+                    case "[": throw new NotImplementedException();     // TODO array access
+                    case ".": throw new NotImplementedException();     // TODO struct field access
+                    case "->": throw new NotImplementedException();    // TODO pointer
+                    case "++": throw new NotImplementedException();    // TODO ++
+                    case "--": throw new NotImplementedException();    // TODO --
+                    default: throw new NotImplementedException();
+                }
             }
 
             // Should not reach here
@@ -174,9 +180,15 @@ namespace RICC.AST.Builders.C
             else if (ctx.expression() is { })
                 return this.Visit(ctx.expression());
             else if (ctx.StringLiteral() is { }) 
-                return new LiteralNode<string>(ctx.Start.Line, string.Join("", ctx.StringLiteral().Select(t => t.GetText()[1..^1])));
+                return new LiteralNode(ctx.Start.Line, string.Join("", ctx.StringLiteral().Select(t => t.GetText()[1..^1])));
             else // TODO
                 return null; 
+        }
+
+        public override ASTNode VisitArgumentExpressionList([NotNull] ArgumentExpressionListContext context)
+        {
+            // TODO
+            return null;
         }
     }
 }

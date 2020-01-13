@@ -58,7 +58,7 @@ namespace RICC.AST.Builders.C
                         return new IfStatementNode(ctx.Start.Line, condition, thenBlock, elseBlock);
                     } else {
                         var op = new RelationalOperatorNode(expr.Line, "!=", BinaryOperations.NotEqualsPrimitive);
-                        var right = new LiteralNode<int>(expr.Line, 0);
+                        var right = new LiteralNode(expr.Line, 0);
                         var condition = new RelationalExpressionNode(expr.Line, expr, op, right);
                         return new IfStatementNode(ctx.Start.Line, condition, thenBlock, elseBlock);
                     }
