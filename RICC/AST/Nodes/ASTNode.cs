@@ -1,14 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using RICC.Exceptions;
 
 namespace RICC.AST.Nodes
 {
     public abstract class ASTNode
     {
+        [JsonProperty(Order = 0)]
+        public string NodeType => this.GetType().Name;
+
+        [JsonIgnore]
         public ASTNode? Parent { get; set; }
+
+        [JsonProperty(Order = 1)]
         public int Line { get; }
+
+        [JsonProperty(Order = 2)]
         public IReadOnlyList<ASTNode> Children { get; }
 
 

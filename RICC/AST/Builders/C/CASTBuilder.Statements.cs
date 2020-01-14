@@ -62,9 +62,8 @@ namespace RICC.AST.Builders.C
                         var condition = new RelationalExpressionNode(expr.Line, expr, op, right);
                         return new IfStatementNode(ctx.Start.Line, condition, thenBlock, elseBlock);
                     }
-
                 case "switch":
-                    throw new NotImplementedException();  // TODO
+                    throw new NotImplementedException();  // TODO 
                 default:
                     throw new Exception("???");           // TODO
             }

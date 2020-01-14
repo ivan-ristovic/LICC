@@ -12,7 +12,7 @@ extern int foo(
 	float bar
 )
 {
-	bool b = 3 > 4 && 3 < 5 || 4 > 2;
+	bool b = 3 > 4 && 3 < 5 || 4 >= 2;
 	if (5 > 3) {
 		b = 1 != 1
 	} else {

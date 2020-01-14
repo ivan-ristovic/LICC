@@ -2,6 +2,7 @@
 using RICC.AST;
 using RICC.AST.Nodes;
 using RICC.Core;
+using RICC.Extensions;
 using Serilog;
 
 namespace RICC
@@ -18,6 +19,7 @@ namespace RICC
             // TODO exception checks
             ASTNode srcTree = ASTFactory.BuildFromFile("Samples/func.c");
             ASTNode dstTree = ASTFactory.BuildFromFile("Samples/hello.c");
+            System.IO.File.WriteAllText("src.json", srcTree.ToJson());
             var comparer = new ComparerAlgorithm(srcTree, dstTree);
             comparer.Execute();
             // end test

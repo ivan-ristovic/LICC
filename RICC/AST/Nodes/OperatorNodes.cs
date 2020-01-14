@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace RICC.AST.Nodes
 {
@@ -25,6 +26,7 @@ namespace RICC.AST.Nodes
 
     public sealed class UnaryOperatorNode : OperatorNode
     {
+        [JsonIgnore]
         public Func<object, object> ApplyTo { get; set; }
 
 
@@ -37,6 +39,7 @@ namespace RICC.AST.Nodes
 
     public sealed class ArithmeticOperatorNode : BinaryOperatorNode
     {
+        [JsonIgnore]
         public Func<object, object, object> ApplyTo { get; set; }
 
 
@@ -49,6 +52,7 @@ namespace RICC.AST.Nodes
 
     public sealed class RelationalOperatorNode : BinaryOperatorNode
     {
+        [JsonIgnore]
         public Func<object, object, bool> ApplyTo { get; set; }
 
 
@@ -61,6 +65,7 @@ namespace RICC.AST.Nodes
 
     public sealed class LogicOperatorNode : BinaryOperatorNode
     {
+        [JsonIgnore]
         public Func<bool, bool, bool> ApplyTo { get; set; }
 
 
@@ -73,6 +78,7 @@ namespace RICC.AST.Nodes
 
     public sealed class AssignmentOperatorNode : BinaryOperatorNode
     {
+        [JsonIgnore]
         public Func<object, object, object> ApplyTo { get; set; }
 
 
