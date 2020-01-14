@@ -82,11 +82,41 @@ namespace RICC.Tests.AST.Builders.C
             Evaluate<bool>("bool l = (1 << 1) == (4 >> 1) || 1 != 1", true);
         }
 
+        [Test]
+        public void FunctionArgumentExpressionTest()
+        {
+            AssertArgumentExpressionValue("void g() { g(); }");
+            AssertArgumentExpressionValue("void g() { g(3); }", 3);
+            AssertArgumentExpressionValue("void g() { g(3, 2); }", 3, 2);
+            AssertArgumentExpressionValue("void g() { g(3 + 1, 2 * 3); }", 3 + 1, 2 * 3);
+            AssertArgumentExpressionValue("void g() { g(((1 << 2) + 4) >> 3); }", ((1 << 2) + 4) >> 3);
+            AssertArgumentExpressionValue("void g() { g(1.1 > 1.0 && 1.0 > 1.02); }", false);
+            AssertArgumentExpressionValue("void g() { g(1.01 > 1.0 || 1.0 > 1.02); }", true);
+
+
+            static void AssertArgumentExpressionValue(string f, params object[] argValues)
+            {
+                FunctionDefinitionNode fnode = CASTProvider.BuildFromSource(f).Children.First().As<FunctionDefinitionNode>();
+                FunctionCallExpressionNode fcall = fnode.Definition.Children.First().As<FunctionCallExpressionNode>();
+                Assert.That(fcall.Identifier, Is.EqualTo(fnode.Identifier));
+                Assert.That(fcall.Parent, Is.EqualTo(fnode.Definition));
+
+                if (argValues is null || !argValues.Any()) {
+                    Assert.That(fcall.Arguments, Is.Null);
+                } else {
+                    Assert.That(fcall.Arguments, Is.Not.Null);
+                    Assert.That(fcall.Arguments!.Expressions.Count, Is.EqualTo(argValues.Length));
+                    foreach ((ExpressionNode arg, object? expected) in fcall.Arguments!.Expressions.Zip(argValues))
+                        Assert.That(ExpressionEvaluator.Evaluate(arg), Is.EqualTo(expected));
+                }
+            }
+        }
+
 
         private static void Evaluate<T>(string decl, object expected) 
         {
             ASTNode ast = CASTProvider.BuildFromSource(decl);
-            var init = ast.Children
+            ExpressionNode? init = ast.Children
                 .First().As<DeclarationStatementNode>()
                 .Children.ElementAt(1).As<DeclarationListNode>()
                 .Declarations
