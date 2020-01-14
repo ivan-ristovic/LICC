@@ -59,7 +59,7 @@ namespace RICC.AST.Nodes
 
     public sealed class ExpressionListNode : ExpressionNode
     {
-        public IReadOnlyList<ExpressionNode> Expressions => this.Children.Cast<ExpressionNode>().ToList().AsReadOnly();
+        public IEnumerable<ExpressionNode> Expressions => this.Children.Cast<ExpressionNode>();
      
         
         public ExpressionListNode(int line, params ExpressionNode[] expressions) : base(line, expressions)

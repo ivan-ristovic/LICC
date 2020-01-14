@@ -52,7 +52,7 @@ namespace RICC.AST.Nodes
 
     public sealed class DeclarationListNode : DeclarationNode
     {
-        public IReadOnlyList<DeclarationNode> Declarations => this.Children.Cast<DeclarationNode>().ToList().AsReadOnly();
+        public IEnumerable<DeclarationNode> Declarations => this.Children.Cast<DeclarationNode>();
 
 
         public DeclarationListNode(int line, params DeclarationNode[] declarations) : base(line, declarations)
