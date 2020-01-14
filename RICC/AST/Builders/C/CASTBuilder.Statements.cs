@@ -89,8 +89,20 @@ namespace RICC.AST.Builders.C
 
         public override ASTNode VisitJumpStatement([NotNull] JumpStatementContext ctx)
         {
-            // return in current example - this will be used for break, continue as well
-            return new EmptyStatementNode(ctx.Start.Line);
+            JumpStatementType type = JumpStatementTypeConverter.FromString(ctx.children.First().GetText());
+            ExpressionNode? expr = null;
+            IdentifierNode? label = null;
+            if (type == JumpStatementType.Return)
+                expr = ctx.expression() is { } ? this.Visit(ctx.expression()).As<ExpressionNode>() : null;
+            if (type == JumpStatementType.Goto)
+                label = new IdentifierNode(ctx.Start.Line, ctx.Identifier().GetText());
+
+            var js = new JumpStatementNode(ctx.Start.Line, type, expr, label);
+            if (expr is { })
+                expr.Parent = js;
+            if (label is { })
+                label.Parent = js;
+            return js;
         }
 
         public override ASTNode VisitInitDeclaratorList([NotNull] InitDeclaratorListContext ctx)

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using RICC.AST.Nodes.Common;
 using RICC.Exceptions;
 
 namespace RICC.AST.Nodes
@@ -74,6 +75,22 @@ namespace RICC.AST.Nodes
             : base(line, elseBlock is null ? new ASTNode[] { condition, thenBlock } : new ASTNode[] { condition, thenBlock, elseBlock }, parent)
         {
 
+        }
+    }
+
+    public sealed class JumpStatementNode : StatementNode
+    {
+        public JumpStatementType Type { get; set; }
+        public ExpressionNode? ReturnExpression { get; set; }
+        public IdentifierNode? GotoLabel{ get; set; }
+
+
+        public JumpStatementNode(int line, JumpStatementType type, ExpressionNode? @return = null, IdentifierNode? @goto = null, ASTNode? parent = null) 
+            : base(line, parent)
+        {
+            this.Type = type;
+            this.ReturnExpression = @return;
+            this.GotoLabel = @goto;
         }
     }
 }
