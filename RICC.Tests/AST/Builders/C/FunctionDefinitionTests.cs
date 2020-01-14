@@ -55,7 +55,7 @@ namespace RICC.Tests.AST.Builders.C
             Assert.That(f.Definition, Is.InstanceOf<BlockStatementNode>());
             Assert.That(f.Definition.Parent, Is.EqualTo(f));
             Assert.That(f.Definition.Children.Single(), Is.Not.Null);
-            Assert.That(f.Definition.Children.Single(), Is.InstanceOf<EmptyStatementNode>());
+            Assert.That(f.Definition.Children.Single(), Is.InstanceOf<JumpStatementNode>());
         }
 
         [Test]

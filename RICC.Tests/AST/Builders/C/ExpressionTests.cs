@@ -107,13 +107,39 @@ namespace RICC.Tests.AST.Builders.C
                     Assert.That(fcall.Arguments, Is.Not.Null);
                     Assert.That(fcall.Arguments!.Expressions.Count, Is.EqualTo(argValues.Length));
                     foreach ((ExpressionNode arg, object? expected) in fcall.Arguments!.Expressions.Zip(argValues))
-                        Assert.That(ExpressionEvaluator.Evaluate(arg), Is.EqualTo(expected));
+                        Assert.That(ExpressionEvaluator.Evaluate(arg), Is.EqualTo(expected).Within(1e-10));
                 }
             }
         }
 
+        [Test]
+        public void FunctionReturnExpressionTest()
+        {
+            AssertReturnExpressionValue("int g() { return 3; }", 3);
+            AssertReturnExpressionValue("int g() { return 3.3; }", 3.3);
+            AssertReturnExpressionValue("int g() { return 3 + 1 - 2*3; }", -2);
+            AssertReturnExpressionValue("int g() { return ((1 << 2) + 4) >> 3; }", ((1 << 2) + 4) >> 3);
+            AssertReturnExpressionValue("int g() { return 1.1 > 1.0 && 1.0 > 1.02; }", false);
+            AssertReturnExpressionValue("int g() { return 1.01 > 1.0 || 1.0 > 1.02; }", true);
 
-        private static void Evaluate<T>(string decl, object expected) 
+
+            static void AssertReturnExpressionValue(string f, object? expected)
+            {
+                FunctionDefinitionNode fnode = CASTProvider.BuildFromSource(f).Children.First().As<FunctionDefinitionNode>();
+                JumpStatementNode node = fnode.Definition.Children.Last().As<JumpStatementNode>();
+
+                Assert.That(node.GotoLabel, Is.Null);
+                if (expected is null) {
+                    Assert.That(node.ReturnExpression, Is.Null);
+                } else {
+                    Assert.That(node.ReturnExpression, Is.Not.Null);
+                    if (node.ReturnExpression is { })
+                        Assert.That(ExpressionEvaluator.Evaluate(node.ReturnExpression), Is.EqualTo(expected).Within(1e-10));
+                }
+            }
+        }
+
+        private static void Evaluate<T>(string decl, object expected)
         {
             ASTNode ast = CASTProvider.BuildFromSource(decl);
             ExpressionNode? init = ast.Children
