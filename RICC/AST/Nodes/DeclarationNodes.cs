@@ -9,7 +9,7 @@ namespace RICC.AST.Nodes
 {
     public class DeclarationSpecifiersNode : ASTNode
     {
-        public DeclarationSpecifiers DeclSpecs { get; }
+        public DeclarationKeywords Keywords { get; }
         public string TypeName { get; }
         public Type? Type { get; }
 
@@ -17,7 +17,7 @@ namespace RICC.AST.Nodes
         public DeclarationSpecifiersNode(int line, string specs, string type, ASTNode? parent = null)
             : base(line, parent)
         {
-            this.DeclSpecs = DeclarationSpecifiers.Parse(specs);
+            this.Keywords = DeclarationKeywords.Parse(specs);
             this.TypeName = type;
             TypeCode? typeCode = Types.TypeCodeFor(type);
             if (typeCode is null)
@@ -30,7 +30,7 @@ namespace RICC.AST.Nodes
         public override string GetText()
         {
             var sb = new StringBuilder();
-            string declSpecs = this.DeclSpecs.ToString();
+            string declSpecs = this.Keywords.ToString();
             if (!string.IsNullOrWhiteSpace(declSpecs))
                 sb.Append(declSpecs);
             sb.Append(this.TypeName);
@@ -98,7 +98,7 @@ namespace RICC.AST.Nodes
 
     public sealed class FunctionDeclarationNode : DeclarationNode
     {
-        public DeclarationSpecifiers DeclSpecs => this.Children[0].As<DeclarationSpecifiersNode>().DeclSpecs;
+        public DeclarationKeywords Keywords => this.Children[0].As<DeclarationSpecifiersNode>().Keywords;
         public string ReturnTypeName => this.Children[0].As<DeclarationSpecifiersNode>().TypeName;
         public Type? ReturnType => this.Children[0].As<DeclarationSpecifiersNode>().Type;
         public string Identifier => this.Children[1].As<IdentifierNode>().Identifier;
@@ -112,7 +112,7 @@ namespace RICC.AST.Nodes
 
 
         public override string GetText()
-            => $"{this.DeclSpecs} {this.ReturnTypeName} {this.Identifier}({this.Parameters?.GetText() ?? ""})";
+            => $"{this.Keywords} {this.ReturnTypeName} {this.Identifier}({this.Parameters?.GetText() ?? ""})";
     }
 
 }

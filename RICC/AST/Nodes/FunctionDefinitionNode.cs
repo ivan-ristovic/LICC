@@ -7,14 +7,16 @@ namespace RICC.AST.Nodes
 {
     public sealed class FunctionDefinitionNode : ASTNode
     {
-        public DeclarationSpecifiers DeclSpecs => this.Children[0].As<DeclarationSpecifiersNode>().DeclSpecs;
+        public DeclarationKeywords Keywords => this.Children[0].As<DeclarationSpecifiersNode>().Keywords;
         public string ReturnType => this.Children[0].As<DeclarationSpecifiersNode>().TypeName;
         public string Identifier => this.Children[1].As<IdentifierNode>().Identifier;
-        public FunctionParametersNode? Parameters => this.Children[2] as FunctionParametersNode ?? null;
+        public FunctionParametersNode? ParametersNode => this.Children[2] as FunctionParametersNode ?? null;
+        public IEnumerable<FunctionParameterNode>? Parameters => this.ParametersNode?.Parameters;
         public BlockStatementNode Definition => this.Children[this.Children.Count - 1].As<BlockStatementNode>();
 
 
-        public FunctionDefinitionNode(int line, DeclarationSpecifiersNode declSpecs, IdentifierNode identifier, FunctionParametersNode? @params, BlockStatementNode body)
+        public FunctionDefinitionNode(int line, DeclarationSpecifiersNode declSpecs, IdentifierNode identifier, 
+                                      FunctionParametersNode? @params, BlockStatementNode body)
             : base(line, @params is null ? new ASTNode[] { declSpecs, identifier, body } : new ASTNode[] { declSpecs, identifier, @params, body })
         {
 
@@ -22,7 +24,7 @@ namespace RICC.AST.Nodes
 
 
         public override string GetText()
-            => $"{this.DeclSpecs} {this.ReturnType} {this.Identifier}({this.Parameters?.GetText() ?? ""}) {this.Definition.GetText()}";
+            => $"{this.Keywords} {this.ReturnType} {this.Identifier}({this.ParametersNode?.GetText() ?? ""}) {this.Definition.GetText()}";
     }
 
     public sealed class FunctionParametersNode : ASTNode

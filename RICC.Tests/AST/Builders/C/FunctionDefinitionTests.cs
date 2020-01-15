@@ -13,7 +13,7 @@ namespace RICC.Tests.AST.Builders.C
             ASTNode ast = CASTProvider.BuildFromSource("\nint f() { }");
             FunctionDefinitionNode f = ast.Children.Single().As<FunctionDefinitionNode>();
             Assert.That(f.Parent, Is.EqualTo(ast));
-            this.AssertFunctionSignature(f, 2, "f", "int", AccessModifier.Unspecified);
+            this.AssertFunctionSignature(f, 2, "f", "int", AccessModifiers.Unspecified);
         }
 
         [Test]
@@ -21,7 +21,7 @@ namespace RICC.Tests.AST.Builders.C
         {
             ASTNode ast = CASTProvider.BuildFromSource(@"extern static time_t f_1() { }");
             FunctionDefinitionNode f = ast.Children.Single().As<FunctionDefinitionNode>();
-            this.AssertFunctionSignature(f, 1, "f_1", "time_t", AccessModifier.Public, isStatic: true);
+            this.AssertFunctionSignature(f, 1, "f_1", "time_t", AccessModifiers.Public, QualifierFlags.Static);
         }
 
         [Test]
@@ -62,7 +62,7 @@ namespace RICC.Tests.AST.Builders.C
         public void ComplexDefinitionTest()
         {
             ASTNode ast = CASTProvider.BuildFromSource(@"
-                float f(unsigned int x, ...) {
+                float f(const unsigned int x, ...) {
                     int z = 4;
                     return 3f;
                 }
@@ -75,6 +75,7 @@ namespace RICC.Tests.AST.Builders.C
             Assert.That(f.Definition, Is.InstanceOf<BlockStatementNode>());
             Assert.That(f.Definition.Parent, Is.EqualTo(f));
             Assert.That(f.Definition.Children, Has.Exactly(2).Items);
+            Assert.That(f.Parameters?.First().DeclarationSpecifiers.Keywords.QualifierFlags, Is.EqualTo(QualifierFlags.Const));
         }
 
 
@@ -82,8 +83,8 @@ namespace RICC.Tests.AST.Builders.C
                                              int line,
                                              string fname,
                                              string returnType = "void",
-                                             AccessModifier access = AccessModifier.Unspecified,
-                                             bool isStatic = false,
+                                             AccessModifiers access = AccessModifiers.Unspecified,
+                                             QualifierFlags qualifiers = QualifierFlags.None,
                                              params (string Type, string Identifier)[] @params)
         {
             Assert.That(f, Is.Not.Null);
@@ -91,13 +92,13 @@ namespace RICC.Tests.AST.Builders.C
             Assert.That(f.Parent, Is.Not.Null);
             Assert.That(f.Parent, Is.InstanceOf<TranslationUnitNode>());
             Assert.That(f.Children, Has.Exactly(@params?.Any() ?? false ? 4 : 3).Items);
-            Assert.That(f.DeclSpecs.AccessModifiers, Is.EqualTo(access));
-            Assert.That(f.DeclSpecs.IsStatic, Is.EqualTo(isStatic));
+            Assert.That(f.Keywords.AccessModifiers, Is.EqualTo(access));
+            Assert.That(f.Keywords.QualifierFlags, Is.EqualTo(qualifiers));
             Assert.That(f.Identifier, Is.EqualTo(fname));
             Assert.That(f.ReturnType, Is.EqualTo(returnType));
             if (@params?.Any() ?? false) {
-                Assert.That(f.Parameters, Is.Not.Null);
-                Assert.That(f.Parameters!.Parameters.Select(p => (p.DeclarationSpecifiers.TypeName, p.Identifier)), Is.EqualTo(@params));
+                Assert.That(f.ParametersNode, Is.Not.Null);
+                Assert.That(f.ParametersNode!.Parameters.Select(p => (p.DeclarationSpecifiers.TypeName, p.Identifier)), Is.EqualTo(@params));
             }
         }
     }

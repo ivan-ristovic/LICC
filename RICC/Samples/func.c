@@ -1,6 +1,6 @@
-﻿static void f(int a, int b)
+﻿static void f(int a, const int b)
 {
-	int x = 5, y;
+	const int x = 5, y;
 	unsigned short z = x + y;
 	signed int k = 3 + 4 * (5 - 6);
 	char* s = "abcd";
@@ -12,9 +12,11 @@ label:
 }
 
 extern int foo(
-	float bar
+	const float bar
 )
 {
+	const time_t elapsed_time = time(NULL);
+
 	bool b = 3 > 4 && 3 < 5 || 4 >= 2;
 	if (5 > 3) {
 		b = 1 != 1;

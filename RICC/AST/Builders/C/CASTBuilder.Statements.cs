@@ -93,7 +93,8 @@ namespace RICC.AST.Builders.C
 
         public override ASTNode VisitDeclaration([NotNull] DeclarationContext ctx)
         {
-            // TODO static assert
+            if (ctx.staticAssertDeclaration() is { })
+                throw new NotImplementedException();
 
             DeclarationSpecifiersNode declSpecs = this.Visit(ctx.declarationSpecifiers()).As<DeclarationSpecifiersNode>();
 
