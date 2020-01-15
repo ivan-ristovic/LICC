@@ -7,7 +7,7 @@ namespace RICC.AST.Nodes
 {
     public sealed class FunctionDefinitionNode : ASTNode
     {
-        public DeclarationSpecifiersFlags DeclarationSpecifiers => this.Children[0].As<DeclarationSpecifiersNode>().Specifiers;
+        public DeclarationSpecifiers DeclSpecs => this.Children[0].As<DeclarationSpecifiersNode>().DeclSpecs;
         public string ReturnType => this.Children[0].As<DeclarationSpecifiersNode>().TypeName;
         public string Identifier => this.Children[1].As<IdentifierNode>().Identifier;
         public FunctionParametersNode? Parameters => this.Children[2] as FunctionParametersNode ?? null;
@@ -22,7 +22,7 @@ namespace RICC.AST.Nodes
 
 
         public override string GetText()
-            => $"{this.DeclarationSpecifiers.ToJoinedString()} {this.ReturnType} {this.Identifier}({this.Parameters?.GetText() ?? ""}) {this.Definition.GetText()}";
+            => $"{this.DeclSpecs} {this.ReturnType} {this.Identifier}({this.Parameters?.GetText() ?? ""}) {this.Definition.GetText()}";
     }
 
     public sealed class FunctionParametersNode : ASTNode

@@ -13,7 +13,7 @@ namespace RICC.Tests.AST.Builders.C
             ASTNode ast = CASTProvider.BuildFromSource("\nint f() { }");
             FunctionDefinitionNode f = ast.Children.Single().As<FunctionDefinitionNode>();
             Assert.That(f.Parent, Is.EqualTo(ast));
-            this.AssertFunctionSignature(f, 2, "f", "int", DeclarationSpecifiersFlags.Private);
+            this.AssertFunctionSignature(f, 2, "f", "int", AccessModifier.Unspecified);
         }
 
         [Test]
@@ -21,7 +21,7 @@ namespace RICC.Tests.AST.Builders.C
         {
             ASTNode ast = CASTProvider.BuildFromSource(@"extern static time_t f_1() { }");
             FunctionDefinitionNode f = ast.Children.Single().As<FunctionDefinitionNode>();
-            this.AssertFunctionSignature(f, 1, "f_1", "time_t", DeclarationSpecifiersFlags.Public | DeclarationSpecifiersFlags.Static);
+            this.AssertFunctionSignature(f, 1, "f_1", "time_t", AccessModifier.Public, isStatic: true);
         }
 
         [Test]
@@ -82,7 +82,8 @@ namespace RICC.Tests.AST.Builders.C
                                              int line,
                                              string fname,
                                              string returnType = "void",
-                                             DeclarationSpecifiersFlags declSpecs = DeclarationSpecifiersFlags.Private,
+                                             AccessModifier access = AccessModifier.Unspecified,
+                                             bool isStatic = false,
                                              params (string Type, string Identifier)[] @params)
         {
             Assert.That(f, Is.Not.Null);
@@ -90,7 +91,8 @@ namespace RICC.Tests.AST.Builders.C
             Assert.That(f.Parent, Is.Not.Null);
             Assert.That(f.Parent, Is.InstanceOf<TranslationUnitNode>());
             Assert.That(f.Children, Has.Exactly(@params?.Any() ?? false ? 4 : 3).Items);
-            Assert.That(f.DeclarationSpecifiers, Is.EqualTo(declSpecs));
+            Assert.That(f.DeclSpecs.AccessModifiers, Is.EqualTo(access));
+            Assert.That(f.DeclSpecs.IsStatic, Is.EqualTo(isStatic));
             Assert.That(f.Identifier, Is.EqualTo(fname));
             Assert.That(f.ReturnType, Is.EqualTo(returnType));
             if (@params?.Any() ?? false) {

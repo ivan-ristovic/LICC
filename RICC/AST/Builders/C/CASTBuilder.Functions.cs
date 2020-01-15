@@ -51,7 +51,7 @@ namespace RICC.AST.Builders.C
             string[] specs = ctx.children.Select(c => c.GetText()).ToArray();
             int unsignedIndex = Array.IndexOf(specs, "unsigned");
             string type = unsignedIndex != -1 ? string.Join(" ", specs[unsignedIndex..]) : specs.Last();
-            return new DeclarationSpecifiersNode(ctx.Start.Line, type, specs);
+            return new DeclarationSpecifiersNode(ctx.Start.Line, string.Join(' ', specs), type);
         }
 
         #region Parameter overrides

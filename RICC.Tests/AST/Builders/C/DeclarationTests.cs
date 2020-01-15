@@ -22,23 +22,23 @@ namespace RICC.Tests.AST.Builders.C
         public void DeclarationSpecifierTest()
         {
             ASTNode ast2 = CASTProvider.BuildFromSource("static time_t x;");
-            this.AssertVariableDeclaration(ast2.Children.First(), "x", "time_t", DeclarationSpecifiersFlags.Private | DeclarationSpecifiersFlags.Static);
+            this.AssertVariableDeclaration(ast2.Children.First(), "x", "time_t", AccessModifier.Unspecified, isStatic: true);
             ASTNode ast1 = CASTProvider.BuildFromSource("static extern unsigned int x;");
-            this.AssertVariableDeclaration(ast1.Children.First(), "x", "unsigned int", DeclarationSpecifiersFlags.Public | DeclarationSpecifiersFlags.Static);
+            this.AssertVariableDeclaration(ast1.Children.First(), "x", "unsigned int", AccessModifier.Public, isStatic: true);
         }
 
         [Test]
         public void InitializerDeclarationTest()
         {
             ASTNode ast = CASTProvider.BuildFromSource("static signed int x = 5;");
-            this.AssertVariableDeclaration(ast.Children.First(), "x", "int", DeclarationSpecifiersFlags.Private | DeclarationSpecifiersFlags.Static, 5);
+            this.AssertVariableDeclaration(ast.Children.First(), "x", "int", AccessModifier.Unspecified, isStatic: true, 5);
         }
 
         [Test]
         public void InitializerExpressionDeclarationTest()
         {
             ASTNode ast = CASTProvider.BuildFromSource("unsigned short x = 1 << 2 * 4;");
-            this.AssertVariableDeclaration(ast.Children.First(), "x", "unsigned short", DeclarationSpecifiersFlags.Private, 1 << 8);
+            this.AssertVariableDeclaration(ast.Children.First(), "x", "unsigned short", AccessModifier.Unspecified, isStatic: false, 1 << 8);
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace RICC.Tests.AST.Builders.C
             this.AssertVariableDeclarationList(
                 ast.Children.First(),
                 "unsigned int",
-                DeclarationSpecifiersFlags.Private | DeclarationSpecifiersFlags.Static,
+                AccessModifier.Unspecified, isStatic: true,
                 ("x", null), ("y", null), ("z", null)
             );
         }
@@ -69,8 +69,8 @@ namespace RICC.Tests.AST.Builders.C
             this.AssertVariableDeclarationList(
                 ast.Children.First(),
                 "int",
-                DeclarationSpecifiersFlags.Public | DeclarationSpecifiersFlags.Static,
-                ("x", null), ("y", 7 + (4 - 3)), ("z", 3), ("w", 47), ("t", 2 >> (3 << 4)) 
+                AccessModifier.Public, isStatic: true,
+                ("x", null), ("y", 7 + (4 - 3)), ("z", 3), ("w", 47), ("t", 2 >> (3 << 4))
             );
         }
 
@@ -81,7 +81,7 @@ namespace RICC.Tests.AST.Builders.C
             this.AssertVariableDeclarationList(
                 ast.Children.First(),
                 "float",
-                DeclarationSpecifiersFlags.Private,
+                AccessModifier.Unspecified, isStatic: false,
                 ("x", null), ("y", 11.3), ("z", 3.0), ("w", 49.032)
             );
         }
@@ -93,7 +93,7 @@ namespace RICC.Tests.AST.Builders.C
             this.AssertVariableDeclarationList(
                 ast.Children.First(),
                 "bool",
-                DeclarationSpecifiersFlags.Private,
+                AccessModifier.Unspecified, isStatic: false,
                 ("x", null), ("y", true), ("z", true), ("w", false)
             );
         }
@@ -105,24 +105,26 @@ namespace RICC.Tests.AST.Builders.C
             this.AssertVariableDeclarationList(
                 ast.Children.First(),
                 "char*",
-                DeclarationSpecifiersFlags.Private,
+                AccessModifier.Unspecified, isStatic: false,
                 ("w1", null), ("w2", "abc"), ("w3", "aabb")
             );
         }
 
 
-        private void AssertVariableDeclaration(ASTNode node, 
+        private void AssertVariableDeclaration(ASTNode node,
                                                string identifier,
                                                string type,
-                                               DeclarationSpecifiersFlags declSpecs = DeclarationSpecifiersFlags.Private,
-                                               object? value = null) 
+                                               AccessModifier access = AccessModifier.Unspecified,
+                                               bool isStatic = false,
+                                               object? value = null)
         {
             DeclarationStatementNode decl = node.As<DeclarationStatementNode>();
             Assert.That(decl.Children, Has.Exactly(2).Items);
 
             DeclarationSpecifiersNode declSpecsNode = decl.Children.ElementAt(0).As<DeclarationSpecifiersNode>();
             Assert.That(declSpecsNode.Parent, Is.EqualTo(decl));
-            Assert.That(declSpecsNode.Specifiers, Is.EqualTo(declSpecs));
+            Assert.That(declSpecsNode.DeclSpecs.AccessModifiers, Is.EqualTo(access));
+            Assert.That(declSpecsNode.DeclSpecs.IsStatic, Is.EqualTo(isStatic));
             Assert.That(declSpecsNode.TypeName, Is.EqualTo(type));
             Assert.That(declSpecsNode.Children, Is.Empty);
 
@@ -142,7 +144,8 @@ namespace RICC.Tests.AST.Builders.C
 
         private void AssertVariableDeclarationList(ASTNode node,
                                                    string type,
-                                                   DeclarationSpecifiersFlags declSpecs,
+                                                   AccessModifier access = AccessModifier.Unspecified,
+                                                   bool isStatic = false,
                                                    params (string Identifier, object? value)[] vars)
         {
             DeclarationStatementNode decl = node.As<DeclarationStatementNode>();
@@ -150,7 +153,8 @@ namespace RICC.Tests.AST.Builders.C
 
             DeclarationSpecifiersNode declSpecsNode = decl.Children.ElementAt(0).As<DeclarationSpecifiersNode>();
             Assert.That(declSpecsNode.Parent, Is.EqualTo(decl));
-            Assert.That(declSpecsNode.Specifiers, Is.EqualTo(declSpecs));
+            Assert.That(declSpecsNode.DeclSpecs.AccessModifiers, Is.EqualTo(access));
+            Assert.That(declSpecsNode.DeclSpecs.IsStatic, Is.EqualTo(isStatic));
             Assert.That(declSpecsNode.TypeName, Is.EqualTo(type));
             Assert.That(declSpecsNode.Children, Is.Empty);
 

@@ -1,61 +1,59 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace RICC.AST.Nodes.Common
 {
-    [Flags]
-    public enum DeclarationSpecifiersFlags
+    public sealed class DeclarationSpecifiers
     {
-        Private = 0,
-        Protected = 1,
-        Public = 2,
-        Static = 4,
-    }
-
-    public static class DeclarationSpecifiers
-    {
-        public static DeclarationSpecifiersFlags Parse(IEnumerable<string> specs)
+        public static DeclarationSpecifiers Parse(string specs)
         {
-            DeclarationSpecifiersFlags retFlags = DeclarationSpecifiersFlags.Private;
-            foreach (string s in specs)
-                retFlags |= Parse(s);
-            return retFlags;
-        }
-
-        public static DeclarationSpecifiersFlags Parse(string specs)
-        {
-            DeclarationSpecifiersFlags retval = DeclarationSpecifiersFlags.Private;
+            AccessModifier access = AccessModifier.Unspecified;
 
             string[] split = specs.ToLowerInvariant()
                 .Split(" ", StringSplitOptions.RemoveEmptyEntries)
                 .Distinct()
                 .ToArray();
 
-            if (split.Contains("public") || split.Contains("extern"))
-                retval |= DeclarationSpecifiersFlags.Public;
-            if (split.Contains("protected"))
-                retval |= DeclarationSpecifiersFlags.Protected;
-            if (split.Contains("internal"))
-                retval |= (DeclarationSpecifiersFlags.Public | DeclarationSpecifiersFlags.Protected);
-            if (split.Contains("static"))
-                retval |= DeclarationSpecifiersFlags.Static;
+            if (split.Contains("private"))
+                access = AccessModifier.Private;
+            else if (split.Contains("protected"))
+                access = AccessModifier.Protected;
+            else if (split.Contains("internal"))
+                access = AccessModifier.Internal;
+            else if (split.Contains("public") || split.Contains("extern"))
+                access = AccessModifier.Public;
 
-            return retval;
+            bool isStatic = split.Any(s => s.ToLower() == "static");
+            return new DeclarationSpecifiers(access, isStatic);
         }
 
-        public static string ToJoinedString(this DeclarationSpecifiersFlags flags, string separator = " ")
+
+        public AccessModifier AccessModifiers { get; }
+        public bool IsStatic { get; }
+
+
+        private DeclarationSpecifiers(AccessModifier accessModifiers, bool isStatic)
         {
-            var keywords = new List<string>() { "protected", "public", "static" };
-            var found = new List<string>();
-            if ((flags & (DeclarationSpecifiersFlags.Protected | DeclarationSpecifiersFlags.Public)) == 0)
-                found.Add("private");
-            foreach (string keyword in keywords) {
-                DeclarationSpecifiersFlags kwFlag = Parse(keyword);
-                if (flags.HasFlag(kwFlag))
-                    found.Add(keyword);
-            }
-            return string.Join(separator, found);
+            this.AccessModifiers = accessModifiers;
+            this.IsStatic = isStatic;
         }
+
+
+        public override string ToString()
+        {
+            string modifiers = "";
+            switch (this.AccessModifiers) {
+                case AccessModifier.Private: modifiers = "private"; break;
+                case AccessModifier.Protected: modifiers = "protected"; break;
+                case AccessModifier.Internal: modifiers = "internal"; break;
+                case AccessModifier.Public: modifiers = "public"; break;
+            }
+            return $"{modifiers}{(this.IsStatic ? " static" : "")}";
+        }
+    }
+
+    public enum AccessModifier
+    {
+        Unspecified = 0, Private, Protected, Internal, Public
     }
 }

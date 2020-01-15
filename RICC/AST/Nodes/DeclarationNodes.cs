@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using RICC.AST.Nodes.Common;
 using Serilog;
 
@@ -8,15 +9,15 @@ namespace RICC.AST.Nodes
 {
     public class DeclarationSpecifiersNode : ASTNode
     {
-        public DeclarationSpecifiersFlags Specifiers { get; }
+        public DeclarationSpecifiers DeclSpecs { get; }
         public string TypeName { get; }
         public Type? Type { get; }
 
 
-        public DeclarationSpecifiersNode(int line, string type, IEnumerable<string> specs, ASTNode? parent = null)
+        public DeclarationSpecifiersNode(int line, string specs, string type, ASTNode? parent = null)
             : base(line, parent)
         {
-            this.Specifiers = DeclarationSpecifiers.Parse(specs);
+            this.DeclSpecs = DeclarationSpecifiers.Parse(specs);
             this.TypeName = type;
             TypeCode? typeCode = Types.TypeCodeFor(type);
             if (typeCode is null)
@@ -26,7 +27,15 @@ namespace RICC.AST.Nodes
         }
 
 
-        public override string GetText() => $"{this.Specifiers.ToJoinedString()} {this.TypeName}";
+        public override string GetText()
+        {
+            var sb = new StringBuilder();
+            string declSpecs = this.DeclSpecs.ToString();
+            if (!string.IsNullOrWhiteSpace(declSpecs))
+                sb.Append(declSpecs);
+            sb.Append(this.TypeName);
+            return sb.ToString();
+        }
     }
 
     public abstract class DeclarationNode : ASTNode
@@ -58,7 +67,7 @@ namespace RICC.AST.Nodes
         public IEnumerable<DeclarationNode> Declarations => this.Children.Cast<DeclarationNode>();
 
 
-        public DeclarationListNode(int line, params DeclarationNode[] declarations) 
+        public DeclarationListNode(int line, params DeclarationNode[] declarations)
             : base(line, declarations)
         {
 
@@ -89,7 +98,7 @@ namespace RICC.AST.Nodes
 
     public sealed class FunctionDeclarationNode : DeclarationNode
     {
-        public DeclarationSpecifiersFlags DeclarationSpecifiers => this.Children[0].As<DeclarationSpecifiersNode>().Specifiers;
+        public DeclarationSpecifiers DeclSpecs => this.Children[0].As<DeclarationSpecifiersNode>().DeclSpecs;
         public string ReturnTypeName => this.Children[0].As<DeclarationSpecifiersNode>().TypeName;
         public Type? ReturnType => this.Children[0].As<DeclarationSpecifiersNode>().Type;
         public string Identifier => this.Children[1].As<IdentifierNode>().Identifier;
@@ -103,7 +112,7 @@ namespace RICC.AST.Nodes
 
 
         public override string GetText()
-            => $"{this.DeclarationSpecifiers.ToJoinedString()} {this.ReturnTypeName} {this.Identifier}({this.Parameters?.GetText() ?? ""})";
+            => $"{this.DeclSpecs} {this.ReturnTypeName} {this.Identifier}({this.Parameters?.GetText() ?? ""})";
     }
 
 }
