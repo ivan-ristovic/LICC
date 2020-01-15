@@ -21,17 +21,20 @@ namespace RICC.AST.Nodes
         public IReadOnlyList<ASTNode> Children { get; }
 
 
-        protected ASTNode(int line, IEnumerable<ASTNode> children, ASTNode? parent = null)
-            : this(line, parent, children.ToArray())
+        protected ASTNode(int line, IEnumerable<ASTNode> children)
+            : this(line, children.ToArray())
         {
 
         }
 
-        protected ASTNode(int line, ASTNode? parent = null, params ASTNode[] children)
+        protected ASTNode(int line, params ASTNode[] children)
         {
             this.Children = children ?? Array.Empty<ASTNode>();
             this.Line = line;
-            this.Parent = parent;
+            if (children?.Any() ?? false) {
+                foreach (ASTNode child in children)
+                    child.Parent = this;
+            }
         }
 
 

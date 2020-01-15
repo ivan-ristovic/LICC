@@ -14,8 +14,8 @@ namespace RICC.AST.Nodes
         public Type? Type { get; }
 
 
-        public DeclarationSpecifiersNode(int line, string specs, string type, ASTNode? parent = null)
-            : base(line, parent)
+        public DeclarationSpecifiersNode(int line, string specs, string type)
+            : base(line)
         {
             this.Keywords = DeclarationKeywords.Parse(specs);
             this.TypeName = type;
@@ -32,7 +32,7 @@ namespace RICC.AST.Nodes
             var sb = new StringBuilder();
             string declSpecs = this.Keywords.ToString();
             if (!string.IsNullOrWhiteSpace(declSpecs))
-                sb.Append(declSpecs);
+                sb.Append(declSpecs).Append(' ');
             sb.Append(this.TypeName);
             return sb.ToString();
         }
@@ -40,14 +40,14 @@ namespace RICC.AST.Nodes
 
     public abstract class DeclarationNode : ASTNode
     {
-        protected DeclarationNode(int line, IEnumerable<ASTNode> children, ASTNode? parent = null)
-            : base(line, children, parent)
+        protected DeclarationNode(int line, IEnumerable<ASTNode> children)
+            : base(line, children)
         {
 
         }
 
-        protected DeclarationNode(int line, ASTNode? parent = null, params ASTNode[] children)
-            : base(line, parent, children)
+        protected DeclarationNode(int line, params ASTNode[] children)
+            : base(line, children)
         {
 
         }
@@ -55,8 +55,8 @@ namespace RICC.AST.Nodes
 
     public class DeclarationStatementNode : SimpleStatementNode
     {
-        public DeclarationStatementNode(int line, DeclarationSpecifiersNode declSpecs, DeclarationNode decl, ASTNode? parent = null)
-            : base(line, parent, declSpecs, decl)
+        public DeclarationStatementNode(int line, DeclarationSpecifiersNode declSpecs, DeclarationNode decl)
+            : base(line, declSpecs, decl)
         {
 
         }
@@ -67,14 +67,14 @@ namespace RICC.AST.Nodes
         public IEnumerable<DeclarationNode> Declarations => this.Children.Cast<DeclarationNode>();
 
 
-        public DeclarationListNode(int line, params DeclarationNode[] declarations)
+        public DeclarationListNode(int line, IEnumerable<DeclarationNode> declarations)
             : base(line, declarations)
         {
 
         }
-
-        public DeclarationListNode(int line, IEnumerable<DeclarationNode> declarations, ASTNode? parent = null)
-            : base(line, declarations, parent)
+     
+        public DeclarationListNode(int line, params DeclarationNode[] declarations)
+            : base(line, declarations)
         {
 
         }
@@ -86,8 +86,8 @@ namespace RICC.AST.Nodes
         public ExpressionNode? Initializer => this.Children.ElementAtOrDefault(1)?.As<ExpressionNode>();
 
 
-        public VariableDeclarationNode(int line, IdentifierNode identifier, ExpressionNode? initializer, ASTNode? parent = null)
-            : base(line, initializer is null ? new ASTNode[] { identifier } : new ASTNode[] { identifier, initializer }, parent)
+        public VariableDeclarationNode(int line, IdentifierNode identifier, ExpressionNode? initializer)
+            : base(line, initializer is null ? new ASTNode[] { identifier } : new ASTNode[] { identifier, initializer })
         {
 
         }
@@ -99,20 +99,36 @@ namespace RICC.AST.Nodes
     public sealed class FunctionDeclarationNode : DeclarationNode
     {
         public DeclarationKeywords Keywords => this.Children[0].As<DeclarationSpecifiersNode>().Keywords;
+        public FunctionDeclaratorNode Declarator => this.Children[1].As<FunctionDeclaratorNode>();
         public string ReturnTypeName => this.Children[0].As<DeclarationSpecifiersNode>().TypeName;
         public Type? ReturnType => this.Children[0].As<DeclarationSpecifiersNode>().Type;
-        public string Identifier => this.Children[1].As<IdentifierNode>().Identifier;
-        public FunctionParametersNode? Parameters => this.Children[2] as FunctionParametersNode ?? null;
+        public string Identifier => this.Declarator.Identifier;
+        public FunctionParametersNode? Parameters => this.Declarator.Parameters;
 
-        public FunctionDeclarationNode(int line, DeclarationSpecifiersNode declSpecs, IdentifierNode identifier, FunctionParametersNode? @params)
-            : base(line, @params is null ? new ASTNode[] { declSpecs, identifier } : new ASTNode[] { declSpecs, identifier, @params })
+        public FunctionDeclarationNode(int line, DeclarationSpecifiersNode declSpecs, FunctionDeclaratorNode decl)
+            : base(line, declSpecs, decl)
         {
 
         }
 
 
         public override string GetText()
-            => $"{this.Keywords} {this.ReturnTypeName} {this.Identifier}({this.Parameters?.GetText() ?? ""})";
+            => $"{this.Keywords} {this.ReturnTypeName} {this.Declarator.GetText()}";
     }
 
+    public sealed class FunctionDeclaratorNode : DeclarationNode
+    {
+        public string Identifier => this.Children[0].As<IdentifierNode>().Identifier;
+        public FunctionParametersNode? Parameters => this.Children[1] as FunctionParametersNode ?? null;
+
+        public FunctionDeclaratorNode(int line, IdentifierNode identifier, FunctionParametersNode? @params)
+            : base(line, @params is null ? new[] { identifier } : new ASTNode[] { identifier, @params })
+        {
+
+        }
+
+
+        public override string GetText()
+            => $"{this.Identifier}({this.Parameters?.GetText() ?? ""})";
+    }
 }

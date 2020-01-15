@@ -1,4 +1,6 @@
-﻿static void f(int a, const int b)
+﻿extern static time_t foo_extern(int x, const int y);
+
+static void f(int a, const int b)
 {
 	const int x = 5, y;
 	unsigned short z = x + y;

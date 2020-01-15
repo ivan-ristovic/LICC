@@ -21,9 +21,7 @@ namespace RICC.AST.Builders.C
             var op = new AssignmentOperatorNode(ctx.Start.Line, ctx.children[1].GetText(), (a, b) => b);
             ExpressionNode expr = this.Visit(ctx.assignmentExpression()).As<ExpressionNode>();
 
-            var assignment = new AssignmentExpressionNode(ctx.Start.Line, unary, op, expr);
-            unary.Parent = expr.Parent = op.Parent = assignment;
-            return assignment;
+            return new AssignmentExpressionNode(ctx.Start.Line, unary, op, expr);
         }
 
         public override ASTNode VisitConditionalExpression([NotNull] ConditionalExpressionContext ctx) => this.Visit(ctx.logicalOrExpression());    // TODO
@@ -35,9 +33,7 @@ namespace RICC.AST.Builders.C
                 ExpressionNode right = this.Visit(ctx.logicalAndExpression()).As<ExpressionNode>();
                 string symbol = ctx.children[1].GetText();
                 var op = new LogicOperatorNode(ctx.Start.Line, symbol, (x, y) => x || y);
-                var expr = new LogicExpressionNode(ctx.Start.Line, left, op, right);
-                left.Parent = right.Parent = op.Parent = expr;
-                return expr;
+                return new LogicExpressionNode(ctx.Start.Line, left, op, right);
             } else {
                 return this.Visit(ctx.logicalAndExpression());
             }
@@ -50,9 +46,7 @@ namespace RICC.AST.Builders.C
                 ExpressionNode right = this.Visit(ctx.inclusiveOrExpression()).As<ExpressionNode>();
                 string symbol = ctx.children[1].GetText();
                 var op = new LogicOperatorNode(ctx.Start.Line, symbol, (x, y) => x && y);
-                var expr = new LogicExpressionNode(ctx.Start.Line, left, op, right);
-                left.Parent = right.Parent = op.Parent = expr;
-                return expr;
+                return new LogicExpressionNode(ctx.Start.Line, left, op, right);
             } else {
                 return this.Visit(ctx.inclusiveOrExpression());
             }
@@ -73,9 +67,7 @@ namespace RICC.AST.Builders.C
             ExpressionNode right = this.Visit(ctx.relationalExpression()).As<ExpressionNode>();
             string symbol = ctx.children[1].GetText();
             var op = new RelationalOperatorNode(ctx.Start.Line, symbol, BinaryOperations.RelationalFromSymbol(symbol));
-            var expr = new RelationalExpressionNode(ctx.Start.Line, left, op, right);
-            left.Parent = right.Parent = op.Parent = expr;
-            return expr;
+            return new RelationalExpressionNode(ctx.Start.Line, left, op, right);
         }
 
         public override ASTNode VisitRelationalExpression([NotNull] RelationalExpressionContext ctx)
@@ -87,9 +79,7 @@ namespace RICC.AST.Builders.C
             ExpressionNode right = this.Visit(ctx.shiftExpression()).As<ExpressionNode>();
             string symbol = ctx.children[1].GetText();
             var op = new RelationalOperatorNode(ctx.Start.Line, symbol, BinaryOperations.RelationalFromSymbol(symbol));
-            var expr = new RelationalExpressionNode(ctx.Start.Line, left, op, right);
-            left.Parent = right.Parent = op.Parent = expr;
-            return expr;
+            return new RelationalExpressionNode(ctx.Start.Line, left, op, right);
         }
 
         public override ASTNode VisitShiftExpression([NotNull] ShiftExpressionContext ctx)
@@ -99,9 +89,7 @@ namespace RICC.AST.Builders.C
                 ExpressionNode right = this.Visit(ctx.additiveExpression()).As<ExpressionNode>();
                 string symbol = ctx.children[1].GetText();
                 var op = new ArithmeticOperatorNode(ctx.Start.Line, symbol, BinaryOperations.ArithmeticFromSymbol(symbol));
-                var expr = new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
-                left.Parent = right.Parent = op.Parent = expr;
-                return expr;
+                return new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
             } else {
                 return this.Visit(ctx.additiveExpression());
             }
@@ -114,9 +102,7 @@ namespace RICC.AST.Builders.C
                 ExpressionNode right = this.Visit(ctx.multiplicativeExpression()).As<ExpressionNode>();
                 string symbol = ctx.children[1].GetText();
                 var op = new ArithmeticOperatorNode(ctx.Start.Line, symbol, BinaryOperations.ArithmeticFromSymbol(symbol));
-                var expr = new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
-                left.Parent = right.Parent = op.Parent = expr;
-                return expr;
+                return new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
             } else {
                 return this.Visit(ctx.multiplicativeExpression());
             }
@@ -129,9 +115,7 @@ namespace RICC.AST.Builders.C
                 ExpressionNode right = this.Visit(ctx.castExpression()).As<ExpressionNode>();
                 string symbol = ctx.children[1].GetText();
                 var op = new ArithmeticOperatorNode(ctx.Start.Line, symbol, BinaryOperations.ArithmeticFromSymbol(symbol));
-                var expr = new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
-                left.Parent = right.Parent = op.Parent = expr;
-                return expr;
+                return new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
             } else {
                 return this.Visit(ctx.castExpression());
             }
@@ -155,16 +139,9 @@ namespace RICC.AST.Builders.C
                         if (ctx.argumentExpressionList() is { }) 
                             args = this.Visit(ctx.argumentExpressionList()).As<ExpressionListNode>();
 
-                        FunctionCallExpressionNode fcall;
-                        if (args is { }) {
-                            fcall = new FunctionCallExpressionNode(ctx.Start.Line, name, args, name);
-                            args.Parent = fcall;
-                        } else {
-                            fcall = new FunctionCallExpressionNode(ctx.Start.Line, name);
-                        }
-
-                        name.Parent = fcall;
-                        return fcall;
+                        return args is null
+                            ? new FunctionCallExpressionNode(ctx.Start.Line, name)
+                            : new FunctionCallExpressionNode(ctx.Start.Line, name, args);
                     case "[": throw new NotImplementedException();     // TODO array access
                     case ".": throw new NotImplementedException();     // TODO struct field access
                     case "->": throw new NotImplementedException();    // TODO pointer
@@ -198,11 +175,8 @@ namespace RICC.AST.Builders.C
             ExpressionListNode args;
             ExpressionNode arg = this.Visit(ctx.assignmentExpression()).As<ExpressionNode>();
 
-            if (ctx.argumentExpressionList() is null) {
-                args = new ExpressionListNode(ctx.Start.Line, arg );
-                arg.Parent = args;
-                return args;
-            }
+            if (ctx.argumentExpressionList() is null)
+                return new ExpressionListNode(ctx.Start.Line, arg );
 
             args = this.Visit(ctx.argumentExpressionList()).As<ExpressionListNode>();
             arg.Parent = args;

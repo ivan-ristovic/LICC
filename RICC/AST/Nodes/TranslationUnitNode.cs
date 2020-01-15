@@ -9,5 +9,11 @@ namespace RICC.AST.Nodes
         {
 
         }
+
+        public TranslationUnitNode(params ASTNode[] children)
+            : base(1, children)
+        {
+
+        }
     }
 }

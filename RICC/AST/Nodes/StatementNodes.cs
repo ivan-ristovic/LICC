@@ -7,14 +7,14 @@ namespace RICC.AST.Nodes
 {
     public abstract class StatementNode : ASTNode
     {
-        protected StatementNode(int line, IEnumerable<ASTNode> children, ASTNode? parent = null) 
-            : base(line, children, parent)
+        protected StatementNode(int line, IEnumerable<ASTNode> children) 
+            : base(line, children)
         {
 
         }
 
-        protected StatementNode(int line, ASTNode? parent = null, params ASTNode[] children)
-            : base(line, parent, children)
+        protected StatementNode(int line, params ASTNode[] children)
+            : base(line, children)
         {
 
         }
@@ -25,8 +25,8 @@ namespace RICC.AST.Nodes
 
     public sealed class EmptyStatementNode : StatementNode
     {
-        public EmptyStatementNode(int line, ASTNode? parent = null)
-            : base(line, parent)
+        public EmptyStatementNode(int line)
+            : base(line)
         {
 
         }
@@ -34,14 +34,14 @@ namespace RICC.AST.Nodes
 
     public abstract class SimpleStatementNode : StatementNode
     {
-        protected SimpleStatementNode(int line, IEnumerable<ASTNode> children, ASTNode? parent = null)
-            : base(line, children, parent)
+        protected SimpleStatementNode(int line, IEnumerable<ASTNode> children)
+            : base(line, children)
         {
 
         }
 
-        protected SimpleStatementNode(int line, ASTNode? parent = null, params ASTNode[] children)
-            : base(line, parent, children)
+        protected SimpleStatementNode(int line, params ASTNode[] children)
+            : base(line, children)
         {
 
         }
@@ -49,14 +49,14 @@ namespace RICC.AST.Nodes
 
     public abstract class CompoundStatementNode : StatementNode
     {
-        protected CompoundStatementNode(int line, IEnumerable<ASTNode> children, ASTNode? parent = null)
-            : base(line, children, parent)
+        protected CompoundStatementNode(int line, IEnumerable<ASTNode> children)
+            : base(line, children)
         {
 
         }
 
-        protected CompoundStatementNode(int line, ASTNode? parent = null, params ASTNode[] children)
-            : base(line, parent, children)
+        protected CompoundStatementNode(int line, params ASTNode[] children)
+            : base(line, children)
         {
 
         }
@@ -64,14 +64,14 @@ namespace RICC.AST.Nodes
 
     public sealed class BlockStatementNode : CompoundStatementNode
     {
-        public BlockStatementNode(int line, IEnumerable<ASTNode> children, ASTNode? parent = null)
-            : base(line, children, parent)
+        public BlockStatementNode(int line, IEnumerable<ASTNode> children)
+            : base(line, children)
         {
 
         }
 
-        public BlockStatementNode(int line, ASTNode? parent = null, params ASTNode[] children)
-            : base(line, parent, children)
+        public BlockStatementNode(int line, params ASTNode[] children)
+            : base(line, children)
         {
 
         }
@@ -85,8 +85,8 @@ namespace RICC.AST.Nodes
         public ExpressionNode Expression => this.Children.First().As<ExpressionNode>();
 
 
-        public ExpressionStatementNode(int line, ExpressionNode expr, ASTNode? parent = null)
-            : base(line, parent, expr)
+        public ExpressionStatementNode(int line, ExpressionNode expr)
+            : base(line, expr)
         {
 
         }
@@ -99,14 +99,14 @@ namespace RICC.AST.Nodes
         public StatementNode? ElseStatement => this.Children.Count > 2 ? this.Children[2].As<StatementNode>() : null;
 
 
-        public IfStatementNode(int line, LogicExpressionNode condition, StatementNode thenBlock, StatementNode? elseBlock = null, ASTNode? parent = null)
-            : base(line, elseBlock is null ? new ASTNode[] { condition, thenBlock } : new ASTNode[] { condition, thenBlock, elseBlock }, parent)
+        public IfStatementNode(int line, LogicExpressionNode condition, StatementNode thenBlock, StatementNode? elseBlock = null)
+            : base(line, elseBlock is null ? new ASTNode[] { condition, thenBlock } : new ASTNode[] { condition, thenBlock, elseBlock })
         {
 
         }
 
-        public IfStatementNode(int line, RelationalExpressionNode condition, StatementNode thenBlock, StatementNode? elseBlock = null, ASTNode? parent = null)
-            : base(line, elseBlock is null ? new ASTNode[] { condition, thenBlock } : new ASTNode[] { condition, thenBlock, elseBlock }, parent)
+        public IfStatementNode(int line, RelationalExpressionNode condition, StatementNode thenBlock, StatementNode? elseBlock = null)
+            : base(line, elseBlock is null ? new ASTNode[] { condition, thenBlock } : new ASTNode[] { condition, thenBlock, elseBlock })
         {
 
         }
@@ -119,16 +119,26 @@ namespace RICC.AST.Nodes
     public sealed class JumpStatementNode : SimpleStatementNode
     {
         public JumpStatementType Type { get; set; }
-        public ExpressionNode? ReturnExpression { get; set; }
-        public IdentifierNode? GotoLabel{ get; set; }
+        public ExpressionNode? ReturnExpression => this.Children.FirstOrDefault() as ExpressionNode ?? null;
+        public IdentifierNode? GotoLabel => this.Children.First() as IdentifierNode ?? null;
 
 
-        public JumpStatementNode(int line, JumpStatementType type, ExpressionNode? @return = null, IdentifierNode? @goto = null, ASTNode? parent = null) 
-            : base(line, parent)
+        public JumpStatementNode(int line, JumpStatementType type)
+            : base(line)
         {
             this.Type = type;
-            this.ReturnExpression = @return;
-            this.GotoLabel = @goto;
+        }
+
+        public JumpStatementNode(int line, ExpressionNode? returnExpr)
+            : base(line, returnExpr is null ? Enumerable.Empty<ASTNode>() : new[] { returnExpr })
+        {
+            this.Type = JumpStatementType.Return;
+        }
+        
+        public JumpStatementNode(int line, IdentifierNode label)
+            : base(line, label)
+        {
+            this.Type = JumpStatementType.Goto;
         }
 
 
@@ -150,8 +160,8 @@ namespace RICC.AST.Nodes
         public StatementNode Statement => this.Children.First().As<StatementNode>();
 
 
-        public LabeledStatementNode(int line, string label, StatementNode statement, ASTNode? parent = null)
-            : base(line, parent, statement)
+        public LabeledStatementNode(int line, string label, StatementNode statement)
+            : base(line, statement)
         {
             this.Label = label;
         }

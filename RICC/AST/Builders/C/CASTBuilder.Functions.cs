@@ -14,16 +14,13 @@ namespace RICC.AST.Builders.C
             LogObj.Context(ctx);
 
             DeclarationSpecifiersNode declSpecs = this.Visit(ctx.declarationSpecifiers()).As<DeclarationSpecifiersNode>();
-            IdentifierNode identifier = this.Visit(ctx.declarator()).As<IdentifierNode>();
-            ParameterTypeListContext pctx = ctx.declarator().directDeclarator().parameterTypeList();
-            FunctionParametersNode? @params = pctx is null ? null : this.Visit(pctx).As<FunctionParametersNode>();
+            ASTNode decl = this.Visit(ctx.declarator());
+            if (decl is IdentifierNode fname)
+                decl = new FunctionDeclaratorNode(fname.Line, fname, @params: null);
+            FunctionDeclaratorNode fdecl = decl.As<FunctionDeclaratorNode>();
             BlockStatementNode body = this.Visit(ctx.compoundStatement()).As<BlockStatementNode>();
 
-            var fn = new FunctionDefinitionNode(ctx.Start.Line, declSpecs, identifier, @params, body);
-            declSpecs.Parent = identifier.Parent = body.Parent = fn;
-            if (@params is { })
-                @params.Parent = fn;
-            return fn;
+            return new FunctionDefinitionNode(ctx.Start.Line, declSpecs, fdecl, body);
         }
 
         public override ASTNode VisitDeclarator([NotNull] DeclaratorContext ctx)
@@ -34,11 +31,15 @@ namespace RICC.AST.Builders.C
             if (ctx.declarator() is { })
                 return this.Visit(ctx.declarator());
 
-            if (ctx.Identifier() is { })
+            if (ctx.Identifier() is { } && ctx.ChildCount == 1)
                 return new IdentifierNode(ctx.Start.Line, ctx.Identifier()?.ToString() ?? "<unknown_name>");
 
-            if (ctx.parameterTypeList() is { } || ctx.identifierList() is { }) {
-                // TODO function declaration
+            if (ctx.parameterTypeList() is { }) {
+                FunctionParametersNode @params = this.Visit(ctx.parameterTypeList()).As<FunctionParametersNode>();
+                IdentifierNode fname = this.Visit(ctx.directDeclarator()).As<IdentifierNode>();
+                return new FunctionDeclaratorNode(ctx.Start.Line, fname, @params);
+            } else if (ctx.identifierList() is { }) {
+                // TODO
             }
 
             // TODO array declaration
@@ -63,11 +64,8 @@ namespace RICC.AST.Builders.C
             FunctionParametersNode @params;
             FunctionParameterNode param = this.Visit(ctx.parameterDeclaration()).As<FunctionParameterNode>();
 
-            if (ctx.parameterList() is null) {
-                @params = new FunctionParametersNode(ctx.Start.Line, param);
-                param.Parent = @params;
-                return @params;
-            }
+            if (ctx.parameterList() is null)
+                return new FunctionParametersNode(ctx.Start.Line, param);
 
             @params = this.Visit(ctx.parameterList()).As<FunctionParametersNode>();
             param.Parent = @params;
@@ -78,9 +76,7 @@ namespace RICC.AST.Builders.C
         {
             DeclarationSpecifiersNode declSpecs = this.Visit(ctx.declarationSpecifiers()).As<DeclarationSpecifiersNode>();
             IdentifierNode identifier = this.Visit(ctx.declarator()).As<IdentifierNode>();
-            var param = new FunctionParameterNode(ctx.Start.Line, declSpecs, identifier);
-            declSpecs.Parent = identifier.Parent = param;
-            return param;
+            return new FunctionParameterNode(ctx.Start.Line, declSpecs, identifier);
         }
         #endregion
     }

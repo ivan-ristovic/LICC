@@ -8,31 +8,32 @@ namespace RICC.AST.Nodes
     public sealed class FunctionDefinitionNode : ASTNode
     {
         public DeclarationKeywords Keywords => this.Children[0].As<DeclarationSpecifiersNode>().Keywords;
-        public string ReturnType => this.Children[0].As<DeclarationSpecifiersNode>().TypeName;
-        public string Identifier => this.Children[1].As<IdentifierNode>().Identifier;
-        public FunctionParametersNode? ParametersNode => this.Children[2] as FunctionParametersNode ?? null;
-        public IEnumerable<FunctionParameterNode>? Parameters => this.ParametersNode?.Parameters;
-        public BlockStatementNode Definition => this.Children[this.Children.Count - 1].As<BlockStatementNode>();
+        public FunctionDeclaratorNode Declarator => this.Children[1].As<FunctionDeclaratorNode>();
+        public string ReturnTypeName => this.Children[0].As<DeclarationSpecifiersNode>().TypeName;
+        public Type? ReturnType => this.Children[0].As<DeclarationSpecifiersNode>().Type;
+        public string Identifier => this.Declarator.Identifier;
+        public FunctionParametersNode? ParametersNode => this.Declarator.Parameters;
+        public IReadOnlyList<FunctionParameterNode>? Parameters => this.ParametersNode?.Parameters;
+        public BlockStatementNode Definition => this.Children[2].As<BlockStatementNode>();
 
 
-        public FunctionDefinitionNode(int line, DeclarationSpecifiersNode declSpecs, IdentifierNode identifier, 
-                                      FunctionParametersNode? @params, BlockStatementNode body)
-            : base(line, @params is null ? new ASTNode[] { declSpecs, identifier, body } : new ASTNode[] { declSpecs, identifier, @params, body })
+        public FunctionDefinitionNode(int line, DeclarationSpecifiersNode declSpecs, FunctionDeclaratorNode decl, BlockStatementNode body)
+            : base(line, declSpecs, decl, body)
         {
 
         }
 
 
         public override string GetText()
-            => $"{this.Keywords} {this.ReturnType} {this.Identifier}({this.ParametersNode?.GetText() ?? ""}) {this.Definition.GetText()}";
+            => $"{this.Keywords} {this.ReturnTypeName} {this.Declarator.GetText()} {this.Definition.GetText()}";
     }
 
     public sealed class FunctionParametersNode : ASTNode
     {
         public IReadOnlyList<FunctionParameterNode> Parameters => this.Children.Cast<FunctionParameterNode>().ToList().AsReadOnly();
      
-        public FunctionParametersNode(int line, IEnumerable<FunctionParameterNode> @params, ASTNode? parent = null)
-            : base(line, @params, parent)
+        public FunctionParametersNode(int line, IEnumerable<FunctionParameterNode> @params)
+            : base(line, @params)
         {
 
         }
@@ -53,8 +54,8 @@ namespace RICC.AST.Nodes
         public string Identifier => this.Children[1].As<IdentifierNode>().Identifier;
 
 
-        public FunctionParameterNode(int line, DeclarationSpecifiersNode declSpecs, IdentifierNode identifier, ASTNode? parent = null)
-            : base(line, parent, declSpecs, identifier)
+        public FunctionParameterNode(int line, DeclarationSpecifiersNode declSpecs, IdentifierNode identifier)
+            : base(line, declSpecs, identifier)
         {
 
         }

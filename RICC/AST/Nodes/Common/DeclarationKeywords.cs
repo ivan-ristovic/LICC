@@ -60,7 +60,7 @@ namespace RICC.AST.Nodes.Common
             }
             if (this.QualifierFlags.HasFlag(QualifierFlags.Static))
                sb.Append("static ");
-            if (this.QualifierFlags.HasFlag(QualifierFlags.Static))
+            if (this.QualifierFlags.HasFlag(QualifierFlags.Const))
                sb.Append("const ");
             if (this.QualifierFlags.HasFlag(QualifierFlags.Volatile))
                sb.Append("volatile ");

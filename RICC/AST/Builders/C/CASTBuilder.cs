@@ -32,11 +32,8 @@ namespace RICC.AST.Builders.C
             TranslationUnitNode tu;
             ASTNode decl = this.Visit(ctx.externalDeclaration());
 
-            if (ctx.translationUnit() is null) {
-                tu = new TranslationUnitNode(new[] { decl });
-                decl.Parent = tu;
-                return tu;
-            }
+            if (ctx.translationUnit() is null)
+                return new TranslationUnitNode(decl);
 
             tu = this.Visit(ctx.translationUnit()).As<TranslationUnitNode>();
             decl.Parent = tu;

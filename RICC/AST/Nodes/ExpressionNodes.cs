@@ -1,57 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using RICC.AST.Nodes.Common;
-using RICC.Exceptions;
 
 namespace RICC.AST.Nodes
 {
     public static class ASTNodeFactory
     {
-        public static ExpressionNode CreateLiteralNode(int line, string value, ASTNode? parent = null)
+        public static ExpressionNode CreateLiteralNode(int line, string value)
         {
             // TODO order
             if (int.TryParse(value, out int res_int))
-                return new LiteralNode(line, res_int, parent);
+                return new LiteralNode(line, res_int);
             else if (bool.TryParse(value, out bool res_bool))
-                return new LiteralNode(line, res_bool, parent);
+                return new LiteralNode(line, res_bool);
             else if (byte.TryParse(value, out byte res_byte))
-                return new LiteralNode(line, res_byte, parent);
+                return new LiteralNode(line, res_byte);
             else if (char.TryParse(value, out char res_char))
-                return new LiteralNode(line, res_char, parent);
+                return new LiteralNode(line, res_char);
             else if (short.TryParse(value, out short res_short))
-                return new LiteralNode(line, res_short, parent);
+                return new LiteralNode(line, res_short);
             else if (ushort.TryParse(value, out ushort res_ushort))
-                return new LiteralNode(line, res_ushort, parent);
+                return new LiteralNode(line, res_ushort);
             else if (uint.TryParse(value, out uint res_uint))
-                return new LiteralNode(line, res_uint, parent);
+                return new LiteralNode(line, res_uint);
             else if (long.TryParse(value, out long res_long))
-                return new LiteralNode(line, res_long, parent);
+                return new LiteralNode(line, res_long);
             else if (ulong.TryParse(value, out ulong res_ulong))
-                return new LiteralNode(line, res_ulong, parent);
+                return new LiteralNode(line, res_ulong);
             else if (double.TryParse(value, out double res_double))
-                return new LiteralNode(line, res_double, parent);
+                return new LiteralNode(line, res_double);
             else if (float.TryParse(value, out float res_float))
-                return new LiteralNode(line, res_float, parent);
+                return new LiteralNode(line, res_float);
             else if (decimal.TryParse(value, out decimal res_decimal))
-                return new LiteralNode(line, res_decimal, parent);
+                return new LiteralNode(line, res_decimal);
             else
-                return new LiteralNode(line, value, parent);
+                return new LiteralNode(line, value);
         }
     }
 
 
     public abstract class ExpressionNode : ASTNode
     {
-        protected ExpressionNode(int line, IEnumerable<ASTNode> children, ASTNode? parent = null)
-            : base(line, children, parent)
+        protected ExpressionNode(int line, IEnumerable<ASTNode> children)
+            : base(line, children)
         {
 
         }
 
-        protected ExpressionNode(int line, ASTNode? parent = null, params ASTNode[] children)
-            : base(line, parent, children)
+        protected ExpressionNode(int line, params ASTNode[] children)
+            : base(line, children)
         {
 
         }
@@ -68,8 +65,8 @@ namespace RICC.AST.Nodes
 
         }
 
-        public ExpressionListNode(int line, IEnumerable<ExpressionNode> expressions, ASTNode? parent = null) 
-            : base(line, expressions, parent)
+        public ExpressionListNode(int line, IEnumerable<ExpressionNode> expressions) 
+            : base(line, expressions)
         {
 
         }
@@ -84,8 +81,8 @@ namespace RICC.AST.Nodes
         public ExpressionNode Operand => this.Children[1].As<ExpressionNode>();
 
 
-        public UnaryExpressionNode(int line, UnaryOperatorNode @operator, ExpressionNode operand, ASTNode? parent = null)
-            : base(line, parent, @operator, operand )
+        public UnaryExpressionNode(int line, UnaryOperatorNode @operator, ExpressionNode operand)
+            : base(line, @operator, operand )
         {
 
         }
@@ -98,8 +95,8 @@ namespace RICC.AST.Nodes
         public ExpressionNode RightOperand => this.Children[2].As<ExpressionNode>();
 
 
-        protected BinaryExpressionNode(int line, ExpressionNode left, BinaryOperatorNode @operator, ExpressionNode right, ASTNode? parent = null)
-            : base(line, parent, left, @operator, right)
+        protected BinaryExpressionNode(int line, ExpressionNode left, BinaryOperatorNode @operator, ExpressionNode right)
+            : base(line, left, @operator, right)
         {
 
         }
@@ -107,8 +104,8 @@ namespace RICC.AST.Nodes
 
     public sealed class ArithmeticExpressionNode : BinaryExpressionNode
     {
-        public ArithmeticExpressionNode(int line, ExpressionNode left, ArithmeticOperatorNode @operator, ExpressionNode right, ASTNode? parent = null)
-            : base(line, left, @operator, right, parent)
+        public ArithmeticExpressionNode(int line, ExpressionNode left, ArithmeticOperatorNode @operator, ExpressionNode right)
+            : base(line, left, @operator, right)
         {
 
         }
@@ -116,8 +113,8 @@ namespace RICC.AST.Nodes
 
     public sealed class LogicExpressionNode : BinaryExpressionNode
     {
-        public LogicExpressionNode(int line, ExpressionNode left, LogicOperatorNode @operator, ExpressionNode right, ASTNode? parent = null)
-            : base(line, left, @operator, right, parent)
+        public LogicExpressionNode(int line, ExpressionNode left, LogicOperatorNode @operator, ExpressionNode right)
+            : base(line, left, @operator, right)
         {
 
         }
@@ -125,8 +122,8 @@ namespace RICC.AST.Nodes
 
     public sealed class RelationalExpressionNode : BinaryExpressionNode
     {
-        public RelationalExpressionNode(int line, ExpressionNode left, RelationalOperatorNode @operator, ExpressionNode right, ASTNode? parent = null)
-            : base(line, left, @operator, right, parent)
+        public RelationalExpressionNode(int line, ExpressionNode left, RelationalOperatorNode @operator, ExpressionNode right)
+            : base(line, left, @operator, right)
         {
 
         }
@@ -137,8 +134,8 @@ namespace RICC.AST.Nodes
         public string Identifier { get; }
 
 
-        public IdentifierNode(int line, string identifier, ASTNode? parent = null)
-            : base(line, parent)
+        public IdentifierNode(int line, string identifier)
+            : base(line)
         {
             if (string.IsNullOrWhiteSpace(identifier))
                 throw new ArgumentException("Identifier name must be set.");
@@ -156,8 +153,8 @@ namespace RICC.AST.Nodes
         public ExpressionNode RightValue => this.Children[2].As<ExpressionNode>();
 
 
-        public AssignmentExpressionNode(int line, ExpressionNode left, AssignmentOperatorNode @operator, ExpressionNode right, ASTNode? parent = null)
-            : base(line, parent, left, @operator, right )
+        public AssignmentExpressionNode(int line, ExpressionNode left, AssignmentOperatorNode @operator, ExpressionNode right)
+            : base(line, left, @operator, right )
         {
 
         }
@@ -169,14 +166,14 @@ namespace RICC.AST.Nodes
         public ExpressionListNode? Arguments => this.Children.ElementAtOrDefault(1)?.As<ExpressionListNode>();
 
 
-        public FunctionCallExpressionNode(int line, IdentifierNode identifier, ASTNode? parent = null)
-            : base(line, parent, identifier)
+        public FunctionCallExpressionNode(int line, IdentifierNode identifier)
+            : base(line, identifier)
         {
 
         }
 
-        public FunctionCallExpressionNode(int line, IdentifierNode identifier, ExpressionListNode parameters, ASTNode? parent = null)
-            : base(line, parent, identifier, parameters )
+        public FunctionCallExpressionNode(int line, IdentifierNode identifier, ExpressionListNode parameters)
+            : base(line, identifier, parameters )
         {
 
         }
@@ -191,8 +188,8 @@ namespace RICC.AST.Nodes
         public TypeCode TypeCode { get; }
 
 
-        public LiteralNode(int line, object value, ASTNode? parent = null)
-            : base(line, parent)
+        public LiteralNode(int line, object value)
+            : base(line)
         {
             this.Value = value;
             this.TypeCode = Type.GetTypeCode(value.GetType());
