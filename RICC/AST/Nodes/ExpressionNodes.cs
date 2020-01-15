@@ -50,8 +50,8 @@ namespace RICC.AST.Nodes
 
         }
 
-        protected ExpressionNode(int line, ASTNode? parent = null)
-            : base(line, parent)
+        protected ExpressionNode(int line, ASTNode? parent = null, params ASTNode[] children)
+            : base(line, parent, children)
         {
 
         }
@@ -62,15 +62,20 @@ namespace RICC.AST.Nodes
         public IEnumerable<ExpressionNode> Expressions => this.Children.Cast<ExpressionNode>();
      
         
-        public ExpressionListNode(int line, params ExpressionNode[] expressions) : base(line, expressions)
+        public ExpressionListNode(int line, params ExpressionNode[] expressions) 
+            : base(line, expressions)
         {
 
         }
 
-        public ExpressionListNode(int line, IEnumerable<ExpressionNode> expressions, ASTNode? parent = null) : base(line, expressions, parent)
+        public ExpressionListNode(int line, IEnumerable<ExpressionNode> expressions, ASTNode? parent = null) 
+            : base(line, expressions, parent)
         {
 
         }
+
+
+        public override string GetText() => string.Join(", ", this.Children.Select(c => c.GetText()));
     }
 
     public class UnaryExpressionNode : ExpressionNode
@@ -80,7 +85,7 @@ namespace RICC.AST.Nodes
 
 
         public UnaryExpressionNode(int line, UnaryOperatorNode @operator, ExpressionNode operand, ASTNode? parent = null)
-            : base(line, new ASTNode[] { @operator, operand }, parent)
+            : base(line, parent, @operator, operand )
         {
 
         }
@@ -94,7 +99,7 @@ namespace RICC.AST.Nodes
 
 
         protected BinaryExpressionNode(int line, ExpressionNode left, BinaryOperatorNode @operator, ExpressionNode right, ASTNode? parent = null)
-            : base(line, new ASTNode[] { left, @operator, right }, parent)
+            : base(line, parent, left, @operator, right)
         {
 
         }
@@ -139,6 +144,9 @@ namespace RICC.AST.Nodes
                 throw new ArgumentException("Identifier name must be set.");
             this.Identifier = identifier;
         }
+
+
+        public override string GetText() => this.Identifier;
     }
 
     public sealed class AssignmentExpressionNode : ExpressionNode
@@ -149,7 +157,7 @@ namespace RICC.AST.Nodes
 
 
         public AssignmentExpressionNode(int line, ExpressionNode left, AssignmentOperatorNode @operator, ExpressionNode right, ASTNode? parent = null)
-            : base(line, new ASTNode[] { left, @operator, right }, parent)
+            : base(line, parent, left, @operator, right )
         {
 
         }
@@ -162,16 +170,19 @@ namespace RICC.AST.Nodes
 
 
         public FunctionCallExpressionNode(int line, IdentifierNode identifier, ASTNode? parent = null)
-            : base(line, new[] { identifier }, parent)
+            : base(line, parent, identifier)
         {
 
         }
 
         public FunctionCallExpressionNode(int line, IdentifierNode identifier, ExpressionListNode parameters, ASTNode? parent = null)
-            : base(line, new ExpressionNode[] { identifier, parameters }, parent )
+            : base(line, parent, identifier, parameters )
         {
 
         }
+     
+        
+        public override string GetText() => $"{this.Identifier}({this.Arguments?.GetText() ?? ""})";
     }
 
     public sealed class LiteralNode : ExpressionNode
@@ -186,5 +197,8 @@ namespace RICC.AST.Nodes
             this.Value = value;
             this.TypeCode = Type.GetTypeCode(value.GetType());
         }
+     
+        
+        public override string GetText() => this.Value?.ToString() ?? "";
     }
 }

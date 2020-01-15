@@ -74,7 +74,7 @@ namespace RICC.Tests.AST.Builders.C
             Assert.That(f.Definition, Is.Not.Null);
             Assert.That(f.Definition, Is.InstanceOf<BlockStatementNode>());
             Assert.That(f.Definition.Parent, Is.EqualTo(f));
-            Assert.That(f.Definition.Children, Has.Count.EqualTo(2));
+            Assert.That(f.Definition.Children, Has.Exactly(2).Items);
         }
 
 
@@ -89,7 +89,7 @@ namespace RICC.Tests.AST.Builders.C
             Assert.That(f.Line, Is.EqualTo(line));
             Assert.That(f.Parent, Is.Not.Null);
             Assert.That(f.Parent, Is.InstanceOf<TranslationUnitNode>());
-            Assert.That(f.Children, Has.Count.EqualTo(@params?.Any() ?? false ? 4 : 3));
+            Assert.That(f.Children, Has.Exactly(@params?.Any() ?? false ? 4 : 3).Items);
             Assert.That(f.DeclarationSpecifiers, Is.EqualTo(declSpecs));
             Assert.That(f.Identifier, Is.EqualTo(fname));
             Assert.That(f.ReturnType, Is.EqualTo(returnType));

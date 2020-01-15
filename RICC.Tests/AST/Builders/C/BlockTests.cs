@@ -50,7 +50,7 @@ namespace RICC.Tests.AST.Builders.C
             ");
             BlockStatementNode block = this.AssertFunctionBlockNotEmpty(ast);
             Assert.That(block.Line, Is.EqualTo(3));
-            Assert.That(block.Children, Has.Count.EqualTo(3));
+            Assert.That(block.Children, Has.Exactly(3).Items);
             Assert.That(block.Children.ElementAt(0), Is.InstanceOf<DeclarationStatementNode>());
             Assert.That(block.Children.ElementAt(1), Is.InstanceOf<IfStatementNode>());
             Assert.That(block.Children.ElementAt(2), Is.InstanceOf<DeclarationStatementNode>());

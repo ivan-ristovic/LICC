@@ -97,9 +97,9 @@ namespace RICC.Tests.AST.Builders.C
             static void AssertArgumentExpressionValue(string f, params object[] argValues)
             {
                 FunctionDefinitionNode fnode = CASTProvider.BuildFromSource(f).Children.First().As<FunctionDefinitionNode>();
-                FunctionCallExpressionNode fcall = fnode.Definition.Children.First().As<FunctionCallExpressionNode>();
+                FunctionCallExpressionNode fcall = fnode.Definition.Children.First().Children.First().As<FunctionCallExpressionNode>();
                 Assert.That(fcall.Identifier, Is.EqualTo(fnode.Identifier));
-                Assert.That(fcall.Parent, Is.EqualTo(fnode.Definition));
+                Assert.That(fcall.Parent, Is.EqualTo(fnode.Definition.Children.First()));
 
                 if (argValues is null || !argValues.Any()) {
                     Assert.That(fcall.Arguments, Is.Null);

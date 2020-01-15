@@ -21,25 +21,22 @@ namespace RICC.AST.Nodes
         public IReadOnlyList<ASTNode> Children { get; }
 
 
-        protected ASTNode(int line, ASTNode? parent = null)
-            : this(line, Enumerable.Empty<ASTNode>(), parent)
+        protected ASTNode(int line, IEnumerable<ASTNode> children, ASTNode? parent = null)
+            : this(line, parent, children.ToArray())
         {
 
         }
 
-        protected ASTNode(int line, IEnumerable<ASTNode> children, ASTNode? parent = null)
+        protected ASTNode(int line, ASTNode? parent = null, params ASTNode[] children)
         {
+            this.Children = children ?? Array.Empty<ASTNode>();
             this.Line = line;
-            this.Children = children.ToList().AsReadOnly();
             this.Parent = parent;
         }
 
-        protected ASTNode(int line, params ASTNode[] children)
-            : this(line, children ?? Array.Empty<ASTNode>(), null)
-        {
 
-        }
-
+        public virtual string GetText() 
+            => string.Join(" ", this.Children.Select(c => c.GetText()));
 
         public T As<T>() where T : ASTNode 
             => this as T ?? throw new NodeMismatchException($"Expected: {typeof(T)}, got: {this.GetType()}");

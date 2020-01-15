@@ -19,6 +19,10 @@ namespace RICC.AST.Nodes
         {
 
         }
+
+
+        public override string GetText()
+            => $"{this.DeclarationSpecifiers.ToJoinedString()} {this.ReturnType} {this.Identifier}({this.Parameters?.GetText() ?? ""}) {this.Definition.GetText()}";
     }
 
     public sealed class FunctionParametersNode : ASTNode
@@ -36,6 +40,9 @@ namespace RICC.AST.Nodes
         {
 
         }
+     
+        
+        public override string GetText() => string.Join(", ", this.Children.Select(c => c.GetText()));
     }
 
     public class FunctionParameterNode : ASTNode
@@ -45,7 +52,7 @@ namespace RICC.AST.Nodes
 
 
         public FunctionParameterNode(int line, DeclarationSpecifiersNode declSpecs, IdentifierNode identifier, ASTNode? parent = null)
-            : base(line, new ASTNode[] { declSpecs, identifier }, parent)
+            : base(line, parent, declSpecs, identifier)
         {
 
         }

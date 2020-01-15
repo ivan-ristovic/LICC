@@ -118,7 +118,7 @@ namespace RICC.Tests.AST.Builders.C
                                                object? value = null) 
         {
             DeclarationStatementNode decl = node.As<DeclarationStatementNode>();
-            Assert.That(decl.Children, Has.Count.EqualTo(2));
+            Assert.That(decl.Children, Has.Exactly(2).Items);
 
             DeclarationSpecifiersNode declSpecsNode = decl.Children.ElementAt(0).As<DeclarationSpecifiersNode>();
             Assert.That(declSpecsNode.Parent, Is.EqualTo(decl));
@@ -146,7 +146,7 @@ namespace RICC.Tests.AST.Builders.C
                                                    params (string Identifier, object? value)[] vars)
         {
             DeclarationStatementNode decl = node.As<DeclarationStatementNode>();
-            Assert.That(decl.Children, Has.Count.EqualTo(2));
+            Assert.That(decl.Children, Has.Exactly(2).Items);
 
             DeclarationSpecifiersNode declSpecsNode = decl.Children.ElementAt(0).As<DeclarationSpecifiersNode>();
             Assert.That(declSpecsNode.Parent, Is.EqualTo(decl));

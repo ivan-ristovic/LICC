@@ -13,6 +13,9 @@ namespace RICC.AST.Nodes
         {
             this.Symbol = symbol;
         }
+
+
+        public override string GetText() => this.Symbol;
     }
 
     public abstract class BinaryOperatorNode : OperatorNode

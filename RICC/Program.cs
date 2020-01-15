@@ -20,6 +20,7 @@ namespace RICC
             ASTNode srcTree = ASTFactory.BuildFromFile("Samples/func.c");
             ASTNode dstTree = ASTFactory.BuildFromFile("Samples/hello.c");
             System.IO.File.WriteAllText("src.json", srcTree.ToJson());
+            Console.WriteLine(srcTree.GetText());
             var comparer = new ComparerAlgorithm(srcTree, dstTree);
             comparer.Execute();
             // end test

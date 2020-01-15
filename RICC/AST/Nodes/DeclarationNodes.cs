@@ -24,6 +24,9 @@ namespace RICC.AST.Nodes
             else
                 this.Type = Types.ToType(typeCode.Value);
         }
+
+
+        public override string GetText() => $"{this.Specifiers.ToJoinedString()} {this.TypeName}";
     }
 
     public abstract class DeclarationNode : ASTNode
@@ -34,17 +37,17 @@ namespace RICC.AST.Nodes
 
         }
 
-        protected DeclarationNode(int line, ASTNode? parent = null)
-            : base(line, parent)
+        protected DeclarationNode(int line, ASTNode? parent = null, params ASTNode[] children)
+            : base(line, parent, children)
         {
 
         }
     }
 
-    public class DeclarationStatementNode : StatementNode
+    public class DeclarationStatementNode : SimpleStatementNode
     {
         public DeclarationStatementNode(int line, DeclarationSpecifiersNode declSpecs, DeclarationNode decl, ASTNode? parent = null)
-            : base(line, new ASTNode[] { declSpecs, decl }, parent)
+            : base(line, parent, declSpecs, decl)
         {
 
         }
@@ -55,7 +58,8 @@ namespace RICC.AST.Nodes
         public IEnumerable<DeclarationNode> Declarations => this.Children.Cast<DeclarationNode>();
 
 
-        public DeclarationListNode(int line, params DeclarationNode[] declarations) : base(line, declarations)
+        public DeclarationListNode(int line, params DeclarationNode[] declarations) 
+            : base(line, declarations)
         {
 
         }
@@ -78,6 +82,9 @@ namespace RICC.AST.Nodes
         {
 
         }
+
+
+        public override string GetText() => this.Initializer is null ? this.Identifier : $"{this.Identifier} = {this.Initializer.GetText()}";
     }
 
     public sealed class FunctionDeclarationNode : DeclarationNode
@@ -89,10 +96,14 @@ namespace RICC.AST.Nodes
         public FunctionParametersNode? Parameters => this.Children[2] as FunctionParametersNode ?? null;
 
         public FunctionDeclarationNode(int line, DeclarationSpecifiersNode declSpecs, IdentifierNode identifier, FunctionParametersNode? @params)
-            : base(line, @params is null ? new ASTNode[] { declSpecs, identifier} : new ASTNode[] { declSpecs, identifier, @params })
+            : base(line, @params is null ? new ASTNode[] { declSpecs, identifier } : new ASTNode[] { declSpecs, identifier, @params })
         {
 
         }
+
+
+        public override string GetText()
+            => $"{this.DeclarationSpecifiers.ToJoinedString()} {this.ReturnTypeName} {this.Identifier}({this.Parameters?.GetText() ?? ""})";
     }
 
 }

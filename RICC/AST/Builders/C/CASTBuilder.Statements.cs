@@ -38,8 +38,28 @@ namespace RICC.AST.Builders.C
         public override ASTNode VisitStatement([NotNull] StatementContext ctx)
             => this.Visit(ctx.children.Single());
 
+        public override ASTNode VisitLabeledStatement([NotNull] LabeledStatementContext ctx)
+        {
+            if (ctx.Identifier() is null)
+                throw new NotImplementedException();
+
+            string label = ctx.Identifier().GetText();
+            StatementNode statement = this.Visit(ctx.statement()).As<StatementNode>();
+            var labeledStatement = new LabeledStatementNode(ctx.Start.Line, label, statement);
+            statement.Parent = labeledStatement;
+            return labeledStatement;
+        }
+
         public override ASTNode VisitExpressionStatement([NotNull] ExpressionStatementContext ctx)
-            => ctx.expression() is null ? new EmptyStatementNode(ctx.Start.Line) : this.Visit(ctx.expression());
+        {
+            if (ctx.expression() is null)
+                return new EmptyStatementNode(ctx.Start.Line);
+
+            ExpressionNode expr = this.Visit(ctx.expression()).As<ExpressionNode>();
+            var exprStatement = new ExpressionStatementNode(ctx.Start.Line, expr);
+            expr.Parent = exprStatement;
+            return exprStatement;
+        }
 
         public override ASTNode VisitSelectionStatement([NotNull] SelectionStatementContext ctx)
         {
@@ -47,20 +67,20 @@ namespace RICC.AST.Builders.C
                 case "if":
                     ExpressionNode expr = this.Visit(ctx.expression()).As<ExpressionNode>();
                     StatementContext[] statements = ctx.statement();
-                    BlockStatementNode thenBlock = this.Visit(statements.First()).As<BlockStatementNode>();
-                    BlockStatementNode? elseBlock = statements.Length > 1 ? this.Visit(statements.Last()).As<BlockStatementNode>() : null;
+                    StatementNode thenStatement = this.Visit(statements.First()).As<StatementNode>();
+                    StatementNode? elseStatement = statements.Length > 1 ? this.Visit(statements.Last()).As<StatementNode>() : null;
 
                     if (expr is LogicExpressionNode) {
                         LogicExpressionNode condition = expr.As<LogicExpressionNode>();
-                        return new IfStatementNode(ctx.Start.Line, condition, thenBlock, elseBlock);
+                        return new IfStatementNode(ctx.Start.Line, condition, thenStatement, elseStatement);
                     } else if (expr is RelationalExpressionNode) {
                         RelationalExpressionNode condition = expr.As<RelationalExpressionNode>();
-                        return new IfStatementNode(ctx.Start.Line, condition, thenBlock, elseBlock);
+                        return new IfStatementNode(ctx.Start.Line, condition, thenStatement, elseStatement);
                     } else {
                         var op = new RelationalOperatorNode(expr.Line, "!=", BinaryOperations.NotEqualsPrimitive);
                         var right = new LiteralNode(expr.Line, 0);
                         var condition = new RelationalExpressionNode(expr.Line, expr, op, right);
-                        return new IfStatementNode(ctx.Start.Line, condition, thenBlock, elseBlock);
+                        return new IfStatementNode(ctx.Start.Line, condition, thenStatement, elseStatement);
                     }
                 case "switch":
                     throw new NotImplementedException();  // TODO 

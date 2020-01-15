@@ -5,6 +5,9 @@
 	signed int k = 3 + 4 * (5 - 6);
 	char* s = "abcd";
 	double w = 3.4 * 7.11 / 2.33;
+label:
+	x = 4;
+	goto label;
 	return a + b + x + y;
 }
 
@@ -14,7 +17,7 @@ extern int foo(
 {
 	bool b = 3 > 4 && 3 < 5 || 4 >= 2;
 	if (5 > 3) {
-		b = 1 != 1
+		b = 1 != 1;
 	} else {
 		float y;
 		y = 3.2;
@@ -25,6 +28,9 @@ extern int foo(
 		c = b;
 		f(3, 4);
 	}
+
+	if (1)
+		b = 1 >= 1;
 
 	;
 

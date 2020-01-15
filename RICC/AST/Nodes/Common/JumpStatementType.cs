@@ -24,7 +24,7 @@ namespace RICC.AST.Nodes.Common
             };
         }
 
-        public static string ToStringToken(JumpStatementType type)
+        public static string ToStringToken(this JumpStatementType type)
         {
             return type switch
             {
@@ -35,8 +35,5 @@ namespace RICC.AST.Nodes.Common
                 _ => throw new ArgumentException("Invalid jump statement value"),
             };
         }
-
-        public static string ToString(this JumpStatementType type)
-            => ToStringToken(type);
     }
 }
