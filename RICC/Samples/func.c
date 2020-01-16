@@ -13,9 +13,7 @@ label:
 	return a + b + x + y;
 }
 
-extern int foo(
-	const float bar, ...
-)
+extern int foo(const float bar, int x, float y, signed int z, unsigned long long k, ...) 
 {
 	const time_t elapsed_time = time(NULL);
 
@@ -39,4 +37,12 @@ extern int foo(
 	;
 
 	return 5;
+}
+
+static const int x = 7;
+static float y, z = 3;
+
+int main() 
+{
+	return 0;
 }

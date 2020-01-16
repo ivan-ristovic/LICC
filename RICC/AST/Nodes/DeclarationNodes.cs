@@ -119,7 +119,7 @@ namespace RICC.AST.Nodes
     public sealed class FunctionDeclaratorNode : DeclarationNode
     {
         public string Identifier => this.Children[0].As<IdentifierNode>().Identifier;
-        public FunctionParametersNode? Parameters => this.Children[1] as FunctionParametersNode ?? null;
+        public FunctionParametersNode? Parameters => this.Children.ElementAtOrDefault(1) as FunctionParametersNode ?? null;
 
         public FunctionDeclaratorNode(int line, IdentifierNode identifier, FunctionParametersNode? @params)
             : base(line, @params is null ? new[] { identifier } : new ASTNode[] { identifier, @params })
