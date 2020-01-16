@@ -96,30 +96,13 @@ namespace RICC.AST.Nodes
         public override string GetText() => this.Initializer is null ? this.Identifier : $"{this.Identifier} = {this.Initializer.GetText()}";
     }
 
-    public sealed class FunctionDeclarationNode : DeclarationNode
-    {
-        public DeclarationKeywords Keywords => this.Children[0].As<DeclarationSpecifiersNode>().Keywords;
-        public FunctionDeclaratorNode Declarator => this.Children[1].As<FunctionDeclaratorNode>();
-        public string ReturnTypeName => this.Children[0].As<DeclarationSpecifiersNode>().TypeName;
-        public Type? ReturnType => this.Children[0].As<DeclarationSpecifiersNode>().Type;
-        public string Identifier => this.Declarator.Identifier;
-        public FunctionParametersNode? Parameters => this.Declarator.Parameters;
-
-        public FunctionDeclarationNode(int line, DeclarationSpecifiersNode declSpecs, FunctionDeclaratorNode decl)
-            : base(line, declSpecs, decl)
-        {
-
-        }
-
-
-        public override string GetText()
-            => $"{this.Keywords} {this.ReturnTypeName} {this.Declarator.GetText()}";
-    }
-
     public sealed class FunctionDeclaratorNode : DeclarationNode
     {
         public string Identifier => this.Children[0].As<IdentifierNode>().Identifier;
-        public FunctionParametersNode? Parameters => this.Children.ElementAtOrDefault(1) as FunctionParametersNode ?? null;
+        public bool IsVariadic => this.ParametersNode?.IsVariadic ?? false;
+        public FunctionParametersNode? ParametersNode => this.Children.ElementAtOrDefault(1) as FunctionParametersNode ?? null;
+        public IReadOnlyList<FunctionParameterNode>? Parameters => this.ParametersNode?.Parameters;
+
 
         public FunctionDeclaratorNode(int line, IdentifierNode identifier, FunctionParametersNode? @params)
             : base(line, @params is null ? new[] { identifier } : new ASTNode[] { identifier, @params })
@@ -129,6 +112,6 @@ namespace RICC.AST.Nodes
 
 
         public override string GetText()
-            => $"{this.Identifier}({this.Parameters?.GetText() ?? ""})";
+            => $"{this.Identifier}({this.ParametersNode?.GetText() ?? ""})";
     }
 }

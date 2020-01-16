@@ -42,12 +42,29 @@ namespace RICC.Tests.AST.Builders.C
         }
 
         [Test]
-        public void SimpleFunctionDeclarationTest()
+        public void FunctionDeclarationNoParamsTest()
         {
-            // TODO when function declarations are done
-            Assert.Inconclusive();
+            ASTNode ast1 = CASTProvider.BuildFromSource("void f();");
+            this.AssertFunctionDeclaration(ast1, "f", "void");
 
-            // ASTNode ast = CASTProvider.BuildFromSource("void f();");
+            ASTNode ast2 = CASTProvider.BuildFromSource("extern static void f();");
+            this.AssertFunctionDeclaration(ast2, "f", "void", AccessModifiers.Public, QualifierFlags.Static);
+        }
+
+        [Test]
+        public void FunctionDeclarationVariadicTest()
+        {
+            ASTNode ast = CASTProvider.BuildFromSource("void f(const int x, ...);");
+            this.AssertFunctionDeclaration(ast, "f", "void", isVariadic: true, @params: (QualifierFlags.Const, "int", "x"));
+        }
+
+        [Test]
+        public void ComplexFunctionDeclarationTest()
+        {
+            ASTNode ast = CASTProvider.BuildFromSource("extern static time_t f(int x, const volatile unsigned long long y, ...);");
+            this.AssertFunctionDeclaration(ast, "f", "time_t", AccessModifiers.Public, QualifierFlags.Static, true, 
+                (QualifierFlags.None, "int", "x"), (QualifierFlags.Const | QualifierFlags.Volatile, "unsigned long long", "y")
+            );
         }
 
         [Test]
@@ -134,11 +151,14 @@ namespace RICC.Tests.AST.Builders.C
             Assert.That(var.Parent, Is.EqualTo(declList));
             Assert.That(var.Identifier, Is.EqualTo(identifier));
             Assert.That(var.Children.First().As<IdentifierNode>().Identifier, Is.EqualTo(identifier));
-            if (var.Initializer is { }) {
-                Assert.That(var.Initializer.Parent, Is.EqualTo(var));
+            if (value is { }) {
+                Assert.That(var.Initializer, Is.Not.Null);
+                Assert.That(var.Initializer!.Parent, Is.EqualTo(var));
                 Assert.That(ExpressionEvaluator.TryEvaluateAs(var.Initializer, out object? result));
                 Assert.That(result, Is.Not.Null);
                 Assert.That(result, Is.EqualTo(value).Within(1e-10));
+            } else {
+                Assert.That(var.Initializer, Is.Null);
             }
         }
 
@@ -146,7 +166,7 @@ namespace RICC.Tests.AST.Builders.C
                                                    string type,
                                                    AccessModifiers access = AccessModifiers.Unspecified,
                                                    QualifierFlags qualifiers = QualifierFlags.None,
-                                                   params (string Identifier, object? value)[] vars)
+                                                   params (string Identifier, object? Value)[] vars)
         {
             DeclarationStatementNode decl = node.As<DeclarationStatementNode>();
             Assert.That(decl.Children, Has.Exactly(2).Items);
@@ -168,6 +188,44 @@ namespace RICC.Tests.AST.Builders.C
                 VariableDeclarationNode var = declNode.As<VariableDeclarationNode>();
                 return var.Initializer is null ? (var.Identifier, (object?)null)
                                                : (var.Identifier, ExpressionEvaluator.Evaluate(var.Initializer));
+            }
+        }
+
+        private void AssertFunctionDeclaration(ASTNode node,
+                                               string fname,
+                                               string returnType,
+                                               AccessModifiers access = AccessModifiers.Unspecified,
+                                               QualifierFlags qualifiers = QualifierFlags.None,
+                                               bool isVariadic = false,
+                                               params (QualifierFlags Qualifiers, string Type, string Identifier)[] @params)
+        {
+            DeclarationStatementNode decl = node.Children.First().As<DeclarationStatementNode>();
+            Assert.That(decl.Children, Has.Exactly(2).Items);
+
+            DeclarationSpecifiersNode declSpecsNode = decl.Children.ElementAt(0).As<DeclarationSpecifiersNode>();
+            Assert.That(declSpecsNode.Parent, Is.EqualTo(decl));
+            Assert.That(declSpecsNode.Keywords.AccessModifiers, Is.EqualTo(access));
+            Assert.That(declSpecsNode.Keywords.QualifierFlags, Is.EqualTo(qualifiers));
+            Assert.That(declSpecsNode.TypeName, Is.EqualTo(returnType));
+            Assert.That(declSpecsNode.Children, Is.Empty);
+
+            FunctionDeclaratorNode fdecl = node.Children.First().Children.Last().Children.First().As<FunctionDeclaratorNode>();
+            Assert.That(fdecl.Identifier, Is.EqualTo(fname));
+            Assert.That(fdecl.IsVariadic, Is.EqualTo(isVariadic));
+            if (@params.Any()) {
+                Assert.That(fdecl.Parameters, Is.Not.Null);
+                Assert.That(fdecl.Parameters.Select(p => ExtractParamInfo(p)), Is.EqualTo(@params));
+            } else {
+                Assert.That(fdecl.Parameters, Is.Null);
+            }
+
+
+            static (QualifierFlags, string, string) ExtractParamInfo(FunctionParameterNode param)
+            {
+                Assert.That(param.DeclarationSpecifiers.Keywords.AccessModifiers, Is.EqualTo(AccessModifiers.Unspecified));
+                QualifierFlags qf = param.DeclarationSpecifiers.Keywords.QualifierFlags;
+                string type = param.DeclarationSpecifiers.TypeName;
+                return (qf, type, param.Identifier);
             }
         }
     }

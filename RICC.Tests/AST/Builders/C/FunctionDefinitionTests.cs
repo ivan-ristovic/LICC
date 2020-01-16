@@ -68,6 +68,7 @@ namespace RICC.Tests.AST.Builders.C
                 }
             ");
             FunctionDefinitionNode f = ast.Children.Single().As<FunctionDefinitionNode>();
+            Assert.That(f.IsVariadic, Is.True);
             this.AssertFunctionSignature(f, 2, "f", "float", @params: ("unsigned int", "x"));
 
             Assert.That(f.Definition, Is.Not.Null);
@@ -92,13 +93,16 @@ namespace RICC.Tests.AST.Builders.C
             Assert.That(f.Line, Is.EqualTo(line));
             Assert.That(f.Parent, Is.Not.Null);
             Assert.That(f.Parent, Is.InstanceOf<TranslationUnitNode>());
+            Assert.That(f.Declarator, Is.Not.Null);
             Assert.That(f.Keywords.AccessModifiers, Is.EqualTo(access));
             Assert.That(f.Keywords.QualifierFlags, Is.EqualTo(qualifiers));
             Assert.That(f.Identifier, Is.EqualTo(fname));
             Assert.That(f.ReturnTypeName, Is.EqualTo(returnType));
             if (@params?.Any() ?? false) {
+                Assert.That(f.Parameters, Is.Not.Null);
+                Assert.That(f.Parameters, Has.Exactly(@params.Length).Items);
                 Assert.That(f.ParametersNode, Is.Not.Null);
-                Assert.That(f.ParametersNode!.Parameters.Select(p => (p.DeclarationSpecifiers.TypeName, p.Identifier)), Is.EqualTo(@params));
+                Assert.That(f.Parameters.Select(p => (p.DeclarationSpecifiers.TypeName, p.Identifier)), Is.EqualTo(@params));
             }
         }
     }

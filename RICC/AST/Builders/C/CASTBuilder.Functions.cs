@@ -34,8 +34,10 @@ namespace RICC.AST.Builders.C
             if (ctx.Identifier() is { } && ctx.ChildCount == 1)
                 return new IdentifierNode(ctx.Start.Line, ctx.Identifier()?.ToString() ?? "<unknown_name>");
 
-            if (ctx.parameterTypeList() is { }) {
-                FunctionParametersNode @params = this.Visit(ctx.parameterTypeList()).As<FunctionParametersNode>();
+            if (ctx.parameterTypeList() is { } || (ctx.ChildCount >= 3 && AreParenTokensPresent(ctx))) {
+                FunctionParametersNode? @params = null; 
+                if (ctx.parameterTypeList() is { })
+                    @params = this.Visit(ctx.parameterTypeList()).As<FunctionParametersNode>();
                 IdentifierNode fname = this.Visit(ctx.directDeclarator()).As<IdentifierNode>();
                 return new FunctionDeclaratorNode(ctx.Start.Line, fname, @params);
             } else if (ctx.identifierList() is { }) {
@@ -45,6 +47,10 @@ namespace RICC.AST.Builders.C
             // TODO array declaration
 
             return this.Visit(ctx.directDeclarator());
+
+
+            static bool AreParenTokensPresent(DirectDeclaratorContext ctx)
+                => ctx.GetToken(LeftParen, 0) is { } && ctx.GetToken(RightParen, 0) is { };
         }
 
         public override ASTNode VisitDeclarationSpecifiers([NotNull] DeclarationSpecifiersContext ctx)

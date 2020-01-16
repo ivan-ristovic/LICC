@@ -12,10 +12,10 @@ namespace RICC.AST.Nodes
         public string ReturnTypeName => this.Children[0].As<DeclarationSpecifiersNode>().TypeName;
         public Type? ReturnType => this.Children[0].As<DeclarationSpecifiersNode>().Type;
         public string Identifier => this.Declarator.Identifier;
-        public FunctionParametersNode? ParametersNode => this.Declarator.Parameters;
+        public bool IsVariadic => this.Declarator.IsVariadic;
+        public FunctionParametersNode? ParametersNode => this.Declarator.ParametersNode;
         public IReadOnlyList<FunctionParameterNode>? Parameters => this.ParametersNode?.Parameters;
         public BlockStatementNode Definition => this.Children[2].As<BlockStatementNode>();
-        public bool IsVariadic => this.ParametersNode?.IsVariadic ?? false;
 
 
         public FunctionDefinitionNode(int line, DeclarationSpecifiersNode declSpecs, FunctionDeclaratorNode decl, BlockStatementNode body)
