@@ -90,7 +90,7 @@ namespace RICC.AST.Builders.C
                 throw new NotImplementedException();
 
             DeclarationSpecifiersNode declSpecs = this.Visit(ctx.declarationSpecifiers()).As<DeclarationSpecifiersNode>();
-            DeclarationListNode var = this.Visit(ctx.initDeclaratorList()).As<DeclarationListNode>();
+            DeclaratorListNode var = this.Visit(ctx.initDeclaratorList()).As<DeclaratorListNode>();
             return new DeclarationStatementNode(ctx.Start.Line, declSpecs, var);
         }
 
@@ -111,14 +111,14 @@ namespace RICC.AST.Builders.C
 
         public override ASTNode VisitInitDeclaratorList([NotNull] InitDeclaratorListContext ctx)
         {
-            DeclarationNode decl = this.Visit(ctx.initDeclarator()).As<DeclarationNode>();
+            DeclaratorNode decl = this.Visit(ctx.initDeclarator()).As<DeclaratorNode>();
 
             if (ctx.initDeclaratorList() is null) 
-                return new DeclarationListNode(ctx.Start.Line, decl);
+                return new DeclaratorListNode(ctx.Start.Line, decl);
 
-            DeclarationListNode list = this.Visit(ctx.initDeclaratorList()).As<DeclarationListNode>();
+            DeclaratorListNode list = this.Visit(ctx.initDeclaratorList()).As<DeclaratorListNode>();
             decl.Parent = list;
-            return new DeclarationListNode(ctx.Start.Line, list.Declarations.Concat(new[] { decl }));
+            return new DeclaratorListNode(ctx.Start.Line, list.Declarations.Concat(new[] { decl }));
         }
 
         public override ASTNode VisitInitDeclarator([NotNull] InitDeclaratorContext ctx)
@@ -129,7 +129,7 @@ namespace RICC.AST.Builders.C
                 init = this.Visit(ctx.initializer()).As<ExpressionNode>();
 
             if (declarator is IdentifierNode var)
-                return new VariableDeclarationNode(ctx.Start.Line, var, init);
+                return new VariableDeclaratorNode(ctx.Start.Line, var, init);
 
             return declarator;
         }

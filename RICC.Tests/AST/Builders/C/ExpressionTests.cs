@@ -144,9 +144,9 @@ namespace RICC.Tests.AST.Builders.C
             ASTNode ast = CASTProvider.BuildFromSource(decl);
             ExpressionNode? init = ast.Children
                 .First().As<DeclarationStatementNode>()
-                .Children.ElementAt(1).As<DeclarationListNode>()
+                .Children.ElementAt(1).As<DeclaratorListNode>()
                 .Declarations
-                .First().As<VariableDeclarationNode>()
+                .First().As<VariableDeclaratorNode>()
                 .Initializer;
 
             if (init is null)

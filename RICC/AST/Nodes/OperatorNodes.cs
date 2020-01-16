@@ -21,10 +21,7 @@ namespace RICC.AST.Nodes
     public abstract class BinaryOperatorNode : OperatorNode
     {
         protected BinaryOperatorNode(int line, string symbol)
-            : base(line, symbol)
-        {
-
-        }
+            : base(line, symbol) { }
     }
 
     public sealed class UnaryOperatorNode : OperatorNode

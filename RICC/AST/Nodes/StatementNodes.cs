@@ -8,17 +8,11 @@ namespace RICC.AST.Nodes
 {
     public abstract class StatementNode : ASTNode
     {
-        protected StatementNode(int line, IEnumerable<ASTNode> children) 
-            : base(line, children)
-        {
-
-        }
+        protected StatementNode(int line, IEnumerable<ASTNode> children)
+            : base(line, children) { }
 
         protected StatementNode(int line, params ASTNode[] children)
-            : base(line, children)
-        {
-
-        }
+            : base(line, children) { }
 
 
         public override string GetText() => $"{base.GetText()};";
@@ -27,55 +21,40 @@ namespace RICC.AST.Nodes
     public sealed class EmptyStatementNode : StatementNode
     {
         public EmptyStatementNode(int line)
-            : base(line)
-        {
-
-        }
+            : base(line) { }
     }
 
     public abstract class SimpleStatementNode : StatementNode
     {
         protected SimpleStatementNode(int line, IEnumerable<ASTNode> children)
-            : base(line, children)
-        {
-
-        }
+            : base(line, children) { }
 
         protected SimpleStatementNode(int line, params ASTNode[] children)
-            : base(line, children)
-        {
+            : base(line, children) { }
+    }
 
-        }
+    public class DeclarationStatementNode : SimpleStatementNode
+    {
+        public DeclarationStatementNode(int line, DeclarationSpecifiersNode declSpecs, DeclaratorListNode declList)
+            : base(line, declSpecs, declList) { }
     }
 
     public abstract class CompoundStatementNode : StatementNode
     {
         protected CompoundStatementNode(int line, IEnumerable<ASTNode> children)
-            : base(line, children)
-        {
-
-        }
+            : base(line, children) { }
 
         protected CompoundStatementNode(int line, params ASTNode[] children)
-            : base(line, children)
-        {
-
-        }
+            : base(line, children) { }
     }
 
     public sealed class BlockStatementNode : CompoundStatementNode
     {
         public BlockStatementNode(int line, IEnumerable<ASTNode> children)
-            : base(line, children)
-        {
-
-        }
+            : base(line, children) { }
 
         public BlockStatementNode(int line, params ASTNode[] children)
-            : base(line, children)
-        {
-
-        }
+            : base(line, children) { }
 
 
         public override string GetText() => $"{{ {string.Join(" ", this.Children.Select(c => c.GetText()))} }}";
@@ -88,10 +67,7 @@ namespace RICC.AST.Nodes
 
 
         public ExpressionStatementNode(int line, ExpressionNode expr)
-            : base(line, expr)
-        {
-
-        }
+            : base(line, expr) { }
     }
 
     public sealed class IfStatementNode : CompoundStatementNode
@@ -103,20 +79,14 @@ namespace RICC.AST.Nodes
         public StatementNode ThenStatement => this.Children[1].As<StatementNode>();
         
         [JsonIgnore]
-        public StatementNode? ElseStatement => this.Children.Count > 2 ? this.Children[2].As<StatementNode>() : null;
+        public StatementNode? ElseStatement => this.Children.ElementAtOrDefault(2)?.As<StatementNode>() ?? null;
 
 
         public IfStatementNode(int line, LogicExpressionNode condition, StatementNode thenBlock, StatementNode? elseBlock = null)
-            : base(line, elseBlock is null ? new ASTNode[] { condition, thenBlock } : new ASTNode[] { condition, thenBlock, elseBlock })
-        {
-
-        }
+            : base(line, elseBlock is null ? new ASTNode[] { condition, thenBlock } : new ASTNode[] { condition, thenBlock, elseBlock }) { }
 
         public IfStatementNode(int line, RelationalExpressionNode condition, StatementNode thenBlock, StatementNode? elseBlock = null)
-            : base(line, elseBlock is null ? new ASTNode[] { condition, thenBlock } : new ASTNode[] { condition, thenBlock, elseBlock })
-        {
-
-        }
+            : base(line, elseBlock is null ? new ASTNode[] { condition, thenBlock } : new ASTNode[] { condition, thenBlock, elseBlock }) { }
 
 
         public override string GetText() 

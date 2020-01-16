@@ -145,9 +145,9 @@ namespace RICC.Tests.AST.Builders.C
             Assert.That(declSpecsNode.TypeName, Is.EqualTo(type));
             Assert.That(declSpecsNode.Children, Is.Empty);
 
-            DeclarationListNode declList = decl.Children.ElementAt(1).As<DeclarationListNode>();
+            DeclaratorListNode declList = decl.Children.ElementAt(1).As<DeclaratorListNode>();
             Assert.That(declList.Parent, Is.EqualTo(decl));
-            VariableDeclarationNode var = declList.Declarations.First().As<VariableDeclarationNode>();
+            VariableDeclaratorNode var = declList.Declarations.First().As<VariableDeclaratorNode>();
             Assert.That(var.Parent, Is.EqualTo(declList));
             Assert.That(var.Identifier, Is.EqualTo(identifier));
             Assert.That(var.Children.First().As<IdentifierNode>().Identifier, Is.EqualTo(identifier));
@@ -178,14 +178,14 @@ namespace RICC.Tests.AST.Builders.C
             Assert.That(declSpecsNode.TypeName, Is.EqualTo(type));
             Assert.That(declSpecsNode.Children, Is.Empty);
 
-            DeclarationListNode declList = decl.Children.ElementAt(1).As<DeclarationListNode>();
+            DeclaratorListNode declList = decl.Children.ElementAt(1).As<DeclaratorListNode>();
             Assert.That(declList.Parent, Is.EqualTo(decl));
             Assert.That(declList.Declarations.Select(var => ExtractIdentifierAndValue(var)), Is.EqualTo(vars).Within(1e-10));
 
 
             static (string, object?) ExtractIdentifierAndValue(DeclarationNode declNode)
             {
-                VariableDeclarationNode var = declNode.As<VariableDeclarationNode>();
+                VariableDeclaratorNode var = declNode.As<VariableDeclaratorNode>();
                 return var.Initializer is null ? (var.Identifier, (object?)null)
                                                : (var.Identifier, ExpressionEvaluator.Evaluate(var.Initializer));
             }

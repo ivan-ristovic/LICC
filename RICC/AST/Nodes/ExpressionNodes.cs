@@ -43,35 +43,23 @@ namespace RICC.AST.Nodes
     public abstract class ExpressionNode : ASTNode
     {
         protected ExpressionNode(int line, IEnumerable<ASTNode> children)
-            : base(line, children)
-        {
-
-        }
+            : base(line, children) { }
 
         protected ExpressionNode(int line, params ASTNode[] children)
-            : base(line, children)
-        {
-
-        }
+            : base(line, children) { }
     }
 
     public sealed class ExpressionListNode : ExpressionNode
     {
         [JsonIgnore]
         public IEnumerable<ExpressionNode> Expressions => this.Children.Cast<ExpressionNode>();
-     
-        
-        public ExpressionListNode(int line, params ExpressionNode[] expressions) 
-            : base(line, expressions)
-        {
 
-        }
 
-        public ExpressionListNode(int line, IEnumerable<ExpressionNode> expressions) 
-            : base(line, expressions)
-        {
+        public ExpressionListNode(int line, params ExpressionNode[] expressions)
+            : base(line, expressions) { }
 
-        }
+        public ExpressionListNode(int line, IEnumerable<ExpressionNode> expressions)
+            : base(line, expressions) { }
 
 
         public override string GetText() => string.Join(", ", this.Children.Select(c => c.GetText()));
@@ -87,10 +75,7 @@ namespace RICC.AST.Nodes
 
 
         public UnaryExpressionNode(int line, UnaryOperatorNode @operator, ExpressionNode operand)
-            : base(line, @operator, operand )
-        {
-
-        }
+            : base(line, @operator, operand) { }
     }
 
     public abstract class BinaryExpressionNode : ExpressionNode
@@ -106,46 +91,31 @@ namespace RICC.AST.Nodes
 
 
         protected BinaryExpressionNode(int line, ExpressionNode left, BinaryOperatorNode @operator, ExpressionNode right)
-            : base(line, left, @operator, right)
-        {
-
-        }
+            : base(line, left, @operator, right) { }
     }
 
     public sealed class ArithmeticExpressionNode : BinaryExpressionNode
     {
         public ArithmeticExpressionNode(int line, ExpressionNode left, ArithmeticOperatorNode @operator, ExpressionNode right)
-            : base(line, left, @operator, right)
-        {
-
-        }
+            : base(line, left, @operator, right) { }
     }
 
     public sealed class LogicExpressionNode : BinaryExpressionNode
     {
         public LogicExpressionNode(int line, ExpressionNode left, LogicOperatorNode @operator, ExpressionNode right)
-            : base(line, left, @operator, right)
-        {
-
-        }
+            : base(line, left, @operator, right) { }
     }
 
     public sealed class RelationalExpressionNode : BinaryExpressionNode
     {
         public RelationalExpressionNode(int line, ExpressionNode left, RelationalOperatorNode @operator, ExpressionNode right)
-            : base(line, left, @operator, right)
-        {
-
-        }
+            : base(line, left, @operator, right) { }
     }
 
     public sealed class AssignmentExpressionNode : BinaryExpressionNode
     {
         public AssignmentExpressionNode(int line, ExpressionNode left, AssignmentOperatorNode @operator, ExpressionNode right)
-            : base(line, left, @operator, right)
-        {
-
-        }
+            : base(line, left, @operator, right) { }
     }
 
     public sealed class IdentifierNode : ExpressionNode
@@ -175,16 +145,10 @@ namespace RICC.AST.Nodes
 
 
         public FunctionCallExpressionNode(int line, IdentifierNode identifier)
-            : base(line, identifier)
-        {
-
-        }
+            : base(line, identifier) { }
 
         public FunctionCallExpressionNode(int line, IdentifierNode identifier, ExpressionListNode parameters)
-            : base(line, identifier, parameters )
-        {
-
-        }
+            : base(line, identifier, parameters) { }
      
         
         public override string GetText() => $"{this.Identifier}({this.Arguments?.GetText() ?? ""})";

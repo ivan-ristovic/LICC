@@ -33,7 +33,7 @@ namespace RICC.AST.Nodes
         public FunctionParametersNode? ParametersNode => this.Declarator.ParametersNode;
         
         [JsonIgnore]
-        public IReadOnlyList<FunctionParameterNode>? Parameters => this.ParametersNode?.Parameters;
+        public IEnumerable<FunctionParameterNode>? Parameters => this.ParametersNode?.Parameters;
 
 
         public FunctionDefinitionNode(int line, DeclarationSpecifiersNode declSpecs, FunctionDeclaratorNode decl, BlockStatementNode body)
@@ -52,7 +52,7 @@ namespace RICC.AST.Nodes
         public bool IsVariadic { get; set; }
 
         [JsonIgnore]
-        public IReadOnlyList<FunctionParameterNode> Parameters => this.Children.Cast<FunctionParameterNode>().ToList().AsReadOnly();
+        public IEnumerable<FunctionParameterNode> Parameters => this.Children.Cast<FunctionParameterNode>();
      
 
         public FunctionParametersNode(int line, IEnumerable<FunctionParameterNode> @params)
