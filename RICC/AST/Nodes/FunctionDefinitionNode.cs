@@ -1,21 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using RICC.AST.Nodes.Common;
 
 namespace RICC.AST.Nodes
 {
     public sealed class FunctionDefinitionNode : ASTNode
     {
+        [JsonIgnore]
         public DeclarationKeywords Keywords => this.Children[0].As<DeclarationSpecifiersNode>().Keywords;
+        
+        [JsonIgnore]
         public FunctionDeclaratorNode Declarator => this.Children[1].As<FunctionDeclaratorNode>();
-        public string ReturnTypeName => this.Children[0].As<DeclarationSpecifiersNode>().TypeName;
-        public Type? ReturnType => this.Children[0].As<DeclarationSpecifiersNode>().Type;
-        public string Identifier => this.Declarator.Identifier;
-        public bool IsVariadic => this.Declarator.IsVariadic;
-        public FunctionParametersNode? ParametersNode => this.Declarator.ParametersNode;
-        public IReadOnlyList<FunctionParameterNode>? Parameters => this.ParametersNode?.Parameters;
+
+        [JsonIgnore]
         public BlockStatementNode Definition => this.Children[2].As<BlockStatementNode>();
+
+        [JsonIgnore]
+        public string ReturnTypeName => this.Children[0].As<DeclarationSpecifiersNode>().TypeName;
+        
+        [JsonIgnore]
+        public Type? ReturnType => this.Children[0].As<DeclarationSpecifiersNode>().Type;
+        
+        [JsonIgnore]
+        public string Identifier => this.Declarator.Identifier;
+        
+        [JsonIgnore]
+        public bool IsVariadic => this.Declarator.IsVariadic;
+        
+        [JsonIgnore]
+        public FunctionParametersNode? ParametersNode => this.Declarator.ParametersNode;
+        
+        [JsonIgnore]
+        public IReadOnlyList<FunctionParameterNode>? Parameters => this.ParametersNode?.Parameters;
 
 
         public FunctionDefinitionNode(int line, DeclarationSpecifiersNode declSpecs, FunctionDeclaratorNode decl, BlockStatementNode body)
@@ -33,6 +51,7 @@ namespace RICC.AST.Nodes
     {
         public bool IsVariadic { get; set; }
 
+        [JsonIgnore]
         public IReadOnlyList<FunctionParameterNode> Parameters => this.Children.Cast<FunctionParameterNode>().ToList().AsReadOnly();
      
 
@@ -54,7 +73,10 @@ namespace RICC.AST.Nodes
 
     public class FunctionParameterNode : ASTNode
     {
+        [JsonIgnore]
         public DeclarationSpecifiersNode DeclarationSpecifiers => this.Children[0].As<DeclarationSpecifiersNode>();
+        
+        [JsonIgnore]
         public string Identifier => this.Children[1].As<IdentifierNode>().Identifier;
 
 

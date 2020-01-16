@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 using RICC.AST.Nodes.Common;
 
 namespace RICC.AST.Nodes
@@ -82,6 +83,7 @@ namespace RICC.AST.Nodes
 
     public sealed class ExpressionStatementNode : SimpleStatementNode
     {
+        [JsonIgnore]
         public ExpressionNode Expression => this.Children.First().As<ExpressionNode>();
 
 
@@ -94,8 +96,13 @@ namespace RICC.AST.Nodes
 
     public sealed class IfStatementNode : CompoundStatementNode
     {
+        [JsonIgnore]
         public ExpressionNode Condition => this.Children[0].As<ExpressionNode>();
+
+        [JsonIgnore]
         public StatementNode ThenStatement => this.Children[1].As<StatementNode>();
+        
+        [JsonIgnore]
         public StatementNode? ElseStatement => this.Children.Count > 2 ? this.Children[2].As<StatementNode>() : null;
 
 
@@ -119,7 +126,11 @@ namespace RICC.AST.Nodes
     public sealed class JumpStatementNode : SimpleStatementNode
     {
         public JumpStatementType Type { get; set; }
+        
+        [JsonIgnore]
         public ExpressionNode? ReturnExpression => this.Children.FirstOrDefault() as ExpressionNode ?? null;
+        
+        [JsonIgnore]
         public IdentifierNode? GotoLabel => this.Children.First() as IdentifierNode ?? null;
 
 
@@ -157,6 +168,8 @@ namespace RICC.AST.Nodes
     public sealed class LabeledStatementNode : SimpleStatementNode
     {
         public string Label { get; }
+
+        [JsonIgnore]
         public StatementNode Statement => this.Children.First().As<StatementNode>();
 
 

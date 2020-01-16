@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace RICC.AST.Nodes
 {
@@ -56,6 +57,7 @@ namespace RICC.AST.Nodes
 
     public sealed class ExpressionListNode : ExpressionNode
     {
+        [JsonIgnore]
         public IEnumerable<ExpressionNode> Expressions => this.Children.Cast<ExpressionNode>();
      
         
@@ -77,7 +79,10 @@ namespace RICC.AST.Nodes
 
     public class UnaryExpressionNode : ExpressionNode
     {
+        [JsonIgnore]
         public UnaryOperatorNode Operator => this.Children[0].As<UnaryOperatorNode>();
+
+        [JsonIgnore]
         public ExpressionNode Operand => this.Children[1].As<ExpressionNode>();
 
 
@@ -90,8 +95,13 @@ namespace RICC.AST.Nodes
 
     public abstract class BinaryExpressionNode : ExpressionNode
     {
+        [JsonIgnore]
         public BinaryOperatorNode Operator => this.Children[1].As<BinaryOperatorNode>();
+
+        [JsonIgnore]
         public ExpressionNode LeftOperand => this.Children[0].As<ExpressionNode>();
+
+        [JsonIgnore]
         public ExpressionNode RightOperand => this.Children[2].As<ExpressionNode>();
 
 
@@ -129,6 +139,15 @@ namespace RICC.AST.Nodes
         }
     }
 
+    public sealed class AssignmentExpressionNode : BinaryExpressionNode
+    {
+        public AssignmentExpressionNode(int line, ExpressionNode left, AssignmentOperatorNode @operator, ExpressionNode right)
+            : base(line, left, @operator, right)
+        {
+
+        }
+    }
+
     public sealed class IdentifierNode : ExpressionNode
     {
         public string Identifier { get; }
@@ -146,23 +165,12 @@ namespace RICC.AST.Nodes
         public override string GetText() => this.Identifier;
     }
 
-    public sealed class AssignmentExpressionNode : ExpressionNode
-    {
-        public AssignmentOperatorNode Operator => this.Children[1].As<AssignmentOperatorNode>();
-        public ExpressionNode LeftValue => this.Children[0].As<ExpressionNode>();
-        public ExpressionNode RightValue => this.Children[2].As<ExpressionNode>();
-
-
-        public AssignmentExpressionNode(int line, ExpressionNode left, AssignmentOperatorNode @operator, ExpressionNode right)
-            : base(line, left, @operator, right )
-        {
-
-        }
-    }
-
     public sealed class FunctionCallExpressionNode : ExpressionNode
     {
+        [JsonIgnore]
         public string Identifier => this.Children[0].As<IdentifierNode>().Identifier;
+
+        [JsonIgnore]
         public ExpressionListNode? Arguments => this.Children.ElementAtOrDefault(1)?.As<ExpressionListNode>();
 
 

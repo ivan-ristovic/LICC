@@ -36,7 +36,7 @@ namespace RICC
 
             Log.Debug("AST created");
             Log.Debug("Generating JSON...");
-            string? json = ast?.ToJson();
+            string? json = ast?.ToJson(o.Compact);
             if (json is null)
                 return 1;
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 using RICC.AST.Nodes.Common;
 using Serilog;
 
@@ -11,6 +12,8 @@ namespace RICC.AST.Nodes
     {
         public DeclarationKeywords Keywords { get; }
         public string TypeName { get; }
+
+        [JsonIgnore]
         public Type? Type { get; }
 
 
@@ -64,6 +67,7 @@ namespace RICC.AST.Nodes
 
     public sealed class DeclarationListNode : DeclarationNode
     {
+        [JsonIgnore]
         public IEnumerable<DeclarationNode> Declarations => this.Children.Cast<DeclarationNode>();
 
 
@@ -82,7 +86,10 @@ namespace RICC.AST.Nodes
 
     public sealed class VariableDeclarationNode : DeclarationNode
     {
+        [JsonIgnore]
         public string Identifier => this.Children.First().As<IdentifierNode>().Identifier;
+
+        [JsonIgnore]
         public ExpressionNode? Initializer => this.Children.ElementAtOrDefault(1)?.As<ExpressionNode>();
 
 
@@ -98,10 +105,17 @@ namespace RICC.AST.Nodes
 
     public sealed class FunctionDeclaratorNode : DeclarationNode
     {
-        public string Identifier => this.Children[0].As<IdentifierNode>().Identifier;
+        [JsonIgnore]
+        public string Identifier => this.Children.First().As<IdentifierNode>().Identifier;
+
+        [JsonIgnore]
         public bool IsVariadic => this.ParametersNode?.IsVariadic ?? false;
+        
+        [JsonIgnore]
         public FunctionParametersNode? ParametersNode => this.Children.ElementAtOrDefault(1) as FunctionParametersNode ?? null;
-        public IReadOnlyList<FunctionParameterNode>? Parameters => this.ParametersNode?.Parameters;
+        
+        [JsonIgnore]
+        public IEnumerable<FunctionParameterNode>? Parameters => this.ParametersNode?.Parameters;
 
 
         public FunctionDeclaratorNode(int line, IdentifierNode identifier, FunctionParametersNode? @params)
