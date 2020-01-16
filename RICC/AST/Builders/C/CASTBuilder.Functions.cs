@@ -35,15 +35,24 @@ namespace RICC.AST.Builders.C
                 return new IdentifierNode(ctx.Start.Line, ctx.Identifier()?.ToString() ?? "<unknown_name>");
 
             if (ctx.parameterTypeList() is { } || (ctx.ChildCount >= 3 && AreParenTokensPresent(ctx))) {
-                FunctionParametersNode? @params = null; 
-                if (ctx.parameterTypeList() is { })
-                    @params = this.Visit(ctx.parameterTypeList()).As<FunctionParametersNode>();
                 IdentifierNode fname = this.Visit(ctx.directDeclarator()).As<IdentifierNode>();
-                return new FunctionDeclaratorNode(ctx.Start.Line, fname, @params);
+                if (ctx.parameterTypeList() is { }) {
+                    FunctionParametersNode @params = this.Visit(ctx.parameterTypeList()).As<FunctionParametersNode>();
+                    return new FunctionDeclaratorNode(ctx.Start.Line, fname, @params);
+                } else {
+                    return new FunctionDeclaratorNode(ctx.Start.Line, fname);
+                }
+            } else if (ctx.assignmentExpression() is { } || (ctx.ChildCount >= 3 && AreBracketsTokensPresent(ctx))) {
+                IdentifierNode arrName = this.Visit(ctx.directDeclarator()).As<IdentifierNode>();
+                if (ctx.assignmentExpression() is { }) {
+                    ExpressionNode sizeExpr = this.Visit(ctx.assignmentExpression()).As<ExpressionNode>();
+                    return new ArrayDeclaratorNode(ctx.Start.Line, arrName, sizeExpr);
+                } else {
+                    return new ArrayDeclaratorNode(ctx.Start.Line, arrName);
+                }
             } else if (ctx.identifierList() is { }) {
                 // TODO
             }
-
             // TODO array declaration
 
             return this.Visit(ctx.directDeclarator());
@@ -51,6 +60,9 @@ namespace RICC.AST.Builders.C
 
             static bool AreParenTokensPresent(DirectDeclaratorContext ctx)
                 => ctx.GetToken(LeftParen, 0) is { } && ctx.GetToken(RightParen, 0) is { };
+
+            static bool AreBracketsTokensPresent(DirectDeclaratorContext ctx)
+                => ctx.GetToken(LeftBracket, 0) is { } && ctx.GetToken(RightBracket, 0) is { };
         }
 
         public override ASTNode VisitDeclarationSpecifiers([NotNull] DeclarationSpecifiersContext ctx)

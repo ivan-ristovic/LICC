@@ -21,7 +21,7 @@ namespace RICC.AST.Builders.C
             BlockStatementNode block;
             ASTNode item = this.Visit(ctx.blockItem());
 
-            if (ctx.blockItemList() is null) 
+            if (ctx.blockItemList() is null)
                 return new BlockStatementNode(ctx.Start.Line, item);
 
             block = this.Visit(ctx.blockItemList()).As<BlockStatementNode>();
@@ -113,7 +113,7 @@ namespace RICC.AST.Builders.C
         {
             DeclaratorNode decl = this.Visit(ctx.initDeclarator()).As<DeclaratorNode>();
 
-            if (ctx.initDeclaratorList() is null) 
+            if (ctx.initDeclaratorList() is null)
                 return new DeclaratorListNode(ctx.Start.Line, decl);
 
             DeclaratorListNode list = this.Visit(ctx.initDeclaratorList()).As<DeclaratorListNode>();
@@ -129,7 +129,7 @@ namespace RICC.AST.Builders.C
                 init = this.Visit(ctx.initializer()).As<ExpressionNode>();
 
             if (declarator is IdentifierNode var)
-                return new VariableDeclaratorNode(ctx.Start.Line, var, init);
+                return init is null ? new VariableDeclaratorNode(ctx.Start.Line, var) : new VariableDeclaratorNode(ctx.Start.Line, var, init);
 
             return declarator;
         }

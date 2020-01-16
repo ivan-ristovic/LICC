@@ -82,28 +82,47 @@ namespace RICC.AST.Nodes
         public ExpressionNode? Initializer => this.Children.ElementAtOrDefault(1)?.As<ExpressionNode>();
 
 
-        public VariableDeclaratorNode(int line, IdentifierNode identifier, ExpressionNode? initializer)
-            : base(line, identifier, initializer is null ? Enumerable.Empty<ASTNode>() : new[] { initializer }) { }
+        public VariableDeclaratorNode(int line, IdentifierNode identifier)
+            : base(line, identifier) { }
+
+        public VariableDeclaratorNode(int line, IdentifierNode identifier, ExpressionNode initializer)
+            : base(line, identifier, initializer) { }
 
 
-        public override string GetText() 
+        public override string GetText()
             => this.Initializer is null ? this.Identifier : $"{this.Identifier} = {this.Initializer.GetText()}";
+    }
+
+    public sealed class ArrayDeclaratorNode : DeclaratorNode
+    {
+        [JsonIgnore]
+        public ExpressionNode? SizeExpression => this.Children.ElementAtOrDefault(1)?.As<ExpressionNode>();
+
+
+        public ArrayDeclaratorNode(int line, IdentifierNode identifier)
+            : base(line, identifier) { }
+
+        public ArrayDeclaratorNode(int line, IdentifierNode identifier, ExpressionNode sizeExpr)
+            : base(line, identifier, sizeExpr) { }
     }
 
     public sealed class FunctionDeclaratorNode : DeclaratorNode
     {
         [JsonIgnore]
         public bool IsVariadic => this.ParametersNode?.IsVariadic ?? false;
-        
+
         [JsonIgnore]
         public FunctionParametersNode? ParametersNode => this.Children.ElementAtOrDefault(1) as FunctionParametersNode ?? null;
-        
+
         [JsonIgnore]
         public IEnumerable<FunctionParameterNode>? Parameters => this.ParametersNode?.Parameters;
 
 
-        public FunctionDeclaratorNode(int line, IdentifierNode identifier, FunctionParametersNode? @params)
-            : base(line, identifier, @params is null ? Enumerable.Empty<ASTNode>() : new[] { @params }) { }
+        public FunctionDeclaratorNode(int line, IdentifierNode identifier)
+            : base(line, identifier) { }
+
+        public FunctionDeclaratorNode(int line, IdentifierNode identifier, FunctionParametersNode @params)
+            : base(line, identifier, @params) { }
 
 
         public override string GetText()

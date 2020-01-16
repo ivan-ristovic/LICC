@@ -16,6 +16,7 @@ label:
 extern int foo(const float bar, int x, float y, signed int z, unsigned long long k, ...) 
 {
 	const time_t elapsed_time = time(NULL);
+	int a, w[3];
 
 	bool b = 3 > 4 && 3 < 5 || 4 >= 2;
 	if (5 > 3) {
