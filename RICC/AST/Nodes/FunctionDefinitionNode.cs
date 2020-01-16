@@ -15,6 +15,7 @@ namespace RICC.AST.Nodes
         public FunctionParametersNode? ParametersNode => this.Declarator.Parameters;
         public IReadOnlyList<FunctionParameterNode>? Parameters => this.ParametersNode?.Parameters;
         public BlockStatementNode Definition => this.Children[2].As<BlockStatementNode>();
+        public bool IsVariadic => this.ParametersNode?.IsVariadic ?? false;
 
 
         public FunctionDefinitionNode(int line, DeclarationSpecifiersNode declSpecs, FunctionDeclaratorNode decl, BlockStatementNode body)
@@ -30,8 +31,11 @@ namespace RICC.AST.Nodes
 
     public sealed class FunctionParametersNode : ASTNode
     {
+        public bool IsVariadic { get; set; }
+
         public IReadOnlyList<FunctionParameterNode> Parameters => this.Children.Cast<FunctionParameterNode>().ToList().AsReadOnly();
      
+
         public FunctionParametersNode(int line, IEnumerable<FunctionParameterNode> @params)
             : base(line, @params)
         {

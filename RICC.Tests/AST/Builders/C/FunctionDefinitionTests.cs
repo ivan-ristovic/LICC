@@ -71,10 +71,11 @@ namespace RICC.Tests.AST.Builders.C
             this.AssertFunctionSignature(f, 2, "f", "float", @params: ("unsigned int", "x"));
 
             Assert.That(f.Definition, Is.Not.Null);
-            Assert.That(f.Definition, Is.Not.Null);
             Assert.That(f.Definition, Is.InstanceOf<BlockStatementNode>());
             Assert.That(f.Definition.Parent, Is.EqualTo(f));
             Assert.That(f.Definition.Children, Has.Exactly(2).Items);
+            Assert.That(f.ParametersNode, Is.Not.Null);
+            Assert.That(f.IsVariadic);
             Assert.That(f.Parameters?.First().DeclarationSpecifiers.Keywords.QualifierFlags, Is.EqualTo(QualifierFlags.Const));
         }
 

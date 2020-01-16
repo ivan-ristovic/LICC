@@ -14,7 +14,7 @@ label:
 }
 
 extern int foo(
-	const float bar
+	const float bar, ...
 )
 {
 	const time_t elapsed_time = time(NULL);

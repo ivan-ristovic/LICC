@@ -57,7 +57,12 @@ namespace RICC.AST.Builders.C
 
         #region Parameter overrides
         public override ASTNode VisitParameterTypeList([NotNull] ParameterTypeListContext ctx)
-            => this.Visit(ctx.parameterList());
+        {
+            FunctionParametersNode @params = this.Visit(ctx.parameterList()).As<FunctionParametersNode>();
+            if (ctx.ChildCount > 1)
+                @params.IsVariadic = true;
+            return @params;
+        }
 
         public override ASTNode VisitParameterList([NotNull] ParameterListContext ctx)
         {
