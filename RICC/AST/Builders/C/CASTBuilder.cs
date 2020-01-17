@@ -29,13 +29,12 @@ namespace RICC.AST.Builders.C
 
         public override ASTNode VisitTranslationUnit([NotNull] TranslationUnitContext ctx)
         {
-            TranslationUnitNode tu;
             ASTNode decl = this.Visit(ctx.externalDeclaration());
 
             if (ctx.translationUnit() is null)
                 return new TranslationUnitNode(decl);
 
-            tu = this.Visit(ctx.translationUnit()).As<TranslationUnitNode>();
+            TranslationUnitNode tu = this.Visit(ctx.translationUnit()).As<TranslationUnitNode>();
             decl.Parent = tu;
             return new TranslationUnitNode(tu.Children.Concat(new[] { decl }));
         }

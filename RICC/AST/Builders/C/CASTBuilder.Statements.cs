@@ -25,7 +25,6 @@ namespace RICC.AST.Builders.C
                 return new BlockStatementNode(ctx.Start.Line, item);
 
             block = this.Visit(ctx.blockItemList()).As<BlockStatementNode>();
-            item.Parent = block;
             return new BlockStatementNode(ctx.Start.Line, block.Children.Concat(new[] { item }));
         }
 
@@ -84,16 +83,6 @@ namespace RICC.AST.Builders.C
 
         public override ASTNode VisitIterationStatement([NotNull] IterationStatementContext ctx) => base.VisitIterationStatement(ctx);
 
-        public override ASTNode VisitDeclaration([NotNull] DeclarationContext ctx)
-        {
-            if (ctx.staticAssertDeclaration() is { } || ctx.initDeclaratorList() is null)
-                throw new NotImplementedException();
-
-            DeclarationSpecifiersNode declSpecs = this.Visit(ctx.declarationSpecifiers()).As<DeclarationSpecifiersNode>();
-            DeclaratorListNode var = this.Visit(ctx.initDeclaratorList()).As<DeclaratorListNode>();
-            return new DeclarationStatementNode(ctx.Start.Line, declSpecs, var);
-        }
-
         public override ASTNode VisitJumpStatement([NotNull] JumpStatementContext ctx)
         {
             JumpStatementType type = JumpStatementTypeConverter.FromString(ctx.children.First().GetText());
@@ -107,39 +96,6 @@ namespace RICC.AST.Builders.C
                 default:
                     return new JumpStatementNode(ctx.Start.Line, type);
             }
-        }
-
-        public override ASTNode VisitInitDeclaratorList([NotNull] InitDeclaratorListContext ctx)
-        {
-            DeclaratorNode decl = this.Visit(ctx.initDeclarator()).As<DeclaratorNode>();
-
-            if (ctx.initDeclaratorList() is null)
-                return new DeclaratorListNode(ctx.Start.Line, decl);
-
-            DeclaratorListNode list = this.Visit(ctx.initDeclaratorList()).As<DeclaratorListNode>();
-            decl.Parent = list;
-            return new DeclaratorListNode(ctx.Start.Line, list.Declarations.Concat(new[] { decl }));
-        }
-
-        public override ASTNode VisitInitDeclarator([NotNull] InitDeclaratorContext ctx)
-        {
-            ASTNode declarator = this.Visit(ctx.declarator());
-            ExpressionNode? init = null;
-            if (ctx.initializer() is { })
-                init = this.Visit(ctx.initializer()).As<ExpressionNode>();
-
-            if (declarator is IdentifierNode var)
-                return init is null ? new VariableDeclaratorNode(ctx.Start.Line, var) : new VariableDeclaratorNode(ctx.Start.Line, var, init);
-
-            return declarator;
-        }
-
-        public override ASTNode VisitInitializer([NotNull] InitializerContext ctx)
-        {
-            if (ctx.assignmentExpression() is { })
-                return this.Visit(ctx.assignmentExpression());
-
-            throw new NotImplementedException(); // TODO ctx.initializerList();
         }
     }
 }

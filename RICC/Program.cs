@@ -59,15 +59,18 @@ namespace RICC
         {
             SetupLogger(o.Verbose);
 
-            try {
-                ASTNode srcTree = ASTFactory.BuildFromFile("Samples/func.c");
-                ASTNode dstTree = ASTFactory.BuildFromFile("Samples/hello.c");
-                var comparer = new ComparerAlgorithm(srcTree, dstTree);
-                comparer.Execute();
-            } catch (Exception e) {
-                Log.Fatal(e, "Exception occured while creating AST");
+            if (string.IsNullOrWhiteSpace(o.Source) || string.IsNullOrWhiteSpace(o.Destination)) {
+                Log.Fatal("Missing source/destination path");
                 return 1;
             }
+
+            if (!ASTFactory.TryBuildFromFile(o.Source, out ASTNode? src) || !ASTFactory.TryBuildFromFile(o.Destination, out ASTNode? dst))
+                return 1;
+            if (src is null || dst is null)
+                return 1;
+
+            var comparer = new ComparerAlgorithm(src, dst);
+            comparer.Execute();
 
             return 0;
         }
