@@ -77,11 +77,11 @@ namespace RICC.AST.Nodes
         public DeclarationSpecifiersNode DeclarationSpecifiers => this.Children[0].As<DeclarationSpecifiersNode>();
         
         [JsonIgnore]
-        public string Identifier => this.Children[1].As<IdentifierNode>().Identifier;
+        public DeclaratorNode Declarator => this.Children[1].As<DeclaratorNode>();
 
 
-        public FunctionParameterNode(int line, DeclarationSpecifiersNode declSpecs, IdentifierNode identifier)
-            : base(line, declSpecs, identifier)
+        public FunctionParameterNode(int line, DeclarationSpecifiersNode declSpecs, DeclaratorNode declarator)
+            : base(line, declSpecs, declarator)
         {
 
         }

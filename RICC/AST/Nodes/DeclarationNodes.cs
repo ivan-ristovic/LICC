@@ -53,7 +53,10 @@ namespace RICC.AST.Nodes
     public abstract class DeclaratorNode : DeclarationNode
     {
         [JsonIgnore]
-        public string Identifier => this.Children.First().As<IdentifierNode>().Identifier;
+        public IdentifierNode IdentifierNode => this.Children.First().As<IdentifierNode>();
+
+        [JsonIgnore]
+        public string Identifier => this.IdentifierNode.Identifier;
 
 
         public DeclaratorNode(int line, IdentifierNode identifier, params ASTNode[] children)

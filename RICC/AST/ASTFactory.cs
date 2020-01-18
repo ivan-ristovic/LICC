@@ -17,7 +17,7 @@ namespace RICC.AST
                 ast = BuildFromFile(path);
                 return true;
             } catch (NotImplementedException e) {
-                Log.Fatal(e, "Source contains syntax rules which aren't implemented yet: {Path}", path);
+                Log.Fatal(e, "{Path} contains syntax rules which aren't implemented yet: {Details}", path, e.Message ?? "unknown");
                 return false;
             } catch (UnsupportedExtensionException e) {
                 Log.Fatal(e, "{Path}", path);

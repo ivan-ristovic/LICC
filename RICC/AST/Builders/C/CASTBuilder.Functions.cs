@@ -16,7 +16,7 @@ namespace RICC.AST.Builders.C
             DeclarationSpecifiersNode declSpecs = this.Visit(ctx.declarationSpecifiers()).As<DeclarationSpecifiersNode>();
             ASTNode decl = this.Visit(ctx.declarator());
             if (decl is IdentifierNode fname)
-                decl = new FunctionDeclaratorNode(fname.Line, fname, @params: null);
+                decl = new FunctionDeclaratorNode(fname.Line, fname);
             FunctionDeclaratorNode fdecl = decl.As<FunctionDeclaratorNode>();
             BlockStatementNode body = this.Visit(ctx.compoundStatement()).As<BlockStatementNode>();
 
@@ -46,8 +46,8 @@ namespace RICC.AST.Builders.C
         public override ASTNode VisitParameterDeclaration([NotNull] ParameterDeclarationContext ctx)
         {
             DeclarationSpecifiersNode declSpecs = this.Visit(ctx.declarationSpecifiers()).As<DeclarationSpecifiersNode>();
-            IdentifierNode identifier = this.Visit(ctx.declarator()).As<IdentifierNode>();
-            return new FunctionParameterNode(ctx.Start.Line, declSpecs, identifier);
+            DeclaratorNode decl = this.Visit(ctx.declarator()).As<DeclaratorNode>();
+            return new FunctionParameterNode(ctx.Start.Line, declSpecs, decl);
         }
     }
 }

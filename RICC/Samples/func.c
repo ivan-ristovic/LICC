@@ -13,7 +13,7 @@ label:
 	return a + b + x + y;
 }
 
-extern int foo(const float bar, int x, float y, signed int z, unsigned long long k, ...) 
+extern int foo(const float bar, int x, float y[], signed int z, unsigned long long k, ...) 
 {
 	const time_t elapsed_time = time(NULL);
 	int empty[10];

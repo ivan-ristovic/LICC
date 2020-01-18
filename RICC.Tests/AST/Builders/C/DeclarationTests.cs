@@ -225,7 +225,7 @@ namespace RICC.Tests.AST.Builders.C
                 Assert.That(param.DeclarationSpecifiers.Keywords.AccessModifiers, Is.EqualTo(AccessModifiers.Unspecified));
                 QualifierFlags qf = param.DeclarationSpecifiers.Keywords.QualifierFlags;
                 string type = param.DeclarationSpecifiers.TypeName;
-                return (qf, type, param.Identifier);
+                return (qf, type, param.Declarator.Identifier);
             }
         }
     }

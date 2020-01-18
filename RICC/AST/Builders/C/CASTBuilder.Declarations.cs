@@ -28,9 +28,50 @@ namespace RICC.AST.Builders.C
             if (ctx.declarator() is { })
                 return this.Visit(ctx.declarator());
 
-            if (ctx.Identifier() is { } && ctx.ChildCount == 1)
-                return new IdentifierNode(ctx.Start.Line, ctx.Identifier()?.ToString() ?? "<unknown_name>");
+            if (ctx.Identifier() is { }) {
+                if (ctx.ChildCount == 1)
+                    return new VariableDeclaratorNode(ctx.Start.Line, new IdentifierNode(ctx.Start.Line, ctx.Identifier().ToString() ?? "<unknown_name>"));
+                else
+                    throw new NotImplementedException();    // bit field
+            }
 
+            if (ctx.typeQualifierList() is { } || ctx.typeSpecifier() is { } || ctx.pointer() is { })
+                throw new NotImplementedException();        // qualified arrays and function pointers
+
+            DeclaratorNode decl = this.Visit(ctx.directDeclarator()).As<DeclaratorNode>();
+            if (decl is VariableDeclaratorNode var) {
+                if (AreBracketsTokensPresent(ctx)) {
+                    if (ctx.assignmentExpression() is { }) {
+                        ExpressionNode sizeExpr = this.Visit(ctx.assignmentExpression()).As<ExpressionNode>();
+                        return new ArrayDeclaratorNode(ctx.Start.Line, var.IdentifierNode, sizeExpr);
+                    } else {
+                        return new ArrayDeclaratorNode(ctx.Start.Line, var.IdentifierNode);
+                    }
+                } else if (AreParenTokensPresent(ctx)) {
+                    if (ctx.parameterTypeList() is { }) {
+                        FunctionParametersNode @params = this.Visit(ctx.parameterTypeList()).As<FunctionParametersNode>();
+                        return new FunctionDeclaratorNode(ctx.Start.Line, var.IdentifierNode, @params);
+                    } else {
+                        return new FunctionDeclaratorNode(ctx.Start.Line, var.IdentifierNode);
+                    }
+                } else {
+                    return var;
+                }
+            } else if (decl is ArrayDeclaratorNode arr) {
+                if (AreBracketsTokensPresent(ctx)) {
+                    throw new NotImplementedException("multidimensional arrays");
+                } else if (AreParenTokensPresent(ctx)) {
+                    Log.Warning("Potential syntax error in line: {Line}. Parsing will continue but results are not guaranteed...", ctx.Start.Line);
+                } else {
+                    return arr;
+                }
+            } else {
+                Log.Warning("Potential syntax error in line: {Line}. Parsing will continue but results are not guaranteed...", ctx.Start.Line);
+            }
+
+            return decl;
+
+            /*
             if (ctx.parameterTypeList() is { } || (ctx.ChildCount >= 3 && AreParenTokensPresent(ctx))) {
                 IdentifierNode fname = this.Visit(ctx.directDeclarator()).As<IdentifierNode>();
                 if (ctx.parameterTypeList() is { }) {
@@ -52,7 +93,7 @@ namespace RICC.AST.Builders.C
             }
 
             return this.Visit(ctx.directDeclarator());
-
+            */
 
             static bool AreParenTokensPresent(DirectDeclaratorContext ctx)
                 => ctx.GetToken(LeftParen, 0) is { } && ctx.GetToken(RightParen, 0) is { };
@@ -82,26 +123,25 @@ namespace RICC.AST.Builders.C
 
         public override ASTNode VisitInitDeclarator([NotNull] InitDeclaratorContext ctx)
         {
-            ASTNode declarator = this.Visit(ctx.declarator());
+            DeclaratorNode declarator = this.Visit(ctx.declarator()).As<DeclaratorNode>();
             ASTNode? init = null;
             if (ctx.initializer() is { })
                 init = this.Visit(ctx.initializer());
 
-            if (declarator is IdentifierNode var)
-                return init is null ? new VariableDeclaratorNode(ctx.Start.Line, var) : new VariableDeclaratorNode(ctx.Start.Line, var, init.As<ExpressionNode>());
+            if (declarator is VariableDeclaratorNode var)
+                return init is null ? var : new VariableDeclaratorNode(ctx.Start.Line, var.IdentifierNode, init.As<ExpressionNode>());
 
             if (declarator is ArrayDeclaratorNode arr) {
-                IdentifierNode identifier = arr.Children.First().As<IdentifierNode>();
                 if (arr.SizeExpression is null) {
                     if (init is null)
-                        return new ArrayDeclaratorNode(ctx.Start.Line, identifier);
+                        return new ArrayDeclaratorNode(ctx.Start.Line, arr.IdentifierNode);
                     else
-                        return new ArrayDeclaratorNode(ctx.Start.Line, identifier, init.As<ArrayInitializerListNode>());
+                        return new ArrayDeclaratorNode(ctx.Start.Line, arr.IdentifierNode, init.As<ArrayInitializerListNode>());
                 } else {
                     if (init is null)
-                        return new ArrayDeclaratorNode(ctx.Start.Line, identifier, arr.SizeExpression);
+                        return new ArrayDeclaratorNode(ctx.Start.Line, arr.IdentifierNode, arr.SizeExpression);
                     else
-                        return new ArrayDeclaratorNode(ctx.Start.Line, identifier, arr.SizeExpression, init.As<ArrayInitializerListNode>());
+                        return new ArrayDeclaratorNode(ctx.Start.Line, arr.IdentifierNode, arr.SizeExpression, init.As<ArrayInitializerListNode>());
                 }
             }
 

@@ -102,7 +102,7 @@ namespace RICC.Tests.AST.Builders.C
                 Assert.That(f.Parameters, Is.Not.Null);
                 Assert.That(f.Parameters, Has.Exactly(@params.Length).Items);
                 Assert.That(f.ParametersNode, Is.Not.Null);
-                Assert.That(f.Parameters.Select(p => (p.DeclarationSpecifiers.TypeName, p.Identifier)), Is.EqualTo(@params));
+                Assert.That(f.Parameters.Select(p => (p.DeclarationSpecifiers.TypeName, p.Declarator.Identifier)), Is.EqualTo(@params));
             }
         }
     }
