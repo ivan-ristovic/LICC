@@ -54,5 +54,16 @@ int main()
 			break;
 		x += 1;
 	}
+
+	for (int i = 0; i < 100; i = i + 1) {
+		foo(1, 2, 3, 4);
+		if (i > 10)
+			return 1;
+	}
+
+	for (; x < 10; x *= 2) {
+		printf("%d\n", x);
+	}
+
 	return 0;
 }

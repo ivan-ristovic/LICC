@@ -7,7 +7,9 @@ namespace RICC.AST.Nodes.Common
     public static class Types
     {
         private static ImmutableDictionary<string, TypeCode> _types = new Dictionary<string, TypeCode>() {
+            // TODO add _t types
             { "byte" , TypeCode.Byte },
+            { "signed byte" , TypeCode.SByte },
             { "bool" , TypeCode.Boolean },
             { "boolean" , TypeCode.Boolean },
             { "char" , TypeCode.Char },
@@ -18,10 +20,15 @@ namespace RICC.AST.Nodes.Common
             { "signed int" , TypeCode.Int32 },
             { "unsigned int" , TypeCode.UInt32 },
             { "long" , TypeCode.Int64 },
+            { "long long" , TypeCode.Int64 },
             { "signed long" , TypeCode.Int64 },
+            { "signed long long" , TypeCode.Int64 },
             { "unsigned long" , TypeCode.UInt64 },
+            { "unsigned long long" , TypeCode.UInt64 },
             { "float" , TypeCode.Single },
+            { "single" , TypeCode.Single },
             { "double" , TypeCode.Double },
+            { "decimal" , TypeCode.Decimal },
         }.ToImmutableDictionary();
 
 

@@ -77,7 +77,7 @@ namespace RICC.AST.Nodes
 
         [JsonIgnore]
         public StatementNode ThenStatement => this.Children[1].As<StatementNode>();
-        
+
         [JsonIgnore]
         public StatementNode? ElseStatement => this.Children.ElementAtOrDefault(2)?.As<StatementNode>() ?? null;
 
@@ -89,17 +89,17 @@ namespace RICC.AST.Nodes
             : base(line, elseBlock is null ? new ASTNode[] { condition, thenBlock } : new ASTNode[] { condition, thenBlock, elseBlock }) { }
 
 
-        public override string GetText() 
+        public override string GetText()
             => $"if ({this.Condition.GetText()}) {this.ThenStatement.GetText()} {(this.ElseStatement is null ? "" : $"else {this.ElseStatement.GetText()}")}";
     }
 
     public sealed class JumpStatementNode : SimpleStatementNode
     {
         public JumpStatementType Type { get; set; }
-        
+
         [JsonIgnore]
         public ExpressionNode? ReturnExpression => this.Children.FirstOrDefault() as ExpressionNode ?? null;
-        
+
         [JsonIgnore]
         public IdentifierNode? GotoLabel => this.Children.First() as IdentifierNode ?? null;
 
@@ -115,7 +115,7 @@ namespace RICC.AST.Nodes
         {
             this.Type = JumpStatementType.Return;
         }
-        
+
         public JumpStatementNode(int line, IdentifierNode label)
             : base(line, label)
         {
@@ -128,7 +128,7 @@ namespace RICC.AST.Nodes
             var sb = new StringBuilder(this.Type.ToStringToken());
             if (this.Type == JumpStatementType.Return && this.ReturnExpression is { })
                 sb.Append(' ').Append(this.ReturnExpression.GetText());
-            else if(this.Type == JumpStatementType.Goto && this.GotoLabel is { })
+            else if (this.Type == JumpStatementType.Goto && this.GotoLabel is { })
                 sb.Append(' ').Append(this.GotoLabel.GetText());
             sb.Append(';');
             return sb.ToString();
@@ -167,6 +167,9 @@ namespace RICC.AST.Nodes
 
         protected IterationStatementNode(int line, RelationalExpressionNode condition, StatementNode statement)
             : base(line, condition, statement) { }
+
+        protected IterationStatementNode(int line, IEnumerable<ASTNode> children)
+            : base(line, children) { }
     }
 
     public sealed class WhileStatementNode : IterationStatementNode
@@ -179,5 +182,48 @@ namespace RICC.AST.Nodes
 
 
         public override string GetText() => $"while ({this.Condition.GetText()}) {{ {this.Statement.GetText()} }}";
+    }
+
+    public sealed class ForStatementNode : IterationStatementNode
+    {
+        public DeclarationNode? ForDeclaration { get; }
+        public ExpressionNode? InitExpression { get; }
+        public ExpressionNode? IncrementExpression { get; }
+
+
+        public ForStatementNode(int line, DeclarationNode decl, ExpressionNode? condition, ExpressionNode? expr, StatementNode statement)
+            : base(line, new ASTNode[] { condition ?? new LiteralNode(line, true), statement })
+        {
+            this.ForDeclaration = decl;
+            this.InitExpression = null;
+            this.IncrementExpression = expr;
+        }
+
+        public ForStatementNode(int line, ExpressionNode? initExpr, ExpressionNode? condition, ExpressionNode? incExpr, StatementNode statement)
+            : base(line, new ASTNode[] { condition ?? new LiteralNode(line, true), statement })
+        {
+            this.ForDeclaration = null;
+            this.InitExpression = initExpr;
+            this.IncrementExpression = incExpr;
+        }
+
+
+        public override string GetText()
+        {
+            var sb = new StringBuilder("for (");
+            if (this.ForDeclaration is { })
+                sb.Append(this.ForDeclaration.GetText());
+            else if (this.InitExpression is { })
+                sb.Append(this.InitExpression.GetText());
+            sb.Append("; ");
+            sb.Append(this.Condition.GetText());
+            sb.Append("; ");
+            if (this.IncrementExpression is { })
+                sb.Append(this.IncrementExpression.GetText());
+            sb.Append(") { ");
+            sb.Append(this.Statement.GetText());
+            sb.Append(" }");
+            return sb.ToString();
+        }
     }
 }

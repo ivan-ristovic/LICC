@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Tree;
 using RICC.AST.Nodes;
 using RICC.AST.Nodes.Common;
 using static RICC.AST.Builders.C.CParser;
@@ -84,8 +85,17 @@ namespace RICC.AST.Builders.C
             IterationStatementNode it;
             StatementNode statement = this.Visit(ctx.statement()).As<StatementNode>();
 
-            if (ctx.GetToken(For, 0) is { }) {
-                // TODO for
+            if (ctx.For() is { }) {
+                ForConditionContext forCondition = ctx.forCondition();
+                if (forCondition.forDeclaration() is { }) {
+                    DeclarationNode decl = this.Visit(forCondition.forDeclaration()).As<DeclarationNode>();
+                    GetForExpressions(forCondition, out ExpressionNode? cond, out ExpressionNode? inc);
+                    return new ForStatementNode(ctx.Start.Line, decl, cond, inc, statement);
+                } else {
+                    ExpressionNode? initExpr = forCondition.expression() is { } ? this.Visit(forCondition.expression()).As<ExpressionNode>() : null;
+                    GetForExpressions(forCondition, out ExpressionNode? cond, out ExpressionNode? inc);
+                    return new ForStatementNode(ctx.Start.Line, initExpr, cond, inc, statement);
+                }
             }
 
             ExpressionNode expr = this.Visit(ctx.expression()).As<ExpressionNode>();
@@ -100,10 +110,40 @@ namespace RICC.AST.Builders.C
                 it = new WhileStatementNode(ctx.Start.Line, condition, statement);
             }
 
-            if (ctx.GetToken(Do, 0) is { })
+            if (ctx.Do() is { })
                 throw new NotImplementedException("do-while");
 
             return it;
+
+
+            void GetForExpressions(ForConditionContext fctx, out ExpressionNode? cond, out ExpressionNode? inc)
+            {
+                cond = null;
+                inc = null;
+                
+                int colonCount = 0;
+                foreach (IParseTree child in fctx.children) {
+                    if (child is ITerminalNode)
+                        colonCount++;
+                    else if (colonCount > 1)
+                        inc = this.Visit(child).As<ExpressionNode>();
+                    else if (colonCount > 0)
+                        cond = this.Visit(child).As<ExpressionNode>();
+                }
+            }
+        }
+
+        public override ASTNode VisitForExpression([NotNull] ForExpressionContext ctx)
+        {
+            ExpressionListNode exprs;
+            ExpressionNode expr = this.Visit(ctx.assignmentExpression()).As<ExpressionNode>();
+
+            if (ctx.forExpression() is null)
+                return new ExpressionListNode(ctx.Start.Line, expr);
+
+            exprs = this.Visit(ctx.forExpression()).As<ExpressionListNode>();
+            expr.Parent = exprs;
+            return new ExpressionListNode(ctx.Start.Line, exprs.Expressions.Concat(new[] { expr }));
         }
 
         public override ASTNode VisitJumpStatement([NotNull] JumpStatementContext ctx)
