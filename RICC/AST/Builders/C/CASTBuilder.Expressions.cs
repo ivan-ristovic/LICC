@@ -134,33 +134,29 @@ namespace RICC.AST.Builders.C
                 throw new NotImplementedException("initializers");
 
             ExpressionNode expr = this.Visit(ctx.postfixExpression()).As<ExpressionNode>();
-            if (ctx.postfixExpression() is { }) {
-                string token = ctx.children[1].GetText();
-                switch (token) {
-                    case "(":
-                        if (expr is IdentifierNode fname) {
-                            if (ctx.argumentExpressionList() is { }) {
-                                ExpressionListNode? args = this.Visit(ctx.argumentExpressionList()).As<ExpressionListNode>();
-                                return new FunctionCallExpressionNode(ctx.Start.Line, fname, args);
-                            } else {
-                                return new FunctionCallExpressionNode(ctx.Start.Line, fname);
-                            }
+            switch (ctx.children[1].GetText()) {
+                case "(":
+                    if (expr is IdentifierNode fname) {
+                        if (ctx.argumentExpressionList() is { }) {
+                            ExpressionListNode? args = this.Visit(ctx.argumentExpressionList()).As<ExpressionListNode>();
+                            return new FunctionCallExpressionNode(ctx.Start.Line, fname, args);
                         } else {
-                            throw new NotImplementedException("complex function calls");
+                            return new FunctionCallExpressionNode(ctx.Start.Line, fname);
                         }
-                    case "[":
-                        ExpressionNode indexExpr = this.Visit(ctx.expression()).As<ExpressionNode>();
-                        return new ArrayAccessExpressionNode(ctx.Start.Line, expr, indexExpr);
-                    case ".": throw new NotImplementedException();     // TODO struct field access
-                    case "->": throw new NotImplementedException();    // TODO pointer
-                    case "++": throw new NotImplementedException();    // TODO ++
-                    case "--": throw new NotImplementedException();    // TODO --
-                    default: throw new NotImplementedException();
-                }
+                    } else {
+                        throw new NotImplementedException("complex function calls");
+                    }
+                case "[":
+                    ExpressionNode indexExpr = this.Visit(ctx.expression()).As<ExpressionNode>();
+                    return new ArrayAccessExpressionNode(ctx.Start.Line, expr, indexExpr);
+                case "++":
+                    return new IncrementExpression(ctx.Start.Line, expr);
+                case "--":
+                    return new DecrementExpression(ctx.Start.Line, expr);
+                case "->": throw new NotImplementedException("->");
+                case ".": throw new NotImplementedException("struct field access");
+                default: throw new NotImplementedException();
             }
-
-            // Should not reach here
-            throw new NotImplementedException();
         }
 
         public override ASTNode VisitPrimaryExpression([NotNull] PrimaryExpressionContext ctx)

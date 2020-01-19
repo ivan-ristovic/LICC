@@ -59,11 +59,20 @@ namespace RICC.Tests.AST.Builders.C
         }
 
         [Test]
-        public void ComplexFunctionDeclarationTest()
+        public void FunctionDeclarationQualifiersTest()
         {
             ASTNode ast = CASTProvider.BuildFromSource("extern static time_t f(int x, const volatile unsigned long long y, ...);");
             this.AssertFunctionDeclaration(ast, "f", "time_t", AccessModifiers.Public, QualifierFlags.Static, true, 
                 (QualifierFlags.None, "int", "x"), (QualifierFlags.Const | QualifierFlags.Volatile, "unsigned long long", "y")
+            );
+        }
+
+        [Test]
+        public void FunctionDeclarationArrayParamsTest()
+        {
+            ASTNode ast = CASTProvider.BuildFromSource("int f(int a[], const float b[4]);");
+            this.AssertFunctionDeclaration(ast, "f", "int", AccessModifiers.Unspecified, QualifierFlags.None, false,
+                (QualifierFlags.None, "int", "a"), (QualifierFlags.Const, "float", "b")
             );
         }
 
@@ -124,6 +133,35 @@ namespace RICC.Tests.AST.Builders.C
                 "char*",
                 AccessModifiers.Unspecified, QualifierFlags.None,
                 ("w1", null), ("w2", "abc"), ("w3", "aabb")
+            );
+        }
+
+        [Test]
+        public void ArrayDeclarationTest()
+        {
+            // TODO
+            Assert.Inconclusive();
+
+            ASTNode ast = CASTProvider.BuildFromSource("static unsigned int x[], y, z[3];");
+            this.AssertVariableDeclarationList(
+                ast.Children.First(),
+                "unsigned int",
+                AccessModifiers.Unspecified, QualifierFlags.Static,
+                ("x", null), ("y", null), ("z", null)
+            );
+        }
+
+        [Test]
+        public void ArrayDeclarationInitializerTest()
+        {
+            // TODO
+            Assert.Inconclusive();
+            
+            ASTNode ast = CASTProvider.BuildFromSource("static int x[] = {}, y[] = { 1 + 2, 2 << 1 }, z[3] = {1, 2, 3};");
+            this.AssertVariableDeclarationList(
+                ast.Children.First(),
+                "int",
+                AccessModifiers.Unspecified, QualifierFlags.Static
             );
         }
 

@@ -40,7 +40,7 @@ extern int foo(const float bar, int x, float y[], signed int z, unsigned long lo
 
 	;
 
-	return 5;
+	return a++;
 }
 
 static const int x = 7;
@@ -54,16 +54,16 @@ int main()
 			printf("lt 10");
 		if (x == 17)
 			break;
-		x += 1;
+		x++;
 	}
 
-	for (int i = 0; i < 100; i = i + 1) {
+	for (int i = 0; i < 100; i++) {
 		foo(1, 2, 3, 4);
 		if (i > 10)
 			return 1;
 	}
 
-	for (; x < 10; x *= 2) {
+	for (x--; x < 10; x *= 2) {
 		printf("%d\n", x);
 	}
 
