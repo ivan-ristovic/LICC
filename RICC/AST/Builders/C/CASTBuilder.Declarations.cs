@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Tree;
 using RICC.AST.Nodes;
-using RICC.AST.Nodes.Common;
+using RICC.Extensions;
 using Serilog;
 using static RICC.AST.Builders.C.CParser;
 
@@ -32,11 +34,11 @@ namespace RICC.AST.Builders.C
                 if (ctx.ChildCount == 1)
                     return new VariableDeclaratorNode(ctx.Start.Line, new IdentifierNode(ctx.Start.Line, ctx.Identifier().ToString() ?? "<unknown_name>"));
                 else
-                    throw new NotImplementedException();    // bit field
+                    throw new NotImplementedException("bit field");
             }
 
             if (ctx.typeQualifierList() is { } || ctx.typeSpecifier() is { } || ctx.pointer() is { })
-                throw new NotImplementedException();        // qualified arrays and function pointers
+                throw new NotImplementedException("qualified arrays and function pointers");
 
             DeclaratorNode decl = this.Visit(ctx.directDeclarator()).As<DeclaratorNode>();
             if (decl is VariableDeclaratorNode var) {
@@ -83,7 +85,7 @@ namespace RICC.AST.Builders.C
         {
             string[] specs = ctx.children.Select(c => c.GetText()).ToArray();
             int unsignedIndex = Array.IndexOf(specs, "unsigned");
-            string type = unsignedIndex != -1 ? string.Join(" ", specs[unsignedIndex..]) : specs.Last();
+            string type = unsignedIndex != -1 ? string.Join(' ', specs[unsignedIndex..]) : specs.Last();
             return new DeclarationSpecifiersNode(ctx.Start.Line, string.Join(' ', specs), type);
         }
 

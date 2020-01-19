@@ -19,6 +19,8 @@ extern int foo(const float bar, int x, float y[], signed int z, unsigned long lo
 	int empty[10];
 	int a, w[3] = { 1, (2 * 3 + 4), (3 << 2) };
 
+	w[1] = 4;
+
 	bool b = 3 > 4 && 3 < 5 || 4 >= 2;
 	if (5 > 3) {
 		b = 1 != 1;

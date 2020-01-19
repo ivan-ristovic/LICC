@@ -1,8 +1,6 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Antlr4.Runtime.Misc;
 using RICC.AST.Nodes;
-using RICC.Extensions;
 using static RICC.AST.Builders.C.CParser;
 
 namespace RICC.AST.Builders.C
@@ -11,8 +9,6 @@ namespace RICC.AST.Builders.C
     {
         public override ASTNode VisitFunctionDefinition([NotNull] FunctionDefinitionContext ctx)
         {
-            LogObj.Context(ctx);
-
             DeclarationSpecifiersNode declSpecs = this.Visit(ctx.declarationSpecifiers()).As<DeclarationSpecifiersNode>();
             ASTNode decl = this.Visit(ctx.declarator());
             if (decl is IdentifierNode fname)

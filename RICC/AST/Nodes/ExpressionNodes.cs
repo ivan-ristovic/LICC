@@ -154,6 +154,22 @@ namespace RICC.AST.Nodes
         public override string GetText() => $"{this.Identifier}({this.Arguments?.GetText() ?? ""})";
     }
 
+    public sealed class ArrayAccessExpressionNode : ExpressionNode
+    {
+        [JsonIgnore]
+        public ExpressionNode Array => this.Children[0].As<ExpressionNode>();
+
+        [JsonIgnore]
+        public ExpressionNode IndexExpression => this.Children[1].As<ExpressionNode>();
+
+
+        public ArrayAccessExpressionNode(int line, ExpressionNode array, ExpressionNode indexExpr)
+            : base(line, array, indexExpr) { }
+
+
+        public override string GetText() => $"{this.Array}[{this.IndexExpression.GetText()}]";
+    }
+
     public sealed class LiteralNode : ExpressionNode
     {
         public object Value { get; }

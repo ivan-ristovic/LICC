@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Tree;
 using RICC.AST.Nodes;
 using RICC.Extensions;
 using static RICC.AST.Builders.C.CParser;
@@ -20,12 +21,15 @@ namespace RICC.AST.Builders.C
             return this.Visit(parser.compilationUnit()); 
         }
 
+        
+        public override ASTNode Visit(IParseTree tree)
+        {
+            LogObj.Visit(tree as ParserRuleContext);
+            return base.Visit(tree);
+        }
 
         public override ASTNode VisitCompilationUnit([NotNull] CompilationUnitContext ctx)
-        {
-            LogObj.Context(ctx);
-            return ctx.translationUnit() is null ? new TranslationUnitNode(Enumerable.Empty<ASTNode>()) : this.Visit(ctx.translationUnit());
-        }
+            => ctx.translationUnit() is null ? new TranslationUnitNode(Enumerable.Empty<ASTNode>()) : this.Visit(ctx.translationUnit());
 
         public override ASTNode VisitTranslationUnit([NotNull] TranslationUnitContext ctx)
         {
