@@ -36,7 +36,7 @@ extern int foo(const float bar, int x, float y[], signed int z, unsigned long lo
 	}
 
 	if (1)
-		b = 1 >= 1;
+		y = (w[1] > 5) ? 10.3 : 5.44;
 
 	;
 
@@ -63,7 +63,7 @@ int main()
 			return 1;
 	}
 
-	for (x--; x < 10; x *= 2) {
+	for (x--; x < 10; x *= 2, i++) {
 		printf("%d\n", x);
 	}
 

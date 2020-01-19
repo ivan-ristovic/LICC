@@ -10,7 +10,13 @@ namespace RICC.AST.Builders.C
 {
     public sealed partial class CASTBuilder : CBaseVisitor<ASTNode>, IASTBuilder
     {
-        public override ASTNode VisitExpression([NotNull] ExpressionContext ctx) => this.Visit(ctx.assignmentExpression()); // TODO list
+        public override ASTNode VisitExpression([NotNull] ExpressionContext ctx)
+        {
+            if (ctx.expression() is { })
+                throw new NotImplementedException("expression list");
+
+            return this.Visit(ctx.assignmentExpression());
+        }
 
         public override ASTNode VisitAssignmentExpression([NotNull] AssignmentExpressionContext ctx)
         {
@@ -28,7 +34,24 @@ namespace RICC.AST.Builders.C
             return new AssignmentExpressionNode(ctx.Start.Line, unary, op, expr);
         }
 
-        public override ASTNode VisitConditionalExpression([NotNull] ConditionalExpressionContext ctx) => this.Visit(ctx.logicalOrExpression());    // TODO
+        public override ASTNode VisitConditionalExpression([NotNull] ConditionalExpressionContext ctx)
+        {
+            ExpressionNode expr = this.Visit(ctx.logicalOrExpression()).As<ExpressionNode>();
+            if (ctx.expression() is null)
+                return expr;
+
+            ExpressionNode thenExpr = this.Visit(ctx.expression()).As<ExpressionNode>();
+            ExpressionNode elseExpr = this.Visit(ctx.conditionalExpression()).As<ExpressionNode>();
+
+            if (expr is LogicExpressionNode || expr is RelationalExpressionNode) {
+                return new ConditionalExpressionNode(ctx.Start.Line, expr, thenExpr, elseExpr);
+            } else {
+                var op = new RelationalOperatorNode(expr.Line, "!=", BinaryOperations.NotEqualsPrimitive);
+                var right = new LiteralNode(expr.Line, 0);
+                var condition = new RelationalExpressionNode(expr.Line, expr, op, right);
+                return new ConditionalExpressionNode(ctx.Start.Line, condition, thenExpr, elseExpr);
+            }
+        }
 
         public override ASTNode VisitLogicalOrExpression([NotNull] LogicalOrExpressionContext ctx)
         {

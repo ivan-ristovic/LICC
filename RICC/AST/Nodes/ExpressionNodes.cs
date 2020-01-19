@@ -167,7 +167,7 @@ namespace RICC.AST.Nodes
             : base(line, array, indexExpr) { }
 
 
-        public override string GetText() => $"{this.Array}[{this.IndexExpression.GetText()}]";
+        public override string GetText() => $"{this.Array.GetText()}[{this.IndexExpression.GetText()}]";
     }
 
     public sealed class IncrementExpression : ExpressionNode
@@ -180,7 +180,7 @@ namespace RICC.AST.Nodes
             : base(line, expr) { }
      
 
-        public override string GetText() => $"{this.Expr}++";
+        public override string GetText() => $"{this.Expr.GetText()}++";
     }
 
     public sealed class DecrementExpression : ExpressionNode
@@ -193,7 +193,7 @@ namespace RICC.AST.Nodes
             : base(line, expr) { }
      
         
-        public override string GetText() => $"{this.Expr}--";
+        public override string GetText() => $"{this.Expr.GetText()}--";
     }
 
     public sealed class LiteralNode : ExpressionNode
@@ -211,5 +211,25 @@ namespace RICC.AST.Nodes
      
         
         public override string GetText() => this.Value?.ToString() ?? "";
+    }
+
+    public sealed class ConditionalExpressionNode : ExpressionNode
+    {
+        [JsonIgnore]
+        public ExpressionNode Condition => this.Children[0].As<ExpressionNode>();
+
+        [JsonIgnore]
+        public ExpressionNode ThenExpression => this.Children[1].As<ExpressionNode>();
+
+        [JsonIgnore]
+        public ExpressionNode ElseExpression => this.Children[1].As<ExpressionNode>();
+
+
+        public ConditionalExpressionNode(int line, ExpressionNode cond, ExpressionNode @then, ExpressionNode @else)
+            : base(line, cond, @then, @else) { }
+
+
+        public override string GetText() 
+            => $"{this.Condition.GetText()} ? {this.ThenExpression.GetText()} : {this.ElseExpression.GetText()}";
     }
 }
