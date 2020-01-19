@@ -25,8 +25,8 @@ extern int foo(const float bar, int x, float y[], signed int z, unsigned long lo
 	if (5 > 3) {
 		b = 1 != 1;
 	} else {
-		float y;
-		y = 3.2;
+		float y = 3.01;
+		y *= 3.2;
 	}
 
 	if (3) {

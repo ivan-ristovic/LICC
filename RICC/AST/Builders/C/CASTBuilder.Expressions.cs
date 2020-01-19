@@ -14,11 +14,15 @@ namespace RICC.AST.Builders.C
 
         public override ASTNode VisitAssignmentExpression([NotNull] AssignmentExpressionContext ctx)
         {
+            if (ctx.DigitSequence() is { })
+                throw new NotImplementedException("digit sequence");
+
             if (ctx.conditionalExpression() is { })
                 return this.Visit(ctx.conditionalExpression());
 
             ExpressionNode unary = this.Visit(ctx.unaryExpression()).As<ExpressionNode>();
-            var op = new AssignmentOperatorNode(ctx.Start.Line, ctx.children[1].GetText(), (a, b) => b);
+            string symbol = ctx.children[1].GetText();
+            var op = new AssignmentOperatorNode(ctx.Start.Line, symbol, BinaryOperations.AssignmentFromSymbol(symbol));
             ExpressionNode expr = this.Visit(ctx.assignmentExpression()).As<ExpressionNode>();
 
             return new AssignmentExpressionNode(ctx.Start.Line, unary, op, expr);
@@ -153,9 +157,12 @@ namespace RICC.AST.Builders.C
                     return new IncrementExpression(ctx.Start.Line, expr);
                 case "--":
                     return new DecrementExpression(ctx.Start.Line, expr);
-                case "->": throw new NotImplementedException("->");
-                case ".": throw new NotImplementedException("struct field access");
-                default: throw new NotImplementedException();
+                case "->":
+                    throw new NotImplementedException("->");
+                case ".":
+                    throw new NotImplementedException("struct field access");
+                default:
+                    throw new NotImplementedException("unknown postfix expression");
             }
         }
 
