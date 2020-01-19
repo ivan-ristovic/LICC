@@ -21,7 +21,7 @@ namespace RICC.AST.Nodes
     {
         public DeclarationKeywords Keywords { get; }
         public string TypeName { get; }
-
+        
         [JsonIgnore]
         public Type? Type { get; }
 

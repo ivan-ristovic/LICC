@@ -62,12 +62,10 @@ namespace RICC.AST.Builders.C
                     StatementNode thenStatement = this.Visit(statements.First()).As<StatementNode>();
                     StatementNode? elseStatement = statements.Length > 1 ? this.Visit(statements.Last()).As<StatementNode>() : null;
 
-                    if (expr is LogicExpressionNode) {
-                        LogicExpressionNode condition = expr.As<LogicExpressionNode>();
-                        return new IfStatementNode(ctx.Start.Line, condition, thenStatement, elseStatement);
-                    } else if (expr is RelationalExpressionNode) {
-                        RelationalExpressionNode condition = expr.As<RelationalExpressionNode>();
-                        return new IfStatementNode(ctx.Start.Line, condition, thenStatement, elseStatement);
+                    if (expr is LogicExpressionNode logicExpr) {
+                        return new IfStatementNode(ctx.Start.Line, logicExpr, thenStatement, elseStatement);
+                    } else if (expr is RelationalExpressionNode relExpr) {
+                        return new IfStatementNode(ctx.Start.Line, relExpr, thenStatement, elseStatement);
                     } else {
                         var op = new RelationalOperatorNode(expr.Line, "!=", BinaryOperations.NotEqualsPrimitive);
                         var right = new LiteralNode(expr.Line, 0);
@@ -75,13 +73,38 @@ namespace RICC.AST.Builders.C
                         return new IfStatementNode(ctx.Start.Line, condition, thenStatement, elseStatement);
                     }
                 case "switch":
-                    throw new NotImplementedException();  // TODO 
+                    throw new NotImplementedException("switch");  // TODO 
                 default:
-                    throw new Exception("???");           // TODO
+                    throw new Exception("???");                   // TODO
             }
         }
 
-        public override ASTNode VisitIterationStatement([NotNull] IterationStatementContext ctx) => base.VisitIterationStatement(ctx);
+        public override ASTNode VisitIterationStatement([NotNull] IterationStatementContext ctx)
+        {
+            IterationStatementNode it;
+            StatementNode statement = this.Visit(ctx.statement()).As<StatementNode>();
+
+            if (ctx.GetToken(For, 0) is { }) {
+                // TODO for
+            }
+
+            ExpressionNode expr = this.Visit(ctx.expression()).As<ExpressionNode>();
+            if (expr is LogicExpressionNode logicExpr) {
+                it = new WhileStatementNode(ctx.Start.Line, logicExpr, statement);
+            } else if (expr is RelationalExpressionNode relExpr) {
+                it = new WhileStatementNode(ctx.Start.Line, relExpr, statement);
+            } else {
+                var op = new RelationalOperatorNode(expr.Line, "!=", BinaryOperations.NotEqualsPrimitive);
+                var right = new LiteralNode(expr.Line, 0);
+                var condition = new RelationalExpressionNode(expr.Line, expr, op, right);
+                it = new WhileStatementNode(ctx.Start.Line, condition, statement);
+            }
+
+            if (ctx.GetToken(Do, 0) is { })
+                throw new NotImplementedException("do-while");
+
+            return it;
+        }
 
         public override ASTNode VisitJumpStatement([NotNull] JumpStatementContext ctx)
         {

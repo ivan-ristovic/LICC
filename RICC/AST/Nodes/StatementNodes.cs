@@ -152,4 +152,32 @@ namespace RICC.AST.Nodes
 
         public override string GetText() => $"{this.Label}: {this.Statement.GetText()}";
     }
+
+    public abstract class IterationStatementNode : CompoundStatementNode
+    {
+        [JsonIgnore]
+        public ExpressionNode Condition => this.Children[0].As<ExpressionNode>();
+
+        [JsonIgnore]
+        public StatementNode Statement => this.Children[1].As<StatementNode>();
+
+
+        protected IterationStatementNode(int line, LogicExpressionNode condition, StatementNode statement)
+            : base(line, condition, statement) { }
+
+        protected IterationStatementNode(int line, RelationalExpressionNode condition, StatementNode statement)
+            : base(line, condition, statement) { }
+    }
+
+    public sealed class WhileStatementNode : IterationStatementNode
+    {
+        public WhileStatementNode(int line, LogicExpressionNode condition, StatementNode statement)
+            : base(line, condition, statement) { }
+
+        public WhileStatementNode(int line, RelationalExpressionNode condition, StatementNode statement)
+            : base(line, condition, statement) { }
+
+
+        public override string GetText() => $"while ({this.Condition.GetText()}) {{ {this.Statement.GetText()} }}";
+    }
 }

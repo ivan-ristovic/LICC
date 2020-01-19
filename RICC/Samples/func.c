@@ -46,5 +46,13 @@ static float y, z = 3;
 
 int main() 
 {
+	int x = 1;
+	while (1) {
+		if (x < 10)
+			printf("lt 10");
+		if (x == 17)
+			break;
+		x += 1;
+	}
 	return 0;
 }
