@@ -3,7 +3,6 @@ using System.Linq;
 using Antlr4.Runtime.Misc;
 using RICC.AST.Nodes;
 using RICC.AST.Nodes.Common;
-using Serilog;
 using static RICC.AST.Builders.C.CParser;
 
 namespace RICC.AST.Builders.C
@@ -42,15 +41,7 @@ namespace RICC.AST.Builders.C
 
             ExpressionNode thenExpr = this.Visit(ctx.expression()).As<ExpressionNode>();
             ExpressionNode elseExpr = this.Visit(ctx.conditionalExpression()).As<ExpressionNode>();
-
-            if (expr is LogicExpressionNode || expr is RelationalExpressionNode) {
-                return new ConditionalExpressionNode(ctx.Start.Line, expr, thenExpr, elseExpr);
-            } else {
-                var op = new RelationalOperatorNode(expr.Line, "!=", BinaryOperations.NotEqualsPrimitive);
-                var right = new LiteralNode(expr.Line, 0);
-                var condition = new RelationalExpressionNode(expr.Line, expr, op, right);
-                return new ConditionalExpressionNode(ctx.Start.Line, condition, thenExpr, elseExpr);
-            }
+            return new ConditionalExpressionNode(ctx.Start.Line, expr, thenExpr, elseExpr);
         }
 
         public override ASTNode VisitLogicalOrExpression([NotNull] LogicalOrExpressionContext ctx)
@@ -59,7 +50,7 @@ namespace RICC.AST.Builders.C
                 ExpressionNode left = this.Visit(ctx.logicalOrExpression()).As<ExpressionNode>();
                 ExpressionNode right = this.Visit(ctx.logicalAndExpression()).As<ExpressionNode>();
                 string symbol = ctx.children[1].GetText();
-                var op = new LogicOperatorNode(ctx.Start.Line, symbol, (x, y) => x || y);
+                var op = new BinaryLogicOperatorNode(ctx.Start.Line, symbol, (x, y) => x || y);
                 return new LogicExpressionNode(ctx.Start.Line, left, op, right);
             } else {
                 return this.Visit(ctx.logicalAndExpression());
@@ -72,7 +63,7 @@ namespace RICC.AST.Builders.C
                 ExpressionNode left = this.Visit(ctx.logicalAndExpression()).As<ExpressionNode>();
                 ExpressionNode right = this.Visit(ctx.inclusiveOrExpression()).As<ExpressionNode>();
                 string symbol = ctx.children[1].GetText();
-                var op = new LogicOperatorNode(ctx.Start.Line, symbol, (x, y) => x && y);
+                var op = new BinaryLogicOperatorNode(ctx.Start.Line, symbol, (x, y) => x && y);
                 return new LogicExpressionNode(ctx.Start.Line, left, op, right);
             } else {
                 return this.Visit(ctx.inclusiveOrExpression());
@@ -181,9 +172,30 @@ namespace RICC.AST.Builders.C
             }
         }
 
-        public override ASTNode VisitCastExpression([NotNull] CastExpressionContext ctx) => this.Visit(ctx.unaryExpression());          // TODO
+        public override ASTNode VisitCastExpression([NotNull] CastExpressionContext ctx)
+        {
+            if (ctx.unaryExpression() is null)
+                throw new NotImplementedException("cast operator");
+            return this.Visit(ctx.unaryExpression());
+        }
 
-        public override ASTNode VisitUnaryExpression([NotNull] UnaryExpressionContext ctx) => this.Visit(ctx.postfixExpression());      // TODO
+        public override ASTNode VisitUnaryExpression([NotNull] UnaryExpressionContext ctx)
+        {
+            if (ctx.postfixExpression() is { })
+                return this.Visit(ctx.postfixExpression());
+
+            ExpressionNode expr;
+            if (ctx.unaryExpression() is null) {
+                if (ctx.castExpression() is null)
+                    throw new NotImplementedException("extended unary expressions (sizeof, alignof, gcc extensions");
+                expr = this.Visit(ctx.castExpression()).As<ExpressionNode>();
+            } else {
+                expr = this.Visit(ctx.unaryExpression()).As<ExpressionNode>();
+            }
+            string symbol = ctx.children[0].GetText();
+            var op = new UnaryOperatorNode(ctx.unaryOperator().Start.Line, symbol, UnaryOperations.UnaryFromSymbol(symbol));
+            return new UnaryExpressionNode(ctx.Start.Line, op, expr);
+        }
 
         public override ASTNode VisitPostfixExpression([NotNull] PostfixExpressionContext ctx)
         {

@@ -82,11 +82,11 @@ namespace RICC.AST.Nodes
         public StatementNode? ElseStatement => this.Children.ElementAtOrDefault(2)?.As<StatementNode>() ?? null;
 
 
-        public IfStatementNode(int line, LogicExpressionNode condition, StatementNode thenBlock, StatementNode? elseBlock = null)
-            : base(line, elseBlock is null ? new ASTNode[] { condition, thenBlock } : new ASTNode[] { condition, thenBlock, elseBlock }) { }
+        public IfStatementNode(int line, ExpressionNode condition, StatementNode thenBlock)
+            : base(line, condition, thenBlock) { }
 
-        public IfStatementNode(int line, RelationalExpressionNode condition, StatementNode thenBlock, StatementNode? elseBlock = null)
-            : base(line, elseBlock is null ? new ASTNode[] { condition, thenBlock } : new ASTNode[] { condition, thenBlock, elseBlock }) { }
+        public IfStatementNode(int line, ExpressionNode condition, StatementNode thenBlock, StatementNode elseBlock)
+            : base(line, condition, thenBlock, elseBlock) { }
 
 
         public override string GetText()
@@ -162,10 +162,7 @@ namespace RICC.AST.Nodes
         public StatementNode Statement => this.Children[1].As<StatementNode>();
 
 
-        protected IterationStatementNode(int line, LogicExpressionNode condition, StatementNode statement)
-            : base(line, condition, statement) { }
-
-        protected IterationStatementNode(int line, RelationalExpressionNode condition, StatementNode statement)
+        protected IterationStatementNode(int line, ExpressionNode condition, StatementNode statement)
             : base(line, condition, statement) { }
 
         protected IterationStatementNode(int line, IEnumerable<ASTNode> children)
@@ -174,10 +171,7 @@ namespace RICC.AST.Nodes
 
     public sealed class WhileStatementNode : IterationStatementNode
     {
-        public WhileStatementNode(int line, LogicExpressionNode condition, StatementNode statement)
-            : base(line, condition, statement) { }
-
-        public WhileStatementNode(int line, RelationalExpressionNode condition, StatementNode statement)
+        public WhileStatementNode(int line, ExpressionNode condition, StatementNode statement)
             : base(line, condition, statement) { }
 
 

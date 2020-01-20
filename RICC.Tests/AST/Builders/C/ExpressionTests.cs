@@ -11,75 +11,83 @@ namespace RICC.Tests.AST.Builders.C
         [Test]
         public void LiteralExpressionTest()
         {
-            Evaluate<int>("int x = 3", 3);
-            Evaluate<double>("float y = 2.3", 2.3);
+            this.Evaluate<int>("int x = 3", 3);
+            this.Evaluate<double>("float y = 2.3", 2.3);
             // TODO support chars properly
-            Evaluate<string>("char c = 'a'", "'a'");
-            Evaluate<string>("string s = \"abc\"", "abc");
+            this.Evaluate<string>("char c = 'a'", "'a'");
+            this.Evaluate<string>("string s = \"abc\"", "abc");
         }
 
         [Test]
         public void ArithmeticExpressionTest()
         {
-            Evaluate<int>("int x = 1 << (1 + 1 * 2) >> 3", 1);
-            Evaluate<double>("float y = 2.3 + 4.0 / 2.0", 4.3);
-            Evaluate<double>("double z = 3.3 + (4.1 - 1.1) * 2.0", 9.3);
+            this.Evaluate<int>("int x = 1 << (1 + 1 * 2) >> 3", 1);
+            this.Evaluate<double>("float y = 2.3 + 4.0 / 2.0", 4.3);
+            this.Evaluate<double>("double z = 3.3 + (4.1 - 1.1) * 2.0", 9.3);
         }
 
         [Test]
         public void ArithmeticExpressionImplicitCastTest()
         {
-            Evaluate<int>("double x = 1 << (1 + 1 * 2) >> 3", 1);
-            Evaluate<double>("float y = 2.3 + 4 / 2", 4.3);
-            Evaluate<double>("double z = 3.3 + (4.1 - 1.1) * 2", 9.3);
+            this.Evaluate<int>("double x = 1 << (1 + 1 * 2) >> 3", 1);
+            this.Evaluate<double>("float y = 2.3 + 4 / 2", 4.3);
+            this.Evaluate<double>("double z = 3.3 + (4.1 - 1.1) * 2", 9.3);
         }
 
         [Test]
         public void RelationalExpressionTest()
         {
-            Evaluate<bool>("bool a = 1 > 1", false);
-            Evaluate<bool>("bool b = 1 >= 1", true);
-            Evaluate<bool>("bool c = 2 > 1", true);
-            Evaluate<bool>("bool d = 3 < 1", false);
-            Evaluate<bool>("bool e = 1 != 1", false);
-            Evaluate<bool>("bool f = (1 + 1) == 2", true);
-            Evaluate<bool>("bool g = 1.1 > 1.0", true);
-            Evaluate<bool>("bool h = 1.101 >= 1.1", true);
-            Evaluate<bool>("bool i = (1 + 3 * 2) > 7", false);
-            Evaluate<bool>("bool j = 3.0 + 0.1 > 3.0", true);
-            Evaluate<bool>("bool k = 1.01 != 1.0", true);
-            Evaluate<bool>("bool l = (1 << 1) == 2", true);
-            Evaluate<bool>("bool m = (2 >> 1) == 1", true);
+            this.Evaluate<bool>("bool a = 1 > 1", false);
+            this.Evaluate<bool>("bool b = 1 >= 1", true);
+            this.Evaluate<bool>("bool c = 2 > 1", true);
+            this.Evaluate<bool>("bool d = 3 < 1", false);
+            this.Evaluate<bool>("bool e = 1 != 1", false);
+            this.Evaluate<bool>("bool f = (1 + 1) == 2", true);
+            this.Evaluate<bool>("bool g = 1.1 > 1.0", true);
+            this.Evaluate<bool>("bool h = 1.101 >= 1.1", true);
+            this.Evaluate<bool>("bool i = (1 + 3 * 2) > 7", false);
+            this.Evaluate<bool>("bool j = 3.0 + 0.1 > 3.0", true);
+            this.Evaluate<bool>("bool k = 1.01 != 1.0", true);
+            this.Evaluate<bool>("bool l = (1 << 1) == 2", true);
+            this.Evaluate<bool>("bool m = (2 >> 1) == 1", true);
         }
 
         [Test]
         public void LogicExpressionTest()
         {
-            Evaluate<bool>("bool a = 1 > 1 && 2 < 3", false);
-            Evaluate<bool>("bool b = 1 >= 1 && 2 < 3", true);
-            Evaluate<bool>("bool b = 1 >= 1 || 3 < 3", true);
-            Evaluate<bool>("bool b = 1 > 1 || 3 >= 3", true);
-            Evaluate<bool>("bool b = 1 > 1 || 3 > 3", false);
-            Evaluate<bool>("bool c = 2 > 1 && 1 != 2 && 2 <= 3", true);
-            Evaluate<bool>("bool c = 2 > 1 && 1 != 2 && 2 > 3", false);
-            Evaluate<bool>("bool d = 3 < 1 || 2 < 1 || 1 > 1", false);
-            Evaluate<bool>("bool d = 3 < 1 || 2 > 1 || 1 == 1", true);
-            Evaluate<bool>("bool e = 1 != 1 || 1 == 1", true);
-            Evaluate<bool>("bool f = (1 + 1) == 2 || 2 == 2", true);
-            Evaluate<bool>("bool g = 1.1 > 1.0 && 1.0 > 1.02", false);
-            Evaluate<bool>("bool g = 1.1 > 1.0 || 1.0 > 1.02", true);
-            Evaluate<bool>("bool h = 1.101 >= 1.1 && (7 > 3.2 || 2 > 3)", true);
-            Evaluate<bool>("bool i = (1 + 3 * 2 > 3 && 4 != 2.0) && 8 > 7", true);
-            Evaluate<bool>("bool j = 1 != 0 && 1 > 1 || 1 == 1", true);
-            Evaluate<bool>("bool j = 1 != 0 && (1 == 1 || 1 == 3)", true);
-            Evaluate<bool>("bool j = 1 != 0 && (1 != 1 || 1 == 3)", false);
-            Evaluate<bool>("bool k = 3 > 2 || 3 > 1 && 1 > 1", true);
-            Evaluate<bool>("bool k = (3 > 2 || 3 > 1) && 1 > 1", false);
-            Evaluate<bool>("bool l = (1 << 1) == 2 && (3 / 2 == 1)", true);
-            Evaluate<bool>("bool l = (1 << 1) == 2 && (3 / 2 != 1)", false);
-            Evaluate<bool>("bool l = (1 << 1) == 2 || (3 / 2 != 1)", true);
-            Evaluate<bool>("bool l = (1 << 2) == 2 || (3 / 2 != 1)", false);
-            Evaluate<bool>("bool l = (1 << 1) == (4 >> 1) || 1 != 1", true);
+            this.Evaluate<bool>("bool t = 1 || 1", true);
+            this.Evaluate<bool>("bool t = 1 || 0", true);
+            this.Evaluate<bool>("bool t = 0 || 0", false);
+            this.Evaluate<bool>("bool t = 0 && 0", false);
+            this.Evaluate<bool>("bool t = 0 && 1", false);
+            this.Evaluate<bool>("bool t = 1 && 0", false);
+            this.Evaluate<bool>("bool t = 1 && 1", true);
+            this.Evaluate<bool>("bool t = 0.0001 && 1.1", true);
+            this.Evaluate<bool>("bool a = 1 > 1 && 2 < 3", false);
+            this.Evaluate<bool>("bool b = 1 >= 1 && 2 < 3", true);
+            this.Evaluate<bool>("bool b = 1 >= 1 || 3 < 3", true);
+            this.Evaluate<bool>("bool b = 1 > 1 || 3 >= 3", true);
+            this.Evaluate<bool>("bool b = 1 > 1 || 3 > 3", false);
+            this.Evaluate<bool>("bool c = 2 > 1 && 1 != 2 && 2 <= 3", true);
+            this.Evaluate<bool>("bool c = 2 > 1 && 1 != 2 && 2 > 3", false);
+            this.Evaluate<bool>("bool d = 3 < 1 || 2 < 1 || 1 > 1", false);
+            this.Evaluate<bool>("bool d = 3 < 1 || 2 > 1 || 1 == 1", true);
+            this.Evaluate<bool>("bool e = 1 != 1 || 1 == 1", true);
+            this.Evaluate<bool>("bool f = (1 + 1) == 2 || 2 == 2", true);
+            this.Evaluate<bool>("bool g = 1.1 > 1.0 && 1.0 > 1.02", false);
+            this.Evaluate<bool>("bool g = 1.1 > 1.0 || 1.0 > 1.02", true);
+            this.Evaluate<bool>("bool h = 1.101 >= 1.1 && (7 > 3.2 || 2 > 3)", true);
+            this.Evaluate<bool>("bool i = (1 + 3 * 2 > 3 && 4 != 2.0) && 8 > 7", true);
+            this.Evaluate<bool>("bool j = 1 != 0 && 1 > 1 || 1 == 1", true);
+            this.Evaluate<bool>("bool j = 1 != 0 && (1 == 1 || 1 == 3)", true);
+            this.Evaluate<bool>("bool j = 1 != 0 && (1 != 1 || 1 == 3)", false);
+            this.Evaluate<bool>("bool k = 3 > 2 || 3 > 1 && 1 > 1", true);
+            this.Evaluate<bool>("bool k = (3 > 2 || 3 > 1) && 1 > 1", false);
+            this.Evaluate<bool>("bool l = (1 << 1) == 2 && (3 / 2 == 1)", true);
+            this.Evaluate<bool>("bool l = (1 << 1) == 2 && (3 / 2 != 1)", false);
+            this.Evaluate<bool>("bool l = (1 << 1) == 2 || (3 / 2 != 1)", true);
+            this.Evaluate<bool>("bool l = (1 << 2) == 2 || (3 / 2 != 1)", false);
+            this.Evaluate<bool>("bool l = (1 << 1) == (4 >> 1) || 1 != 1", true);
         }
 
         [Test]
@@ -139,7 +147,8 @@ namespace RICC.Tests.AST.Builders.C
             }
         }
 
-        private static void Evaluate<T>(string decl, object expected)
+
+        private void Evaluate<T>(string decl, object expected)
         {
             ASTNode ast = CASTProvider.BuildFromSource(decl);
             ExpressionNode? init = ast.Children

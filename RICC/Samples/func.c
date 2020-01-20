@@ -7,7 +7,7 @@ static void f(int a, const int b)
 	signed int k = 3 + 4 * (5 - 6);
 	char* s = "abcd";
 	double w = 3.4 * 7.11 / 2.33;
-	unsigned int bitwise = ((1 << 10) | (1 << 5)) & (x ^ 0);
+	unsigned int bitwise = ((1 << 10) | (1 << 5)) & (x ^ ~0);
 
 label:
 	x = 4;

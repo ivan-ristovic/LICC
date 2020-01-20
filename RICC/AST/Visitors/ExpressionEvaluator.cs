@@ -1,4 +1,5 @@
-﻿using RICC.AST.Nodes;
+﻿using System;
+using RICC.AST.Nodes;
 using RICC.Exceptions;
 
 namespace RICC.AST.Visitors
@@ -42,9 +43,7 @@ namespace RICC.AST.Visitors
         public override object Visit(LogicExpressionNode node)
         {
             (object? l, object? r) = this.VisitBinaryOperands(node);
-            if (!(l is bool) || !(r is bool))
-                throw new EvaluationException();    // TODO
-            return node.Operator.As<LogicOperatorNode>().ApplyTo((bool)l, (bool)r);
+            return node.Operator.As<BinaryLogicOperatorNode>().ApplyTo(Convert.ToBoolean(l), Convert.ToBoolean(r));
         }
 
         public override object Visit(LiteralNode node) 

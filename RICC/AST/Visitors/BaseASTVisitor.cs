@@ -17,7 +17,7 @@ namespace RICC.AST.Visitors
         public virtual TResult Visit(RelationalExpressionNode node) => default;
         public virtual TResult Visit(RelationalOperatorNode node) => default;
         public virtual TResult Visit(LogicExpressionNode node) => default;
-        public virtual TResult Visit(LogicOperatorNode node) => default;
+        public virtual TResult Visit(BinaryLogicOperatorNode node) => default;
         public virtual TResult Visit(LiteralNode node) => default;
 
         // TODO

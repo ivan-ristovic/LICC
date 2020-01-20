@@ -102,7 +102,7 @@ namespace RICC.AST.Nodes
 
     public sealed class LogicExpressionNode : BinaryExpressionNode
     {
-        public LogicExpressionNode(int line, ExpressionNode left, LogicOperatorNode @operator, ExpressionNode right)
+        public LogicExpressionNode(int line, ExpressionNode left, BinaryLogicOperatorNode @operator, ExpressionNode right)
             : base(line, left, @operator, right) { }
     }
 

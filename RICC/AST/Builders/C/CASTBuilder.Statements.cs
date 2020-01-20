@@ -58,21 +58,14 @@ namespace RICC.AST.Builders.C
         {
             switch (ctx.children.First().GetText()) {
                 case "if":
-                    ExpressionNode expr = this.Visit(ctx.expression()).As<ExpressionNode>();
+                    ExpressionNode condition = this.Visit(ctx.expression()).As<ExpressionNode>();
                     StatementContext[] statements = ctx.statement();
                     StatementNode thenStatement = this.Visit(statements.First()).As<StatementNode>();
                     StatementNode? elseStatement = statements.Length > 1 ? this.Visit(statements.Last()).As<StatementNode>() : null;
-
-                    if (expr is LogicExpressionNode logicExpr) {
-                        return new IfStatementNode(ctx.Start.Line, logicExpr, thenStatement, elseStatement);
-                    } else if (expr is RelationalExpressionNode relExpr) {
-                        return new IfStatementNode(ctx.Start.Line, relExpr, thenStatement, elseStatement);
-                    } else {
-                        var op = new RelationalOperatorNode(expr.Line, "!=", BinaryOperations.NotEqualsPrimitive);
-                        var right = new LiteralNode(expr.Line, 0);
-                        var condition = new RelationalExpressionNode(expr.Line, expr, op, right);
+                    if (elseStatement is null) 
+                        return new IfStatementNode(ctx.Start.Line, condition, thenStatement);
+                    else
                         return new IfStatementNode(ctx.Start.Line, condition, thenStatement, elseStatement);
-                    }
                 case "switch":
                     throw new NotImplementedException("switch");  // TODO 
                 default:
@@ -98,17 +91,8 @@ namespace RICC.AST.Builders.C
                 }
             }
 
-            ExpressionNode expr = this.Visit(ctx.expression()).As<ExpressionNode>();
-            if (expr is LogicExpressionNode logicExpr) {
-                it = new WhileStatementNode(ctx.Start.Line, logicExpr, statement);
-            } else if (expr is RelationalExpressionNode relExpr) {
-                it = new WhileStatementNode(ctx.Start.Line, relExpr, statement);
-            } else {
-                var op = new RelationalOperatorNode(expr.Line, "!=", BinaryOperations.NotEqualsPrimitive);
-                var right = new LiteralNode(expr.Line, 0);
-                var condition = new RelationalExpressionNode(expr.Line, expr, op, right);
-                it = new WhileStatementNode(ctx.Start.Line, condition, statement);
-            }
+            ExpressionNode condition = this.Visit(ctx.expression()).As<ExpressionNode>();
+            it = new WhileStatementNode(ctx.Start.Line, condition, statement);
 
             if (ctx.Do() is { })
                 throw new NotImplementedException("do-while");

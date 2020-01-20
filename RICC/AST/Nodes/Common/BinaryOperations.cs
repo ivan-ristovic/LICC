@@ -230,7 +230,7 @@ namespace RICC.AST.Nodes.Common
         {
             ThrowIfNotPrimitiveTypes(x, y);
 
-            if (x is decimal || y is decimal || x is double || y is double || x is float || y is float)
+            if (x is string || y is string || x is decimal || y is decimal || x is double || y is double || x is float || y is float)
                 throw new EvaluationException("Bitwise operations can't be performed on floating point numbers");
             else if (x is ulong || y is ulong)
                 return Convert.ToUInt64(x) & Convert.ToUInt64(y);
@@ -258,7 +258,7 @@ namespace RICC.AST.Nodes.Common
         {
             ThrowIfNotPrimitiveTypes(x, y);
 
-            if (x is decimal || y is decimal || x is double || y is double || x is float || y is float)
+            if (x is string || y is string || x is decimal || y is decimal || x is double || y is double || x is float || y is float)
                 throw new EvaluationException("Bitwise operations can't be performed on floating point numbers");
             else if (x is ulong || y is ulong)
                 return Convert.ToUInt64(x) ^ Convert.ToUInt64(y);
@@ -286,7 +286,7 @@ namespace RICC.AST.Nodes.Common
         {
             ThrowIfNotPrimitiveTypes(x, y);
 
-            if (x is decimal || y is decimal || x is double || y is double || x is float || y is float)
+            if (x is string || y is string || x is decimal || y is decimal || x is double || y is double || x is float || y is float)
                 throw new EvaluationException("Bitwise operations can't be performed on floating point numbers");
             else if (x is ulong || y is ulong)
                 return Convert.ToUInt64(x) | Convert.ToUInt64(y);
@@ -449,32 +449,6 @@ namespace RICC.AST.Nodes.Common
         public static bool NotEqualsPrimitive(object x, object y)
             => !EqualsPrimitive(x, y);
 
-
-        private static bool BooleanOperatorPrimitive(object x, object y, Func<bool, bool, bool> op)
-        {
-            return op(ConvertToBool(x), ConvertToBool(y));
-            
-
-            static bool ConvertToBool(object v)
-            {
-                return v switch 
-                { 
-                    bool v_bool => v_bool,
-                    int v_int => v_int != 0,
-                    sbyte v_sbyte => v_sbyte != 0,
-                    byte v_byte => v_byte != 0,
-                    char v_char => v_char != 0,
-                    short v_short => v_short != 0,
-                    ushort v_ushort => v_ushort != 0,
-                    long v_long => v_long != 0,
-                    ulong v_ulong => v_ulong != 0,
-                    float v_float => v_float != 0,
-                    double v_double => v_double != 0,
-                    decimal v_decimal => v_decimal != 0,
-                    _ => throw new EvaluationException("Some operands cannot be converted to boolean value.")
-                };
-            }
-        }
 
         private static void ThrowIfNotPrimitiveTypes(object x, object y)
         {
