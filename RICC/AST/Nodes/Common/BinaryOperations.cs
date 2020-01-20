@@ -21,7 +21,6 @@ namespace RICC.AST.Nodes.Common
 
         public static Func<object, object, bool> RelationalFromSymbol(string symbol)
         {
-            // TODO '&' | '^' | '|'
             return symbol switch
             {
                 ">" => GreaterThanPrimitive,
@@ -36,7 +35,6 @@ namespace RICC.AST.Nodes.Common
 
         public static Func<object, object, object> AssignmentFromSymbol(string symbol)
         {
-            // TODO '&=' | '^=' | '|='
             return symbol switch
             {
                 "=" => (a, b) => b,
@@ -46,6 +44,9 @@ namespace RICC.AST.Nodes.Common
                 "/=" => DividePrimitive,
                 "<<=" => ShiftLeftPrimitive,
                 ">>=" => ShiftRightPrimitive,
+                "&=" => BitwiseAndPrimitive,
+                "|=" => BitwiseOrPrimitive,
+                "^=" => BitwiseXorPrimitive,
                 _ => throw new UnknownOperatorException(symbol)
             };
         }

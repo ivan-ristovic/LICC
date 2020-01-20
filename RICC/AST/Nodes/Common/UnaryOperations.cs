@@ -13,6 +13,7 @@ namespace RICC.AST.Nodes.Common
             {
                 "+" => x => x,
                 "-" => NegatePrimitive,
+                "!" => NotPrimitive,
                 "~" => BitwiseNotPrimitive,
                 "++" => IncrementPrimitive,
                 "--" => DecrementPrimitive,
@@ -148,6 +149,42 @@ namespace RICC.AST.Nodes.Common
                 return Convert.ToSByte(x) - 1;
             else
                 throw new EvaluationException("Cannot perform decrement on non-primitive types");
+        }
+
+        public static object NotPrimitive(object x)
+        {
+            ThrowIfNotPrimitiveType(x);
+
+            if (x is string)
+                throw new EvaluationException("Negate operation can't be performed on strings");
+            else if (x is decimal)
+                return !Convert.ToBoolean(Convert.ToDecimal(x));
+            else if (x is double)
+                return !Convert.ToBoolean(Convert.ToDouble(x));
+            else if (x is float)
+                return !Convert.ToBoolean(Convert.ToSingle(x));
+            else if (x is ulong)
+                return !Convert.ToBoolean(Convert.ToUInt64(x));
+            else if (x is long)
+                return !Convert.ToBoolean(Convert.ToInt64(x));
+            else if (x is uint)
+                return !Convert.ToBoolean(Convert.ToUInt32(x));
+            else if (x is int)
+                return !Convert.ToBoolean(Convert.ToInt32(x));
+            else if (x is ushort)
+                return !Convert.ToBoolean(Convert.ToUInt16(x));
+            else if (x is short)
+                return !Convert.ToBoolean(Convert.ToInt16(x));
+            else if (x is char)
+                return !Convert.ToBoolean(Convert.ToChar(x));
+            else if (x is byte)
+                return !Convert.ToBoolean(Convert.ToByte(x));
+            else if (x is sbyte)
+                return !Convert.ToBoolean(Convert.ToSByte(x));
+            else if (x is bool)
+                return !Convert.ToBoolean(x);
+            else
+                throw new EvaluationException("Cannot perform negate on non-primitive types");
         }
 
 

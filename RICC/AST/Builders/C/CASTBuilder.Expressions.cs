@@ -193,7 +193,7 @@ namespace RICC.AST.Builders.C
                 expr = this.Visit(ctx.unaryExpression()).As<ExpressionNode>();
             }
             string symbol = ctx.children[0].GetText();
-            var op = new UnaryOperatorNode(ctx.unaryOperator().Start.Line, symbol, UnaryOperations.UnaryFromSymbol(symbol));
+            var op = new UnaryOperatorNode(ctx.Start.Line, symbol, UnaryOperations.UnaryFromSymbol(symbol));
             return new UnaryExpressionNode(ctx.Start.Line, op, expr);
         }
 
