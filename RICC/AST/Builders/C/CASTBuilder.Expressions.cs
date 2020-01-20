@@ -79,11 +79,44 @@ namespace RICC.AST.Builders.C
             }
         }
 
-        public override ASTNode VisitInclusiveOrExpression([NotNull] InclusiveOrExpressionContext ctx) => this.Visit(ctx.exclusiveOrExpression());  // TODO
+        public override ASTNode VisitInclusiveOrExpression([NotNull] InclusiveOrExpressionContext ctx)
+        {
+            if (ctx.ChildCount > 1) {
+                ExpressionNode left = this.Visit(ctx.inclusiveOrExpression()).As<ExpressionNode>();
+                ExpressionNode right = this.Visit(ctx.exclusiveOrExpression()).As<ExpressionNode>();
+                string symbol = ctx.children[1].GetText();
+                var op = new ArithmeticOperatorNode(ctx.Start.Line, symbol, BinaryOperations.BitwiseOrPrimitive);
+                return new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
+            } else {
+                return this.Visit(ctx.exclusiveOrExpression());
+            }
+        }
 
-        public override ASTNode VisitExclusiveOrExpression([NotNull] ExclusiveOrExpressionContext ctx) => this.Visit(ctx.andExpression());          // TODO
+        public override ASTNode VisitExclusiveOrExpression([NotNull] ExclusiveOrExpressionContext ctx)
+        {
+            if (ctx.ChildCount > 1) {
+                ExpressionNode left = this.Visit(ctx.exclusiveOrExpression()).As<ExpressionNode>();
+                ExpressionNode right = this.Visit(ctx.andExpression()).As<ExpressionNode>();
+                string symbol = ctx.children[1].GetText();
+                var op = new ArithmeticOperatorNode(ctx.Start.Line, symbol, BinaryOperations.BitwiseXorPrimitive);
+                return new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
+            } else {
+                return this.Visit(ctx.andExpression());
+            }
+        }
 
-        public override ASTNode VisitAndExpression([NotNull] AndExpressionContext ctx) => this.Visit(ctx.equalityExpression());                     // TODO
+        public override ASTNode VisitAndExpression([NotNull] AndExpressionContext ctx)
+        {
+            if (ctx.ChildCount > 1) {
+                ExpressionNode left = this.Visit(ctx.andExpression()).As<ExpressionNode>();
+                ExpressionNode right = this.Visit(ctx.equalityExpression()).As<ExpressionNode>();
+                string symbol = ctx.children[1].GetText();
+                var op = new ArithmeticOperatorNode(ctx.Start.Line, symbol, BinaryOperations.BitwiseAndPrimitive);
+                return new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
+            } else {
+                return this.Visit(ctx.equalityExpression());
+            }
+        }
 
         public override ASTNode VisitEqualityExpression([NotNull] EqualityExpressionContext ctx)
         {

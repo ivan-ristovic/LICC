@@ -226,6 +226,90 @@ namespace RICC.AST.Nodes.Common
             }
         }
 
+        public static object BitwiseAndPrimitive(object x, object y)
+        {
+            ThrowIfNotPrimitiveTypes(x, y);
+
+            if (x is decimal || y is decimal || x is double || y is double || x is float || y is float)
+                throw new EvaluationException("Bitwise operations can't be performed on floating point numbers");
+            else if (x is ulong || y is ulong)
+                return Convert.ToUInt64(x) & Convert.ToUInt64(y);
+            else if (x is long || y is long)
+                return Convert.ToInt64(x) & Convert.ToInt64(y);
+            else if (x is uint || y is uint)
+                return Convert.ToUInt32(x) & Convert.ToUInt32(y);
+            else if (x is int || y is int)
+                return Convert.ToInt32(x) & Convert.ToInt32(y);
+            else if (x is ushort || y is ushort)
+                return Convert.ToUInt16(x) & Convert.ToUInt16(y);
+            else if (x is short || y is short)
+                return Convert.ToInt16(x) & Convert.ToInt16(y);
+            else if (x is char || y is char)
+                return Convert.ToChar(x) & Convert.ToChar(y);
+            else if (x is byte || y is byte)
+                return Convert.ToByte(x) & Convert.ToByte(y);
+            else if (x is sbyte || y is sbyte)
+                return Convert.ToSByte(x) & Convert.ToSByte(y);
+            else
+                throw new EvaluationException("Cannot perform bitwise and on non-primitive types");
+        }
+
+        public static object BitwiseXorPrimitive(object x, object y)
+        {
+            ThrowIfNotPrimitiveTypes(x, y);
+
+            if (x is decimal || y is decimal || x is double || y is double || x is float || y is float)
+                throw new EvaluationException("Bitwise operations can't be performed on floating point numbers");
+            else if (x is ulong || y is ulong)
+                return Convert.ToUInt64(x) ^ Convert.ToUInt64(y);
+            else if (x is long || y is long)
+                return Convert.ToInt64(x) ^ Convert.ToInt64(y);
+            else if (x is uint || y is uint)
+                return Convert.ToUInt32(x) ^ Convert.ToUInt32(y);
+            else if (x is int || y is int)
+                return Convert.ToInt32(x) ^ Convert.ToInt32(y);
+            else if (x is ushort || y is ushort)
+                return Convert.ToUInt16(x) ^ Convert.ToUInt16(y);
+            else if (x is short || y is short)
+                return Convert.ToInt16(x) ^ Convert.ToInt16(y);
+            else if (x is char || y is char)
+                return Convert.ToChar(x) ^ Convert.ToChar(y);
+            else if (x is byte || y is byte)
+                return Convert.ToByte(x) ^ Convert.ToByte(y);
+            else if (x is sbyte || y is sbyte)
+                return Convert.ToSByte(x) ^ Convert.ToSByte(y);
+            else
+                throw new EvaluationException("Cannot perform bitwise xor on non-primitive types");
+        }
+
+        public static object BitwiseOrPrimitive(object x, object y)
+        {
+            ThrowIfNotPrimitiveTypes(x, y);
+
+            if (x is decimal || y is decimal || x is double || y is double || x is float || y is float)
+                throw new EvaluationException("Bitwise operations can't be performed on floating point numbers");
+            else if (x is ulong || y is ulong)
+                return Convert.ToUInt64(x) | Convert.ToUInt64(y);
+            else if (x is long || y is long)
+                return Convert.ToInt64(x) | Convert.ToInt64(y);
+            else if (x is uint || y is uint)
+                return Convert.ToUInt32(x) | Convert.ToUInt32(y);
+            else if (x is int || y is int)
+                return Convert.ToInt32(x) | Convert.ToInt32(y);
+            else if (x is ushort || y is ushort)
+                return Convert.ToUInt16(x) | Convert.ToUInt16(y);
+            else if (x is short || y is short)
+                return Convert.ToInt16(x) | Convert.ToInt16(y);
+            else if (x is char || y is char)
+                return Convert.ToChar(x) | Convert.ToChar(y);
+            else if (x is byte || y is byte)
+                return Convert.ToByte(x) | Convert.ToByte(y);
+            else if (x is sbyte || y is sbyte)
+                return Convert.ToSByte(x) | Convert.ToSByte(y);
+            else
+                throw new EvaluationException("Cannot perform bitwise or on non-primitive types");
+        }
+
         public static bool LessThanPrimitive(object x, object y)
         {
             ThrowIfNotPrimitiveTypes(x, y);
