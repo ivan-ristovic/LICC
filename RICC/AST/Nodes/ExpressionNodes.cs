@@ -170,26 +170,26 @@ namespace RICC.AST.Nodes
         public override string GetText() => $"{this.Array.GetText()}[{this.IndexExpression.GetText()}]";
     }
 
-    public sealed class IncrementExpression : ExpressionNode
+    public sealed class IncrementExpressionNode : ExpressionNode
     {
         [JsonIgnore]
         public ExpressionNode Expr => this.Children[0].As<ExpressionNode>();
 
 
-        public IncrementExpression(int line, ExpressionNode expr)
+        public IncrementExpressionNode(int line, ExpressionNode expr)
             : base(line, expr) { }
      
 
         public override string GetText() => $"{this.Expr.GetText()}++";
     }
 
-    public sealed class DecrementExpression : ExpressionNode
+    public sealed class DecrementExpressionNode : ExpressionNode
     {
         [JsonIgnore]
         public ExpressionNode Expr => this.Children[0].As<ExpressionNode>();
 
 
-        public DecrementExpression(int line, ExpressionNode expr)
+        public DecrementExpressionNode(int line, ExpressionNode expr)
             : base(line, expr) { }
      
         

@@ -24,11 +24,6 @@ namespace RICC.Tests.AST.Builders.C
             this.Evaluate<int>("int x = 1 << (1 + 1 * 2) >> 3;", 1);
             this.Evaluate<double>("float y = 2.3 + 4.0 / 2.0;", 4.3);
             this.Evaluate<double>("double z = 3.3 + (4.1 - 1.1) * 2.0;", 9.3);
-        }
-
-        [Test]
-        public void ArithmeticExpressionImplicitCastTest()
-        {
             this.Evaluate<int>("double x = 1 << (1 + 1 * 2) >> 3;", 1);
             this.Evaluate<double>("float y = 2.3 + 4 / 2;", 4.3);
             this.Evaluate<double>("double z = 3.3 + (4.1 - 1.1) * 2;", 9.3);
@@ -147,23 +142,45 @@ namespace RICC.Tests.AST.Builders.C
             }
         }
 
+        [Test]
+        public void UnaryExpressionTests()
+        {
+            Assert.That(this.ParseInitializer("int x = y++;"), Is.InstanceOf<IncrementExpressionNode>());
+            Assert.That(this.ParseInitializer("int x = y--;"), Is.InstanceOf<DecrementExpressionNode>());
+            Assert.That(this.ParseInitializer("int x = ++y;"), Is.InstanceOf<UnaryExpressionNode>());
+            Assert.That(this.ParseInitializer("int x = --y;"), Is.InstanceOf<UnaryExpressionNode>());
+            this.Evaluate<int>("int x = ++1;", 2);
+            this.Evaluate<int>("int x = --1;", 0);
+            this.Evaluate<int>("int x = ~0;", ~0);
+            this.Evaluate<int>("int x = ~(~0);", 0);
+            this.Evaluate<bool>("bool x = !0;", true);
+            this.Evaluate<bool>("bool x = !(1 > 2);", true);
+            this.Evaluate<bool>("bool x = !1;", false);
+            this.Evaluate<bool>("bool x = !(1 != 0);", false);
+            this.Evaluate<bool>("bool x = (!1) != (!1);", false);
+            this.Evaluate<bool>("bool x = (!1) != 0;", false);
+        }
+
 
         private void Evaluate<T>(string decl, object expected)
         {
-            ASTNode ast = CASTProvider.BuildFromSource(decl);
+            ExpressionNode init = this.ParseInitializer(decl);
+            Assert.That(ExpressionEvaluator.TryEvaluateAs(init, out T result));
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.EqualTo(expected).Within(1e-10));
+        }
+
+        private ExpressionNode ParseInitializer(string code)
+        {
+            ASTNode ast = CASTProvider.BuildFromSource(code);
             ExpressionNode? init = ast.Children
                 .First().As<DeclarationStatementNode>()
                 .Children.ElementAt(1).As<DeclaratorListNode>()
                 .Declarations
                 .First().As<VariableDeclaratorNode>()
                 .Initializer;
-
-            if (init is null)
-                throw new ArgumentException("Missing initializer in test");
-
-            Assert.That(ExpressionEvaluator.TryEvaluateAs(init, out T result));
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result, Is.EqualTo(expected).Within(1e-10));
+            Assert.That(init, Is.Not.Null);
+            return init!;
         }
     }
 }

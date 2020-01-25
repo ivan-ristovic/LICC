@@ -222,9 +222,9 @@ namespace RICC.AST.Builders.C
                     ExpressionNode indexExpr = this.Visit(ctx.expression()).As<ExpressionNode>();
                     return new ArrayAccessExpressionNode(ctx.Start.Line, expr, indexExpr);
                 case "++":
-                    return new IncrementExpression(ctx.Start.Line, expr);
+                    return new IncrementExpressionNode(ctx.Start.Line, expr);
                 case "--":
-                    return new DecrementExpression(ctx.Start.Line, expr);
+                    return new DecrementExpressionNode(ctx.Start.Line, expr);
                 case "->":
                     throw new NotImplementedException("->");
                 case ".":

@@ -1,5 +1,6 @@
 ﻿using System;
 using RICC.AST.Nodes;
+using RICC.AST.Nodes.Common;
 using RICC.Exceptions;
 
 namespace RICC.AST.Visitors
@@ -16,9 +17,7 @@ namespace RICC.AST.Visitors
                 result = castRes;
                 return true;
             } else {
-#pragma warning disable CS8653 // A default expression introduces a null value for a type parameter.
-                result = default;
-#pragma warning restore CS8653 // A default expression introduces a null value for a type parameter.
+                result = default!;
                 return false;
             }
         }
@@ -37,6 +36,8 @@ namespace RICC.AST.Visitors
             (object? l, object? r) = this.VisitBinaryOperands(node);
             if (l is null || r is null)
                 throw new EvaluationException();    // TODO
+            if (l is bool || r is bool)
+                return node.Operator.As<RelationalOperatorNode>().ApplyTo(Convert.ToBoolean(l), Convert.ToBoolean(r));
             return node.Operator.As<RelationalOperatorNode>().ApplyTo(l, r);
         }
 
@@ -44,6 +45,24 @@ namespace RICC.AST.Visitors
         {
             (object? l, object? r) = this.VisitBinaryOperands(node);
             return node.Operator.As<BinaryLogicOperatorNode>().ApplyTo(Convert.ToBoolean(l), Convert.ToBoolean(r));
+        }
+
+        public override object Visit(UnaryExpressionNode node)
+        {
+            object op = this.Visit(node.Operand as ASTNode);
+            return node.Operator.ApplyTo(op);
+        }
+
+        public override object Visit(IncrementExpressionNode node)
+        {
+            object op = this.Visit(node.Expr as ASTNode);
+            return BinaryOperations.AddPrimitive(op, 1);
+        }
+
+        public override object Visit(DecrementExpressionNode node)
+        {
+            object op = this.Visit(node.Expr as ASTNode);
+            return BinaryOperations.SubtractPrimitive(op, 1);
         }
 
         public override object Visit(LiteralNode node) 
