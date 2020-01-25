@@ -15,7 +15,6 @@ namespace RICC.AST.Builders.C
                 decl = new FunctionDeclaratorNode(fname.Line, fname);
             FunctionDeclaratorNode fdecl = decl.As<FunctionDeclaratorNode>();
             BlockStatementNode body = this.Visit(ctx.compoundStatement()).As<BlockStatementNode>();
-
             return new FunctionDefinitionNode(ctx.Start.Line, declSpecs, fdecl, body);
         }
 

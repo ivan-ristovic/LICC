@@ -46,7 +46,7 @@ extern int foo(const float bar, int x, float y[], signed int z, unsigned long lo
 }
 
 static const int x = 7;
-static float y, z = 3;
+static float y, z = 3.0f;
 
 int main() 
 {

@@ -2,28 +2,10 @@
 
 namespace RICC.Exceptions
 {
-    public sealed class NodeMismatchException : ArgumentException
+    public sealed class NodeMismatchException : SyntaxErrorException
     {
-        public NodeMismatchException()
-            : base()
-        {
-
-        }
-
-        public NodeMismatchException(string? message) 
-            : base(message)
-        {
-
-        }
-
-        public NodeMismatchException(string? message, Exception? innerException) 
-            : base(message, innerException)
-        {
-
-        }
-
-        public NodeMismatchException(string? message, string? paramName)
-            : base(message, paramName)
+        public NodeMismatchException(Type expected, Type actual) 
+            : base($"expected: {expected.Name}, got: {actual.Name}")
         {
 
         }

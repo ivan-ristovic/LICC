@@ -16,14 +16,17 @@ namespace RICC.AST
             try {
                 ast = BuildFromFile(path);
                 return true;
+            } catch (SyntaxErrorException e) {
+                Log.Fatal(e, "[{Path}] Syntax error - {Details}", path, e.Message ?? "unknown");
+                return false;
             } catch (NotImplementedException e) {
-                Log.Fatal(e, "{Path} contains syntax rules which aren't implemented yet: {Details}", path, e.Message ?? "unknown");
+                Log.Fatal(e, "[{Path}] Not supported - {Details}", path, e.Message ?? "unknown");
                 return false;
             } catch (UnsupportedExtensionException e) {
-                Log.Fatal(e, "{Path}", path);
+                Log.Fatal(e, "[{Path}] Not supported language", path);
                 return false;
             } catch (Exception e) {
-                Log.Fatal(e, "Exception occured while parsing file {Path}", path);
+                Log.Fatal(e, "[{Path}] Unknown error", path);
                 return false;
             }
         }

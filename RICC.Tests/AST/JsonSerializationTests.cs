@@ -8,7 +8,7 @@ namespace RICC.Tests.AST
     internal sealed class JsonSerializationTests
     {
         [Test]
-        public void SerializationTests()
+        public void SimpleSerializationTests()
         {
             this.AssertSerialization("void f() {}");
             this.AssertSerialization("int main() { return 0; }");
@@ -17,10 +17,15 @@ namespace RICC.Tests.AST
             this.AssertSerialization("static extern int main(const int x, ...) { return 0; }");
             this.AssertSerialization("static const volatile bool x;");
             this.AssertSerialization("extern bool x();");
-            this.AssertSerialization("bool f(); const time_t t1, t2, t3 = 2");
+            this.AssertSerialization("bool f(); const time_t t1, t2, t3 = 2;");
             this.AssertSerialization("void f() { int x; if (1) { x = 1; } else { x = 2; } }");
             this.AssertSerialization("void f() { int x; if (1) x = 1; else x = 2; }");
             this.AssertSerialization("void f() { int x; if (1) x = 1; }");
+        }
+
+        [Test]
+        public void ComplexSerializationTest()
+        {
             this.AssertSerialization(@"
                 extern static time_t foo_extern(int x, const int y);
 
@@ -29,7 +34,10 @@ namespace RICC.Tests.AST
                     const int x = 5, y;
                     unsigned short z = x + y;
                     signed int k = 3 + 4 * (5 - 6);
+                    char* s = ""abcd"";
                     double w = 3.4 * 7.11 / 2.33;
+                    unsigned int bitwise = ((1 << 10) | (1 << 5)) & (x ^ ~0);
+
                 label:
                     x = 4;
                     goto label;
@@ -52,8 +60,8 @@ namespace RICC.Tests.AST
                         y *= 3.2;
                     }
 
-                    if (3) {
-                        bool c = 1 != 2;
+                    if (!3) {
+                        bool c = !(1 != 2);
                         c = b;
                         f(3, 4);
                     }
@@ -80,13 +88,13 @@ namespace RICC.Tests.AST
                         x++;
                     }
 
-                    for (int i = 0; i< 100; i++) {
+                    for (int i = 0; i < 100; i++) {
                         foo(1, 2, 3, 4);
                         if (i > 10)
                             return 1;
                     }
 
-                    for (x--; x< 10; x *= 2, i++) {
+                    for (x--; x < 10; x *= 2, ++i) {
                         printf(""%d\n"", x);
                     }
 

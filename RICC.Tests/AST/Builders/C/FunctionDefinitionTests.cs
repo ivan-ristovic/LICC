@@ -64,7 +64,7 @@ namespace RICC.Tests.AST.Builders.C
             ASTNode ast = CASTProvider.BuildFromSource(@"
                 float f(const unsigned int x, ...) {
                     int z = 4;
-                    return 3f;
+                    return 3.0;
                 }
             ");
             FunctionDefinitionNode f = ast.Children.Single().As<FunctionDefinitionNode>();

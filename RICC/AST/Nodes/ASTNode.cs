@@ -39,9 +39,9 @@ namespace RICC.AST.Nodes
 
 
         public virtual string GetText() 
-            => string.Join(" ", this.Children.Select(c => c.GetText()));
+            => string.Join(' ', this.Children.Select(c => c.GetText()));
 
         public T As<T>() where T : ASTNode 
-            => this as T ?? throw new NodeMismatchException($"Expected: {typeof(T)}, got: {this.GetType()}");
+            => this as T ?? throw new NodeMismatchException(typeof(T), this.GetType());
     }
 }

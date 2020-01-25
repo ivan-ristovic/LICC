@@ -1,16 +1,16 @@
 ﻿using System;
 using System.IO;
 using Antlr4.Runtime;
+using RICC.Exceptions;
 
 namespace RICC.AST.Builders
 {
-    class ThrowExceptionErrorListener : BaseErrorListener, IAntlrErrorListener<int>
+    public sealed class ThrowExceptionErrorListener : BaseErrorListener, IAntlrErrorListener<int>
     {
-        //IAntlrErrorListener<int> implementation
-        public void SyntaxError(IRecognizer recognizer, int offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e) 
-            => throw new ArgumentException("Invalid Expression: {0}", msg, e);
+        public override void SyntaxError(TextWriter output, IRecognizer recognizer, IToken symbol, int ln, int col, string msg, RecognitionException e)
+            => throw new SyntaxErrorException(msg, ln, col, e);
 
-        public void SyntaxError(TextWriter output, IRecognizer recognizer, int offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
-            => throw new ArgumentException("Invalid Expression: {0}", msg, e);
+        public void SyntaxError(TextWriter output, IRecognizer recognizer, int symbol, int ln, int col, string msg, RecognitionException e)
+            => throw new SyntaxErrorException(msg, ln, col, e);
     }
 }
