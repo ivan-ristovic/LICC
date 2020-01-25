@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using NUnit.Framework;
 using RICC.AST.Nodes;
 using RICC.AST.Visitors;
@@ -27,6 +26,16 @@ namespace RICC.Tests.AST.Builders.C
             this.Evaluate<int>("double x = 1 << (1 + 1 * 2) >> 3;", 1);
             this.Evaluate<double>("float y = 2.3 + 4 / 2;", 4.3);
             this.Evaluate<double>("double z = 3.3 + (4.1 - 1.1) * 2;", 9.3);
+        }
+
+        [Test]
+        public void ArithmeticBitwiseExpressionTest()
+        {
+            this.Evaluate<int>("int x = 1 | ~0;", ~0);
+            this.Evaluate<int>("int x = 1 | ~1;", ~0);
+            this.Evaluate<int>("int x = 1 & ~0;", 1 & ~0);
+            this.Evaluate<int>("int x = (1 << 1) & ~0;", (1 << 1) & ~0);
+            this.Evaluate<int>("int x = (1 << 10 >> 2) ^ (~0 << 10);", (1 << 10 >> 2) ^ (~0 << 10));
         }
 
         [Test]
