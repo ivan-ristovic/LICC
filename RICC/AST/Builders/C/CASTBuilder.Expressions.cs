@@ -3,6 +3,7 @@ using System.Linq;
 using Antlr4.Runtime.Misc;
 using RICC.AST.Nodes;
 using RICC.AST.Nodes.Common;
+using RICC.Exceptions;
 using static RICC.AST.Builders.C.CParser;
 
 namespace RICC.AST.Builders.C
@@ -230,7 +231,7 @@ namespace RICC.AST.Builders.C
                 case ".":
                     throw new NotImplementedException("struct field access");
                 default:
-                    throw new NotImplementedException("unknown postfix expression");
+                    throw new SyntaxException("Unknown postfix expression", ctx.Start.Line, ctx.Start.Column);
             }
         }
 
@@ -240,7 +241,7 @@ namespace RICC.AST.Builders.C
             if (ctx.Identifier() is { })
                 return new IdentifierNode(ctx.Start.Line, ctx.Identifier().GetText());
             else if (ctx.Constant() is { })
-                return ASTNodeFactory.CreateLiteralNode(ctx.Start.Line, ctx.Constant().GetText());
+                return LiteralNode.FromString(ctx.Start.Line, ctx.Constant().GetText());
             else if (ctx.expression() is { })
                 return this.Visit(ctx.expression());
             else if (ctx.StringLiteral() is { })

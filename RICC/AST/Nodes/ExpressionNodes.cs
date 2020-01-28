@@ -1,45 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
+using RICC.AST.Nodes.Common;
+using RICC.Exceptions;
 
 namespace RICC.AST.Nodes
 {
-    public static class ASTNodeFactory
-    {
-        public static ExpressionNode CreateLiteralNode(int line, string value)
-        {
-            // TODO order
-            if (int.TryParse(value, out int res_int))
-                return new LiteralNode(line, res_int);
-            else if (bool.TryParse(value, out bool res_bool))
-                return new LiteralNode(line, res_bool);
-            else if (byte.TryParse(value, out byte res_byte))
-                return new LiteralNode(line, res_byte);
-            else if (char.TryParse(value, out char res_char))
-                return new LiteralNode(line, res_char);
-            else if (short.TryParse(value, out short res_short))
-                return new LiteralNode(line, res_short);
-            else if (ushort.TryParse(value, out ushort res_ushort))
-                return new LiteralNode(line, res_ushort);
-            else if (uint.TryParse(value, out uint res_uint))
-                return new LiteralNode(line, res_uint);
-            else if (long.TryParse(value, out long res_long))
-                return new LiteralNode(line, res_long);
-            else if (ulong.TryParse(value, out ulong res_ulong))
-                return new LiteralNode(line, res_ulong);
-            else if (double.TryParse(value, out double res_double))
-                return new LiteralNode(line, res_double);
-            else if (float.TryParse(value, out float res_float))
-                return new LiteralNode(line, res_float);
-            else if (decimal.TryParse(value, out decimal res_decimal))
-                return new LiteralNode(line, res_decimal);
-            else
-                return new LiteralNode(line, value);
-        }
-    }
-
-
     public abstract class ExpressionNode : ASTNode
     {
         protected ExpressionNode(int line, IEnumerable<ASTNode> children)
@@ -149,8 +117,8 @@ namespace RICC.AST.Nodes
 
         public FunctionCallExpressionNode(int line, IdentifierNode identifier, ExpressionListNode parameters)
             : base(line, identifier, parameters) { }
-     
-        
+
+
         public override string GetText() => $"{this.Identifier}({this.Arguments?.GetText() ?? ""})";
     }
 
@@ -178,7 +146,7 @@ namespace RICC.AST.Nodes
 
         public IncrementExpressionNode(int line, ExpressionNode expr)
             : base(line, expr) { }
-     
+
 
         public override string GetText() => $"{this.Expr.GetText()}++";
     }
@@ -191,25 +159,35 @@ namespace RICC.AST.Nodes
 
         public DecrementExpressionNode(int line, ExpressionNode expr)
             : base(line, expr) { }
-     
-        
+
+
         public override string GetText() => $"{this.Expr.GetText()}--";
     }
 
     public sealed class LiteralNode : ExpressionNode
     {
+        public static LiteralNode FromString(int line, string str)
+        {
+            if (!Constants.TryConvert(str, out object? value, out string? suffix) || value is null)
+                throw new NotImplementedException($"Literal {str} is not supported");    
+            return new LiteralNode(line, value, suffix);
+        }
+
+
         public object Value { get; }
+        public string? Suffix { get; }
         public TypeCode TypeCode { get; }
 
 
-        public LiteralNode(int line, object value)
+        public LiteralNode(int line, object value, string? suffix = null)
             : base(line)
         {
+            this.Suffix = suffix?.ToUpper();
             this.Value = value;
             this.TypeCode = Type.GetTypeCode(value.GetType());
         }
-     
-        
+
+
         public override string GetText() => this.Value?.ToString() ?? "";
     }
 
@@ -229,7 +207,7 @@ namespace RICC.AST.Nodes
             : base(line, cond, @then, @else) { }
 
 
-        public override string GetText() 
+        public override string GetText()
             => $"{this.Condition.GetText()} ? {this.ThenExpression.GetText()} : {this.ElseExpression.GetText()}";
     }
 }

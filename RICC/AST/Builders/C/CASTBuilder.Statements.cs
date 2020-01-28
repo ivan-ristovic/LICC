@@ -4,6 +4,7 @@ using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using RICC.AST.Nodes;
 using RICC.AST.Nodes.Common;
+using RICC.Exceptions;
 using static RICC.AST.Builders.C.CParser;
 
 namespace RICC.AST.Builders.C
@@ -67,9 +68,9 @@ namespace RICC.AST.Builders.C
                     else
                         return new IfStatementNode(ctx.Start.Line, condition, thenStatement, elseStatement);
                 case "switch":
-                    throw new NotImplementedException("switch");  // TODO 
+                    throw new NotImplementedException("switch");
                 default:
-                    throw new Exception("???");                   // TODO
+                    throw new SyntaxException("Unknown construct", ctx.Start.Line, ctx.Start.Column);
             }
         }
 

@@ -32,7 +32,7 @@ namespace RICC.AST.Builders.C
             try {
                 return base.Visit(tree);
             } catch (NullReferenceException e) {
-                throw new SyntaxErrorException("Source file contained unexpected content", e);
+                throw new SyntaxException("Source file contained unexpected content", e);
             }
         }
 

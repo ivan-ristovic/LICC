@@ -16,13 +16,13 @@ namespace RICC.AST
             try {
                 ast = BuildFromFile(path);
                 return true;
-            } catch (SyntaxErrorException e) {
+            } catch (SyntaxException e) {
                 Log.Fatal(e, "[{Path}] Syntax error - {Details}", path, e.Message ?? "unknown");
                 return false;
             } catch (NotImplementedException e) {
                 Log.Fatal(e, "[{Path}] Not supported - {Details}", path, e.Message ?? "unknown");
                 return false;
-            } catch (UnsupportedExtensionException e) {
+            } catch (UnsupportedLanguageException e) {
                 Log.Fatal(e, "[{Path}] Not supported language", path);
                 return false;
             } catch (Exception e) {
@@ -46,7 +46,7 @@ namespace RICC.AST
             return fi.Extension switch
             {
                 ".c" => new CASTBuilder(),
-                _ => throw new UnsupportedExtensionException(),
+                _ => throw new UnsupportedLanguageException(),
             };
         }
     }

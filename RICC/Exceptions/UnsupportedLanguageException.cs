@@ -2,27 +2,27 @@
 
 namespace RICC.Exceptions
 {
-    public sealed class UnsupportedExtensionException : ArgumentException
+    public sealed class UnsupportedLanguageException : ArgumentException
     {
-        public UnsupportedExtensionException()
+        public UnsupportedLanguageException()
             : base()
         {
 
         }
 
-        public UnsupportedExtensionException(string? message)
+        public UnsupportedLanguageException(string? message)
             : base(message ?? "Unsupported file extension")
         {
 
         }
 
-        public UnsupportedExtensionException(string? message, Exception? innerException)
+        public UnsupportedLanguageException(string? message, Exception? innerException)
             : base(message ?? "Unsupported file extension", innerException)
         {
 
         }
 
-        public UnsupportedExtensionException(string? message, string? paramName)
+        public UnsupportedLanguageException(string? message, string? paramName)
             : base(message ?? "Unsupported file extension", paramName)
         {
 
