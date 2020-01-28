@@ -135,12 +135,12 @@ namespace RICC.Tests.AST.Builders.C
                 ("x", null), ("y", 11.3), ("z", 3.0f), ("w", 49.032)
             );
 
-            ASTNode ast3 = CASTProvider.BuildFromSource("float x = 1e-10, y = 7.1f + 4.2f, z = +3e-10, w = 3.2e+0*4.45e0 + 7.2*5.11 - (5.0/2.5);");
+            ASTNode ast3 = CASTProvider.BuildFromSource("float x = -1e-10, y = 7.1f + 4.2f, z = +3e-10, w = 3.2e+0*4.45e0 + 7.2*5.11 - (5.0/2.5);");
             this.AssertVariableDeclarationList(
                 ast3.Children.First(),
                 "float",
                 AccessModifiers.Unspecified, QualifierFlags.None,
-                ("x", 1e-10), ("y", 11.3f), ("z", 3e-10), ("w", 49.032)
+                ("x", -1e-10), ("y", 11.3f), ("z", 3e-10), ("w", 49.032)
             );
         }
 
