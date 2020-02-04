@@ -1,11 +1,10 @@
 ﻿using NUnit.Framework;
-using RICC.AST.Nodes;
-using RICC.Extensions;
-using RICC.Tests.AST.Builders.C;
+using RICC.AST.Builders.C;
+using RICC.Tests.AST.Common.Json;
 
-namespace RICC.Tests.AST
+namespace RICC.Tests.AST.Json
 {
-    internal sealed class JsonSerializationTests
+    internal sealed class CBuilderJsonSerializationTests : JsonSerializationTestsBase<CASTBuilder>
     {
         [Test]
         public void SimpleSerializationTests()
@@ -101,19 +100,6 @@ namespace RICC.Tests.AST
                     return 0;
                 }"
             );
-        }
-
-
-        private void AssertSerialization(string src)
-        {
-            ASTNode ast = CASTProvider.BuildFromSource(src);
-            string? normal = null;
-            string? compact = null;
-            Assert.That(() => { normal = ast.ToJson(compact: false); }, Throws.Nothing);
-            Assert.That(() => { compact = ast.ToJson(compact: true); }, Throws.Nothing);
-            Assert.That(normal, Is.Not.Null);
-            Assert.That(compact, Is.Not.Null);
-            Assert.That(normal, Has.Length.GreaterThan(compact!.Length));
         }
     }
 }

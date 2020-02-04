@@ -1,22 +1,24 @@
 ﻿using System.Linq;
 using NUnit.Framework;
+using RICC.AST.Builders.C;
 using RICC.AST.Nodes;
+using RICC.Tests.AST.Builders.Common;
 
 namespace RICC.Tests.AST.Builders.C
 {
-    internal sealed class TranslationUnitTests
+    internal sealed class TranslationUnitTests : TranslationUnitTestsBase<CASTBuilder>
     {
         [Test]
         public void BasicTest()
         {
-            ASTNode ast = CASTProvider.BuildFromSource(@"void f() { }");
-            this.AssertTranslationUnit(ast.As<TranslationUnitNode>());
+            TranslationUnitNode tu = this.AssertTranslationUnit(@"void f() { }");
+            Assert.That(tu.Children.Single(), Is.InstanceOf<FunctionDefinitionNode>());
         }
 
         [Test]
         public void MultipleFunctionsTest()
         {
-            ASTNode ast = CASTProvider.BuildFromSource(@"
+            TranslationUnitNode tu = this.AssertTranslationUnit(@"
                 int f(int x) { 
                     int y = 3;
                     return x + y;
@@ -26,14 +28,13 @@ namespace RICC.Tests.AST.Builders.C
                     return 3.5f;
                 }
             ");
-            this.AssertTranslationUnit(ast.As<TranslationUnitNode>());
-            Assert.That(ast.Children, Is.All.InstanceOf<FunctionDefinitionNode>());
+            Assert.That(tu.Children, Is.All.InstanceOf<FunctionDefinitionNode>());
         }
 
         [Test]
         public void MixedDeclarationTest()
         {
-            ASTNode ast = CASTProvider.BuildFromSource(@"
+            TranslationUnitNode tu = this.AssertTranslationUnit(@"
                 int f(int x) { 
                     int y = 3;
                     return x + y;
@@ -45,32 +46,15 @@ namespace RICC.Tests.AST.Builders.C
                     return 3.5f;
                 }
             ");
-            this.AssertTranslationUnit(ast.As<TranslationUnitNode>());
-            Assert.That(ast.Children.ElementAt(0), Is.InstanceOf<FunctionDefinitionNode>());
-            Assert.That(ast.Children.ElementAt(1), Is.InstanceOf<DeclarationStatementNode>());
-            Assert.That(ast.Children.ElementAt(2), Is.InstanceOf<FunctionDefinitionNode>());
+            Assert.That(tu.Children.ElementAt(0), Is.InstanceOf<FunctionDefinitionNode>());
+            Assert.That(tu.Children.ElementAt(1), Is.InstanceOf<DeclarationStatementNode>());
+            Assert.That(tu.Children.ElementAt(2), Is.InstanceOf<FunctionDefinitionNode>());
         }
 
         [Test]
         public void EmptySourceTest()
         {
-            ASTNode ast = CASTProvider.BuildFromSource("");
-            Assert.That(ast, Is.Not.Null);
-            Assert.That(ast, Is.InstanceOf<TranslationUnitNode>());
-            Assert.That(ast.Children, Is.Empty);
-            Assert.That(ast.Line, Is.EqualTo(1));
-            Assert.That(ast.Parent, Is.Null);
-        }
-
-
-        private void AssertTranslationUnit(TranslationUnitNode tu)
-        {
-            Assert.That(tu, Is.Not.Null);
-            Assert.That(tu, Is.InstanceOf<TranslationUnitNode>());
-            Assert.That(tu.Children, Is.Not.Empty);
-            Assert.That(tu.Line, Is.EqualTo(1));
-            Assert.That(tu.Parent, Is.Null);
-            Assert.That(tu.Children, Is.Not.All.Null);
+            this.AssertTranslationUnit("", empty: true);
         }
     }
 }
