@@ -13,7 +13,6 @@ namespace RICC.Tests.AST.Builders.C
         {
             this.Evaluate("int x = 3;", 3);
             this.Evaluate("float y = 2.3;", 2.3);
-            // TODO support chars properly
             this.Evaluate("char c = 'a';", 'a');
             this.Evaluate("string s = \"abc\";", "abc");
 
@@ -248,9 +247,7 @@ namespace RICC.Tests.AST.Builders.C
             Assert.That(var.Initializer, Is.InstanceOf<LiteralNode>());
             Assert.That(var.Initializer!.As<LiteralNode>().Value.GetType(), Is.EqualTo(type));
             Assert.That(var.Initializer!.As<LiteralNode>().Suffix, Is.EqualTo(suffix));
-            Assert.That(ExpressionEvaluator.TryEvaluateAs(var.Initializer!, out object? result));
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result, Is.EqualTo(value).Within(1e-10));
+            Assert.That(ExpressionEvaluator.Evaluate(var.Initializer!), Is.EqualTo(value).Within(1e-10));
         }
     }
 }

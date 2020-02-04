@@ -11,77 +11,97 @@ namespace RICC.Tests.AST.Builders.C
         [Test]
         public void SimpleDeclarationTest()
         {
-            ASTNode ast = CASTProvider.BuildFromSource("int x; float y; Point z;time_t y_y;");
-            this.AssertVariableDeclaration(ast.Children.ElementAt(0), "x", "int");
-            this.AssertVariableDeclaration(ast.Children.ElementAt(1), "y", "float");
-            this.AssertVariableDeclaration(ast.Children.ElementAt(2), "z", "Point");
-            this.AssertVariableDeclaration(ast.Children.ElementAt(3), "y_y", "time_t");
+            this.AssertVariableDeclaration("int x;", "x", "int");
+            this.AssertVariableDeclaration("float y;", "y", "float");
+            this.AssertVariableDeclaration("Point z;", "z", "Point");
+            this.AssertVariableDeclaration("time_t y_y;", "y_y", "time_t");
         }
 
         [Test]
         public void DeclarationSpecifierTest()
         {
-            ASTNode ast1 = CASTProvider.BuildFromSource("static volatile time_t x;");
-            this.AssertVariableDeclaration(ast1.Children.First(), "x", "time_t", AccessModifiers.Unspecified, QualifierFlags.Static | QualifierFlags.Volatile);
-            ASTNode ast2 = CASTProvider.BuildFromSource("static extern const unsigned int x;");
-            this.AssertVariableDeclaration(ast2.Children.First(), "x", "unsigned int", AccessModifiers.Public, QualifierFlags.Static | QualifierFlags.Const);
+            this.AssertVariableDeclaration(
+                "static volatile time_t x;",
+                "x",
+                "time_t",
+                AccessModifiers.Unspecified,
+                QualifierFlags.Static | QualifierFlags.Volatile
+            );
+            this.AssertVariableDeclaration(
+                "static extern const unsigned int x;",
+                "x",
+                "unsigned int",
+                AccessModifiers.Public,
+                QualifierFlags.Static | QualifierFlags.Const
+            );
         }
 
         [Test]
         public void InitializerDeclarationTest()
         {
-            ASTNode ast = CASTProvider.BuildFromSource("static signed int x = 5;");
-            this.AssertVariableDeclaration(ast.Children.First(), "x", "int", AccessModifiers.Unspecified, QualifierFlags.Static, 5);
+            this.AssertVariableDeclaration("static signed int x = 5;", "x", "int", AccessModifiers.Unspecified, QualifierFlags.Static, 5);
         }
 
         [Test]
         public void InitializerExpressionDeclarationTest()
         {
-            ASTNode ast = CASTProvider.BuildFromSource("unsigned short x = 1 << 2 * 4;");
-            this.AssertVariableDeclaration(ast.Children.First(), "x", "unsigned short", AccessModifiers.Unspecified, value: 1 << 8);
+            this.AssertVariableDeclaration("unsigned short x = 1 << 2 * 4;", "x", "unsigned short", AccessModifiers.Unspecified, value: 1 << 8);
         }
 
         [Test]
         public void FunctionDeclarationNoParamsTest()
         {
-            ASTNode ast1 = CASTProvider.BuildFromSource("void f();");
-            this.AssertFunctionDeclaration(ast1, "f", "void");
-
-            ASTNode ast2 = CASTProvider.BuildFromSource("extern static void f();");
-            this.AssertFunctionDeclaration(ast2, "f", "void", AccessModifiers.Public, QualifierFlags.Static);
+            this.AssertFunctionDeclaration("void f();", "f", "void");
+            this.AssertFunctionDeclaration("extern static void f();", "f", "void", AccessModifiers.Public, QualifierFlags.Static);
         }
 
         [Test]
         public void FunctionDeclarationVariadicTest()
         {
-            ASTNode ast = CASTProvider.BuildFromSource("void f(const int x, ...);");
-            this.AssertFunctionDeclaration(ast, "f", "void", isVariadic: true, @params: (QualifierFlags.Const, "int", "x"));
+            this.AssertFunctionDeclaration(
+                "void f(const int x, ...);",
+                "f",
+                "void",
+                isVariadic: true,
+                @params: (QualifierFlags.Const, "int", "x")
+            );
         }
 
         [Test]
         public void FunctionDeclarationQualifiersTest()
         {
-            ASTNode ast = CASTProvider.BuildFromSource("extern static time_t f(int x, const volatile unsigned long long y, ...);");
-            this.AssertFunctionDeclaration(ast, "f", "time_t", AccessModifiers.Public, QualifierFlags.Static, true,
-                (QualifierFlags.None, "int", "x"), (QualifierFlags.Const | QualifierFlags.Volatile, "unsigned long long", "y")
+            this.AssertFunctionDeclaration(
+                "extern static time_t f(int x, const volatile unsigned long long y, ...);",
+                "f",
+                "time_t",
+                AccessModifiers.Public,
+                QualifierFlags.Static,
+                true,
+                (QualifierFlags.None, "int", "x"),
+                (QualifierFlags.Const | QualifierFlags.Volatile, "unsigned long long", "y")
             );
         }
 
         [Test]
         public void FunctionDeclarationArrayParamsTest()
         {
-            ASTNode ast = CASTProvider.BuildFromSource("int f(int a[], const float b[4]);");
-            this.AssertFunctionDeclaration(ast, "f", "int", AccessModifiers.Unspecified, QualifierFlags.None, false,
-                (QualifierFlags.None, "int", "a"), (QualifierFlags.Const, "float", "b")
+            this.AssertFunctionDeclaration(
+                "int f(int a[], const float b[4]);",
+                "f",
+                "int",
+                AccessModifiers.Unspecified,
+                QualifierFlags.None,
+                false,
+                (QualifierFlags.None, "int", "a"),
+                (QualifierFlags.Const, "float", "b")
             );
         }
 
         [Test]
         public void SimpleDeclarationListTest()
         {
-            ASTNode ast = CASTProvider.BuildFromSource("static unsigned int x, y, z;");
             this.AssertVariableDeclarationList(
-                ast.Children.First(),
+                "static unsigned int x, y, z;",
                 "unsigned int",
                 AccessModifiers.Unspecified, QualifierFlags.Static,
                 ("x", null), ("y", null), ("z", null)
@@ -91,25 +111,22 @@ namespace RICC.Tests.AST.Builders.C
         [Test]
         public void IntDeclarationListWithInitializersTest()
         {
-            ASTNode ast1 = CASTProvider.BuildFromSource("extern static int x, y = 7 + (4 - 3), z = 3, w = 3*4 + 7*5, t = 2 >> (3 << 4);");
             this.AssertVariableDeclarationList(
-                ast1.Children.First(),
+                "extern static int x, y = 7 + (4 - 3), z = 3, w = 3*4 + 7*5, t = 2 >> (3 << 4);",
                 "int",
                 AccessModifiers.Public, QualifierFlags.Static,
                 ("x", null), ("y", 7 + (4 - 3)), ("z", 3), ("w", 47), ("t", 2 >> (3 << 4))
             );
 
-            ASTNode ast2 = CASTProvider.BuildFromSource("extern static int x = 010, y = 0xfF, z = 0xabcdef, w = 0xA + 010, t = 0x1 << 4;");
             this.AssertVariableDeclarationList(
-                ast2.Children.First(),
+                "extern static int x = 010, y = 0xfF, z = 0xabcdef, w = 0xA + 010, t = 0x1 << 4;",
                 "int",
                 AccessModifiers.Public, QualifierFlags.Static,
                 ("x", 8), ("y", 0xFF), ("z", 0xABCDEF), ("w", 0xA + 8), ("t", 1 << 4)
             );
 
-            ASTNode ast3 = CASTProvider.BuildFromSource("extern static int x = 010u, y = 0xfFl, z = 0xabcdefUL, w = 0xAL + 010l, t = 0x1uLL << 4;");
             this.AssertVariableDeclarationList(
-                ast3.Children.First(),
+                "extern static int x = 010u, y = 0xfFl, z = 0xabcdefUL, w = 0xAL + 010l, t = 0x1uLL << 4;",
                 "int",
                 AccessModifiers.Public, QualifierFlags.Static,
                 ("x", 8), ("y", 0xFF), ("z", 0xABCDEF), ("w", 0xA + 8), ("t", 1 << 4)
@@ -119,25 +136,22 @@ namespace RICC.Tests.AST.Builders.C
         [Test]
         public void FloatDeclarationListWithInitializersTest()
         {
-            ASTNode ast1 = CASTProvider.BuildFromSource("float x, y = 7.1 + 4.2, z = 3.0, w = 3.2*4.45 + 7.2*5.11 - (5.0/2.5);");
             this.AssertVariableDeclarationList(
-                ast1.Children.First(),
+                "float x, y = 7.1 + 4.2, z = 3.0, w = 3.2*4.45 + 7.2*5.11 - (5.0/2.5);",
                 "float",
                 AccessModifiers.Unspecified, QualifierFlags.None,
                 ("x", null), ("y", 11.3), ("z", 3.0), ("w", 49.032)
             );
 
-            ASTNode ast2 = CASTProvider.BuildFromSource("float x, y = 7.1f + 4.2, z = 3.0f, w = 3.2L*4.45f + 7.2f*5.11f - (5.0/2.5);");
             this.AssertVariableDeclarationList(
-                ast2.Children.First(),
+                "float x, y = 7.1f + 4.2, z = 3.0f, w = 3.2L*4.45f + 7.2f*5.11f - (5.0/2.5);",
                 "float",
                 AccessModifiers.Unspecified, QualifierFlags.None,
                 ("x", null), ("y", 11.3), ("z", 3.0f), ("w", 49.032)
             );
 
-            ASTNode ast3 = CASTProvider.BuildFromSource("float x = -1e-10, y = 7.1f + 4.2f, z = +3e-10, w = 3.2e+0*4.45e0 + 7.2*5.11 - (5.0/2.5);");
             this.AssertVariableDeclarationList(
-                ast3.Children.First(),
+                "float x = -1e-10, y = 7.1f + 4.2f, z = +3e-10, w = 3.2e+0*4.45e0 + 7.2*5.11 - (5.0/2.5);",
                 "float",
                 AccessModifiers.Unspecified, QualifierFlags.None,
                 ("x", -1e-10), ("y", 11.3f), ("z", 3e-10), ("w", 49.032)
@@ -147,9 +161,8 @@ namespace RICC.Tests.AST.Builders.C
         [Test]
         public void BoolDeclarationListWithInitializersTest()
         {
-            ASTNode ast = CASTProvider.BuildFromSource("bool x, y = 1 == 1, z = 3 <= 4, w = 4 != (3 + 1);");
             this.AssertVariableDeclarationList(
-                ast.Children.First(),
+                "bool x, y = 1 == 1, z = 3 <= 4, w = 4 != (3 + 1);",
                 "bool",
                 AccessModifiers.Unspecified, QualifierFlags.None,
                 ("x", null), ("y", true), ("z", true), ("w", false)
@@ -159,9 +172,8 @@ namespace RICC.Tests.AST.Builders.C
         [Test]
         public void StringDeclarationListWithInitializersTest()
         {
-            ASTNode ast = CASTProvider.BuildFromSource(@"char* w1, w2 = ""abc"", w3 = ""aa"" + ""bb"";");
             this.AssertVariableDeclarationList(
-                ast.Children.First(),
+                @"char* w1, w2 = ""abc"", w3 = ""aa"" + ""bb"";",
                 "char*",
                 AccessModifiers.Unspecified, QualifierFlags.None,
                 ("w1", null), ("w2", "abc"), ("w3", "aabb")
@@ -171,39 +183,74 @@ namespace RICC.Tests.AST.Builders.C
         [Test]
         public void ArrayDeclarationTest()
         {
-            // TODO
-            Assert.Inconclusive();
-
-            ASTNode ast = CASTProvider.BuildFromSource("static unsigned int x[], y, z[3];");
-            this.AssertVariableDeclarationList(
-                ast.Children.First(),
+            this.AssertArrayDeclaration(
+                "static unsigned int x[3];",
                 "unsigned int",
-                AccessModifiers.Unspecified, QualifierFlags.Static,
-                ("x", null), ("y", null), ("z", null)
+                "x",
+                3,
+                AccessModifiers.Unspecified, QualifierFlags.Static
+            );
+            this.AssertArrayDeclaration(
+                "static unsigned int x[3 + 4 * 1 - 3];",
+                "unsigned int",
+                "x",
+                4,
+                AccessModifiers.Unspecified, QualifierFlags.Static
+            );
+            this.AssertArrayDeclaration(
+                "const unsigned long long int x[(2 << 1) / 2];",
+                "unsigned long long int",
+                "x",
+                2,
+                AccessModifiers.Unspecified, QualifierFlags.Const
             );
         }
 
         [Test]
         public void ArrayDeclarationInitializerTest()
         {
-            // TODO
-            Assert.Inconclusive();
-
-            ASTNode ast = CASTProvider.BuildFromSource("static int x[] = {}, y[] = { 1 + 2, 2 << 1 }, z[3] = {1, 2, 3};");
-            this.AssertVariableDeclarationList(
-                ast.Children.First(),
+            this.AssertArrayDeclaration(
+                "extern int x[3] = { 3, 4, 5 };",
                 "int",
-                AccessModifiers.Unspecified, QualifierFlags.Static
+                "x",
+                3,
+                AccessModifiers.Public, QualifierFlags.None,
+                3, 4, 5
+            );
+            this.AssertArrayDeclaration(
+                "const int x[3] = { 1 + 2, 2 << 1 };",
+                "int",
+                "x",
+                3,
+                AccessModifiers.Unspecified, QualifierFlags.Const,
+                3, 4
+            );
+            this.AssertArrayDeclaration(
+                "int x[] = { 1 + 2, 2 << 1 };",
+                "int",
+                "x",
+                null,
+                AccessModifiers.Unspecified, QualifierFlags.None,
+                3, 4
+            );
+            this.AssertArrayDeclaration(
+                "volatile int x[] = { 1 + 2, 2 << 1, 200, 0x31 };",
+                "int",
+                "x",
+                null,
+                AccessModifiers.Unspecified, QualifierFlags.Volatile,
+                3, 4, 200, 0x31
             );
         }
 
 
-        private DeclarationStatementNode AssertDeclarationNode(ASTNode node,
+        private DeclarationStatementNode AssertDeclarationNode(string src,
                                                                string type,
                                                                AccessModifiers access = AccessModifiers.Unspecified,
                                                                QualifierFlags qualifiers = QualifierFlags.None)
         {
-            DeclarationStatementNode decl = node.As<DeclarationStatementNode>();
+            ASTNode ast = CASTProvider.BuildFromSource(src);
+            DeclarationStatementNode decl = ast.Children.First().As<DeclarationStatementNode>();
             Assert.That(decl.Children, Has.Exactly(2).Items);
 
             DeclarationSpecifiersNode declSpecsNode = decl.Children.ElementAt(0).As<DeclarationSpecifiersNode>();
@@ -216,14 +263,14 @@ namespace RICC.Tests.AST.Builders.C
             return decl;
         }
 
-        private void AssertVariableDeclaration(ASTNode node,
+        private void AssertVariableDeclaration(string src,
                                                string identifier,
                                                string type,
                                                AccessModifiers access = AccessModifiers.Unspecified,
                                                QualifierFlags qualifiers = QualifierFlags.None,
                                                object? value = null)
         {
-            DeclarationStatementNode decl = this.AssertDeclarationNode(node, type, access, qualifiers);
+            DeclarationStatementNode decl = this.AssertDeclarationNode(src, type, access, qualifiers);
 
             DeclaratorListNode declList = decl.Children.ElementAt(1).As<DeclaratorListNode>();
             Assert.That(declList.Parent, Is.EqualTo(decl));
@@ -234,21 +281,19 @@ namespace RICC.Tests.AST.Builders.C
             if (value is { }) {
                 Assert.That(var.Initializer, Is.Not.Null);
                 Assert.That(var.Initializer!.Parent, Is.EqualTo(var));
-                Assert.That(ExpressionEvaluator.TryEvaluateAs(var.Initializer, out object? result));
-                Assert.That(result, Is.Not.Null);
-                Assert.That(result, Is.EqualTo(value).Within(1e-10));
+                Assert.That(ExpressionEvaluator.Evaluate(var.Initializer), Is.EqualTo(value).Within(1e-10));
             } else {
                 Assert.That(var.Initializer, Is.Null);
             }
         }
 
-        private void AssertVariableDeclarationList(ASTNode node,
+        private void AssertVariableDeclarationList(string src,
                                                    string type,
                                                    AccessModifiers access = AccessModifiers.Unspecified,
                                                    QualifierFlags qualifiers = QualifierFlags.None,
                                                    params (string Identifier, object? Value)[] vars)
         {
-            DeclarationStatementNode decl = this.AssertDeclarationNode(node, type, access, qualifiers);
+            DeclarationStatementNode decl = this.AssertDeclarationNode(src, type, access, qualifiers);
 
             DeclaratorListNode declList = decl.Children.ElementAt(1).As<DeclaratorListNode>();
             Assert.That(declList.Parent, Is.EqualTo(decl));
@@ -263,7 +308,7 @@ namespace RICC.Tests.AST.Builders.C
             }
         }
 
-        private void AssertFunctionDeclaration(ASTNode node,
+        private void AssertFunctionDeclaration(string src,
                                                string fname,
                                                string returnType,
                                                AccessModifiers access = AccessModifiers.Unspecified,
@@ -271,9 +316,9 @@ namespace RICC.Tests.AST.Builders.C
                                                bool isVariadic = false,
                                                params (QualifierFlags Qualifiers, string Type, string Identifier)[] @params)
         {
-            DeclarationStatementNode decl = this.AssertDeclarationNode(node.Children.First(), returnType, access, qualifiers);
+            DeclarationStatementNode decl = this.AssertDeclarationNode(src, returnType, access, qualifiers);
 
-            FunctionDeclaratorNode fdecl = node.Children.First().Children.Last().Children.First().As<FunctionDeclaratorNode>();
+            FunctionDeclaratorNode fdecl = decl.Children.Last().Children.First().As<FunctionDeclaratorNode>();
             Assert.That(fdecl.Identifier, Is.EqualTo(fname));
             Assert.That(fdecl.IsVariadic, Is.EqualTo(isVariadic));
             if (@params.Any()) {
@@ -290,6 +335,38 @@ namespace RICC.Tests.AST.Builders.C
                 QualifierFlags qf = param.DeclarationSpecifiers.Keywords.QualifierFlags;
                 string type = param.DeclarationSpecifiers.TypeName;
                 return (qf, type, param.Declarator.Identifier);
+            }
+        }
+
+        private void AssertArrayDeclaration(string src,
+                                            string type,
+                                            string arrName,
+                                            int? size = null,
+                                            AccessModifiers access = AccessModifiers.Unspecified,
+                                            QualifierFlags qualifiers = QualifierFlags.None,
+                                            params object[]? init)
+        {
+            DeclarationStatementNode decl = this.AssertDeclarationNode(src, type, access, qualifiers);
+
+            DeclaratorListNode declList = decl.Children.ElementAt(1).As<DeclaratorListNode>();
+            Assert.That(declList.Parent, Is.EqualTo(decl));
+            ArrayDeclaratorNode arr = declList.Declarations.First().As<ArrayDeclaratorNode>();
+            Assert.That(arr.Parent, Is.EqualTo(declList));
+            Assert.That(arr.Identifier, Is.EqualTo(arrName));
+            Assert.That(arr.Children.First().As<IdentifierNode>().Identifier, Is.EqualTo(arrName));
+            if (size is { }) {
+                Assert.That(arr.SizeExpression, Is.Not.Null);
+                Assert.That(arr.SizeExpression!.Parent, Is.EqualTo(arr));
+                Assert.That(ExpressionEvaluator.Evaluate(arr.SizeExpression!), Is.EqualTo(size));
+            } else {
+                Assert.That(arr.SizeExpression, Is.Null);
+            }
+            if (init is { } && init.Any()) {
+                Assert.That(arr.Initializer, Is.Not.Null);
+                Assert.That(arr.Initializer!.Parent, Is.EqualTo(arr));
+                Assert.That(arr.Initializer.Initializers.Select(e => ExpressionEvaluator.Evaluate(e)), Is.EqualTo(init).Within(1e-10));
+            } else {
+                Assert.That(arr.Initializer, Is.Null);
             }
         }
     }
