@@ -2,6 +2,7 @@
 using System.IO;
 using RICC.AST.Builders;
 using RICC.AST.Builders.C;
+using RICC.AST.Builders.Lua;
 using RICC.AST.Nodes;
 using RICC.Exceptions;
 using Serilog;
@@ -46,6 +47,7 @@ namespace RICC.AST
             return fi.Extension switch
             {
                 ".c" => new CASTBuilder(),
+                ".lua" => new LuaASTBuilder(),
                 _ => throw new UnsupportedLanguageException(),
             };
         }

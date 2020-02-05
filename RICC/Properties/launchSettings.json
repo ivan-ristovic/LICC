@@ -2,7 +2,7 @@
   "profiles": {
     "RICC": {
       "commandName": "Project",
-      "commandLineArgs": "cmp Samples/func.c Samples/hello.c -v"
+      "commandLineArgs": "cmp Samples/func.c Samples/hello.lua -v"
     }
   }
 }
