@@ -38,7 +38,8 @@ namespace RICC.AST.Builders.Lua
 
         public override ASTNode VisitChunk([NotNull] ChunkContext ctx)
         {
-            return new TranslationUnitNode(null);
+            // TODO
+            return new TranslationUnitNode(Enumerable.Empty<ASTNode>());
         }
     }
 }

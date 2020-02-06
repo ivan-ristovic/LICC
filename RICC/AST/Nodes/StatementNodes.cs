@@ -35,6 +35,10 @@ namespace RICC.AST.Nodes
 
     public class DeclarationStatementNode : SimpleStatementNode
     {
+        public DeclarationSpecifiersNode Specifiers => this.Children.ElementAt(0).As<DeclarationSpecifiersNode>();
+        public DeclaratorListNode DeclaratorList => this.Children.ElementAt(1).As<DeclaratorListNode>();
+
+
         public DeclarationStatementNode(int line, DeclarationSpecifiersNode declSpecs, DeclaratorListNode declList)
             : base(line, declSpecs, declList) { }
     }

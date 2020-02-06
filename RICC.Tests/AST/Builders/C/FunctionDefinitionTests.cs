@@ -7,30 +7,42 @@ using RICC.Tests.AST.Builders.Common;
 
 namespace RICC.Tests.AST.Builders.C
 {
-    internal sealed class FunctionTests : FunctionTestsBase<CASTBuilder>
+    internal sealed class FunctionDefinitionTests : FunctionDefinitionTestsBase<CASTBuilder>
     {
         [Test]
-        public void NoParametersTest()
+        public void NoParametersDefinitonTest()
         {
-            this.AssertFunctionSignature("\nint f() { }", 2, "f", "int", AccessModifiers.Unspecified);
+            this.AssertFunctionDefinition(
+                "\nint f() { }",
+                2,
+                "f",
+                "int",
+                isVariadic: false,
+                AccessModifiers.Unspecified);
         }
 
         [Test]
-        public void ModifierTest()
+        public void ModifierDefinitionTest()
         {
-            this.AssertFunctionSignature(@"extern static time_t f_1() { }", 1, "f_1", "time_t", AccessModifiers.Public, QualifierFlags.Static);
+            this.AssertFunctionDefinition(@"extern static time_t f_1() { }",
+                1,
+                "f_1",
+                "time_t",
+                isVariadic: false,
+                AccessModifiers.Public,
+                QualifierFlags.Static);
         }
 
         [Test]
-        public void SingleParameterTest()
+        public void SingleParameterDefinitionTest()
         {
-            this.AssertFunctionSignature("\n\n\nvoid f(int x) { }", 4, "f", @params: ("int", "x"));
+            this.AssertFunctionDefinition("\n\n\nvoid f(int x) { }", 4, "f", @params: ("int", "x"));
         }
 
         [Test]
-        public void MultipleParametersTest()
+        public void MultipleParametersDefinitionTest()
         {
-            this.AssertFunctionSignature(
+            this.AssertFunctionDefinition(
                 @"void f(int x, double y, float z, Point t) { }", 1, "f",
                 @params: new[] { ("int", "x"), ("double", "y"), ("float", "z"), ("Point", "t") }
             );
@@ -39,7 +51,7 @@ namespace RICC.Tests.AST.Builders.C
         [Test]
         public void SimpleDefinitionTest()
         {
-            FunctionDefinitionNode f = this.AssertFunctionSignature(@"
+            FunctionDefinitionNode f = this.AssertFunctionDefinition(@"
                 unsigned int f(int x) { 
                     return x;
                 }", 
@@ -55,12 +67,12 @@ namespace RICC.Tests.AST.Builders.C
         [Test]
         public void ComplexDefinitionTest()
         {
-            FunctionDefinitionNode f = this.AssertFunctionSignature(@"
+            FunctionDefinitionNode f = this.AssertFunctionDefinition(@"
                 float f(const unsigned int x, ...) {
                     int z = 4;
                     return 3.0;
                 }", 
-                2, "f", "float", @params: ("unsigned int", "x")
+                2, "f", "float", isVariadic: true, @params: ("unsigned int", "x")
             );
             Assert.That(f.IsVariadic, Is.True);
             Assert.That(f.Definition, Is.Not.Null);

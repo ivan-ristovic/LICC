@@ -17,13 +17,11 @@ namespace RICC.Tests.AST.Builders.Common
             ASTNode ast = new TBuilder().BuildFromSource(src);
             DeclarationStatementNode decl = ast.Children.First().As<DeclarationStatementNode>();
             Assert.That(decl.Children, Has.Exactly(2).Items);
-
-            DeclarationSpecifiersNode declSpecsNode = decl.Children.ElementAt(0).As<DeclarationSpecifiersNode>();
-            Assert.That(declSpecsNode.Parent, Is.EqualTo(decl));
-            Assert.That(declSpecsNode.Keywords.AccessModifiers, Is.EqualTo(access));
-            Assert.That(declSpecsNode.Keywords.QualifierFlags, Is.EqualTo(qualifiers));
-            Assert.That(declSpecsNode.TypeName, Is.EqualTo(type));
-            Assert.That(declSpecsNode.Children, Is.Empty);
+            Assert.That(decl.Specifiers.Parent, Is.EqualTo(decl));
+            Assert.That(decl.Specifiers.Keywords.AccessModifiers, Is.EqualTo(access));
+            Assert.That(decl.Specifiers.Keywords.QualifierFlags, Is.EqualTo(qualifiers));
+            Assert.That(decl.Specifiers.TypeName, Is.EqualTo(type));
+            Assert.That(decl.Specifiers.Children, Is.Empty);
 
             return decl;
         }
@@ -37,10 +35,9 @@ namespace RICC.Tests.AST.Builders.Common
         {
             DeclarationStatementNode decl = this.AssertDeclarationNode(src, type, access, qualifiers);
 
-            DeclaratorListNode declList = decl.Children.ElementAt(1).As<DeclaratorListNode>();
-            Assert.That(declList.Parent, Is.EqualTo(decl));
-            VariableDeclaratorNode var = declList.Declarations.First().As<VariableDeclaratorNode>();
-            Assert.That(var.Parent, Is.EqualTo(declList));
+            Assert.That(decl.DeclaratorList.Parent, Is.EqualTo(decl));
+            VariableDeclaratorNode var = decl.DeclaratorList.Declarations.Single().As<VariableDeclaratorNode>();
+            Assert.That(var.Parent, Is.EqualTo(decl.DeclaratorList));
             Assert.That(var.Identifier, Is.EqualTo(identifier));
             Assert.That(var.Children.First().As<IdentifierNode>().Identifier, Is.EqualTo(identifier));
             if (value is { }) {
@@ -59,10 +56,8 @@ namespace RICC.Tests.AST.Builders.Common
                                                      params (string Identifier, object? Value)[] vars)
         {
             DeclarationStatementNode decl = this.AssertDeclarationNode(src, type, access, qualifiers);
-
-            DeclaratorListNode declList = decl.Children.ElementAt(1).As<DeclaratorListNode>();
-            Assert.That(declList.Parent, Is.EqualTo(decl));
-            Assert.That(declList.Declarations.Select(var => ExtractIdentifierAndValue(var)), Is.EqualTo(vars).Within(1e-6));
+            Assert.That(decl.DeclaratorList.Parent, Is.EqualTo(decl));
+            Assert.That(decl.DeclaratorList.Declarations.Select(var => ExtractIdentifierAndValue(var)), Is.EqualTo(vars).Within(1e-6));
 
 
             static (string, object?) ExtractIdentifierAndValue(DeclarationNode declNode)
@@ -83,7 +78,7 @@ namespace RICC.Tests.AST.Builders.Common
         {
             DeclarationStatementNode decl = this.AssertDeclarationNode(src, returnType, access, qualifiers);
 
-            FunctionDeclaratorNode fdecl = decl.Children.Last().Children.First().As<FunctionDeclaratorNode>();
+            FunctionDeclaratorNode fdecl = decl.DeclaratorList.Declarations.Single().As<FunctionDeclaratorNode>();
             Assert.That(fdecl.Identifier, Is.EqualTo(fname));
             Assert.That(fdecl.IsVariadic, Is.EqualTo(isVariadic));
             if (@params.Any()) {
@@ -113,10 +108,9 @@ namespace RICC.Tests.AST.Builders.Common
         {
             DeclarationStatementNode decl = this.AssertDeclarationNode(src, type, access, qualifiers);
 
-            DeclaratorListNode declList = decl.Children.ElementAt(1).As<DeclaratorListNode>();
-            Assert.That(declList.Parent, Is.EqualTo(decl));
-            ArrayDeclaratorNode arr = declList.Declarations.First().As<ArrayDeclaratorNode>();
-            Assert.That(arr.Parent, Is.EqualTo(declList));
+            Assert.That(decl.DeclaratorList.Parent, Is.EqualTo(decl));
+            ArrayDeclaratorNode arr = decl.DeclaratorList.Declarations.First().As<ArrayDeclaratorNode>();
+            Assert.That(arr.Parent, Is.EqualTo(decl.DeclaratorList));
             Assert.That(arr.Identifier, Is.EqualTo(arrName));
             Assert.That(arr.Children.First().As<IdentifierNode>().Identifier, Is.EqualTo(arrName));
             if (size is { }) {
