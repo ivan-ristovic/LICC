@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Newtonsoft.Json;
 using RICC.AST.Nodes.Common;
@@ -66,9 +67,12 @@ namespace RICC.AST.Nodes
         {
 
         }
-     
-        
+
+
         public override string GetText() => string.Join(", ", this.Children.Select(c => c.GetText()));
+
+        public override bool Equals([AllowNull] ASTNode other)
+            => base.Equals(other) && this.IsVariadic.Equals((other as FunctionParametersNode)?.IsVariadic);
     }
 
     public class FunctionParameterNode : ASTNode

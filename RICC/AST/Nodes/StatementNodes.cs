@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
@@ -155,6 +157,9 @@ namespace RICC.AST.Nodes
 
 
         public override string GetText() => $"{this.Label}: {this.Statement.GetText()}";
+
+        public override bool Equals([AllowNull] ASTNode other)
+            => base.Equals(other) && this.Label.Equals((other as LabeledStatementNode)?.Label);
     }
 
     public abstract class IterationStatementNode : CompoundStatementNode

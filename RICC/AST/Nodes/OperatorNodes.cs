@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 
 namespace RICC.AST.Nodes
@@ -16,6 +17,9 @@ namespace RICC.AST.Nodes
 
 
         public override string GetText() => this.Symbol;
+
+        public override bool Equals([AllowNull] ASTNode other)
+            => base.Equals(other) && this.Symbol.Equals((other as OperatorNode)?.Symbol);
     }
 
     public abstract class BinaryOperatorNode : OperatorNode

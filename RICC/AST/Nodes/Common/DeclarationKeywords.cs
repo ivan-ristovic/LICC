@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
 namespace RICC.AST.Nodes.Common
 {
     [DebuggerDisplay("{AccessModifiers} | {QualifierFlags}")]
-    public sealed class DeclarationKeywords
+    public sealed class DeclarationKeywords : IEquatable<DeclarationKeywords>
     {
         public static DeclarationKeywords Parse(string specs)
         {
@@ -65,6 +66,20 @@ namespace RICC.AST.Nodes.Common
             if (this.QualifierFlags.HasFlag(QualifierFlags.Volatile))
                sb.Append("volatile ");
             return sb.ToString().Trim();
+        }
+
+        public override bool Equals(object? obj) 
+            => this.Equals(obj as DeclarationKeywords);
+
+        public bool Equals([AllowNull] DeclarationKeywords other)
+        {
+            if (other is null || this.GetType() != other.GetType())
+                return false;
+
+            if (ReferenceEquals(this, other))
+                return true;
+
+            return this.AccessModifiers.Equals(other.AccessModifiers) && this.QualifierFlags.Equals(other.QualifierFlags);
         }
     }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
@@ -86,7 +87,7 @@ namespace RICC.AST.Nodes
             : base(line, left, @operator, right) { }
     }
 
-    public sealed class IdentifierNode : ExpressionNode
+    public sealed class IdentifierNode : ExpressionNode, IEquatable<IdentifierNode>
     {
         public string Identifier { get; }
 
@@ -101,6 +102,20 @@ namespace RICC.AST.Nodes
 
 
         public override string GetText() => this.Identifier;
+
+        public override bool Equals(object? obj)
+            => this.Equals(obj as IdentifierNode);
+
+        public bool Equals([AllowNull] IdentifierNode other)
+        {
+            if (other is null)
+                return false;
+
+            if (ReferenceEquals(this, other))
+                return true;
+
+            return this.Identifier.Equals(other.Identifier);
+        }
     }
 
     public sealed class FunctionCallExpressionNode : ExpressionNode
@@ -189,6 +204,12 @@ namespace RICC.AST.Nodes
 
 
         public override string GetText() => this.Value?.ToString() ?? "";
+
+        public override bool Equals([AllowNull] ASTNode other)
+        {
+            var lit = other as LiteralNode;
+            return base.Equals(other) && this.TypeCode.Equals(lit?.TypeCode) && this.Value.Equals(lit?.Value);
+        }
     }
 
     public sealed class ConditionalExpressionNode : ExpressionNode

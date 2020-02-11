@@ -19,7 +19,9 @@ namespace RICC.Core
         public void Execute()
         {
             Log.Debug("Comparing {SourceTree} with {DestinationTree}", this.srcTree, this.dstTree);
+
             // TODO
+            Log.Information("Equality test: {EqualityResult}", this.srcTree == this.dstTree);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
@@ -21,7 +22,7 @@ namespace RICC.AST.Nodes
     {
         public DeclarationKeywords Keywords { get; }
         public string TypeName { get; }
-        
+
         [JsonIgnore]
         public Type? Type { get; }
 
@@ -47,6 +48,20 @@ namespace RICC.AST.Nodes
                 sb.Append(declSpecs).Append(' ');
             sb.Append(this.TypeName);
             return sb.ToString();
+        }
+
+        public override bool Equals(object? obj)
+            => this.Equals(obj as DeclarationSpecifiersNode);
+
+        public override bool Equals([AllowNull] ASTNode other)
+        {
+            if (!base.Equals(other))
+                return false;
+
+            var decl = other as DeclarationSpecifiersNode;
+            if (!this.Keywords.Equals(decl?.Keywords))
+                return false;
+            return this.Type is { } ? this.Type.Equals(decl?.Type) : this.TypeName.Equals(decl?.TypeName);
         }
     }
 
@@ -100,10 +115,11 @@ namespace RICC.AST.Nodes
     {
         [JsonIgnore]
         public ExpressionNode? SizeExpression => this.Children.ElementAtOrDefault(1) as ExpressionNode;
-        
+
         [JsonIgnore]
-        public ArrayInitializerListNode? Initializer => this.Children.Count > 2 ? this.Children[2].As<ArrayInitializerListNode>() 
-                                                                                : this.Children.ElementAtOrDefault(1) as ArrayInitializerListNode;
+        public ArrayInitializerListNode? Initializer
+            => this.Children.Count > 2 ? this.Children[2].As<ArrayInitializerListNode>()
+                                       : this.Children.ElementAtOrDefault(1) as ArrayInitializerListNode;
 
 
         public ArrayDeclaratorNode(int line, IdentifierNode identifier)
