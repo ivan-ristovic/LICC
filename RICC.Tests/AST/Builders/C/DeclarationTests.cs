@@ -20,14 +20,14 @@ namespace RICC.Tests.AST.Builders.C
         public void DeclarationSpecifierTest()
         {
             this.AssertVariableDeclaration(
-                "static volatile time_t x;",
+                "static volatile  time_t x;",
                 "x",
                 "time_t",
                 AccessModifiers.Unspecified,
                 QualifierFlags.Static | QualifierFlags.Volatile
             );
             this.AssertVariableDeclaration(
-                "static extern const unsigned int x;",
+                "static  extern  const    unsigned  int x;",
                 "x",
                 "unsigned int",
                 AccessModifiers.Public,

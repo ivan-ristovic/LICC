@@ -73,7 +73,7 @@ namespace RICC.AST.Nodes.Common
 
         public bool Equals([AllowNull] DeclarationKeywords other)
         {
-            if (other is null || this.GetType() != other.GetType())
+            if (other is null)
                 return false;
 
             if (ReferenceEquals(this, other))

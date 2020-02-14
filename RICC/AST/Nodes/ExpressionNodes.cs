@@ -87,7 +87,7 @@ namespace RICC.AST.Nodes
             : base(line, left, @operator, right) { }
     }
 
-    public sealed class IdentifierNode : ExpressionNode, IEquatable<IdentifierNode>
+    public sealed class IdentifierNode : ExpressionNode
     {
         public string Identifier { get; }
 
@@ -103,19 +103,8 @@ namespace RICC.AST.Nodes
 
         public override string GetText() => this.Identifier;
 
-        public override bool Equals(object? obj)
-            => this.Equals(obj as IdentifierNode);
-
-        public bool Equals([AllowNull] IdentifierNode other)
-        {
-            if (other is null)
-                return false;
-
-            if (ReferenceEquals(this, other))
-                return true;
-
-            return this.Identifier.Equals(other.Identifier);
-        }
+        public override bool Equals([AllowNull] ASTNode other) 
+            => base.Equals(other) && this.Identifier.Equals(other.As<IdentifierNode>().Identifier);
     }
 
     public sealed class FunctionCallExpressionNode : ExpressionNode

@@ -70,6 +70,9 @@ namespace RICC.AST.Nodes
             if (ReferenceEquals(this, other))
                 return true;
 
+            if (this.Children.Count != other.Children.Count)
+                return false;
+
             return this.Children.Zip(other.Children).All(tup => tup.First.Equals(tup.Second));
         }
     }

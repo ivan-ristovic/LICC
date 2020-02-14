@@ -31,10 +31,10 @@ namespace RICC.AST.Nodes
             : base(line)
         {
             this.Keywords = DeclarationKeywords.Parse(specs);
-            this.TypeName = type;
-            TypeCode? typeCode = Types.TypeCodeFor(type);
+            this.TypeName = type.Trim();
+            TypeCode? typeCode = Types.TypeCodeFor(this.TypeName);
             if (typeCode is null)
-                Log.Warning("Unknown type: {Type}", type);
+                Log.Warning("Unknown type: {Type}", this.TypeName);
             else
                 this.Type = Types.ToType(typeCode.Value);
         }
@@ -61,6 +61,7 @@ namespace RICC.AST.Nodes
             var decl = other as DeclarationSpecifiersNode;
             if (!this.Keywords.Equals(decl?.Keywords))
                 return false;
+            var x = this.Type.Equals(decl?.Type);
             return this.Type is { } ? this.Type.Equals(decl?.Type) : this.TypeName.Equals(decl?.TypeName);
         }
     }
