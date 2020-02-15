@@ -61,7 +61,6 @@ namespace RICC.AST.Nodes
             var decl = other as DeclarationSpecifiersNode;
             if (!this.Keywords.Equals(decl?.Keywords))
                 return false;
-            var x = this.Type.Equals(decl?.Type);
             return this.Type is { } ? this.Type.Equals(decl?.Type) : this.TypeName.Equals(decl?.TypeName);
         }
     }

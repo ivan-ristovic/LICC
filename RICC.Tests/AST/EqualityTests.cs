@@ -245,7 +245,205 @@ namespace RICC.Tests.AST
             AssertNodes(ast1, ast2, eq: false);
         }
 
-        // TODO func def tests
+        [Test]
+        public void FunctionDefenitionEqualityTest()
+        {
+            ASTNode ast1 = new FunctionDefinitionNode(
+                1,
+                new DeclarationSpecifiersNode(2, "public static", "void"),
+                new FunctionDeclaratorNode(
+                    2, 
+                    new IdentifierNode(2, "f"), 
+                    new FunctionParametersNode(
+                        2,
+                        new FunctionParameterNode(
+                            3, 
+                            new DeclarationSpecifiersNode(3, "const", "time_t"),
+                            new ArrayDeclaratorNode(3, new IdentifierNode(3, "arr"))
+                        )
+                    )
+                ),
+                new BlockStatementNode(3, new JumpStatementNode(4, new LiteralNode(4, "2", "u")))
+            );
+            ASTNode ast2 = new FunctionDefinitionNode(
+                1,
+                new DeclarationSpecifiersNode(3, "public static", "void"),
+                new FunctionDeclaratorNode(
+                    3,
+                    new IdentifierNode(2, "f"),
+                    new FunctionParametersNode(
+                        4,
+                        new FunctionParameterNode(
+                            4,
+                            new DeclarationSpecifiersNode(5, "const", "time_t"),
+                            new ArrayDeclaratorNode(6, new IdentifierNode(6, "arr"))
+                        )
+                    )
+                ),
+                new BlockStatementNode(7, new JumpStatementNode(8, new LiteralNode(8, "2", "u")))
+            );
+            AssertNodes(ast1, ast2, eq: true);
+        }
+
+        [Test]
+        public void FunctionDefenitionDifferenceTest1()
+        {
+            ASTNode ast1 = new FunctionDefinitionNode(
+                1,
+                new DeclarationSpecifiersNode(2, "public static", "void"),
+                new FunctionDeclaratorNode(
+                    2,
+                    new IdentifierNode(2, "f"),
+                    new FunctionParametersNode(
+                        2,
+                        new FunctionParameterNode(
+                            3,
+                            new DeclarationSpecifiersNode(3, "", "time_t"),
+                            new ArrayDeclaratorNode(3, new IdentifierNode(3, "arr"))
+                        )
+                    )
+                ),
+                new BlockStatementNode(3, new JumpStatementNode(4, new LiteralNode(4, "2", "u")))
+            );
+            ASTNode ast2 = new FunctionDefinitionNode(
+                1,
+                new DeclarationSpecifiersNode(3, "public static", "void"),
+                new FunctionDeclaratorNode(
+                    3,
+                    new IdentifierNode(2, "f"),
+                    new FunctionParametersNode(
+                        4,
+                        new FunctionParameterNode(
+                            4,
+                            new DeclarationSpecifiersNode(5, "const", "time_t"),
+                            new ArrayDeclaratorNode(6, new IdentifierNode(6, "arr"))
+                        )
+                    )
+                ),
+                new BlockStatementNode(7, new JumpStatementNode(8, new LiteralNode(8, "2", "u")))
+            );
+            AssertNodes(ast1, ast2, eq: false);
+        }
+
+        [Test]
+        public void FunctionDefenitionDifferenceTest2()
+        {
+            ASTNode ast1 = new FunctionDefinitionNode(
+                1,
+                new DeclarationSpecifiersNode(2, "public static", "void"),
+                new FunctionDeclaratorNode(
+                    2,
+                    new IdentifierNode(2, "f"),
+                    new FunctionParametersNode(
+                        2,
+                        new FunctionParameterNode(
+                            3,
+                            new DeclarationSpecifiersNode(3, "const", "time_t"),
+                            new VariableDeclaratorNode(3, new IdentifierNode(3, "arr"))
+                        )
+                    )
+                ),
+                new BlockStatementNode(3, new JumpStatementNode(4, new LiteralNode(4, "2", "u")))
+            );
+            ASTNode ast2 = new FunctionDefinitionNode(
+                1,
+                new DeclarationSpecifiersNode(3, "public static", "void"),
+                new FunctionDeclaratorNode(
+                    3,
+                    new IdentifierNode(2, "f"),
+                    new FunctionParametersNode(
+                        4,
+                        new FunctionParameterNode(
+                            4,
+                            new DeclarationSpecifiersNode(5, "const", "time_t"),
+                            new ArrayDeclaratorNode(6, new IdentifierNode(6, "arr"))
+                        )
+                    )
+                ),
+                new BlockStatementNode(7, new JumpStatementNode(8, new LiteralNode(8, "2", "u")))
+            );
+            AssertNodes(ast1, ast2, eq: false);
+        }
+
+        [Test]
+        public void FunctionDefenitionDifferenceTest3()
+        {
+            ASTNode ast1 = new FunctionDefinitionNode(
+                1,
+                new DeclarationSpecifiersNode(2, "public static", "void"),
+                new FunctionDeclaratorNode(
+                    2,
+                    new IdentifierNode(2, "f"),
+                    new FunctionParametersNode(
+                        2,
+                        new FunctionParameterNode(
+                            3,
+                            new DeclarationSpecifiersNode(3, "const", "time_t"),
+                            new ArrayDeclaratorNode(3, new IdentifierNode(3, "arr"))
+                        )
+                    )
+                ),
+                new BlockStatementNode(3, new JumpStatementNode(4, new LiteralNode(4, "2", "u")))
+            );
+            ASTNode ast2 = new FunctionDefinitionNode(
+                1,
+                new DeclarationSpecifiersNode(3, "public static", "int"),
+                new FunctionDeclaratorNode(
+                    3,
+                    new IdentifierNode(2, "f"),
+                    new FunctionParametersNode(
+                        4,
+                        new FunctionParameterNode(
+                            4,
+                            new DeclarationSpecifiersNode(5, "const", "time_t"),
+                            new ArrayDeclaratorNode(6, new IdentifierNode(6, "arr"))
+                        )
+                    )
+                ),
+                new BlockStatementNode(7, new JumpStatementNode(8, new LiteralNode(8, "2", "l")))
+            );
+            AssertNodes(ast1, ast2, eq: false);
+        }
+
+        [Test]
+        public void FunctionDefenitionDifferenceTest4()
+        {
+            ASTNode ast1 = new FunctionDefinitionNode(
+                1,
+                new DeclarationSpecifiersNode(2, "public static", "void"),
+                new FunctionDeclaratorNode(
+                    2,
+                    new IdentifierNode(2, "f"),
+                    new FunctionParametersNode(
+                        2,
+                        new FunctionParameterNode(
+                            3,
+                            new DeclarationSpecifiersNode(3, "", "time_t"),
+                            new ArrayDeclaratorNode(3, new IdentifierNode(3, "arr"))
+                        )
+                    )
+                ),
+                new BlockStatementNode(3, new JumpStatementNode(4, new LiteralNode(4, "2", "u")))
+            );
+            ASTNode ast2 = new FunctionDefinitionNode(
+                1,
+                new DeclarationSpecifiersNode(3, "public static", "void"),
+                new FunctionDeclaratorNode(
+                    3,
+                    new IdentifierNode(2, "f"),
+                    new FunctionParametersNode(
+                        4,
+                        new FunctionParameterNode(
+                            4,
+                            new DeclarationSpecifiersNode(5, "const", "time_t"),
+                            new ArrayDeclaratorNode(6, new IdentifierNode(6, "arr"))
+                        )
+                    )
+                ),
+                new BlockStatementNode(7, new JumpStatementNode(8, new LiteralNode(8, "2", "u")), new EmptyStatementNode(10))
+            );
+            AssertNodes(ast1, ast2, eq: false);
+        }
 
 
         private static void AssertNodes(ASTNode ast1, ASTNode ast2, bool eq = true)
