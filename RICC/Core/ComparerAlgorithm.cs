@@ -1,18 +1,19 @@
 ﻿using RICC.AST.Nodes;
+using RICC.Core.Comparers;
 using Serilog;
 
 namespace RICC.Core
 {
     public sealed class ComparerAlgorithm
     {
-        private readonly ASTNode srcTree;
-        private readonly ASTNode dstTree;
+        private readonly TranslationUnitNode srcTree;
+        private readonly TranslationUnitNode dstTree;
 
 
         public ComparerAlgorithm(ASTNode srcTree, ASTNode dstTree)
         {
-            this.srcTree = srcTree;
-            this.dstTree = dstTree;
+            this.srcTree = srcTree.As<TranslationUnitNode>();
+            this.dstTree = dstTree.As<TranslationUnitNode>();
         }
 
 
@@ -20,8 +21,12 @@ namespace RICC.Core
         {
             Log.Debug("Comparing {SourceTree} with {DestinationTree}", this.srcTree, this.dstTree);
 
-            // TODO
-            Log.Information("Equality test: {EqualityResult}", this.srcTree == this.dstTree);
+            if (this.srcTree == this.dstTree) {
+                Log.Information("AST trees for given code snippets are completely equal.");
+                return;
+            }
+
+            Log.Information("Equal: {EqualityResult}", new TranslationUnitNodeComparer().Equals(this.srcTree, this.dstTree));
         }
     }
 }
