@@ -69,7 +69,7 @@ namespace RICC.Tests.AST
                 2,
                 new DeclarationSpecifiersNode(2, "public static", "int"),
                 new DeclaratorListNode(
-                    1,
+                    2,
                     new VariableDeclaratorNode(
                         2,
                         new IdentifierNode(2, "x"),
@@ -109,7 +109,7 @@ namespace RICC.Tests.AST
                 2,
                 new DeclarationSpecifiersNode(2, "public static", "int"),
                 new DeclaratorListNode(
-                    1,
+                    2,
                     new VariableDeclaratorNode(
                         2,
                         new IdentifierNode(2, "x"),
@@ -149,7 +149,7 @@ namespace RICC.Tests.AST
                 2,
                 new DeclarationSpecifiersNode(2, "public static", "int"),
                 new DeclaratorListNode(
-                    1,
+                    2,
                     new VariableDeclaratorNode(
                         2,
                         new IdentifierNode(2, "x"),
@@ -189,7 +189,7 @@ namespace RICC.Tests.AST
                 2,
                 new DeclarationSpecifiersNode(2, "public static", "int"),
                 new DeclaratorListNode(
-                    1,
+                    2,
                     new VariableDeclaratorNode(
                         2,
                         new IdentifierNode(2, "x"),
@@ -229,7 +229,7 @@ namespace RICC.Tests.AST
                 2,
                 new DeclarationSpecifiersNode(2, "public static", "int"),
                 new DeclaratorListNode(
-                    1,
+                    2,
                     new VariableDeclaratorNode(
                         2,
                         new IdentifierNode(2, "x"),
@@ -270,7 +270,7 @@ namespace RICC.Tests.AST
                 new DeclarationSpecifiersNode(3, "public static", "void"),
                 new FunctionDeclaratorNode(
                     3,
-                    new IdentifierNode(2, "f"),
+                    new IdentifierNode(3, "f"),
                     new FunctionParametersNode(
                         4,
                         new FunctionParameterNode(
@@ -310,7 +310,7 @@ namespace RICC.Tests.AST
                 new DeclarationSpecifiersNode(3, "public static", "void"),
                 new FunctionDeclaratorNode(
                     3,
-                    new IdentifierNode(2, "f"),
+                    new IdentifierNode(4, "f"),
                     new FunctionParametersNode(
                         4,
                         new FunctionParameterNode(
@@ -350,7 +350,7 @@ namespace RICC.Tests.AST
                 new DeclarationSpecifiersNode(3, "public static", "void"),
                 new FunctionDeclaratorNode(
                     3,
-                    new IdentifierNode(2, "f"),
+                    new IdentifierNode(4, "f"),
                     new FunctionParametersNode(
                         4,
                         new FunctionParameterNode(
@@ -390,7 +390,7 @@ namespace RICC.Tests.AST
                 new DeclarationSpecifiersNode(3, "public static", "int"),
                 new FunctionDeclaratorNode(
                     3,
-                    new IdentifierNode(2, "f"),
+                    new IdentifierNode(4, "f"),
                     new FunctionParametersNode(
                         4,
                         new FunctionParameterNode(
@@ -430,7 +430,7 @@ namespace RICC.Tests.AST
                 new DeclarationSpecifiersNode(3, "public static", "void"),
                 new FunctionDeclaratorNode(
                     3,
-                    new IdentifierNode(2, "f"),
+                    new IdentifierNode(4, "f"),
                     new FunctionParametersNode(
                         4,
                         new FunctionParameterNode(
@@ -445,6 +445,184 @@ namespace RICC.Tests.AST
             AssertNodes(ast1, ast2, eq: false);
         }
 
+        [Test]
+        public void ExpressionEqualityTest()
+        {
+            ASTNode ast1 = new ArithmeticExpressionNode(
+                1,
+                new ArithmeticExpressionNode(
+                    2, 
+                    new LiteralNode(2, 3), 
+                    new ArithmeticOperatorNode(2, "+", (a, _) => a), 
+                    new LiteralNode(2, 3)
+                ),
+                new ArithmeticOperatorNode(2, "-", (a, _) => a),
+                new ArithmeticExpressionNode(
+                    2,
+                    new LiteralNode(2, 3),
+                    new ArithmeticOperatorNode(2, "+", (a, _) => a),
+                    new LiteralNode(2, 3)
+                )
+            );
+            ASTNode ast2 = new ArithmeticExpressionNode(
+                1,
+                new ArithmeticExpressionNode(
+                    1,
+                    new LiteralNode(1, 3),
+                    new ArithmeticOperatorNode(1, "+", (a, _) => a),
+                    new LiteralNode(1, 3)
+                ),
+                new ArithmeticOperatorNode(1, "-", (a, _) => a),
+                new ArithmeticExpressionNode(
+                    1,
+                    new LiteralNode(1, 3),
+                    new ArithmeticOperatorNode(1, "+", (a, _) => a),
+                    new LiteralNode(1, 3)
+                )
+            );
+            AssertNodes(ast1, ast2, eq: true);
+        }
+
+        [Test]
+        public void ExpressionDifferenceTest1()
+        {
+            ASTNode ast1 = new ArithmeticExpressionNode(
+                1,
+                new ArithmeticExpressionNode(
+                    2,
+                    new LiteralNode(2, 3),
+                    new ArithmeticOperatorNode(2, "+", (a, _) => a),
+                    new LiteralNode(2, 3)
+                ),
+                new ArithmeticOperatorNode(2, "-", (a, _) => a),
+                new LiteralNode(2, 6)
+            );
+            ASTNode ast2 = new ArithmeticExpressionNode(
+                1,
+                new ArithmeticExpressionNode(
+                    1,
+                    new LiteralNode(1, 3),
+                    new ArithmeticOperatorNode(1, "+", (a, _) => a),
+                    new LiteralNode(1, 3)
+                ),
+                new ArithmeticOperatorNode(1, "-", (a, _) => a),
+                new ArithmeticExpressionNode(
+                    1,
+                    new LiteralNode(1, 3),
+                    new ArithmeticOperatorNode(1, "+", (a, _) => a),
+                    new LiteralNode(1, 3)
+                )
+            );
+            AssertNodes(ast1, ast2, eq: false);
+        }
+
+        [Test]
+        public void ExpressionDifferenceTest2()
+        {
+            ASTNode ast1 = new ArithmeticExpressionNode(
+                1,
+                new ArithmeticExpressionNode(
+                    2,
+                    new LiteralNode(2, 3),
+                    new ArithmeticOperatorNode(2, "+", (a, _) => a),
+                    new LiteralNode(2, 3)
+                ),
+                new ArithmeticOperatorNode(2, "-", (a, _) => a),
+                new ArithmeticExpressionNode(
+                    1,
+                    new LiteralNode(1, 3),
+                    new ArithmeticOperatorNode(1, "*", (a, _) => a),
+                    new LiteralNode(1, 3)
+                )
+            );
+            ASTNode ast2 = new ArithmeticExpressionNode(
+                1,
+                new ArithmeticExpressionNode(
+                    1,
+                    new LiteralNode(1, 3),
+                    new ArithmeticOperatorNode(1, "+", (a, _) => a),
+                    new LiteralNode(1, 3)
+                ),
+                new ArithmeticOperatorNode(1, "-", (a, _) => a),
+                new ArithmeticExpressionNode(
+                    1,
+                    new LiteralNode(1, 3),
+                    new ArithmeticOperatorNode(1, "+", (a, _) => a),
+                    new LiteralNode(1, 3)
+                )
+            );
+            AssertNodes(ast1, ast2, eq: false);
+        }
+
+        [Test]
+        public void BranchingStatementEqualityTest1()
+        {
+            ASTNode ast1 = new IfStatementNode(
+                1,
+                new LiteralNode(1, true),
+                new EmptyStatementNode(1)
+            );
+            ASTNode ast2 = new IfStatementNode(
+                1,
+                new LiteralNode(1, true),
+                new EmptyStatementNode(1)
+            );
+            AssertNodes(ast1, ast2, eq: true);
+        }
+
+        [Test]
+        public void BranchingStatementEqualityTest2()
+        {
+            ASTNode ast1 = new IfStatementNode(
+                1,
+                new LiteralNode(1, true),
+                new EmptyStatementNode(1),
+                new BlockStatementNode(1, new EmptyStatementNode(1))
+            );
+            ASTNode ast2 = new IfStatementNode(
+                1,
+                new LiteralNode(1, true),
+                new EmptyStatementNode(1),
+                new BlockStatementNode(1, new EmptyStatementNode(1))
+            );
+            AssertNodes(ast1, ast2, eq: true);
+        }
+
+        [Test]
+        public void BranchingStatementDifferenceTest1()
+        {
+            ASTNode ast1 = new IfStatementNode(
+                1,
+                new LiteralNode(1, false),
+                new EmptyStatementNode(1),
+                new BlockStatementNode(1, new EmptyStatementNode(1))
+            );
+            ASTNode ast2 = new IfStatementNode(
+                1,
+                new LiteralNode(1, true),
+                new EmptyStatementNode(1),
+                new BlockStatementNode(1, new EmptyStatementNode(1))
+            );
+            AssertNodes(ast1, ast2, eq: false);
+        }
+
+        [Test]
+        public void BranchingStatementDifferenceTest2()
+        {
+            ASTNode ast1 = new IfStatementNode(
+                1,
+                new LiteralNode(1, true),
+                new EmptyStatementNode(1),
+                new BlockStatementNode(1, new EmptyStatementNode(1))
+            );
+            ASTNode ast2 = new IfStatementNode(
+                1,
+                new LiteralNode(1, true),
+                new EmptyStatementNode(1)
+            );
+            AssertNodes(ast1, ast2, eq: false);
+        }
+        
 
         private static void AssertNodes(ASTNode ast1, ASTNode ast2, bool eq = true)
         {

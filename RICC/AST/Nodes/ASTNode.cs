@@ -34,8 +34,11 @@ namespace RICC.AST.Nodes
             this.Children = children ?? Array.Empty<ASTNode>();
             this.Line = line;
             if (children?.Any() ?? false) {
-                foreach (ASTNode child in children)
+                foreach (ASTNode child in children) {
+                    if (child.Line < this.Line)
+                        throw new ArgumentException("Parent node has greater line number than the child.");
                     child.Parent = this;
+                }
             }
         }
 
