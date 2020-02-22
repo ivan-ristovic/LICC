@@ -8,16 +8,28 @@ namespace RICC.Core
 {
     internal static class CoreLog
     {
-        public static void DeclarationMissing(string identifier, DeclarationSpecifiersNode expectedSpecs)
-            => Log.Warning("Missing declaration for {Specs} {Symbol}, declared at line {Line}", expectedSpecs, identifier, expectedSpecs.Line);
+        public static void DeclarationMissing(DeclarationSpecifiersNode specs, DeclaratorNode decl)
+            => Log.Warning("Missing declaration for {Specs} {Identifier}, declared at line {Line}", specs, decl.Identifier, specs.Line);
         
-        public static void DeclarationSpecifiersMismatch(string identifier, DeclarationSpecifiersNode expected, DeclarationSpecifiersNode actual)
+        public static void DeclarationSpecifiersMismatch(DeclaratorNode decl, DeclarationSpecifiersNode expected, DeclarationSpecifiersNode actual)
         {
-            Log.Warning("Declaration specifiers for {Symbol}, declared at line {Line}, are not matched: " +
-                        "expected {ExpectedSpecs}, got {ActualSpecs}", identifier, expected.Line, expected, actual);
+            Log.Warning("Declaration specifier mismatch for {Identifier}, declared at line {Line}: expected {ExpectedSpecs}, got {ActualSpecs}", 
+                        decl.Identifier, expected.Line, expected, actual);
         }
 
-        public static void ExtraDeclarationFound(string identifier, DeclarationSpecifiersNode specs)
-            => Log.Warning("Extra declaration found: {Specs} {Symbol}, declared at line {Line}", specs, identifier, specs.Line);
+        public static void ExtraDeclarationFound(DeclarationSpecifiersNode specs, DeclaratorNode decl)
+            => Log.Warning("Extra declaration found: {Specs} {Identifier}, declared at line {Line}", specs, decl.Identifier, specs.Line);
+
+        public static void DeclaratorMismatch(DeclaratorNode expected, DeclaratorNode actual)
+        {
+            Log.Warning("Declarator mismatch for {Identifier}, declared at line {Line}: expected {ExpectedDecl}, got {ActualDecl}", 
+                        expected.Identifier, expected.Line, expected, actual);
+        }
+
+        public static void VariableInitializerMismatch(string var, int line, object? expected, object? actual)
+        {
+            Log.Error("Variable initializer mismatch for {Identifier}, declared at line {Line}: expected {ExpectedValue}, got {ActualValue}", 
+                      var, line, expected, actual);
+        }
     }
 }

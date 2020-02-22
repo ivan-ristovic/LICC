@@ -1,16 +1,15 @@
-﻿int gl_x = 3 << 1, gl_z;
-int gl_y = 1 + 3 - 1*0;
+﻿int gl_y = 2;
+
 void f(int x);
-int c;
+
+int gl_x = 3;
+
 
 int main()
 {
-
 	int x = 1;
 	//printf("Hello world!% d\n", x);
-
-	int y;
-	
 	return 0;
 }
 
+static int gl_z;

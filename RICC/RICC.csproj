@@ -16,6 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Samples\eqtest3.c">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Samples\eqtest2.c">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
