@@ -18,6 +18,6 @@ namespace RICC.Core
         }
 
         public static void ExtraDeclarationFound(string identifier, DeclarationSpecifiersNode specs)
-            => Log.Warning("No declaration found in source for {Specs} {Symbol}, declared at line {Line}", specs, identifier, specs.Line);
+            => Log.Warning("Extra declaration found: {Specs} {Symbol}, declared at line {Line}", specs, identifier, specs.Line);
     }
 }

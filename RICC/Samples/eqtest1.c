@@ -1,8 +1,8 @@
-﻿extern int gl_y = 2;
+﻿int gl_y = 2;
 
 void f(const int x);
 
-int gl_z = 3;
+int gl_x = 3;
 
 
 int main()
@@ -12,4 +12,4 @@ int main()
 	return 0;
 }
 
-int gl_x;
+static int gl_z;
