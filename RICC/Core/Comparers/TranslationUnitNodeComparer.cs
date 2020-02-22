@@ -14,32 +14,27 @@ namespace RICC.Core.Comparers
 
             Log.Debug("Testing declaration counts...");
 
-            Dictionary<DeclarationSpecifiersNode, List<DeclaratorNode>> srcDecls = GetDeclarations(x);
-            Dictionary<DeclarationSpecifiersNode, List<DeclaratorNode>> dstDecls = GetDeclarations(y);
+            Dictionary<string, DeclarationSpecifiersNode> srcDecls = GetDeclarations(x);
+            Dictionary<string, DeclarationSpecifiersNode> dstDecls = GetDeclarations(y);
 
-            foreach ((DeclarationSpecifiersNode specs, List<DeclaratorNode> expected) in srcDecls) {
-                List<DeclaratorNode> actual = dstDecls.GetValueOrDefault(specs, Enumerable.Empty<DeclaratorNode>().ToList())!;
-                
-                IEnumerable<DeclaratorNode> missing = expected.Except(actual);
-                IEnumerable<DeclaratorNode> extra = actual.Except(expected);
-
-                Log.Debug(@"src: ""{Specs}"": {Declarators}", specs, expected);
-                Log.Debug(@"dst: ""{Specs}"": {Declarators}", specs, actual);
-
-                foreach (DeclaratorNode decl in missing) 
-                    Log.Warning("Missing declaration for {Specs} {Symbol}, declared at line {Line}", specs, decl.Identifier, decl.Line);
-
-                foreach (DeclaratorNode decl in extra) 
-                    Log.Warning("No declaration found in source for {Specs} {Symbol}, declared at line {Line}", specs, decl.Identifier, decl.Line);
-
-                if (missing.Any())
+            foreach ((string identifier, DeclarationSpecifiersNode expectedSpecs) in srcDecls) {
+                if (dstDecls.ContainsKey(identifier)) {
+                    DeclarationSpecifiersNode actualSpecs = dstDecls[identifier];
+                    if (expectedSpecs != actualSpecs)
+                        CoreLog.DeclarationSpecifiersMismatch(identifier, expectedSpecs, actualSpecs);
+                } else {
+                    CoreLog.DeclarationMissing(identifier, expectedSpecs);
                     equal = false;
+                }
             }
 
+            foreach (string identifier in dstDecls.Keys.Except(srcDecls.Keys))
+                CoreLog.ExtraDeclarationFound(identifier, dstDecls[identifier]);
+
             if (equal) {
-                Log.Information("Found all expected declarations.");
+                Log.Information("Found all expected top-level declarations.");
             } else {
-                Log.Information("Failed to find some of the expected declarations.");
+                Log.Information("Failed to find some of the expected top-level declarations.");
                 return false;
             }
 
@@ -48,16 +43,14 @@ namespace RICC.Core.Comparers
             return equal;
 
 
-            static Dictionary<DeclarationSpecifiersNode, List<DeclaratorNode>> GetDeclarations(ASTNode node)
+            static Dictionary<string, DeclarationSpecifiersNode> GetDeclarations(ASTNode node)
             {
                 return node.Children
                     .Where(c => c is DeclarationStatementNode)
                     .Cast<DeclarationStatementNode>()
-                    .GroupBy(decl => decl.Specifiers, decl => decl.DeclaratorList)
-                    .ToDictionary(
-                        g => g.Key, 
-                        g => g.SelectMany(x => x.Declarations).Distinct().ToList()
-                    );
+                    .SelectMany(decl => decl.DeclaratorList.Declarations, (decl, declarator) => (decl, declarator))
+                    .ToDictionary(tup => tup.declarator.Identifier, tup => tup.decl.Specifiers)
+                    ;
             }
         }
 
