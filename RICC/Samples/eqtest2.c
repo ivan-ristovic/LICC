@@ -1,6 +1,7 @@
-﻿int gl_x = 3;
+﻿int gl_x, gl_z = 3;
 int gl_y = 2;
 void f(const int x);
+int c;
 
 int main()
 {

@@ -22,7 +22,7 @@ namespace RICC.Core
             Log.Debug("Comparing {SourceTree} with {DestinationTree}", this.srcTree, this.dstTree);
 
             if (this.srcTree == this.dstTree) {
-                Log.Information("AST trees for given code snippets are completely equal.");
+                Log.Information("AST trees for given code snippets are completely equal. No further analysis nececary.");
                 return;
             }
 

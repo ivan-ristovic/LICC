@@ -1,8 +1,9 @@
-﻿int gl_y = 2;
+﻿extern int gl_y = 2;
 
 void f(const int x);
 
-int gl_x = 3;
+int gl_z = 3;
+
 
 int main()
 {
@@ -10,3 +11,5 @@ int main()
 	//printf("Hello world!% d\n", x);
 	return 0;
 }
+
+int gl_x;
