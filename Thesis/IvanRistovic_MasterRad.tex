@@ -10,13 +10,13 @@
 \documentclass[12pt,oneside]{memoir} 
 
 % Paket koji definiše sve specifičnosti master rada Matematičkog fakulteta
-\usepackage[latinica,biblatex]{matfmaster} 
+\usepackage[latinica]{matfmaster} 
 %
 % Podrazumevano pismo je ćirilica.
 %   Ako koristite pdflatex, a ne xetex, sav latinički tekst na srpskom jeziku
 %   treba biti okružen sa \lat{...} ili \begin{latinica}...\end{latinica}.
 %
-% Opicija [latinica]:
+% Opcija [latinica]:
 %   ako želite da pišete latiniciom, dodajte opciju "latinica" tj.
 %   prethodni paket uključite pomoću: \usepackage[latinica]{matfmaster}.
 %   Ako koristite pdflatex, a ne xetex, sav ćirilički tekst treba biti
@@ -41,7 +41,7 @@
 \usepackage[latinica]{pangrami}
 
 % Datoteka sa literaturom u BibTex tj. BibLaTeX/Biber formatu
-\bib{matfmaster-primer}
+\bib{references}
 
 % Ime kandidata na srpskom jeziku (u odabranom pismu)
 \autor{Petar P. Petrović}
@@ -135,7 +135,7 @@ Iza ove rečenice sledi fusnota.\footnote{Ovo je fusnota.}
 \begin{figure}[!ht]
   \centering
   \label{fig:grafikon}
-  \includegraphics[width=0.5\textwidth]{graph.png}
+  \includegraphics[width=0.5\textwidth]{images/graph.png}
   \caption{Grafikon}
 \end{figure}
 
