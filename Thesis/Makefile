@@ -14,7 +14,7 @@
 #    clean   : removes the obj/ directory holding temporary files
 
 PROJECT=IvanRistovic_MasterRad
-CC=lualatex
+CC=xelatex
 
 default: obj/$(PROJECT).pdf
 

@@ -44,13 +44,13 @@
 \bib{references}
 
 % Ime kandidata na srpskom jeziku (u odabranom pismu)
-\autor{Petar P. Petrović}
+\autor{Ivan Ristović}
 % Naslov teze na srpskom jeziku (u odabranom pismu)
-\naslov{Master iz matematike ili računarstva čiji je naslov jako dugačak}
+\naslov{Kreiranje zajedničke AST apstrakcije za različite programske jezike}
 % Godina u kojoj je teza predana komisiji
-\godina{2015}
+\godina{2020}
 % Ime i afilijacija mentora (u odabranom pismu)
-\mentor{dr Mika \textsc{Mikić}, redovan profesor\\ Univerzitet u Beogradu, Matematički fakultet}
+\mentor{dr Milena \textsc{Vujošević-Janičić}, redovan profesor\\ Univerzitet u Beogradu, Matematički fakultet}
 % Ime i afilijacija prvog člana komisije (u odabranom pismu)
 \komisijaA{dr Ana \textsc{Anić}, vanredni profesor\\ University of Disneyland, Nedođija}
 % Ime i afilijacija drugog člana komisije (u odabranom pismu)
@@ -62,13 +62,9 @@
 % Datum odbrane (odkomentarisati narednu liniju i upisati datum odbrane ako je poznat)
 % \datumodbrane{}
 
-% Apstrakt na srpskom jeziku (u odabranom pismu)
-\apstr{%
-\pangrami
-}
 
-% Ključne reči na srpskom jeziku (u odabranom pismu)
-\kljucnereci{analiza, geometrija, algebra, logika, računarstvo, astronomija}
+%\input{chapters/01_abstract.tex}
+
 
 \begin{document}
 % ==============================================================================
@@ -91,95 +87,8 @@
 \mainmatter
 % ==============================================================================
 
-% ------------------------------------------------------------------------------
-\chapter{Uvod}
-% ------------------------------------------------------------------------------
-\pangrami
-
-\section{Primeri korišćenja klasičnih \LaTeX{} elemenata}
-% Primeri citiranja
-Ovo je rečenica u kojoj se javlja citat \cite{PetrovicMikic2015}.
-Još jedan citat \cite{GuSh:243}.
-% Primeri navodnika
-Isprobavamo navodnike: "Rekao je da mu se javimo sutra".
-% Primer referisanja na tabelu (koja se javlja kasnije)
-U tabeli \ref{tbl:rezultati} koja sledi prikazani su rezultati eksperimenta.
-% Primer kraćeg ćiriličkog teksta
-{\cir Ово је пример ћириличког текста који се јавља у латиничком документу.}
-U ovoj rečenici se javlja jedna reč na {\cir ћирилици}.
-% Primer korišćenja fusnota
-Iza ove rečenice sledi fusnota.\footnote{Ovo je fusnota.}
-
-% Primer dužeg ćirličkog teksta
-\begin{cirilica}
-  Ово је мало дужи блок текста исписан ћириличким писмом у оквиру
-  латиничког документа. Фијуче ветар у шибљу, леди пасаже и куће иза
-  њих и гунђа у оџацима.
-\end{cirilica}
-
-% Primer korišćenja tabele
-\begin{table}
-\centering
-\caption{Rezultati}
-\label{tbl:rezultati}
-\begin{tabular}{c>{\centering}p{2cm}c}
-\toprule
-1 & 2 & 3\\\midrule
-4 & 5 & 6\\\cmidrule(rl){1-2}
-7 & 8 & 8\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-% Primer korišćenja slike
-\begin{figure}[!ht]
-  \centering
-  \label{fig:grafikon}
-  \includegraphics[width=0.5\textwidth]{images/graph.png}
-  \caption{Grafikon}
-\end{figure}
-
-
-% Primer jednostavnije matematičke formule
-Evo i jedan primer matematičke formule: $e^{i\pi} + 1 = 0$. 
-% Primer referisanja na sliku
-Na slici \ref{fig:grafikon} prikazan je jedan grafikon.
-
-% primer kompleksnije matematičke formule
-$$
-\int_a^b f(x)\ \mathrm{d}x \ =_{def}\ \lim_{\max{\Delta x_k \rightarrow 0}} \sum_{k=1}^n f(x_k^*)\Delta x_k
-$$
-
-% primer referisanja na poglavlja i strane poglavlja
-Više detalja biće dato u glavi \ref{chp:razrada} na strani \pageref{chp:razrada}.
-
-% primer liste
-Možemo praviti i nabrajanja:
-\begin{enumerate}
-\item Analiza 1
-\item Linearna algebra
-\item Analitička geometrija
-\item Osnovi programiranja
-\end{enumerate}
-
-\pangrami
-
-% ------------------------------------------------------------------------------
-\chapter{Razrada}
-\label{chp:razrada}
-
-% ------------------------------------------------------------------------------
-
-\pangrami
-
-\pangrami
-
-% ------------------------------------------------------------------------------
-\chapter{Zaključak}
-% ------------------------------------------------------------------------------
-\pangrami
-
-\pangrami
+\input{chapters/02_intro.tex}
+\input{chapters/20_conclusion.tex}
 
 % ------------------------------------------------------------------------------
 % Literatura
