@@ -9,7 +9,7 @@ namespace RICC.Core.Comparers
     {
         public bool Equals([AllowNull] DeclaratorNode x, [AllowNull] DeclaratorNode y)
         {
-            if (x.Identifier != y.Identifier)
+            if (x is null || y is null || x.Identifier != y.Identifier)
                 return false;
 
             if (x is VariableDeclaratorNode v1 && y is VariableDeclaratorNode v2) {
