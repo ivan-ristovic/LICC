@@ -10,15 +10,11 @@ Alat koji je korišćen za generisanje parsera za proizvoljnu gramatiku jezika
 se zove \emph{Another Tool For Language Recognition} \cite{ANTLR}, 
 u daljem tekstu \emph{ANTLR}, opisan u odeljku \ref{sec:ANTLR}.
 Parser generiše AST specifičan za datu gramatiku i nema sličnosti u 
-dobijenim apstrakcijama za različite jezike \footnote{Zanimljivo je da, 
-čak iako intuitivno pomislimo da su im gramatike slične, C i C++ gramatike
-nemaju skoro nijedno istoimeno pravilo. Jedina sličnost je da obe gramatike 
-koriste rekurzivna pravila da reše problem prioriteta operatora.}.
-Kako bismo poredili stabla različitih jezika, kreiramo reprezentaciju na 
-višem nivou i specifični AST podižemo na taj nivo. Ta reprezentacija će
-biti opisana u narednim poglavljima, kao i načini kako se ona može
-analizirati. Takođe, pojmovi specifični za implementaciju će takođe biti
-opisani u ovom poglavlju.
+dobijenim apstrakcijama za različite jezike. Kako bismo poredili stabla 
+različitih jezika, kreiramo reprezentaciju na višem nivou i specifični AST 
+podižemo na taj nivo. Ta reprezentacija će biti opisana u narednim 
+poglavljima, kao i načini kako se ona može analizirati. Takođe, pojmovi 
+specifični za implementaciju će takođe biti opisani u ovom poglavlju.
 
 \input{chapters/21_ast.tex}
 \input{chapters/22_antlr.tex}

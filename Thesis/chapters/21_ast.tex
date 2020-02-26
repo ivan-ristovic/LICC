@@ -13,13 +13,15 @@ došlo do izvršivog programa, potrebno je izvršiti više koraka
 
 Ovi koraci će biti opisani na jednom primeru. Pretpostavimo da želimo 
 da kompajliramo kod pisan u programskom jeziku C prikazan na slici 
-\ref{fig:CompilationProcessInit}. Primetimo, da postoji greška u datom
-kodu - simbol \texttt{c} koji se koristi će biti prepoznat kao 
-identifikator koji ne odgovara nijednoj promenljivoj. Ovo, doduše, nije
-sintaksna greška - izraz \texttt{a + c} je sasvim validan u programskom
-jeziku C bez analize konteksta u kom se javlja. Problem će postati 
-očigledan tek nakon parsiranja izvornog koda i provere ispunjenosti 
-sintaksih pravila. Ovakve greške se nazivaju \emph{semantičke greške}.
+\ref{fig:CompilationProcessInit}. Primetimo da postoji greška u datom
+kodu - simbol \texttt{c} koji se koristi u dodeli \texttt{a = a + c} 
+će biti prepoznat kao identifikator koji ne odgovara nijednoj 
+deklarisanoj promenljivoj - stoga ne možemo prevesti ovaj kod. Ovo, 
+doduše, nije sintaksna greška - izraz \texttt{a + c} je sasvim validan 
+u programskom jeziku C bez analize konteksta u kom se javlja. Problem 
+će postati očigledan tek nakon parsiranja izvornog koda i provere 
+ispunjenosti sintaksih pravila. Ovakve greške se nazivaju 
+\emph{semantičke greške}.
 
 \begin{figure}[h!]
     \begin{lstlisting}
@@ -77,10 +79,14 @@ prepoznavanje tokena u izvornom fajlu - se naziva \emph{lekser}.
 Pojednostavljen primer tokena koje lekser pokušava da prepozna 
 se može videti na slici \ref{fig:CLexerExample}. Primer izlaza
 leksera za izlaz pretprocesora sa slike \ref{fig:CompilationProcessPrep}
-se može videti na slici \ref{fig:CompilationProcessLex}.
+se može videti na slici \ref{fig:CompilationProcessLex} \footnote{Moderni
+kompajleri nemaju zapravo odvojene faze u kojima se pozivaju lekser i
+parser, već se tokenizacija odvija paralelno sa fazom parsiranja. Međutim, 
+to nas ne sprečava da ispišemo tokene svaki put kada ih registrujemo, i 
+to je demonstrirano na slici \ref{fig:CompilationProcessLex}.}.
 
 \begin{figure}[h!]
-    \begin{lstlisting}
+    \begin{lstlisting}[language={}]
     Identifier : IdentifierNondigit 
                  (IdentifierNondigit | Digit)*
                ;
@@ -100,7 +106,7 @@ se može videti na slici \ref{fig:CompilationProcessLex}.
 \end{figure}
 
 \begin{figure}[h!]
-    \begin{lstlisting}
+    \begin{lstlisting}[language={}]
     identifier 'main'	 [LeadingSpace]	Loc=<sample.c:3:5>
     l_paren '('		Loc=<sample.c:3:9>
     r_paren ')'		Loc=<sample.c:3:10>
@@ -129,7 +135,8 @@ se može videti na slici \ref{fig:CompilationProcessLex}.
     r_brace '}'	 [StartOfLine]	Loc=<sample.c:9:1>
     eof ''		Loc=<sample.c:9:2>
     \end{lstlisting}
-    \caption{Primer delimične definicije tokena za ime promenljive po standardu C11.}
+    \caption{Proces tokenizacije koda pisanog po C11 gramatici. Generisano
+    uz pomoć \texttt{clang} \cite{Clang} kompajlera.}
     \label{fig:CompilationProcessLex}
 \end{figure}
 
@@ -141,7 +148,7 @@ putem kontekstno-slobodnih gramatika \cite{ContextFreeGrammars},
 čiji je primer dat na slici \ref{fig:CompilationProcessGram}.
 
 \begin{figure}[h!]
-    \begin{lstlisting}
+    \begin{lstlisting}[language={}]
     functionDefinition
         :   declarationSpecifiers? declarator declarationList? compoundStatement
         ;
@@ -158,17 +165,93 @@ putem kontekstno-slobodnih gramatika \cite{ContextFreeGrammars},
         ;
     \end{lstlisting}
     \caption{Isečak gramatike programskog jezika C po standardu C11.}
-    \label{fig:CompilationProcessLex}
+    \label{fig:CompilationProcessGram}
 \end{figure}
 
 Izlaz rada parsera je \emph{stablo parsiranja} (eng. \emph{parse tree} 
 ili \emph{derivation tree}). Takvo stablo i dalje sadrži sve relevantne
 informacije o izvornom kodu. Vizuelni prikaz rada parsera za gramatiku
 sa slike C11 i izvonog koda sa slike \ref{fig:CompilationProcessPrep} je
-dat na slici \ref{fig:CompilationProcessPars}.
+dat na slici \ref{fig:CompilationProcessPars}. Stablo parsiranja se 
+koristi u narednim fazama prevođenja.
 
 \begin{figure}[h!]
-    \includegraphics{images/}
-    \caption{Isečak gramatike programskog jezika C po standardu C11.}
-    \label{fig:CompilationProcessLex}
+    \centering
+    \includegraphics[scale=0.5]{images/parse_tree.png}
+    \caption{Prikaz stabla parsiranja koje generiše parser kreiran od strane 
+    alata ANTLR4 za C11 gramatiku. Vizualizacija prikazana pomoću dodatka 
+    za Visual Studio: \url{https://github.com/zspitz/ANTLR4ParseTreeVisualizer}}
+    \label{fig:CompilationProcessPars}
 \end{figure}
+
+Za potrebe ovog rada, što se kompilacionog procesa tiče, dovoljno je 
+pozvnavanje navedenog. Stoga neće biti reči o daljim koracima u fazi 
+prevođenja (semantička provera i sl.) niti o fazama asembliranja i 
+linkovanja. Zainteresovani čitalac može više detalja pronaći u 
+\cite{CompilerConstruction}. 
+
+Stablo parsiranja sadrži sve informacije potrebne u fazi parsiranja
+uključujući detalje koje samo parser koristi. Sa druge strane, 
+apstraktno sintaksno stablo sadrži samo sintaksnu strukturu u 
+jednostavnijoj formi. Na slici \ref{fig:CompilationProcessPars1} se
+može videti koliko je stablo parsiranja komplikovano čak i za naizgled
+jednostavne aritmetičke izraze. Razlog ovolike komplikovanosti dolazi 
+iz rekurzivnih pravila definisanih u C11 gramatici. Parseru su sve
+ove informacije potrebne ali na apstratknijem nivou nisu potrebne.
+Jedina važna odlika izraza \texttt{a + c} je ta da je to zbir 
+vrednosti nekih promenljivih. Sve ostale informacije su nepotrebne.
+Na slici \ref{fig:ASTSimple} možemo videti različita apstraktna 
+sintaksna stabla za pomenuti izraz, ali takođe i za malo 
+komplikovanije izraze. Podrazumeva se, naravno, da je ulaz već 
+tokenizovan. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.45]{images/parse_tree_expr.png}
+    \caption{Prikaz kompleksnosti stabla parsiranja za izraz 
+    \texttt{a + c} u C11 gramatici. Vizualizacija prikazana pomoću 
+    dodatka za Visual Studio: 
+    \url{https://github.com/zspitz/ANTLR4ParseTreeVisualizer}} 
+    \label{fig:CompilationProcessPars1}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.8]{images/ast.png}
+    \caption{Varijante apstraktnih sintaksnih stabala bez regularnosti
+    (levo) i sa regularnošću (desno) za izraze \texttt{a + c} (gore) i 
+    \texttt{a + (3 - c)} (dole).} 
+    \label{fig:ASTSimple}
+\end{figure}
+
+Uloga apstraktnih sintaksnih stabala je da pokažu semantiku strukture
+koda preko stabala. Kao što se vidi na slici \ref{fig:ASTSimple}, 
+postoji određeni nivo slobode u dizajniranju ovih stabala. Generalno,
+\emph{terminalni simboli}, simboli koji predstavljaju listove stabla
+parsera, koji odgovaraju operatorima i naredbama se podižu naviše i 
+postaju koreni podstabala, dok se njihovi operandi ostavljaju kao 
+njihovi potomci u stablu. Desna stabla sa slike ne prate u potpunosti
+ovaj princip, ali se takođe koriste zbog regularnosti izraza - recimo
+ukoliko binarni izraz posmatramo kao koncept, mnogo je lakše raditi
+sa ovakvom strukturom. Ovakva struktura će biti korišćena u dalje u 
+implementaciji programa. Primetimo takođe da se u stablima za izraz 
+\texttt{a + (3 - c)} (dole) implicitno sačuvala informacija o 
+prioritetu operacije oduzimanja u izrazu. Jasno je, dakle, da se 
+računanje vrednosti aritmetičkih izraza onda vrši kretanjem od 
+listova stabla ka korenu.
+
+Može se primetiti da su apstraktna sintaksna stabla 
+zapravo apstrakcija stabla parsiranja, jer više istih izraza jezika 
+može imati isto apstraktno sintaksno stablo ali različito stablo
+parsiranja; na primer, ako razmatramo izraz \texttt{(a + 5) - x / 2} 
+i izraz \texttt{a + 5 - (x / 2)}.
+
+Apstrakna sintaksna stabla će u daljem tekstu biti referisana 
+skraćenicom \emph{AST}, koja dolazi od engleskog naziva za ova stabla
+- \emph{Abstract Syntax Trees}. Takođe, reči samom dizajnu i tipovima 
+čvorova AST-ova korišćenih u implementaciji će biti u poglavlju 
+\ref{TODO}. U narednom poglavlju će više biti reči o alatu koji je 
+korišćen za kreiranje parsera za C11 gramatiku (ali i za proizvoljne
+gramatike), koji daje mogućnost jednostavnog obilaska istog i pruža
+intuitivan način za izvršavanje logike nad stablom parsiranja, što
+uključuje i izradu AST-a apstrakcije.
