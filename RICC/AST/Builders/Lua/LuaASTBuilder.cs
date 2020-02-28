@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
@@ -38,8 +39,18 @@ namespace RICC.AST.Builders.Lua
 
         public override ASTNode VisitChunk([NotNull] ChunkContext ctx)
         {
-            // TODO
-            return new TranslationUnitNode(Enumerable.Empty<ASTNode>());
+            BlockStatementNode block = this.Visit(ctx.block()).As<BlockStatementNode>();
+            return new TranslationUnitNode(block.Children);
+        }
+
+        public override ASTNode VisitBlock([NotNull] BlockContext ctx)
+        {
+            IEnumerable<ASTNode> statements = ctx.stat().Select(c => this.Visit(c));
+            if (!statements.Any())
+                throw new SyntaxException("Missing statements in block");
+            if (ctx.retstat() is { })
+                statements = statements.Concat(new[] { this.Visit(ctx.retstat()) });
+            return new BlockStatementNode(ctx.Start.Line, statements);
         }
     }
 }
