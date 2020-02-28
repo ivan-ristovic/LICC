@@ -1,6 +1,7 @@
 ﻿int main()
 {
-	int x = 1;
-	//printf("Hello world!% d\n", x);
+	int a, b;
+	a = a + c;
+	printf("%d", a);
 	return 0;
 }
