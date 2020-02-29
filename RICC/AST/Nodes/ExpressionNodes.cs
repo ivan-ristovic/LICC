@@ -34,6 +34,22 @@ namespace RICC.AST.Nodes
         public override string GetText() => string.Join(", ", this.Children.Select(c => c.GetText()));
     }
 
+    public sealed class IdentifierListNode : ExpressionNode
+    {
+        [JsonIgnore]
+        public IEnumerable<IdentifierNode> Identifiers => this.Children.Cast<IdentifierNode>();
+
+
+        public IdentifierListNode(int line, params IdentifierNode[] expressions)
+            : base(line, expressions) { }
+
+        public IdentifierListNode(int line, IEnumerable<IdentifierNode> expressions)
+            : base(line, expressions) { }
+
+
+        public override string GetText() => string.Join(", ", this.Children.Select(c => c.GetText()));
+    }
+
     public class UnaryExpressionNode : ExpressionNode
     {
         [JsonIgnore]
@@ -85,6 +101,9 @@ namespace RICC.AST.Nodes
     {
         public AssignmentExpressionNode(int line, ExpressionNode left, AssignmentOperatorNode @operator, ExpressionNode right)
             : base(line, left, @operator, right) { }
+
+        public AssignmentExpressionNode(int line, ExpressionNode left, ExpressionNode right)
+            : base(line, left, new AssignmentOperatorNode(line, "=", BinaryOperations.AssignmentFromSymbol("=")), right) { }
     }
 
     public sealed class IdentifierNode : ExpressionNode
