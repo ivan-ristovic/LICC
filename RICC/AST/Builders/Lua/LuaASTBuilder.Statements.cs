@@ -17,11 +17,21 @@ namespace RICC.AST.Builders.Lua
         public override ASTNode VisitStat([NotNull] StatContext ctx)
         {
             if (ctx.varlist() is { }) {
-                return new EmptyStatementNode(ctx.Start.Line);
+                IdentifierListNode vars = this.Visit(ctx.varlist()).As<IdentifierListNode>();
+                ExpressionListNode explist = this.Visit(ctx.explist()).As<ExpressionListNode>();
+                if (explist.Children.Count < vars.Children.Count) {
+                    int missingCount = vars.Children.Count - explist.Children.Count;
+                    IEnumerable<ExpressionNode> missing = Enumerable.Repeat<ExpressionNode>(new LiteralNode(ctx.Start.Line, "nil"), missingCount);
+                    explist = new ExpressionListNode(ctx.Start.Line, explist.Expressions.Concat(missing));
+                }
+                IEnumerable<AssignmentExpressionNode> assignments = vars.Identifiers
+                    .Zip(explist.Expressions)
+                    .Select(tup => new AssignmentExpressionNode(ctx.Start.Line, tup.First, tup.Second));
+                return new BlockStatementNode(ctx.Start.Line, assignments);
             } else if (ctx.functioncall() is { }) {
-                return new EmptyStatementNode(ctx.Start.Line);
+                return new EmptyStatementNode(ctx.Start.Line);  // TODO
             } else if (ctx.label() is { }) {
-                return new EmptyStatementNode(ctx.Start.Line);
+                return new LabeledStatementNode(ctx.Start.Line, ctx.label().NAME().GetText(), new EmptyStatementNode(ctx.Start.Line));
             } else {
                 switch (ctx.children.First().GetText()) {
                     case ";": 
@@ -55,6 +65,15 @@ namespace RICC.AST.Builders.Lua
         {
             // TODO
             return new JumpStatementNode(ctx.Start.Line, JumpStatementType.Return);
+        }
+
+        public override ASTNode VisitVarlist([NotNull] VarlistContext ctx) 
+            => new IdentifierListNode(ctx.Start.Line, ctx.var().Select(v => this.Visit(v).As<IdentifierNode>()));
+
+        public override ASTNode VisitVar([NotNull] VarContext ctx)
+        {
+            // TODO
+            return new IdentifierNode(ctx.Start.Line, ctx.NAME().GetText());
         }
     }
 }
