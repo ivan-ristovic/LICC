@@ -92,6 +92,8 @@ namespace RICC.AST.Nodes
 
         public DeclaratorListNode(int line, params DeclaratorNode[] decls)
             : base(line, decls) { }
+
+        public override string GetText() => string.Join(", ", this.Children.Select(c => c.GetText()));
     }
 
     public sealed class VariableDeclaratorNode : DeclaratorNode

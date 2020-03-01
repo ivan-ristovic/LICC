@@ -27,6 +27,9 @@ namespace RICC.AST.Builders.Lua
                 IEnumerable<AssignmentExpressionNode> assignments = vars.Identifiers
                     .Zip(explist.Expressions)
                     .Select(tup => new AssignmentExpressionNode(ctx.Start.Line, tup.First, tup.Second));
+                // TODO declare vars if not seen before
+                if (vars.Children.Count == 1) 
+                    return new ExpressionStatementNode(ctx.Start.Line, assignments.First());
                 return new BlockStatementNode(ctx.Start.Line, assignments);
             } else if (ctx.functioncall() is { }) {
                 return new EmptyStatementNode(ctx.Start.Line);  // TODO
