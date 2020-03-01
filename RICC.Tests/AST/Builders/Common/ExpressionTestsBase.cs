@@ -4,17 +4,35 @@ using NUnit.Framework;
 using RICC.AST.Builders;
 using RICC.AST.Nodes;
 using RICC.AST.Visitors;
+using RICC.Exceptions;
 
 namespace RICC.Tests.AST.Builders.Common
 {
     internal abstract class ExpressionTestsBase<TBuilder> where TBuilder : IASTBuilder, new()
     {
+        protected void AssertEvaluationException(string decl)
+        {
+            ExpressionNode init = this.AssertInitializer(decl);
+            Assert.That(() => ExpressionEvaluator.TryEvaluateAs(init, out object result), Throws.InstanceOf<EvaluationException>());
+        }
+
         protected void AssertInitializerValue<T>(string decl, T expected)
         {
             ExpressionNode init = this.AssertInitializer(decl);
             Assert.That(ExpressionEvaluator.TryEvaluateAs(init, out T result));
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Is.EqualTo(expected).Within(1e-10));
+        }
+
+        protected void AssertNullInitializer(string decl)
+        {
+            ExpressionNode init = this.AssertInitializer(decl);
+            if (init is NullLiteralNode ninit) {
+                Assert.That(ninit.Value, Is.Null);
+                Assert.That(ninit.TypeCode, Is.EqualTo(TypeCode.Empty));
+            } else {
+                Assert.Fail("Initializer is not of type NullLiteralNode");
+            }
         }
 
         protected ExpressionNode AssertInitializer(string code)
@@ -38,7 +56,7 @@ namespace RICC.Tests.AST.Builders.Common
             VariableDeclaratorNode var = declList.Declarations.First().As<VariableDeclaratorNode>();
             Assert.That(var.Initializer, Is.Not.Null);
             Assert.That(var.Initializer, Is.InstanceOf<LiteralNode>());
-            Assert.That(var.Initializer!.As<LiteralNode>().Value.GetType(), Is.EqualTo(type));
+            Assert.That(var.Initializer!.As<LiteralNode>().Value?.GetType(), Is.EqualTo(type));
             Assert.That(var.Initializer!.As<LiteralNode>().Suffix, Is.EqualTo(suffix));
             Assert.That(ExpressionEvaluator.Evaluate(var.Initializer!), Is.EqualTo(value).Within(1e-10));
         }

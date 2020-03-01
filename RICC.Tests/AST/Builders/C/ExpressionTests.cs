@@ -182,5 +182,22 @@ namespace RICC.Tests.AST.Builders.C
             this.AssertInitializerValue("bool x = (!1) != (!1);", false);
             this.AssertInitializerValue("bool x = (!1) != 0;", false);
         }
+
+        [Test]
+        public void NullTests()
+        {
+            this.AssertNullInitializer("int* x = null;");
+            this.AssertNullInitializer("T k = null;");
+
+            this.AssertEvaluationException("T x = 4 + NULL;");
+            this.AssertEvaluationException("T x = NULL + NULL;");
+            this.AssertEvaluationException("T x = 4 * 2 - NULL;");
+            this.AssertEvaluationException("T x = 3 | NULL;");
+            this.AssertEvaluationException("T x = NULL | 1;");
+            this.AssertEvaluationException("T x = NULL >> 1;");
+            this.AssertEvaluationException("T x = 1 >> NULL;");
+            this.AssertEvaluationException("T x = 2 ^ NULL;");
+            this.AssertEvaluationException("T x = NULL ^ 2;");
+        }
     }
 }

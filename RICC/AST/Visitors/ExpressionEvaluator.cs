@@ -5,7 +5,7 @@ using RICC.Exceptions;
 
 namespace RICC.AST.Visitors
 {
-    public sealed class ExpressionEvaluator : BaseASTVisitor<object>
+    public sealed class ExpressionEvaluator : BaseASTVisitor<object?>
     {
         public static object? Evaluate(ExpressionNode node)
             => new ExpressionEvaluator().Visit(node);
@@ -23,50 +23,50 @@ namespace RICC.AST.Visitors
         }
 
 
-        public override object Visit(ArithmeticExpressionNode node)
+        public override object? Visit(ArithmeticExpressionNode node)
         {
             (object? l, object? r) = this.VisitBinaryOperands(node);
             if (l is null || r is null)
-                throw new EvaluationException();    // TODO
+                throw new EvaluationException("Null reference in expression");
             return node.Operator.As<ArithmeticOperatorNode>().ApplyTo(l, r);
         }
 
-        public override object Visit(RelationalExpressionNode node)
+        public override object? Visit(RelationalExpressionNode node)
         {
             (object? l, object? r) = this.VisitBinaryOperands(node);
             if (l is null || r is null)
-                throw new EvaluationException();    // TODO
+                throw new EvaluationException("Null reference in expression");
             if (l is bool || r is bool)
                 return node.Operator.As<RelationalOperatorNode>().ApplyTo(Convert.ToBoolean(l), Convert.ToBoolean(r));
             return node.Operator.As<RelationalOperatorNode>().ApplyTo(l, r);
         }
 
-        public override object Visit(LogicExpressionNode node)
+        public override object? Visit(LogicExpressionNode node)
         {
             (object? l, object? r) = this.VisitBinaryOperands(node);
             return node.Operator.As<BinaryLogicOperatorNode>().ApplyTo(Convert.ToBoolean(l), Convert.ToBoolean(r));
         }
 
-        public override object Visit(UnaryExpressionNode node)
+        public override object? Visit(UnaryExpressionNode node)
         {
-            object op = this.Visit(node.Operand as ASTNode);
+            object op = this.Visit(node.Operand as ASTNode) ?? throw new EvaluationException("Null reference in expression");
             return node.Operator.ApplyTo(op);
         }
 
-        public override object Visit(IncrementExpressionNode node)
+        public override object? Visit(IncrementExpressionNode node)
         {
-            object op = this.Visit(node.Expr as ASTNode);
+            object op = this.Visit(node.Expr as ASTNode) ?? throw new EvaluationException("Null reference in expression");
             return BinaryOperations.AddPrimitive(op, 1);
         }
 
-        public override object Visit(DecrementExpressionNode node)
+        public override object? Visit(DecrementExpressionNode node)
         {
-            object op = this.Visit(node.Expr as ASTNode);
+            object op = this.Visit(node.Expr as ASTNode) ?? throw new EvaluationException("Null reference in expression");
             return BinaryOperations.SubtractPrimitive(op, 1);
         }
 
-        public override object Visit(LiteralNode node) 
-            => node.Value;
+        public override object? Visit(LiteralNode node) 
+            => node?.Value;
 
 
         private (object? left, object? right) VisitBinaryOperands(BinaryExpressionNode expr)
