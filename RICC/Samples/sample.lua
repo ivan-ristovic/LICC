@@ -7,6 +7,9 @@ str = "abc"
 t, f = true, false
 diff, type, test = 9, "a", true
 
+local x1, x2
+local x3, x4, x5 = 6, 'a'
+
 function fact (n)
   if n == 0 then
     return 1
