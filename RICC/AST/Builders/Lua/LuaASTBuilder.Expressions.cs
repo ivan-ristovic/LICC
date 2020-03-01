@@ -19,8 +19,28 @@ namespace RICC.AST.Builders.Lua
 
         public override ASTNode VisitExp([NotNull] ExpContext ctx)
         {
+            string firstToken = ctx.children.First().GetText();
+            switch (firstToken) {
+                case "nil": 
+                    return new NullLiteralNode(ctx.Start.Line);
+                case "true":
+                case "false":
+                    return LiteralNode.FromString(ctx.Start.Line, firstToken);
+                case "...":
+                    throw new NotImplementedException("...");
+            }
+
+            if (ctx.number() is { })
+                return LiteralNode.FromString(ctx.Start.Line, ctx.number().GetText());
+
+            if (ctx.@string() is { })
+                return new LiteralNode(ctx.Start.Line, ctx.@string().GetText());
+
+            if (ctx.functiondef() is { })
+                return new FunctionDefinitionNode(ctx.Start.Line, null, null, null);
+
             // TODO
-            return new LiteralNode(ctx.Start.Line, 1);
+            throw new NotImplementedException("exp");
         }
     }
 }
