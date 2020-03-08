@@ -50,6 +50,7 @@ namespace RICC.AST.Builders.Lua
                             return new EmptyStatementNode(ctx.Start.Line);  // TODO
                         IdentifierListNode vars = this.Visit(ctx.namelist()).As<IdentifierListNode>();
                         if (ctx.explist() is { }) {
+                            // TODO 'local' info is lost here
                             ExpressionListNode inits = this.Visit(ctx.explist()).As<ExpressionListNode>();
                             return CreateAssignmentNode(ctx.Start.Line, vars, inits);
                         } else {
@@ -72,7 +73,7 @@ namespace RICC.AST.Builders.Lua
             {
                 if (initializers.Children.Count < vars.Children.Count) {
                     int missingCount = vars.Children.Count - initializers.Children.Count;
-                    IEnumerable<ExpressionNode> missing = Enumerable.Repeat<ExpressionNode>(new LiteralNode(line, "nil"), missingCount);
+                    IEnumerable<ExpressionNode> missing = Enumerable.Repeat<ExpressionNode>(new NullLiteralNode(line), missingCount);
                     initializers = new ExpressionListNode(line, initializers.Expressions.Concat(missing));
                 }
 

@@ -33,9 +33,12 @@ namespace RICC.AST.Builders.Lua
             if (ctx.number() is { })
                 return LiteralNode.FromString(ctx.Start.Line, ctx.number().GetText());
 
-            if (ctx.@string() is { })
-                return new LiteralNode(ctx.Start.Line, ctx.@string().GetText());
+            if (ctx.@string() is { }) {
+                string str = ctx.@string().GetText()[1..^1];
+                return new LiteralNode(ctx.Start.Line, str);
+            }
 
+            // TODO
             if (ctx.functiondef() is { })
                 return new FunctionDefinitionNode(ctx.Start.Line, null, null, null);
 
