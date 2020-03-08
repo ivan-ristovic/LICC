@@ -136,8 +136,7 @@ Prilikom faze prevođenja, kako prevodilac ne bi radio nad sirovim karakterima i
     r_brace '}'	 [StartOfLine]	Loc=<sample.c:9:1>
     eof ''		Loc=<sample.c:9:2>
     \end{lstlisting}
-    \caption{Proces tokenizacije koda pisanog po C11 gramatici. Generisano
-    uz pomoć \texttt{clang} \cite{Clang} kompajlera.}
+    \caption{Proces tokenizacije koda sa slike \ref{fig:CompilationProcessPrep}. Generisano uz pomoć \texttt{clang} \cite{Clang} kompajlera.}
     \label{fig:CompilationProcessLex}
 \end{figure}
 
@@ -145,10 +144,10 @@ Nakon faze skeniranja potrebno je parsirati dobijene tokene. Parser, imajući u 
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[scale=0.5]{images/parse_tree.png}
-    \caption{Prikaz stabla parsiranja koje generiše parser kreiran od strane 
-    alata ANTLR4 za C11 gramatiku. Vizualizacija prikazana pomoću dodatka 
-    za Visual Studio: \url{https://github.com/zspitz/ANTLR4ParseTreeVisualizer}}
+    \scalebox{0.95}[1.3] {
+        \includegraphics[width=\textwidth]{images/parse_tree.png}
+    }
+    \caption{Prikaz dela stabla parsiranja koje generiše parser kreiran od strane alata ANTLR4 za kod sa slike \ref{fig:CompilationProcessPrep}.}
     \label{fig:CompilationProcessPars}
 \end{figure}
 
@@ -158,20 +157,16 @@ Stablo parsiranja sadrži sve informacije potrebne u fazi parsiranja uključuju�
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[scale=0.45]{images/parse_tree_expr.png}
+    \includegraphics[scale=0.5]{images/parse_tree_expr.png}
     \caption{Prikaz kompleksnosti stabla parsiranja za izraz 
-    \texttt{a + c} u C11 gramatici. Vizualizacija prikazana pomoću 
-    dodatka za Visual Studio: 
-    \url{https://github.com/zspitz/ANTLR4ParseTreeVisualizer}} 
+    \texttt{a + c} u C11 gramatici.} 
     \label{fig:CompilationProcessPars1}
 \end{figure}
 
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.8]{images/ast.png}
-    \caption{Varijante apstraktnih sintaksnih stabala bez regularnosti
-    (levo) i sa regularnošću (desno) za izraze \texttt{a + c} (gore) i 
-    \texttt{a + (3 - c)} (dole).} 
+    \caption{Varijante apstraktnih sintaksnih stabala bez regularnosti(levo) i sa regularnošću (desno) za izraze \texttt{a + c} (gore) i \texttt{a + (3 - c)} (dole).} 
     \label{fig:ASTSimple}
 \end{figure}
 
