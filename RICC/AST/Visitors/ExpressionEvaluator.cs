@@ -26,7 +26,7 @@ namespace RICC.AST.Visitors
         public override object? Visit(ArithmeticExpressionNode node)
         {
             (object? l, object? r) = this.VisitBinaryOperands(node);
-            if (l is null || r is null)
+            if (l is null || r is null || l is NullLiteralNode || r is NullLiteralNode)
                 throw new EvaluationException("Null reference in expression");
             return node.Operator.As<ArithmeticOperatorNode>().ApplyTo(l, r);
         }
@@ -34,8 +34,8 @@ namespace RICC.AST.Visitors
         public override object? Visit(RelationalExpressionNode node)
         {
             (object? l, object? r) = this.VisitBinaryOperands(node);
-            if (l is null || r is null)
-                throw new EvaluationException("Null reference in expression");
+            if (l is null || r is null || l is NullLiteralNode || r is NullLiteralNode)
+                    throw new EvaluationException("Null reference in expression");
             if (l is bool || r is bool)
                 return node.Operator.As<RelationalOperatorNode>().ApplyTo(Convert.ToBoolean(l), Convert.ToBoolean(r));
             return node.Operator.As<RelationalOperatorNode>().ApplyTo(l, r);
@@ -65,8 +65,11 @@ namespace RICC.AST.Visitors
             return BinaryOperations.SubtractPrimitive(op, 1);
         }
 
-        public override object? Visit(LiteralNode node) 
+        public override object? Visit(LiteralNode node)
             => node?.Value;
+
+        public override object? Visit(NullLiteralNode node)
+            => null;
 
 
         private (object? left, object? right) VisitBinaryOperands(BinaryExpressionNode expr)

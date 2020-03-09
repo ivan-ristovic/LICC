@@ -22,6 +22,7 @@ namespace RICC.AST.Visitors
         public virtual TResult Visit(BinaryLogicOperatorNode node) => default!;
         public virtual TResult Visit(UnaryOperatorNode node) => default!;
         public virtual TResult Visit(LiteralNode node) => default!;
+        public virtual TResult Visit(NullLiteralNode node) => default!;
 
 
         public TResult Visit(ASTNode node)

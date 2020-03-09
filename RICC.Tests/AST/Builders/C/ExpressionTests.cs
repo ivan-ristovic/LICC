@@ -148,6 +148,7 @@ namespace RICC.Tests.AST.Builders.C
             Assert.That(this.AssertExpression("--y"), Is.InstanceOf<UnaryExpressionNode>());
             this.AssertExpressionValue("++1", 2);
             this.AssertExpressionValue("--1", 0);
+            this.AssertExpressionValue("-1", -1);
             this.AssertExpressionValue("~0", ~0);
             this.AssertExpressionValue("~(~0)", 0);
             this.AssertExpressionValue("!0", true);
