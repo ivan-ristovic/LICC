@@ -15,7 +15,11 @@ namespace RICC.AST.Nodes.Common
                 "/" => DividePrimitive,
                 "<<" => ShiftLeftPrimitive,
                 ">>" => ShiftRightPrimitive,
-                _ => throw new UnknownOperatorException(symbol)
+                "%" => throw new NotImplementedException(symbol),
+                "//" => throw new NotImplementedException(symbol),
+                "div" => throw new NotImplementedException(symbol),
+                "mod" => throw new NotImplementedException(symbol),
+                _ => throw new UnknownOperatorException(symbol),
             };
         }
 
@@ -29,7 +33,10 @@ namespace RICC.AST.Nodes.Common
                 "<=" => LessThanOrEqualPrimitive,
                 "==" => EqualsPrimitive,
                 "!=" => NotEqualsPrimitive,
-                _ => throw new UnknownOperatorException(symbol)
+                "~=" => NotEqualsPrimitive,
+                "%=" => throw new NotImplementedException(symbol),
+                "//=" => throw new NotImplementedException(symbol),
+                _ => throw new UnknownOperatorException(symbol),
             };
         }
 
@@ -47,7 +54,20 @@ namespace RICC.AST.Nodes.Common
                 "&=" => BitwiseAndPrimitive,
                 "|=" => BitwiseOrPrimitive,
                 "^=" => BitwiseXorPrimitive,
-                _ => throw new UnknownOperatorException(symbol)
+                _ => throw new UnknownOperatorException(symbol),
+            };
+        }
+
+        public static Func<object, object, object> BitwiseBinaryFromSymbol(string symbol)
+        {
+            return symbol switch
+            {
+                "<<" => ShiftLeftPrimitive,
+                ">>" => ShiftRightPrimitive,
+                "&" => BitwiseAndPrimitive,
+                "|" => BitwiseOrPrimitive,
+                "^" => BitwiseXorPrimitive,
+                _ => throw new UnknownOperatorException(symbol),
             };
         }
 

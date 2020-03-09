@@ -61,6 +61,9 @@ namespace RICC.AST.Nodes
 
         public UnaryExpressionNode(int line, UnaryOperatorNode @operator, ExpressionNode operand)
             : base(line, @operator, operand) { }
+
+
+        public override string GetText() => $"{this.Operator}({this.Operand})";
     }
 
     public abstract class BinaryExpressionNode : ExpressionNode
@@ -77,6 +80,9 @@ namespace RICC.AST.Nodes
 
         protected BinaryExpressionNode(int line, ExpressionNode left, BinaryOperatorNode @operator, ExpressionNode right)
             : base(line, left, @operator, right) { }
+
+
+        public override string GetText() => $"({this.LeftOperand} {this.Operator} {this.RightOperand})";
     }
 
     public sealed class ArithmeticExpressionNode : BinaryExpressionNode
