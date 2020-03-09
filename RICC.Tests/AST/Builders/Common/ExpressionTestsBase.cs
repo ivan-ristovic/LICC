@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Linq;
 using NUnit.Framework;
-using RICC.AST.Builders;
 using RICC.AST.Nodes;
 using RICC.AST.Visitors;
 using RICC.Exceptions;
 
 namespace RICC.Tests.AST.Builders.Common
 {
-    internal abstract class ExpressionTestsBase<TBuilder> where TBuilder : IASTBuilder, new()
+    internal abstract class ExpressionTestsBase : ASTBuilderTestBase
     {
         protected void AssertEvaluationException(string decl)
         {
@@ -37,7 +36,7 @@ namespace RICC.Tests.AST.Builders.Common
 
         protected ExpressionNode AssertInitializer(string code)
         {
-            ASTNode ast = new TBuilder().BuildFromSource(code);
+            ASTNode ast = this.GenerateAST(code);
             ExpressionNode? init = ast.Children
                 .First().As<DeclarationStatementNode>()
                 .Children.ElementAt(1).As<DeclaratorListNode>()
@@ -48,9 +47,15 @@ namespace RICC.Tests.AST.Builders.Common
             return init!;
         }
 
+        protected AssignmentExpressionNode AssertAssignment(string func, object rvalue)
+        {
+            // TODO
+            return null;
+        }
+
         protected void AssertLiteralSuffix(string code, string suffix, object value, Type type)
         {
-            ASTNode ast = new TBuilder().BuildFromSource(code);
+            ASTNode ast = this.GenerateAST(code);
             DeclarationStatementNode decl = ast.Children.First().As<DeclarationStatementNode>();
             DeclaratorListNode declList = decl.Children.ElementAt(1).As<DeclaratorListNode>();
             VariableDeclaratorNode var = declList.Declarations.First().As<VariableDeclaratorNode>();
@@ -63,7 +68,7 @@ namespace RICC.Tests.AST.Builders.Common
 
         protected void AssertParameterValues(string f, params object[] argValues)
         {
-            FunctionDefinitionNode fnode = new TBuilder().BuildFromSource(f).Children.First().As<FunctionDefinitionNode>();
+            FunctionDefinitionNode fnode = this.GenerateAST(f).Children.First().As<FunctionDefinitionNode>();
             FunctionCallExpressionNode fcall = fnode.Definition.Children.First().Children.First().As<FunctionCallExpressionNode>();
             Assert.That(fcall.Identifier, Is.EqualTo(fnode.Identifier));
             Assert.That(fcall.Parent, Is.EqualTo(fnode.Definition.Children.First()));
@@ -80,7 +85,7 @@ namespace RICC.Tests.AST.Builders.Common
 
         protected void AssertReturnValue(string f, object? expected)
         {
-            FunctionDefinitionNode fnode = new TBuilder().BuildFromSource(f).Children.First().As<FunctionDefinitionNode>();
+            FunctionDefinitionNode fnode = this.GenerateAST(f).Children.First().As<FunctionDefinitionNode>();
             JumpStatementNode node = fnode.Definition.Children.Last().As<JumpStatementNode>();
 
             Assert.That(node.GotoLabel, Is.Null);

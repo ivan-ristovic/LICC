@@ -3,12 +3,13 @@ using System.IO;
 using NUnit.Framework;
 using RICC.AST;
 using RICC.AST.Builders.C;
+using RICC.AST.Nodes;
 using RICC.Exceptions;
 using RICC.Tests.AST.Builders.Common;
 
 namespace RICC.Tests.AST.Builders.C
 {
-    internal sealed class BuildingErrorTests : BuildingErrorTestsBase<CASTBuilder>
+    internal sealed class BuildingErrorTests : BuildingErrorTestsBase
     {
         [Test]
         public void SourceNotFoundTest()
@@ -67,5 +68,9 @@ namespace RICC.Tests.AST.Builders.C
             this.AssertThrows<SyntaxException>("for (;;;;){}");
             this.AssertThrows<SyntaxException>("for (int i = 0; i < n; i++,) {}");
         }
+
+
+        protected override ASTNode GenerateAST(string src)
+            => new CASTBuilder().BuildFromSource(src);
     }
 }

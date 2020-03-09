@@ -10,9 +10,9 @@ using static RICC.AST.Builders.C.CParser;
 
 namespace RICC.AST.Builders.C
 {
-    public sealed partial class CASTBuilder : CBaseVisitor<ASTNode>, IASTBuilder
+    public sealed partial class CASTBuilder : CBaseVisitor<ASTNode>, IASTBuilder<CParser>
     {
-        public ASTNode BuildFromSource(string code)
+        public CParser CreateParser(string code)
         {
             ICharStream stream = CharStreams.fromstring(code);
             var lexer = new CLexer(stream);
@@ -22,8 +22,14 @@ namespace RICC.AST.Builders.C
             parser.BuildParseTree = true;
             parser.RemoveErrorListeners();
             parser.AddErrorListener(new ThrowExceptionErrorListener());
-            return this.Visit(parser.compilationUnit());
+            return parser;
         }
+
+        public ASTNode BuildFromSource(string code)
+            => this.Visit(this.CreateParser(code).compilationUnit());
+
+        public ASTNode BuildFromSource(string code, Func<CParser, ParserRuleContext> entryProvider)
+            => this.Visit(entryProvider(this.CreateParser(code)));
 
 
         public override ASTNode Visit(IParseTree tree)

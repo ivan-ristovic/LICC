@@ -12,7 +12,7 @@ using static RICC.AST.Builders.Lua.LuaParser;
 
 namespace RICC.AST.Builders.Lua
 {
-    public sealed partial class LuaASTBuilder : LuaBaseVisitor<ASTNode>, IASTBuilder
+    public sealed partial class LuaASTBuilder : LuaBaseVisitor<ASTNode>, IASTBuilder<LuaParser>
     {
         public override ASTNode VisitStat([NotNull] StatContext ctx)
         {

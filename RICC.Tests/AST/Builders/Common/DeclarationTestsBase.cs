@@ -1,20 +1,19 @@
 ﻿using System.Linq;
 using NUnit.Framework;
-using RICC.AST.Builders;
 using RICC.AST.Nodes;
 using RICC.AST.Nodes.Common;
 using RICC.AST.Visitors;
 
 namespace RICC.Tests.AST.Builders.Common
 {
-    internal abstract class DeclarationTestsBase<TBuilder> where TBuilder : IASTBuilder, new()
+    internal abstract class DeclarationTestsBase : ASTBuilderTestBase
     {
         protected DeclarationStatementNode AssertDeclarationNode(string src,
                                                                  string type,
                                                                  AccessModifiers access = AccessModifiers.Unspecified,
                                                                  QualifierFlags qualifiers = QualifierFlags.None)
         {
-            ASTNode ast = new TBuilder().BuildFromSource(src);
+            ASTNode ast = this.GenerateAST(src);
             DeclarationStatementNode decl = ast.Children.First().As<DeclarationStatementNode>();
             Assert.That(decl.Children, Has.Exactly(2).Items);
             Assert.That(decl.Specifiers.Parent, Is.EqualTo(decl));

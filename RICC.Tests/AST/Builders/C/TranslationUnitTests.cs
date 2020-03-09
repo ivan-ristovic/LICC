@@ -6,7 +6,7 @@ using RICC.Tests.AST.Builders.Common;
 
 namespace RICC.Tests.AST.Builders.C
 {
-    internal sealed class TranslationUnitTests : TranslationUnitTestsBase<CASTBuilder>
+    internal sealed class TranslationUnitTests : TranslationUnitTestsBase
     {
         [Test]
         public void BasicTest()
@@ -56,5 +56,9 @@ namespace RICC.Tests.AST.Builders.C
         {
             this.AssertTranslationUnit("", empty: true);
         }
+
+
+        protected override ASTNode GenerateAST(string src)
+            => new CASTBuilder().BuildFromSource(src);
     }
 }

@@ -6,7 +6,7 @@ using RICC.Tests.AST.Builders.Common;
 
 namespace RICC.Tests.AST.Builders.C
 {
-    internal sealed class BlockTests : BlockTestsBase<CASTBuilder>
+    internal sealed class BlockTests : BlockTestsBase
     {
         [Test]
         public void EmptyBlockTest()
@@ -51,5 +51,9 @@ namespace RICC.Tests.AST.Builders.C
             Assert.That(block.Children.ElementAt(1), Is.InstanceOf<IfStatementNode>());
             Assert.That(block.Children.ElementAt(2), Is.InstanceOf<DeclarationStatementNode>());
         }
+
+
+        protected override ASTNode GenerateAST(string src)
+            => new CASTBuilder().BuildFromSource(src);
     }
 }

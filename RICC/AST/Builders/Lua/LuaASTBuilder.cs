@@ -11,9 +11,9 @@ using static RICC.AST.Builders.Lua.LuaParser;
 
 namespace RICC.AST.Builders.Lua
 {
-    public sealed partial class LuaASTBuilder : LuaBaseVisitor<ASTNode>, IASTBuilder
+    public sealed partial class LuaASTBuilder : LuaBaseVisitor<ASTNode>, IASTBuilder<LuaParser>
     {
-        public ASTNode BuildFromSource(string code)
+        public LuaParser CreateParser(string code)
         {
             ICharStream stream = CharStreams.fromstring(code);
             var lexer = new LuaLexer(stream);
@@ -23,9 +23,14 @@ namespace RICC.AST.Builders.Lua
             parser.BuildParseTree = true;
             parser.RemoveErrorListeners();
             parser.AddErrorListener(new ThrowExceptionErrorListener());
-            return this.Visit(parser.chunk());
+            return parser;
         }
 
+        public ASTNode BuildFromSource(string code)
+            => this.Visit(this.CreateParser(code).chunk());
+
+        public ASTNode BuildFromSource(string code, Func<LuaParser, ParserRuleContext> entryProvider)
+            => this.Visit(entryProvider(this.CreateParser(code)));
 
         public override ASTNode Visit(IParseTree tree)
         {

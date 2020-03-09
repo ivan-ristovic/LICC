@@ -7,7 +7,7 @@ using static RICC.AST.Builders.C.CParser;
 
 namespace RICC.AST.Builders.C
 {
-    public sealed partial class CASTBuilder : CBaseVisitor<ASTNode>, IASTBuilder
+    public sealed partial class CASTBuilder : CBaseVisitor<ASTNode>, IASTBuilder<CParser>
     {
         public override ASTNode VisitDeclaration([NotNull] DeclarationContext ctx)
         {

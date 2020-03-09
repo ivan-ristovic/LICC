@@ -1,15 +1,13 @@
-﻿using System.Linq;
-using NUnit.Framework;
-using RICC.AST.Builders;
+﻿using NUnit.Framework;
 using RICC.AST.Nodes;
 
 namespace RICC.Tests.AST.Builders.Common
 {
-    internal abstract class TranslationUnitTestsBase<TBuilder> where TBuilder : IASTBuilder, new()
+    internal abstract class TranslationUnitTestsBase : ASTBuilderTestBase
     {
         protected TranslationUnitNode AssertTranslationUnit(string src, bool empty = false)
         {
-            TranslationUnitNode tu = new TBuilder().BuildFromSource(src).As<TranslationUnitNode>();
+            TranslationUnitNode tu = this.GenerateAST(src).As<TranslationUnitNode>();
             Assert.That(tu, Is.Not.Null);
             Assert.That(tu, Is.InstanceOf<TranslationUnitNode>());
             Assert.That(tu.Line, Is.EqualTo(1));

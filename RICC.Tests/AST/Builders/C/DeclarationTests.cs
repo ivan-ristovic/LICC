@@ -1,11 +1,12 @@
 ﻿using NUnit.Framework;
 using RICC.AST.Builders.C;
+using RICC.AST.Nodes;
 using RICC.AST.Nodes.Common;
 using RICC.Tests.AST.Builders.Common;
 
 namespace RICC.Tests.AST.Builders.C
 {
-    internal sealed class DeclarationTests : DeclarationTestsBase<CASTBuilder>
+    internal sealed class DeclarationTests : DeclarationTestsBase
     {
         [Test]
         public void SimpleDeclarationTest()
@@ -241,5 +242,9 @@ namespace RICC.Tests.AST.Builders.C
                 3, 4, 200, 0x31
             );
         }
+
+
+        protected override ASTNode GenerateAST(string src)
+            => new CASTBuilder().BuildFromSource(src);
     }
 }

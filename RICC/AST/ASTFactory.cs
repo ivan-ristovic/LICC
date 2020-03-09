@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using RICC.AST.Builders;
 using RICC.AST.Builders.C;
 using RICC.AST.Builders.Lua;
 using RICC.AST.Nodes;
@@ -35,19 +34,13 @@ namespace RICC.AST
         public static ASTNode BuildFromFile(string path)
         {
             Log.Information("Creating AST for file: {Path}", path);
-            IASTBuilder builder = DeduceBuilderTypeForFile(path);
-            string code = File.ReadAllText(path);
-            return builder.BuildFromSource(code);
-        }
 
-
-        private static IASTBuilder DeduceBuilderTypeForFile(string path)
-        {
             var fi = new FileInfo(path);
+            string code = File.ReadAllText(path);
             return fi.Extension switch
             {
-                ".c" => new CASTBuilder(),
-                ".lua" => new LuaASTBuilder(),
+                ".c" => new CASTBuilder().BuildFromSource(code),
+                ".lua" => new LuaASTBuilder().BuildFromSource(code),
                 _ => throw new UnsupportedLanguageException(),
             };
         }

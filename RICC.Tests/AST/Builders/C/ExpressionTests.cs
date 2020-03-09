@@ -6,7 +6,7 @@ using RICC.Tests.AST.Builders.Common;
 
 namespace RICC.Tests.AST.Builders.C
 {
-    internal sealed class ExpressionTests : ExpressionTestsBase<CASTBuilder>
+    internal sealed class ExpressionTests : ExpressionTestsBase
     {
         [Test]
         public void LiteralExpressionTest()
@@ -199,5 +199,9 @@ namespace RICC.Tests.AST.Builders.C
             this.AssertEvaluationException("T x = 2 ^ NULL;");
             this.AssertEvaluationException("T x = NULL ^ 2;");
         }
+
+
+        protected override ASTNode GenerateAST(string src)
+            => new CASTBuilder().BuildFromSource(src);
     }
 }

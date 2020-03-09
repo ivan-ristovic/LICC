@@ -7,7 +7,7 @@ using RICC.Tests.AST.Builders.Common;
 
 namespace RICC.Tests.AST.Builders.C
 {
-    internal sealed class FunctionDefinitionTests : FunctionDefinitionTestsBase<CASTBuilder>
+    internal sealed class FunctionDefinitionTests : FunctionDefinitionTestsBase
     {
         [Test]
         public void NoParametersDefinitonTest()
@@ -83,5 +83,9 @@ namespace RICC.Tests.AST.Builders.C
             Assert.That(f.IsVariadic);
             Assert.That(f.Parameters?.First().DeclarationSpecifiers.Keywords.QualifierFlags, Is.EqualTo(QualifierFlags.Const));
         }
+
+
+        protected override ASTNode GenerateAST(string src)
+            => new CASTBuilder().BuildFromSource(src);
     }
 }

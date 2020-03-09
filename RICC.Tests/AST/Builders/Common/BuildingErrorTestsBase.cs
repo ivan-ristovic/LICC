@@ -1,12 +1,11 @@
 ﻿using System;
 using NUnit.Framework;
-using RICC.AST.Builders;
 
 namespace RICC.Tests.AST.Builders.Common
 {
-    internal abstract class BuildingErrorTestsBase<TBuilder> where TBuilder : IASTBuilder, new()
+    internal abstract class BuildingErrorTestsBase : ASTBuilderTestBase
     {
         protected void AssertThrows<TException>(string src) where TException : Exception
-            => Assert.That(() => new TBuilder().BuildFromSource(src), Throws.InstanceOf<TException>());
+            => Assert.That(() => this.GenerateAST(src), Throws.InstanceOf<TException>());
     }
 }

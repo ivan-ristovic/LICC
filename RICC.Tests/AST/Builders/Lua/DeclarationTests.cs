@@ -1,11 +1,12 @@
 ﻿using NUnit.Framework;
 using RICC.AST.Builders.Lua;
+using RICC.AST.Nodes;
 using RICC.AST.Nodes.Common;
 using RICC.Tests.AST.Builders.Common;
 
 namespace RICC.Tests.AST.Builders.Lua
 {
-    internal sealed class DeclarationTests : DeclarationTestsBase<LuaASTBuilder>
+    internal sealed class DeclarationTests : DeclarationTestsBase
     {
         [Test]
         public void SimpleDeclarationTest()
@@ -25,5 +26,9 @@ namespace RICC.Tests.AST.Builders.Lua
             this.AssertVariableDeclarationList("x, y = false, nil", "object", vars: new (string, object?)[] { ("x", false), ("y", null) });
             this.AssertVariableDeclarationList("x, y = 3.2e2, 2.33e-2", "object", vars: new (string, object?)[] { ("x", 3.2e2), ("y", 2.33e-2) });
         }
+
+
+        protected override ASTNode GenerateAST(string src)
+            => new LuaASTBuilder().BuildFromSource(src);
     }
 }

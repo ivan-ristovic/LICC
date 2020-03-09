@@ -1,12 +1,11 @@
 ﻿using System.Linq;
 using NUnit.Framework;
-using RICC.AST.Builders;
 using RICC.AST.Nodes;
 using RICC.AST.Nodes.Common;
 
 namespace RICC.Tests.AST.Builders.Common
 {
-    internal abstract class FunctionDefinitionTestsBase<TBuilder> where TBuilder : IASTBuilder, new()
+    internal abstract class FunctionDefinitionTestsBase : ASTBuilderTestBase
     {
         protected FunctionDefinitionNode AssertFunctionDefinition(string src,
                                                                   int line,
@@ -17,7 +16,7 @@ namespace RICC.Tests.AST.Builders.Common
                                                                   QualifierFlags qualifiers = QualifierFlags.None,
                                                                   params (string Type, string Identifier)[] @params)
         {
-            ASTNode ast = new TBuilder().BuildFromSource(src);
+            ASTNode ast = this.GenerateAST(src);
             FunctionDefinitionNode f = ast.Children.Single().As<FunctionDefinitionNode>();
             Assert.That(f, Is.Not.Null);
             Assert.That(f.Parent, Is.EqualTo(ast));
