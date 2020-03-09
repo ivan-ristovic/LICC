@@ -11,14 +11,17 @@ namespace RICC.Tests.AST.Builders.C
         [Test]
         public void EmptyBlockTest()
         {
-            this.AssertFunctionBlock("void f() { }", empty: true);
+            this.AssertBlock("{ }", empty: true);
+            this.AssertBlock(@"{ 
+                    // still empty
+            }", empty: true);
         }
 
         [Test]
         public void SimpleBlockTest()
         {
-            BlockStatementNode block = this.AssertFunctionBlock(@" 
-                void f() {  // line 2
+            BlockStatementNode block = this.AssertBlock(@" 
+                {           // line 2
                             // line 3
                     int x;  // line 4, block begins
                 }
@@ -30,8 +33,8 @@ namespace RICC.Tests.AST.Builders.C
         [Test]
         public void ComplexBlockTest()
         {
-            BlockStatementNode block = this.AssertFunctionBlock(@" 
-                void f() {  // line 2
+            BlockStatementNode block = this.AssertBlock(@" 
+                {           // line 2
                     int x;  // line 3, block begins
                     if (x) {
                         int z = y + 4;
@@ -54,6 +57,6 @@ namespace RICC.Tests.AST.Builders.C
 
 
         protected override ASTNode GenerateAST(string src)
-            => new CASTBuilder().BuildFromSource(src);
+            => new CASTBuilder().BuildFromSource(src, p => p.compoundStatement());
     }
 }

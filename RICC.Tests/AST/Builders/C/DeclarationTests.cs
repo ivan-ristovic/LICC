@@ -245,6 +245,6 @@ namespace RICC.Tests.AST.Builders.C
 
 
         protected override ASTNode GenerateAST(string src)
-            => new CASTBuilder().BuildFromSource(src);
+            => new CASTBuilder().BuildFromSource(src, p => p.externalDeclaration());
     }
 }

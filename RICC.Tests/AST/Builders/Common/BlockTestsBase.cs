@@ -1,19 +1,16 @@
-﻿using System.Linq;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using RICC.AST.Nodes;
 
 namespace RICC.Tests.AST.Builders.Common
 {
     internal abstract class BlockTestsBase : ASTBuilderTestBase
     {
-        protected BlockStatementNode AssertFunctionBlock(string src, bool empty = false)
+        protected BlockStatementNode AssertBlock(string src, bool empty = false)
         {
-            ASTNode root = this.GenerateAST(src);
-            FunctionDefinitionNode f = root.Children.Single().As<FunctionDefinitionNode>();
-            BlockStatementNode block = f.As<FunctionDefinitionNode>().Definition;
+            BlockStatementNode block = this.GenerateAST(src).As<BlockStatementNode>();
             Assert.That(block, Is.Not.Null);
-            Assert.That(block.Parent, Is.EqualTo(f));
             Assert.That(block.Children, empty ? Is.Empty : Is.Not.Empty);
+            this.AssertChildrenParentProperties(block);
             return block;
         }
     }

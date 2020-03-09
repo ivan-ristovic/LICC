@@ -53,20 +53,20 @@ namespace RICC.Tests.AST.Builders.C
         [Test]
         public void InvalidIfStatementTests()
         {
-            this.AssertThrows<SyntaxException>("if (x)");
-            this.AssertThrows<SyntaxException>("if x {} else {}");
-            this.AssertThrows<SyntaxException>("if (x) { } { }");
-            this.AssertThrows<SyntaxException>("if (x > > 1) {}");
-            this.AssertThrows<SyntaxException>("if (1) ;; else ;");
+            this.AssertThrows<SyntaxException>("void f () { if (x) }");
+            this.AssertThrows<SyntaxException>("void f () { if x {} else {} }");
+            this.AssertThrows<SyntaxException>("void f () { if (x) then { } else { } }");
+            this.AssertThrows<SyntaxException>("void f () { if (x > 1 {} }");
+            this.AssertThrows<SyntaxException>("void f () { if (1) ;; else ; }");
         }
 
         [Test]
         public void InvalidForStatementTests()
         {
-            this.AssertThrows<SyntaxException>("for (int x, int y; x < y; x++ y++) {}");
-            this.AssertThrows<SyntaxException>("for (int x, y; x < y; ; x++ y++) {}");
-            this.AssertThrows<SyntaxException>("for (;;;;){}");
-            this.AssertThrows<SyntaxException>("for (int i = 0; i < n; i++,) {}");
+            this.AssertThrows<SyntaxException>("void f () { for (int x, int y; x < y; x++ y++) {} }");
+            this.AssertThrows<SyntaxException>("void f () { for (int x, y; x < y; ; x++ y++) {} }");
+            this.AssertThrows<SyntaxException>("void f () { for (;;;;){} }");
+            this.AssertThrows<SyntaxException>("void f () { for (int i = 0; i < n; i++,) {} }");
         }
 
 

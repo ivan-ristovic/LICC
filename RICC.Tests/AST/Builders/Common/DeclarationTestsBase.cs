@@ -14,14 +14,15 @@ namespace RICC.Tests.AST.Builders.Common
                                                                  QualifierFlags qualifiers = QualifierFlags.None)
         {
             ASTNode ast = this.GenerateAST(src);
-            DeclarationStatementNode decl = ast.Children.First().As<DeclarationStatementNode>();
+            DeclarationStatementNode decl = ast is BlockStatementNode block 
+                ? block.Children.First().As<DeclarationStatementNode>() 
+                : ast.As<DeclarationStatementNode>();
             Assert.That(decl.Children, Has.Exactly(2).Items);
             Assert.That(decl.Specifiers.Parent, Is.EqualTo(decl));
             Assert.That(decl.Specifiers.Keywords.AccessModifiers, Is.EqualTo(access));
             Assert.That(decl.Specifiers.Keywords.QualifierFlags, Is.EqualTo(qualifiers));
             Assert.That(decl.Specifiers.TypeName, Is.EqualTo(type));
             Assert.That(decl.Specifiers.Children, Is.Empty);
-
             return decl;
         }
 

@@ -29,6 +29,6 @@ namespace RICC.Tests.AST.Builders.Lua
 
 
         protected override ASTNode GenerateAST(string src)
-            => new LuaASTBuilder().BuildFromSource(src);
+            => new LuaASTBuilder().BuildFromSource(src, p => p.block());
     }
 }

@@ -5,7 +5,7 @@ using RICC.Tests.AST.Builders.Common;
 
 namespace RICC.Tests.AST.Builders.C
 {
-    internal sealed class CBuilderJsonSerializationTests : JsonSerializationTestsBase
+    internal sealed class JsonSerializationTests : JsonSerializationTestsBase
     {
         [Test]
         public void SimpleSerializationTests()
