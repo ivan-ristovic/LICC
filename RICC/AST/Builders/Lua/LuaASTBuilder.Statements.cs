@@ -17,7 +17,7 @@ namespace RICC.AST.Builders.Lua
         public override ASTNode VisitStat([NotNull] StatContext ctx)
         {
             if (ctx.varlist() is { }) {
-                IdentifierListNode vars = this.Visit(ctx.varlist()).As<IdentifierListNode>();
+                ExpressionListNode vars = this.Visit(ctx.varlist()).As<ExpressionListNode>();
                 ExpressionListNode inits = this.Visit(ctx.explist()).As<ExpressionListNode>();
                 return CreateAssignmentNode(ctx.Start.Line, vars, inits);
             } else if (ctx.functioncall() is { }) {
@@ -52,7 +52,7 @@ namespace RICC.AST.Builders.Lua
                         if (ctx.explist() is { }) {
                             // TODO 'local' info is lost here
                             ExpressionListNode inits = this.Visit(ctx.explist()).As<ExpressionListNode>();
-                            return CreateAssignmentNode(ctx.Start.Line, vars, inits);
+                            return CreateAssignmentNode(ctx.Start.Line, new ExpressionListNode(vars.Line, vars.Identifiers), inits);
                         } else {
                             IEnumerable<VariableDeclaratorNode> varDecls = vars.Identifiers
                                 .Select(v => new VariableDeclaratorNode(ctx.Start.Line, v))
@@ -69,7 +69,7 @@ namespace RICC.AST.Builders.Lua
             }
 
 
-            static ASTNode CreateAssignmentNode(int line, IdentifierListNode vars, ExpressionListNode initializers)
+            static ASTNode CreateAssignmentNode(int line, ExpressionListNode vars, ExpressionListNode initializers)
             {
                 if (initializers.Children.Count < vars.Children.Count) {
                     int missingCount = vars.Children.Count - initializers.Children.Count;
@@ -77,7 +77,7 @@ namespace RICC.AST.Builders.Lua
                     initializers = new ExpressionListNode(line, initializers.Expressions.Concat(missing));
                 }
 
-                IEnumerable<AssignmentExpressionNode> assignments = vars.Identifiers
+                IEnumerable<AssignmentExpressionNode> assignments = vars.Expressions
                     .Zip(initializers.Expressions)
                     .Select(tup => new AssignmentExpressionNode(line, tup.First, tup.Second))
                     ;
@@ -90,17 +90,35 @@ namespace RICC.AST.Builders.Lua
 
         public override ASTNode VisitRetstat([NotNull] RetstatContext ctx)
         {
-            // TODO
-            return new JumpStatementNode(ctx.Start.Line, JumpStatementType.Return);
+            ExpressionNode? expr = null;
+            if (ctx.explist() is { })
+                expr = this.Visit(ctx.explist()).As<ExpressionNode>();
+            return new JumpStatementNode(ctx.Start.Line, expr);
         }
 
         public override ASTNode VisitVarlist([NotNull] VarlistContext ctx) 
-            => new IdentifierListNode(ctx.Start.Line, ctx.var().Select(v => this.Visit(v).As<IdentifierNode>()));
+            => new ExpressionListNode(ctx.Start.Line, ctx.var().Select(v => this.Visit(v).As<ExpressionNode>()));
 
         public override ASTNode VisitVar([NotNull] VarContext ctx)
         {
-            // TODO
+            if (ctx.NAME() is { }) {
+                var id = new IdentifierNode(ctx.Start.Line, ctx.NAME().GetText());
+                if (ctx.varSuffix() is { } && ctx.varSuffix().Any()) {
+                    // TODO update when VisitVarSuffix is enhanced
+                    ExpressionNode index = this.Visit(ctx.varSuffix().First()).As<ExpressionNode>();
+                    return new ArrayAccessExpressionNode(ctx.Start.Line, id, index);
+                }
+            }
             return new IdentifierNode(ctx.Start.Line, ctx.NAME().GetText());
+        }
+
+        public override ASTNode VisitVarSuffix([NotNull] VarSuffixContext ctx)
+        {
+            if (ctx.nameAndArgs()?.Any() ?? false)
+                throw new NotImplementedException("nameAndArgs*");
+            if (ctx.NAME() is { })
+                throw new NotImplementedException("Field access");
+            return this.Visit(ctx.exp());
         }
 
         public override ASTNode VisitNamelist([NotNull] NamelistContext ctx)

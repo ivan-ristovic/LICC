@@ -65,6 +65,15 @@ namespace RICC.AST.Builders.Lua
                         // TODO
                         var declSpecs = new DeclarationSpecifiersNode(v.Line, "", "object");
                         nodes.Add(new DeclarationStatementNode(v.Line, declSpecs, declList));
+                    } else if (assignmentExpr.LeftOperand is ArrayAccessExpressionNode arr) {
+                        IdentifierNode arrayExpr = arr.Array as IdentifierNode ?? throw new NotSupportedException("Complex array access expressions");
+                        if (!IsDeclared(arrayExpr)) {
+                            var declList = new DeclaratorListNode(arr.Line, new ArrayDeclaratorNode(arr.Line, arrayExpr));
+                            // TODO
+                            var declSpecs = new DeclarationSpecifiersNode(arr.Line, "", "object");
+                            nodes.Add(new DeclarationStatementNode(arr.Line, declSpecs, declList));
+                        }
+                        nodes.Add(stat);
                     }
                 } else if (stat is BlockStatementNode block && block.Children.All(c => c is AssignmentExpressionNode ae &&
                                                                                             ae.LeftOperand is IdentifierNode

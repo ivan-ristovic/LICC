@@ -141,6 +141,16 @@ namespace RICC.AST.Nodes
         {
 
         }
+
+
+        public override string GetText()
+        {
+            var sb = new StringBuilder(this.Identifier);
+            sb.Append('[').Append(this.SizeExpression?.ToString() ?? "").Append(']');
+            if (this.Initializer is { }) 
+                sb.Append(" = ").Append(this.Initializer.ToString());
+            return sb.ToString();
+        }
     }
 
     public sealed class ArrayInitializerListNode : ASTNode
