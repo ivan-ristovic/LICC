@@ -27,6 +27,18 @@ namespace RICC.AST.Nodes
         public Type? Type { get; }
 
 
+        public DeclarationSpecifiersNode(int line)
+            : this(line, "object")
+        {
+
+        }
+
+        public DeclarationSpecifiersNode(int line, string type)
+            : this(line, "", type)
+        {
+
+        }
+
         public DeclarationSpecifiersNode(int line, string specs, string type)
             : base(line)
         {

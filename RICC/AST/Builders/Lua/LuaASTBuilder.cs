@@ -62,24 +62,21 @@ namespace RICC.AST.Builders.Lua
                 if (stat is ExpressionStatementNode expr && expr.Expression is AssignmentExpressionNode assignmentExpr) {
                     if (assignmentExpr.LeftOperand is IdentifierNode v && !IsDeclared(v)) {
                         var declList = new DeclaratorListNode(v.Line, new VariableDeclaratorNode(v.Line, v, assignmentExpr.RightOperand));
-                        // TODO
-                        var declSpecs = new DeclarationSpecifiersNode(v.Line, "", "object");
+                        var declSpecs = new DeclarationSpecifiersNode(v.Line);
                         nodes.Add(new DeclarationStatementNode(v.Line, declSpecs, declList));
                     } else if (assignmentExpr.LeftOperand is ArrayAccessExpressionNode arr) {
                         IdentifierNode arrayExpr = arr.Array as IdentifierNode ?? throw new NotSupportedException("Complex array access expressions");
                         if (!IsDeclared(arrayExpr)) {
                             var declList = new DeclaratorListNode(arr.Line, new ArrayDeclaratorNode(arr.Line, arrayExpr));
-                            // TODO
-                            var declSpecs = new DeclarationSpecifiersNode(arr.Line, "", "object");
+                            var declSpecs = new DeclarationSpecifiersNode(arr.Line);
                             nodes.Add(new DeclarationStatementNode(arr.Line, declSpecs, declList));
                         }
                         nodes.Add(stat);
                     }
                 } else if (stat is BlockStatementNode block && block.Children.All(c => c is AssignmentExpressionNode ae &&
-                                                                                            ae.LeftOperand is IdentifierNode
+                                                                                       ae.LeftOperand is IdentifierNode
                 )) {
-                    // TODO
-                    var declSpecs = new DeclarationSpecifiersNode(block.Line, "", "object");
+                    var declSpecs = new DeclarationSpecifiersNode(block.Line);
 
                     IEnumerable<AssignmentExpressionNode> declList = block.Children.Cast<AssignmentExpressionNode>();
                     var notDeclared = declList

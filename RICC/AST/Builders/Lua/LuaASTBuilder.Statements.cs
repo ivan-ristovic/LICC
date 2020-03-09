@@ -58,7 +58,6 @@ namespace RICC.AST.Builders.Lua
                                 .Select(v => new VariableDeclaratorNode(ctx.Start.Line, v))
                                 ;
 
-                            // TODO
                             var declSpecs = new DeclarationSpecifiersNode(ctx.Start.Line, "local", "object");
                             var decls = new DeclaratorListNode(ctx.Start.Line, varDecls);
                             return new DeclarationStatementNode(ctx.Start.Line, declSpecs, decls);
@@ -104,7 +103,7 @@ namespace RICC.AST.Builders.Lua
             if (ctx.NAME() is { }) {
                 var id = new IdentifierNode(ctx.Start.Line, ctx.NAME().GetText());
                 if (ctx.varSuffix() is { } && ctx.varSuffix().Any()) {
-                    // TODO update when VisitVarSuffix is enhanced
+                    // NOTE will require update once VisitVarSuffix is enhanced
                     ExpressionNode index = this.Visit(ctx.varSuffix().First()).As<ExpressionNode>();
                     return new ArrayAccessExpressionNode(ctx.Start.Line, id, index);
                 }
