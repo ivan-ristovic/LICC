@@ -21,7 +21,7 @@ namespace RICC.AST.Builders.Lua
                 ExpressionListNode inits = this.Visit(ctx.explist()).As<ExpressionListNode>();
                 return CreateAssignmentNode(ctx.Start.Line, vars, inits);
             } else if (ctx.functioncall() is { }) {
-                return new EmptyStatementNode(ctx.Start.Line);  // TODO
+                return this.Visit(ctx.functioncall());
             } else if (ctx.label() is { }) {
                 return new LabeledStatementNode(ctx.Start.Line, ctx.label().NAME().GetText(), new EmptyStatementNode(ctx.Start.Line));
             } else {
@@ -36,11 +36,34 @@ namespace RICC.AST.Builders.Lua
                     case "do":
                         return this.Visit(ctx.block().Single());
                     case "while":
-                        return new EmptyStatementNode(ctx.Start.Line); // TODO
+                        ExpressionNode cond = this.Visit(ctx.exp().Single()).As<ExpressionNode>();
+                        BlockStatementNode body = this.Visit(ctx.block().Single()).As<BlockStatementNode>();
+                        return new WhileStatementNode(ctx.Start.Line, cond, body);
                     case "repeat":
-                        return new EmptyStatementNode(ctx.Start.Line); // TODO
+                        ExpressionNode until = this.Visit(ctx.exp().Single()).As<ExpressionNode>();
+                        var negUntil = new UnaryExpressionNode(until.Line, new UnaryOperatorNode(until.Line, "not", UnaryOperations.NotPrimitive), until);
+                        BlockStatementNode repeatBody = this.Visit(ctx.block().Single()).As<BlockStatementNode>();
+                        return new BlockStatementNode(ctx.Start.Line, repeatBody, new WhileStatementNode(ctx.Start.Line, negUntil, repeatBody));
                     case "if":
-                        return new EmptyStatementNode(ctx.Start.Line); // TODO
+                        ExpressionNode[] conds = ctx.exp().Select(e => this.Visit(e).As<ExpressionNode>()).ToArray();
+                        BlockStatementNode[] blocks = ctx.block().Select(b => this.Visit(b).As<BlockStatementNode>()).ToArray();
+
+                        StatementNode? @else = blocks.Length > 1 ? CreateElseIfNode(1) : null;
+
+                        return @else is null 
+                            ? new IfStatementNode(ctx.Start.Line, conds.First(), blocks.First()) 
+                            : new IfStatementNode(ctx.Start.Line, conds.First(), blocks.First(), @else);
+
+
+                        StatementNode? CreateElseIfNode(int i)
+                        {
+                            if (i >= conds.Length)
+                                return i >= blocks.Length ? null : blocks.Last();
+                            StatementNode? @else = CreateElseIfNode(i+1);
+                            return @else is null
+                                ? new IfStatementNode(conds[i].Line, conds[i], blocks[i])
+                                : new IfStatementNode(conds[i].Line, conds[i], blocks[i], @else);
+                        }
                     case "for":
                         return new EmptyStatementNode(ctx.Start.Line); // TODO
                     case "function":
@@ -122,5 +145,14 @@ namespace RICC.AST.Builders.Lua
 
         public override ASTNode VisitNamelist([NotNull] NamelistContext ctx)
             => new IdentifierListNode(ctx.Start.Line, ctx.NAME().Select(v => new IdentifierNode(ctx.Start.Line, v.GetText())));
+
+        public override ASTNode VisitFunctioncall([NotNull] FunctioncallContext ctx)
+        {
+            IdentifierNode fname = this.Visit(ctx.varOrExp()).As<IdentifierNode>();
+            if (ctx.nameAndArgs().Length > 1)
+                throw new NotImplementedException("Multiple nameAndArgs");
+            ExpressionListNode args = this.Visit(ctx.nameAndArgs().Single()).As<ExpressionListNode>();
+            return new FunctionCallExpressionNode(ctx.Start.Line, fname, args); 
+        }
     }
 }

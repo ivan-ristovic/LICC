@@ -26,6 +26,27 @@ div = x3 / 2
 bitwise = (x1 | a) & b << (4 >> b ~ (~0))   -- ~ is `xor` but also `not`
 relational = (a > b) or (a <= c) and not c ~= 3
 
+while x < 3 do
+    inside_var = 4
+    x = x - inside_var
+end
+
+x = 3
+repeat
+    inside_var = 4
+    x = x - inside_var
+until x < 1
+
+if x > 1 then
+    print(x)
+elseif x > 10 then
+    print(n, x, y, z)
+elseif x > 20 then
+    print()
+else
+    print(diff)
+end
+
 function fact (n)
   if n == 0 then
     return 1

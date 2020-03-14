@@ -96,7 +96,7 @@ namespace RICC.AST.Nodes
 
 
         public override string GetText()
-            => $"if ({this.Condition.GetText()}) {this.ThenStatement.GetText()} {(this.ElseStatement is null ? "" : $"else {this.ElseStatement.GetText()}")}";
+            => $"if {this.Condition.GetText()} {this.ThenStatement.GetText()} {(this.ElseStatement is null ? "" : $"else {this.ElseStatement.GetText()}")}";
     }
 
     public sealed class JumpStatementNode : SimpleStatementNode
@@ -184,7 +184,7 @@ namespace RICC.AST.Nodes
             : base(line, condition, statement) { }
 
 
-        public override string GetText() => $"while ({this.Condition.GetText()}) {{ {this.Statement.GetText()} }}";
+        public override string GetText() => $"while {this.Condition.GetText()} {{ {this.Statement.GetText()} }}";
     }
 
     public sealed class ForStatementNode : IterationStatementNode

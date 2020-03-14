@@ -62,7 +62,6 @@ namespace RICC.AST.Nodes
         public UnaryExpressionNode(int line, UnaryOperatorNode @operator, ExpressionNode operand)
             : base(line, @operator, operand) { }
 
-
         public override string GetText() => $"{this.Operator}({this.Operand})";
     }
 

@@ -132,5 +132,21 @@ namespace RICC.AST.Builders.Lua
                 return this.Visit(ctx.exp());
             return this.Visit(ctx.var());
         }
+
+        public override ASTNode VisitNameAndArgs([NotNull] NameAndArgsContext ctx)
+        {
+            if (ctx.NAME() is { })
+                throw new NotImplementedException("NAME");
+            return this.Visit(ctx.args());
+        }
+
+        public override ASTNode VisitArgs([NotNull] ArgsContext ctx)
+        {
+            if (ctx.tableconstructor() is { } || ctx.@string() is { })
+                throw new NotImplementedException("tableconstructor or string");
+            if (ctx.explist() is { })
+                return this.Visit(ctx.explist());
+            return new ExpressionListNode(ctx.Start.Line, Enumerable.Empty<ExpressionNode>());
+        }
     }
 }
