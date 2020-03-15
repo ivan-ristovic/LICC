@@ -67,7 +67,13 @@ namespace RICC.AST.Builders.Lua
                     case "for":
                         return new EmptyStatementNode(ctx.Start.Line); // TODO
                     case "function":
-                        return new EmptyStatementNode(ctx.Start.Line); // TODO
+                        IdentifierNode fname = this.Visit(ctx.funcname()).As<IdentifierNode>();
+                        LambdaFunctionNode fdef = this.Visit(ctx.funcbody()).As<LambdaFunctionNode>();
+                        FunctionDeclaratorNode fdecl = fdef.ParametersNode is null
+                            ? new FunctionDeclaratorNode(ctx.Start.Line, fname)
+                            : new FunctionDeclaratorNode(ctx.Start.Line, fname, fdef.ParametersNode);
+                        var fdeclSpecs = new DeclarationSpecifiersNode(ctx.Start.Line);
+                        return new FunctionDefinitionNode(ctx.Start.Line, fdeclSpecs, fdecl, fdef.Definition);
                     case "local":
                         if (ctx.children[1].GetText().Equals("function", StringComparison.InvariantCultureIgnoreCase))
                             return new EmptyStatementNode(ctx.Start.Line);  // TODO
@@ -153,6 +159,13 @@ namespace RICC.AST.Builders.Lua
                 throw new NotImplementedException("Multiple nameAndArgs");
             ExpressionListNode args = this.Visit(ctx.nameAndArgs().Single()).As<ExpressionListNode>();
             return new FunctionCallExpressionNode(ctx.Start.Line, fname, args); 
+        }
+
+        public override ASTNode VisitFuncname([NotNull] FuncnameContext ctx)
+        {
+            if (ctx.NAME().Length > 1)
+                throw new NotImplementedException("Function name*");
+            return new IdentifierNode(ctx.Start.Line, ctx.NAME().Single().GetText());
         }
     }
 }

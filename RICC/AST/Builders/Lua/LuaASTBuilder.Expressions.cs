@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime.Misc;
 using RICC.AST.Nodes;
@@ -38,9 +39,8 @@ namespace RICC.AST.Builders.Lua
                 if (ctx.prefixexp() is { })
                     return this.Visit(ctx.prefixexp());
 
-                // TODO
                 if (ctx.functiondef() is { })
-                    return new FunctionDefinitionNode(ctx.Start.Line, null, null, null);
+                    return this.Visit(ctx.functiondef());
             }
 
             if (ctx.operatorComparison() is { }) {
@@ -147,6 +147,36 @@ namespace RICC.AST.Builders.Lua
             if (ctx.explist() is { })
                 return this.Visit(ctx.explist());
             return new ExpressionListNode(ctx.Start.Line, Enumerable.Empty<ExpressionNode>());
+        }
+
+        public override ASTNode VisitFunctiondef([NotNull] FunctiondefContext ctx)
+            => this.Visit(ctx.funcbody());
+
+        public override ASTNode VisitFuncbody([NotNull] FuncbodyContext ctx)
+        {
+            FunctionParametersNode? @params = null;
+            if (ctx.parlist() is { })
+                @params = this.Visit(ctx.parlist()).As<FunctionParametersNode>();
+            BlockStatementNode def = this.Visit(ctx.block()).As<BlockStatementNode>();
+            return @params is null 
+                ? new LambdaFunctionNode(ctx.Start.Line, def) 
+                : new LambdaFunctionNode(ctx.Start.Line, @params, def);
+        }
+
+        public override ASTNode VisitParlist([NotNull] ParlistContext ctx)
+        {
+            // TODO variadic?
+
+            if (ctx.namelist() is null)
+                return new FunctionParametersNode(ctx.Start.Line, Enumerable.Empty<FunctionParameterNode>());
+
+            IdentifierListNode nameList = this.Visit(ctx.namelist()).As<IdentifierListNode>();
+            IEnumerable<FunctionParameterNode> @params = nameList.Identifiers.Select(i => {
+                var declSpecs = new DeclarationSpecifiersNode(i.Line);
+                var decl = new VariableDeclaratorNode(i.Line, i);
+                return new FunctionParameterNode(ctx.Start.Line, declSpecs, decl);
+            });
+            return new FunctionParametersNode(ctx.Start.Line, @params);
         }
     }
 }

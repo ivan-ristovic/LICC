@@ -51,7 +51,7 @@ namespace RICC.AST.Builders.Lua
         public override ASTNode VisitBlock([NotNull] BlockContext ctx)
         {
             IEnumerable<ASTNode> statements = ctx.stat().Select(c => this.Visit(c));
-            if (!statements.Any())
+            if (!statements.Any() && ctx.retstat() is null)
                 throw new SyntaxException("Missing statements in block");
             if (ctx.retstat() is { })
                 statements = statements.Concat(new[] { this.Visit(ctx.retstat()) });

@@ -7,6 +7,35 @@ using RICC.AST.Nodes.Common;
 
 namespace RICC.AST.Nodes
 {
+    public sealed class LambdaFunctionNode : ExpressionNode
+    {
+        [JsonIgnore]
+        public BlockStatementNode Definition => this.Children[1].As<BlockStatementNode>();
+
+        [JsonIgnore]
+        public FunctionParametersNode? ParametersNode => this.Children.ElementAtOrDefault(0) as FunctionParametersNode ?? null;
+
+        [JsonIgnore]
+        public IEnumerable<FunctionParameterNode>? Parameters => this.ParametersNode?.Parameters;
+
+
+        public LambdaFunctionNode(int line, BlockStatementNode def)
+            : base(line, def)
+        {
+
+        }
+
+        public LambdaFunctionNode(int line, FunctionParametersNode @params, BlockStatementNode def)
+            : base(line, @params, def)
+        {
+
+        }
+
+
+        public override string GetText()
+            => $"lambda ({this.ParametersNode?.GetText() ?? ""}): {this.Definition.GetText()}";
+    }
+
     public sealed class FunctionDefinitionNode : ASTNode
     {
         [JsonIgnore]
