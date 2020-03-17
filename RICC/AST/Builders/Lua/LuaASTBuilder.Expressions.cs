@@ -99,8 +99,10 @@ namespace RICC.AST.Builders.Lua
             }
 
             static bool IsArithmeticExpressionContext(ExpContext ctx)
-                => ctx.operatorAddSub() is { } || ctx.operatorMulDivMod() is { } || ctx.operatorBitwise() is { }
-                || ctx.operatorStrcat() is { } || ctx.operatorPower() is { } ;
+            {
+                return ctx.operatorAddSub() is { } || ctx.operatorMulDivMod() is { } || ctx.operatorBitwise() is { }
+                    || ctx.operatorStrcat() is { } || ctx.operatorPower() is { } ;
+            }
 
             static bool IsLogicExpressionContext(ExpContext ctx, out string? op)
             {
@@ -122,8 +124,19 @@ namespace RICC.AST.Builders.Lua
 
         public override ASTNode VisitPrefixexp([NotNull] PrefixexpContext ctx)
         {
-            // TODO nameAndArgs*
-            return this.Visit(ctx.varOrExp());
+            ASTNode varOrExp = this.Visit(ctx.varOrExp());
+            if (!ctx.nameAndArgs()?.Any() ?? true)
+                return varOrExp;
+
+            if (ctx.nameAndArgs().Length > 1)
+                throw new NotSupportedException("Multiple nameAndArgs");
+
+            if (varOrExp is IdentifierNode fname) {
+                ExpressionListNode args = this.Visit(ctx.nameAndArgs().Single()).As<ExpressionListNode>();
+                return new FunctionCallExpressionNode(ctx.Start.Line, fname, args);
+            } else {
+                throw new NotSupportedException("Callable expressions");
+            }
         }
 
         public override ASTNode VisitVarOrExp([NotNull] VarOrExpContext ctx)

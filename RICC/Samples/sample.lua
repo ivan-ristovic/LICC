@@ -26,6 +26,8 @@ div = x3 / 2
 bitwise = (x1 | a) & b << (4 >> b ~ (~0))   -- ~ is `xor` but also `not`
 relational = (a > b) or (a <= c) and not c ~= 3
 
+strcat = "aaaa" + 'bbbb'
+
 while x < 3 do
     inside_var = 4
     x = x - inside_var

@@ -228,7 +228,7 @@ namespace RICC.AST.Nodes
         }
 
 
-        public override string GetText() => this.Value?.ToString() ?? "";
+        public override string GetText() => this.Value is string str ? $"\"{str}\"" : this.Value?.ToString() ?? "";
 
         public override bool Equals([AllowNull] ASTNode other)
         {
