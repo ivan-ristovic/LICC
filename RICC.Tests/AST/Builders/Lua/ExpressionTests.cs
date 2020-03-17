@@ -1,5 +1,4 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using RICC.AST.Builders.Lua;
 using RICC.AST.Nodes;
 using RICC.Tests.AST.Builders.Common;
