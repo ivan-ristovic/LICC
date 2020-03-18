@@ -10,9 +10,11 @@ diff, type, test = 9, "a", true
 local x1, x2
 local x3, x4, x5 = 6, 'a'
 
---arr = { 1, 2, 3, '4'}
+arr = { 1, 2, 3, '4'}
 
---dict = {}
+dict = { a = 7 }
+dict = { b = 7 }
+x, dict = 3, { a = 5; b = 'str', c = 2.34 }
 --dict.x = 5
 
 arr['a'] = 100

@@ -7,6 +7,7 @@ using Antlr4.Runtime.Tree;
 using RICC.AST.Nodes;
 using RICC.Exceptions;
 using RICC.Extensions;
+using Serilog;
 using static RICC.AST.Builders.Lua.LuaParser;
 
 namespace RICC.AST.Builders.Lua
@@ -65,10 +66,14 @@ namespace RICC.AST.Builders.Lua
             var nodes = new List<ASTNode>();
             foreach (ASTNode stat in statements) {
                 if (stat is ExpressionStatementNode expr && expr.Expression is AssignmentExpressionNode assignmentExpr) {
-                    if (assignmentExpr.LeftOperand is IdentifierNode v && !IsDeclared(v)) {
-                        var declList = new DeclaratorListNode(v.Line, new VariableDeclaratorNode(v.Line, v, assignmentExpr.RightOperand));
-                        var declSpecs = new DeclarationSpecifiersNode(v.Line);
-                        nodes.Add(new DeclarationStatementNode(v.Line, declSpecs, declList));
+                    if (assignmentExpr.LeftOperand is IdentifierNode v) {
+                        if (IsDeclared(v)) {
+                            nodes.Add(new ExpressionStatementNode(v.Line, assignmentExpr));
+                        } else {
+                            var declList = new DeclaratorListNode(v.Line, CreateDeclarator(v, assignmentExpr.RightOperand));
+                            var declSpecs = new DeclarationSpecifiersNode(v.Line);
+                            nodes.Add(new DeclarationStatementNode(v.Line, declSpecs, declList));
+                        }
                     } else if (assignmentExpr.LeftOperand is ArrayAccessExpressionNode arr) {
                         IdentifierNode arrayExpr = arr.Array as IdentifierNode ?? throw new NotSupportedException("Complex array access expressions");
                         if (!IsDeclared(arrayExpr)) {
@@ -77,6 +82,8 @@ namespace RICC.AST.Builders.Lua
                             nodes.Add(new DeclarationStatementNode(arr.Line, declSpecs, declList));
                         }
                         nodes.Add(stat);
+                    } else {
+                        Log.Warning("Skipping statement: {Stat}", stat.GetText());
                     }
                 } else if (stat is BlockStatementNode block && block.Children.All(c => c is AssignmentExpressionNode ae &&
                                                                                        ae.LeftOperand is IdentifierNode
@@ -86,7 +93,7 @@ namespace RICC.AST.Builders.Lua
                     IEnumerable<AssignmentExpressionNode> declList = block.Children.Cast<AssignmentExpressionNode>();
                     var notDeclared = declList
                         .Where(e => !IsDeclared(e.LeftOperand.As<IdentifierNode>()))
-                        .Select(e => new VariableDeclaratorNode(block.Line, e.LeftOperand.As<IdentifierNode>(), e.RightOperand))
+                        .Select(e => CreateDeclarator(e.LeftOperand.As<IdentifierNode>(), e.RightOperand))
                         .ToList()
                         ;
                     var declared = declList
@@ -114,6 +121,21 @@ namespace RICC.AST.Builders.Lua
                     .Cast<DeclarationStatementNode>()
                     .Any(decl => decl.DeclaratorList.Declarations.Any(d => d.IdentifierNode.Equals(node)))
                     ;
+            }
+
+            static DeclaratorNode CreateDeclarator(IdentifierNode identifier, ExpressionNode initializer)
+            {
+                return initializer switch
+                {
+                    ExpressionListNode expList => new ArrayDeclaratorNode(
+                        identifier.Line, 
+                        identifier, 
+                        new ArrayInitializerListNode(expList.Line, expList.Expressions)
+                    ),
+                    DictionaryInitializerNode dict => new DictionaryDeclaratorNode(identifier.Line, identifier, dict),
+                    ExpressionNode varInit => new VariableDeclaratorNode(identifier.Line, identifier, varInit),
+                    _ => throw new SyntaxException("Unexpected variable initializer"),
+                };
             }
         }
     }

@@ -19,9 +19,6 @@ namespace RICC.Tests.AST.Builders.Lua
             this.AssertSerialization("bitwise = (x1 | a) & b << (4 >> b ~ (~0))");
             this.AssertSerialization("test = 5  -- comment");
             this.AssertSerialization("local x, y, z = 5, 2, 'a'");
-            this.AssertSerialization("arr = { 1, 2, 3, 4]");
-            this.AssertSerialization("arr = { 'w', 2, 3, 4]");
-            this.AssertSerialization("arr = { 1, 'a', 3.3, \"aaa\"]");
         }
 
         [Test]

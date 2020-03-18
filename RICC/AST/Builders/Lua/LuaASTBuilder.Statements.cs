@@ -17,80 +17,82 @@ namespace RICC.AST.Builders.Lua
                 ExpressionListNode vars = this.Visit(ctx.varlist()).As<ExpressionListNode>();
                 ExpressionListNode inits = this.Visit(ctx.explist()).As<ExpressionListNode>();
                 return CreateAssignmentNode(ctx.Start.Line, vars, inits);
-            } else if (ctx.functioncall() is { }) {
+            }
+
+            if (ctx.functioncall() is { })
                 return this.Visit(ctx.functioncall());
-            } else if (ctx.label() is { }) {
+
+            if (ctx.label() is { })
                 return new LabeledStatementNode(ctx.Start.Line, ctx.label().NAME().GetText(), new EmptyStatementNode(ctx.Start.Line));
-            } else {
-                switch (ctx.children.First().GetText()) {
-                    case ";": 
-                        return new EmptyStatementNode(ctx.Start.Line);
-                    case "break":
-                        return new JumpStatementNode(ctx.Start.Line, JumpStatementType.Break);
-                    case "goto":
-                        var label = new IdentifierNode(ctx.Start.Line, ctx.NAME().GetText());
-                        return new JumpStatementNode(ctx.Start.Line, label);
-                    case "do":
-                        return this.Visit(ctx.block().Single());
-                    case "while":
-                        ExpressionNode cond = this.Visit(ctx.exp().Single()).As<ExpressionNode>();
-                        BlockStatementNode body = this.Visit(ctx.block().Single()).As<BlockStatementNode>();
-                        return new WhileStatementNode(ctx.Start.Line, cond, body);
-                    case "repeat":
-                        ExpressionNode until = this.Visit(ctx.exp().Single()).As<ExpressionNode>();
-                        var negUntil = new UnaryExpressionNode(until.Line, new UnaryOperatorNode(until.Line, "not", UnaryOperations.NotPrimitive), until);
-                        BlockStatementNode repeatBody = this.Visit(ctx.block().Single()).As<BlockStatementNode>();
-                        return new BlockStatementNode(ctx.Start.Line, repeatBody, new WhileStatementNode(ctx.Start.Line, negUntil, repeatBody));
-                    case "if":
-                        ExpressionNode[] conds = ctx.exp().Select(e => this.Visit(e).As<ExpressionNode>()).ToArray();
-                        BlockStatementNode[] blocks = ctx.block().Select(b => this.Visit(b).As<BlockStatementNode>()).ToArray();
 
-                        StatementNode? @else = blocks.Length > 1 ? CreateElseIfNode(1) : null;
+            switch (ctx.children.First().GetText()) {
+                case ";":
+                    return new EmptyStatementNode(ctx.Start.Line);
+                case "break":
+                    return new JumpStatementNode(ctx.Start.Line, JumpStatementType.Break);
+                case "goto":
+                    var label = new IdentifierNode(ctx.Start.Line, ctx.NAME().GetText());
+                    return new JumpStatementNode(ctx.Start.Line, label);
+                case "do":
+                    return this.Visit(ctx.block().Single());
+                case "while":
+                    ExpressionNode cond = this.Visit(ctx.exp().Single()).As<ExpressionNode>();
+                    BlockStatementNode body = this.Visit(ctx.block().Single()).As<BlockStatementNode>();
+                    return new WhileStatementNode(ctx.Start.Line, cond, body);
+                case "repeat":
+                    ExpressionNode until = this.Visit(ctx.exp().Single()).As<ExpressionNode>();
+                    var negUntil = new UnaryExpressionNode(until.Line, new UnaryOperatorNode(until.Line, "not", UnaryOperations.NotPrimitive), until);
+                    BlockStatementNode repeatBody = this.Visit(ctx.block().Single()).As<BlockStatementNode>();
+                    return new BlockStatementNode(ctx.Start.Line, repeatBody, new WhileStatementNode(ctx.Start.Line, negUntil, repeatBody));
+                case "if":
+                    ExpressionNode[] conds = ctx.exp().Select(e => this.Visit(e).As<ExpressionNode>()).ToArray();
+                    BlockStatementNode[] blocks = ctx.block().Select(b => this.Visit(b).As<BlockStatementNode>()).ToArray();
 
-                        return @else is null 
-                            ? new IfStatementNode(ctx.Start.Line, conds.First(), blocks.First()) 
-                            : new IfStatementNode(ctx.Start.Line, conds.First(), blocks.First(), @else);
+                    StatementNode? @else = blocks.Length > 1 ? CreateElseIfNode(1) : null;
+
+                    return @else is null
+                        ? new IfStatementNode(ctx.Start.Line, conds.First(), blocks.First())
+                        : new IfStatementNode(ctx.Start.Line, conds.First(), blocks.First(), @else);
 
 
-                        StatementNode? CreateElseIfNode(int i)
-                        {
-                            if (i >= conds.Length)
-                                return i >= blocks.Length ? null : blocks.Last();
-                            StatementNode? @else = CreateElseIfNode(i+1);
-                            return @else is null
-                                ? new IfStatementNode(conds[i].Line, conds[i], blocks[i])
-                                : new IfStatementNode(conds[i].Line, conds[i], blocks[i], @else);
-                        }
-                    case "for":
-                        return new EmptyStatementNode(ctx.Start.Line); // TODO
-                    case "function":
-                        IdentifierNode fname = this.Visit(ctx.funcname()).As<IdentifierNode>();
-                        LambdaFunctionNode fdef = this.Visit(ctx.funcbody()).As<LambdaFunctionNode>();
-                        FunctionDeclaratorNode fdecl = fdef.ParametersNode is null
-                            ? new FunctionDeclaratorNode(ctx.Start.Line, fname)
-                            : new FunctionDeclaratorNode(ctx.Start.Line, fname, fdef.ParametersNode);
-                        var fdeclSpecs = new DeclarationSpecifiersNode(ctx.Start.Line);
-                        return new FunctionDefinitionNode(ctx.Start.Line, fdeclSpecs, fdecl, fdef.Definition);
-                    case "local":
-                        if (ctx.children[1].GetText().Equals("function", StringComparison.InvariantCultureIgnoreCase))
-                            return new EmptyStatementNode(ctx.Start.Line);  // TODO
-                        IdentifierListNode vars = this.Visit(ctx.namelist()).As<IdentifierListNode>();
-                        if (ctx.explist() is { }) {
-                            // TODO 'local' info is lost here
-                            ExpressionListNode inits = this.Visit(ctx.explist()).As<ExpressionListNode>();
-                            return CreateAssignmentNode(ctx.Start.Line, new ExpressionListNode(vars.Line, vars.Identifiers), inits);
-                        } else {
-                            IEnumerable<VariableDeclaratorNode> varDecls = vars.Identifiers
-                                .Select(v => new VariableDeclaratorNode(ctx.Start.Line, v))
-                                ;
+                    StatementNode? CreateElseIfNode(int i)
+                    {
+                        if (i >= conds.Length)
+                            return i >= blocks.Length ? null : blocks.Last();
+                        StatementNode? @else = CreateElseIfNode(i + 1);
+                        return @else is null
+                            ? new IfStatementNode(conds[i].Line, conds[i], blocks[i])
+                            : new IfStatementNode(conds[i].Line, conds[i], blocks[i], @else);
+                    }
+                case "for":
+                    return new EmptyStatementNode(ctx.Start.Line); // TODO
+                case "function":
+                    IdentifierNode fname = this.Visit(ctx.funcname()).As<IdentifierNode>();
+                    LambdaFunctionNode fdef = this.Visit(ctx.funcbody()).As<LambdaFunctionNode>();
+                    FunctionDeclaratorNode fdecl = fdef.ParametersNode is null
+                        ? new FunctionDeclaratorNode(ctx.Start.Line, fname)
+                        : new FunctionDeclaratorNode(ctx.Start.Line, fname, fdef.ParametersNode);
+                    var fdeclSpecs = new DeclarationSpecifiersNode(ctx.Start.Line);
+                    return new FunctionDefinitionNode(ctx.Start.Line, fdeclSpecs, fdecl, fdef.Definition);
+                case "local":
+                    if (ctx.children[1].GetText().Equals("function", StringComparison.InvariantCultureIgnoreCase))
+                        return new EmptyStatementNode(ctx.Start.Line);  // TODO
+                    IdentifierListNode vars = this.Visit(ctx.namelist()).As<IdentifierListNode>();
+                    if (ctx.explist() is { }) {
+                        // TODO 'local' info is lost here
+                        ExpressionListNode inits = this.Visit(ctx.explist()).As<ExpressionListNode>();
+                        return CreateAssignmentNode(ctx.Start.Line, new ExpressionListNode(vars.Line, vars.Identifiers), inits);
+                    } else {
+                        IEnumerable<VariableDeclaratorNode> varDecls = vars.Identifiers
+                            .Select(v => new VariableDeclaratorNode(ctx.Start.Line, v))
+                            ;
 
-                            var declSpecs = new DeclarationSpecifiersNode(ctx.Start.Line, "local", "object");
-                            var decls = new DeclaratorListNode(ctx.Start.Line, varDecls);
-                            return new DeclarationStatementNode(ctx.Start.Line, declSpecs, decls);
-                        }
-                    default:
-                        throw new SyntaxException("Invalid statement type.");
-                }
+                        var declSpecs = new DeclarationSpecifiersNode(ctx.Start.Line, "local", "object");
+                        var decls = new DeclaratorListNode(ctx.Start.Line, varDecls);
+                        return new DeclarationStatementNode(ctx.Start.Line, declSpecs, decls);
+                    }
+                default:
+                    throw new SyntaxException("Invalid statement type.");
             }
 
 
@@ -121,7 +123,7 @@ namespace RICC.AST.Builders.Lua
             return new JumpStatementNode(ctx.Start.Line, expr);
         }
 
-        public override ASTNode VisitVarlist([NotNull] VarlistContext ctx) 
+        public override ASTNode VisitVarlist([NotNull] VarlistContext ctx)
             => new ExpressionListNode(ctx.Start.Line, ctx.var().Select(v => this.Visit(v).As<ExpressionNode>()));
 
         public override ASTNode VisitVar([NotNull] VarContext ctx)
@@ -155,7 +157,7 @@ namespace RICC.AST.Builders.Lua
             if (ctx.nameAndArgs().Length > 1)
                 throw new NotImplementedException("Multiple nameAndArgs");
             ExpressionListNode args = this.Visit(ctx.nameAndArgs().Single()).As<ExpressionListNode>();
-            return new FunctionCallExpressionNode(ctx.Start.Line, fname, args); 
+            return new FunctionCallExpressionNode(ctx.Start.Line, fname, args);
         }
 
         public override ASTNode VisitFuncname([NotNull] FuncnameContext ctx)

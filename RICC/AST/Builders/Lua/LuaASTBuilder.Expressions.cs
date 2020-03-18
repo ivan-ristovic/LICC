@@ -82,8 +82,11 @@ namespace RICC.AST.Builders.Lua
                 return new UnaryExpressionNode(ctx.Start.Line, unaryOp, unaryOperand);
             }
 
+            if (ctx.tableconstructor() is { })
+                return this.Visit(ctx.tableconstructor());
+
             // TODO
-            throw new NotImplementedException("exp");
+            throw new NotImplementedException("Unsupported expression type");
 
 
             (ExpressionNode left, string symbol, ExpressionNode right) ParseBinaryExpression()
@@ -159,7 +162,7 @@ namespace RICC.AST.Builders.Lua
                 throw new NotImplementedException("tableconstructor or string");
             if (ctx.explist() is { })
                 return this.Visit(ctx.explist());
-            return new ExpressionListNode(ctx.Start.Line, Enumerable.Empty<ExpressionNode>());
+            return new ExpressionListNode(ctx.Start.Line);
         }
 
         public override ASTNode VisitFunctiondef([NotNull] FunctiondefContext ctx)
@@ -181,7 +184,7 @@ namespace RICC.AST.Builders.Lua
             // TODO variadic?
 
             if (ctx.namelist() is null)
-                return new FunctionParametersNode(ctx.Start.Line, Enumerable.Empty<FunctionParameterNode>());
+                return new FunctionParametersNode(ctx.Start.Line);
 
             IdentifierListNode nameList = this.Visit(ctx.namelist()).As<IdentifierListNode>();
             IEnumerable<FunctionParameterNode> @params = nameList.Identifiers.Select(i => {
@@ -190,6 +193,39 @@ namespace RICC.AST.Builders.Lua
                 return new FunctionParameterNode(ctx.Start.Line, declSpecs, decl);
             });
             return new FunctionParametersNode(ctx.Start.Line, @params);
+        }
+
+        public override ASTNode VisitTableconstructor([NotNull] TableconstructorContext ctx)
+            => ctx.fieldlist() is { } ? this.Visit(ctx.fieldlist()) : new DictionaryInitializerNode(ctx.Start.Line);
+
+        public override ASTNode VisitFieldlist([NotNull] FieldlistContext ctx)
+        {
+            if (IsExpressionList(ctx))
+                return new ExpressionListNode(ctx.Start.Line, ctx.field().Select(c => this.Visit(c).As<ExpressionNode>()));
+            else if (IsAssignmentList(ctx))
+                return new DictionaryInitializerNode(ctx.Start.Line, ctx.field().Select(c => this.Visit(c).As<DictionaryEntryNode>()));
+            else
+                throw new NotSupportedException("Mixed assignment and expressions in table constructor");
+
+
+            static bool IsAssignmentList(FieldlistContext ctx)
+                => ctx.field().All(f => f.children.Count > 1);
+
+            static bool IsExpressionList(FieldlistContext ctx)
+                => ctx.field().All(f => f.children.Count == 1);
+        }
+
+        public override ASTNode VisitField([NotNull] FieldContext ctx)
+        {
+            if (ctx.children.Count == 1)
+                return this.Visit(ctx.exp().Single());
+
+            if (ctx.exp().Length > 1)
+                throw new NotImplementedException("Table assignment expression field");
+
+            var key = new IdentifierNode(ctx.Start.Line, ctx.NAME().GetText());
+            ExpressionNode value = this.Visit(ctx.exp().Single()).As<ExpressionNode>();
+            return new DictionaryEntryNode(ctx.Start.Line, key, value);
         }
     }
 }
