@@ -83,29 +83,45 @@ namespace RICC.AST.Builders.Lua
                         }
                         nodes.Add(stat);
                     } else {
-                        Log.Warning("Skipping statement: {Stat}", stat.GetText());
+                        Log.Debug("Skipping statement: {Stat}", stat.GetText());
                     }
                 } else if (stat is BlockStatementNode block && block.Children.All(c => c is AssignmentExpressionNode ae &&
                                                                                        ae.LeftOperand is IdentifierNode
                 )) {
                     var declSpecs = new DeclarationSpecifiersNode(block.Line);
-
                     IEnumerable<AssignmentExpressionNode> declList = block.Children.Cast<AssignmentExpressionNode>();
+
+                    // Declare non-declared vars
                     var notDeclared = declList
                         .Where(e => !IsDeclared(e.LeftOperand.As<IdentifierNode>()))
-                        .Select(e => CreateDeclarator(e.LeftOperand.As<IdentifierNode>(), e.RightOperand))
+                        .Select(e => CreateDeclarator(e.LeftOperand.As<IdentifierNode>(), e.RightOperand, ignoreInitializer: true))
                         .ToList()
                         ;
-                    var declared = declList
-                        .Where(e => IsDeclared(e.LeftOperand.As<IdentifierNode>()))
-                        .Select(e => new ExpressionStatementNode(e.Line, e))
-                        .ToList()
-                        ;
-
                     if (notDeclared.Any())
                         nodes.Add(new DeclarationStatementNode(block.Line, declSpecs, new DeclaratorListNode(block.Line, notDeclared)));
-                    if (declared.Any())
-                        nodes.AddRange(declared);
+
+                    // Declare temporary variables and initialize them
+                    var tmpDeclList = new DeclaratorListNode(block.Line, declList.Select(d => CreateTmpDeclarator(d)));
+                    var tmpDeclSpecs = new DeclarationSpecifiersNode(block.Line);
+                    var tmpDecl = new DeclarationStatementNode(block.Line, tmpDeclSpecs, tmpDeclList);
+                    nodes.Add(tmpDecl);
+
+                    // Add tmp assignments
+                    var tmpAssignments = new ExpressionListNode(block.Line, declList.Select(decl => CreateTmpAssignment(decl)));
+                    nodes.Add(new ExpressionStatementNode(block.Line, tmpAssignments));
+
+
+                    static IdentifierNode CreateTmpIdentifier(IdentifierNode id)
+                        => new IdentifierNode(id.Line, $"*_{id.Identifier}");
+
+                    static DeclaratorNode CreateTmpDeclarator(AssignmentExpressionNode expr)
+                        => CreateDeclarator(CreateTmpIdentifier(expr.LeftOperand.As<IdentifierNode>()), expr.RightOperand);
+
+                    static ExpressionNode CreateTmpAssignment(AssignmentExpressionNode expr)
+                    {
+                        IdentifierNode tmpId = CreateTmpIdentifier(expr.LeftOperand.As<IdentifierNode>());
+                        return new AssignmentExpressionNode(expr.Line, expr.LeftOperand, tmpId);
+                    }
                 } else {
                     nodes.Add(stat);
                 }
@@ -114,28 +130,36 @@ namespace RICC.AST.Builders.Lua
             return nodes.AsReadOnly();
 
 
-            bool IsDeclared(IdentifierNode node)
-            {
-                return nodes
-                    .Where(n => n is DeclarationStatementNode)
-                    .Cast<DeclarationStatementNode>()
-                    .Any(decl => decl.DeclaratorList.Declarations.Any(d => d.IdentifierNode.Equals(node)))
-                    ;
-            }
+            bool IsDeclared(IdentifierNode node) 
+                => nodes.Any(n => n is DeclarationStatementNode decl && decl.DeclaratorList.Declarations.Any(d => d.IdentifierNode.Equals(node)));
 
-            static DeclaratorNode CreateDeclarator(IdentifierNode identifier, ExpressionNode initializer)
+            static DeclaratorNode CreateDeclarator(IdentifierNode identifier, ExpressionNode initializer, bool ignoreInitializer = false)
             {
-                return initializer switch
-                {
-                    ExpressionListNode expList => new ArrayDeclaratorNode(
-                        identifier.Line, 
-                        identifier, 
-                        new ArrayInitializerListNode(expList.Line, expList.Expressions)
-                    ),
-                    DictionaryInitializerNode dict => new DictionaryDeclaratorNode(identifier.Line, identifier, dict),
-                    ExpressionNode varInit => new VariableDeclaratorNode(identifier.Line, identifier, varInit),
-                    _ => throw new SyntaxException("Unexpected variable initializer"),
-                };
+                if (ignoreInitializer) {
+                    return initializer switch
+                    {
+                        ExpressionListNode expList => new ArrayDeclaratorNode(
+                            identifier.Line,
+                            identifier,
+                            LiteralNode.FromString(expList.Line, expList.Expressions.Count().ToString())
+                        ),
+                        DictionaryInitializerNode dict => new DictionaryDeclaratorNode(identifier.Line, identifier),
+                        ExpressionNode varInit => new VariableDeclaratorNode(identifier.Line, identifier),
+                        _ => throw new SyntaxException("Unexpected variable initializer"),
+                    };
+                } else {
+                    return initializer switch
+                    {
+                        ExpressionListNode expList => new ArrayDeclaratorNode(
+                            identifier.Line,
+                            identifier,
+                            new ArrayInitializerListNode(expList.Line, expList.Expressions)
+                        ),
+                        DictionaryInitializerNode dict => new DictionaryDeclaratorNode(identifier.Line, identifier, dict),
+                        ExpressionNode varInit => new VariableDeclaratorNode(identifier.Line, identifier, varInit),
+                        _ => throw new SyntaxException("Unexpected variable initializer"),
+                    };
+                }
             }
         }
     }
