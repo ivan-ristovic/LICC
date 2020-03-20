@@ -21,6 +21,7 @@ namespace RICC.AST.Nodes.Common
         public static bool TryConvert(string str, out object? literal, out string? suffix)
         {
             literal = suffix = null;
+            str = str.ToLowerInvariant();
             if (string.Equals(str, "null", StringComparison.InvariantCultureIgnoreCase))
                 return true;
             if (TryConvertToInt(_intRegex, str, 10, out literal, out suffix))

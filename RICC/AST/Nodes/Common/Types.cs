@@ -16,6 +16,7 @@ namespace RICC.AST.Nodes.Common
             { "short" , TypeCode.Int16 },
             { "signed short" , TypeCode.Int16 },
             { "unsigned short" , TypeCode.UInt16 },
+            { "integer" , TypeCode.Int32 },
             { "int" , TypeCode.Int32 },
             { "signed int" , TypeCode.Int32 },
             { "unsigned int" , TypeCode.UInt32 },
@@ -28,7 +29,9 @@ namespace RICC.AST.Nodes.Common
             { "float" , TypeCode.Single },
             { "single" , TypeCode.Single },
             { "double" , TypeCode.Double },
+            { "real" , TypeCode.Double },
             { "decimal" , TypeCode.Decimal },
+            { "string" , TypeCode.String },
         }.ToImmutableDictionary();
 
 

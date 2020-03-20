@@ -2,7 +2,7 @@
   "profiles": {
     "RICC": {
       "commandName": "Project",
-      "commandLineArgs": "ast Samples/sample.lua -v"
+      "commandLineArgs": "ast Samples/sample.psc -v"
     }
   }
 }

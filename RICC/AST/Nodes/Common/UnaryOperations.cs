@@ -14,6 +14,7 @@ namespace RICC.AST.Nodes.Common
                 "+" => x => x,
                 "-" => NegatePrimitive,
                 "!" => NotPrimitive,
+                "not" => NotPrimitive,
                 "~" => BitwiseNotPrimitive,
                 "++" => IncrementPrimitive,
                 "--" => DecrementPrimitive,

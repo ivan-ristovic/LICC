@@ -143,8 +143,8 @@ namespace RICC.AST.Nodes
         public FunctionCallExpressionNode(int line, IdentifierNode identifier)
             : base(line, identifier) { }
 
-        public FunctionCallExpressionNode(int line, IdentifierNode identifier, ExpressionListNode parameters)
-            : base(line, identifier, parameters) { }
+        public FunctionCallExpressionNode(int line, IdentifierNode identifier, ExpressionListNode args)
+            : base(line, identifier, args) { }
 
 
         public override string GetText() => $"{this.Identifier}({this.Arguments?.GetText() ?? ""})";

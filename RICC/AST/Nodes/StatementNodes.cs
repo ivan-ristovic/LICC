@@ -63,7 +63,7 @@ namespace RICC.AST.Nodes
             : base(line, children) { }
 
 
-        public override string GetText() => $"{{ {string.Join("; ", this.Children.Select(c => c.GetText()))} }}";
+        public override string GetText() => $"{{ {string.Join(" ", this.Children.Select(c => c.GetText()))} }}";
     }
 
     public sealed class ExpressionStatementNode : SimpleStatementNode
@@ -228,5 +228,18 @@ namespace RICC.AST.Nodes
             sb.Append(" }");
             return sb.ToString();
         }
+    }
+
+    public sealed class ThrowStatementNode : StatementNode
+    {
+        [JsonIgnore]
+        ExpressionNode Expression => this.Children.Single().As<ExpressionNode>();
+
+
+        public ThrowStatementNode(int line, ExpressionNode exp)
+            : base(line, exp) { }
+
+
+        public override string GetText() => $"throw {this.Expression.GetText()}";
     }
 }
