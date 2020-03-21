@@ -3,7 +3,7 @@
 
 Kako bi se kod pisan u nekom programskom jeziku (\emph{izvorni fajl}) preveo u kod koji će se izvršavati na nekoj mašini (\emph{izvršivi fajl}), prevodilac prolazi kroz određene korake. Da bi se izvorni kod preveo, prevodilac mora da zna njegovu formu, ili \emph{sintaksu}, i njegovo značenje, ili \emph{semantiku}. Deo prevodioca koji određuje da li je izvorni kod ispravno formiran u terminima sintakse i semantike se naziva \emph{prednji deo} (engl. \emph{front end}). Ukoliko je izvorni kod ispravan, prednji deo kreira \emph{međureprezentaciju} koda (engl. \emph{intermediate representation}, u daljem tekstu \emph{IR}). Ukoliko to nije slučaj, prevođenje ne uspeva i programeru se daje poruka o detaljima zašto prevođenje nije uspelo. \cite{EngineeringCompilers}
 
-Postupak rada prednjeg dela će biti opisan kroz konkretan primer. Pretpostavimo da želimo da prevedemo kod pisan u programskom jeziku C prikazan na slici \ref{fig:CompilationProcessInit}. Primetimo da postoji greška u datom kodu - simbol \texttt{c} koji se koristi u dodeli u liniji $8$ će biti prepoznat kao identifikator koji ne odgovara nijednoj deklarisanoj promenljivoj - stoga ne možemo prevesti ovaj kod. Ovo, doduše, nije sintaksna greška - izraz \texttt{a + c} je sasvim validan u programskom jeziku C bez analize konteksta u kom se javlja. Problem će postati očigledan tek nakon parsiranja izvornog koda i provere ispunjenosti sintaksih pravila, tačnije u fazi semantičke provere. Stoga se ovakve greške nazivaju \emph{semantičke greške}, dok se greške u sintaksi nazivaju \emph{sintaksne greške}.
+Postupak rada prednjeg dela će biti opisan kroz konkretan primer. Pretpostavimo da želimo da prevedemo kod pisan u programskom jeziku C prikazan na slici \ref{fig:CompilationProcessInit}. Primetimo da postoji greška u datom kodu - simbol \texttt{c} koji se koristi u dodeli u liniji $8$ će biti prepoznat kao identifikator koji ne odgovara nijednoj deklarisanoj promenljivoj - stoga ne možemo prevesti ovaj kod. Ovo, doduše, nije sintaksna greška - izraz \texttt{a+c} je sasvim validan u programskom jeziku C bez analize konteksta u kom se javlja. Problem će postati očigledan tek nakon parsiranja izvornog koda i provere ispunjenosti sintaksih pravila, tačnije u fazi semantičke provere. Stoga se ovakve greške nazivaju \emph{semantičke greške}, dok se greške u sintaksi nazivaju \emph{sintaksne greške}.
 
 \begin{figure}[h!]
     \begin{lstlisting}
@@ -153,20 +153,20 @@ Nakon faze skeniranja potrebno je parsirati dobijene tokene. Parser, imajući u 
 
 Za potrebe ovog rada, što se procesa prevođenja tiče, dovoljno je pozvnavanje prednjeg dela, stoga neće biti reči o daljim koracima u fazi prevođenja (semantička provera, optimizacije, generisanje IR). Zainteresovani čitalac može više detalja pronaći u \cite{EngineeringCompilers} i \cite{CompilerConstruction}. 
 
-Stablo parsiranja sadrži sve informacije potrebne u fazi parsiranja uključujući detalje korisne samo za parser prilikom provere ispunjenosti gramatičkih pravila. Sa druge strane, \emph{apstraktno sintaksno stablo} sadrži samo sintaksnu strukturu u jednostavnijoj formi. Na slici \ref{fig:CompilationProcessPars1} se može videti koliko je stablo parsiranja komplikovano čak i za naizgled jednostavne aritmetičke izraze. Razlog ovolike komplikovanosti dolazi iz rekurzivnih pravila definisanih u C11 gramatici. Parseru su sve ove informacije neophodne ali na apstratknijem nivou nisu potrebne. Jedina važna semantička odlika izraza \texttt{a + c} je ta da je to zbir vrednosti nekih promenljivih. Sve ostale informacije su nepotrebne. Na slici \ref{fig:ASTSimple} možemo videti različita apstraktna sintaksna stabla za pomenuti izraz, ali takođe i za malo komplikovanije izraze. Podrazumeva se, naravno, da je ulaz već tokenizovan. 
+Stablo parsiranja sadrži sve informacije potrebne u fazi parsiranja uključujući detalje korisne samo za parser prilikom provere ispunjenosti gramatičkih pravila. Sa druge strane, \emph{apstraktno sintaksno stablo} sadrži samo sintaksnu strukturu u jednostavnijoj formi. Na slici \ref{fig:CompilationProcessPars1} se može videti koliko je stablo parsiranja komplikovano čak i za naizgled jednostavne aritmetičke izraze. Razlog ovolike komplikovanosti dolazi iz rekurzivnih pravila definisanih u C11 gramatici. Parseru su sve ove informacije neophodne ali na apstratknijem nivou nisu potrebne. Jedina važna semantička odlika izraza \texttt{a+c} je ta da je to zbir vrednosti nekih promenljivih. Sve ostale informacije su nepotrebne. Na slici \ref{fig:ASTSimple} možemo videti različita apstraktna sintaksna stabla za pomenuti izraz, ali takođe i za malo komplikovanije izraze. Podrazumeva se, naravno, da je ulaz već tokenizovan. 
 
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.6]{images/parse_tree_expr.png}
     \caption{Prikaz kompleksnosti stabla parsiranja za izraz 
-    \texttt{a + c} u C11 gramatici.} 
+    \texttt{a+c} u C11 gramatici.} 
     \label{fig:CompilationProcessPars1}
 \end{figure}
 
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.8]{images/ast.png}
-    \caption{Varijante apstraktnih sintaksnih stabala bez regularnosti(levo) i sa regularnošću (desno) za izraze \texttt{a + c} (gore) i \texttt{a + (3 - c)} (dole).} 
+    \caption{Varijante apstraktnih sintaksnih stabala bez regularnosti(levo) i sa regularnošću (desno) za izraze \texttt{a+c} (gore) i \texttt{a + (3 - c)} (dole).} 
     \label{fig:ASTSimple}
 \end{figure}
 
