@@ -310,5 +310,5 @@ $ echo "declare integer x = 5" | grun Pseudo declaration -gui
 \subsection{Integrisanje parsera u program}
 \label{subsec:ANTLRParserIntegration}
 
-ANTLR, osim leksera i parsera za unetu gramatiku, može da kreira interfejse koji prate \emph{dizajn šablone} (takođe nazivani i \emph{projektni uzorci}) posetilac (engl. \emph{visitor}) i posmatrač (engl. \emph{listener}) opisane u \ref{sec:DesignPatterns}. Tako kreirani interfejsi imaju metode koje je potrebno implementirati koje se u slučaju posmatrača pozivaju automatski tokom obilaska stabla parsiranja onda kada se naiđe na pravilo koje odgovara tom metodu a u slučaju posetioca odluku o obilasku dece u stablu donosi programer.
+ANTLR, osim leksera i parsera za unetu gramatiku, može da kreira interfejse koji prate \emph{dizajn šablone} (takođe nazivani i \emph{projektni uzorci}) posetilac (engl. \emph{visitor}) i posmatrač (engl. \emph{observer}) opisane u \ref{sec:DesignPatterns}. Tako kreirani interfejsi imaju metode koje je potrebno implementirati koje se u slučaju posmatrača pozivaju automatski tokom obilaska stabla parsiranja onda kada se naiđe na pravilo koje odgovara tom metodu a u slučaju posetioca odluku o obilasku dece u stablu donosi programer.
 
