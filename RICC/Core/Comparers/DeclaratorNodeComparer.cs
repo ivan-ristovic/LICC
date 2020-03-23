@@ -5,14 +5,14 @@ using RICC.AST.Visitors;
 
 namespace RICC.Core.Comparers
 {
-    internal sealed class DeclaratorNodeComparer : IEqualityComparer<DeclaratorNode>
+    internal sealed class DeclaratorNodeComparer : IASTNodeComparer<DeclaratorNode>
     {
-        public bool Equals([AllowNull] DeclaratorNode x, [AllowNull] DeclaratorNode y)
-        {
-            if (x is null || y is null || x.Identifier != y.Identifier)
-                return false;
+        public ComparerResult Result { get; } = new ComparerResult();
 
-            if (x is VariableDeclaratorNode v1 && y is VariableDeclaratorNode v2) {
+
+        public ComparerResult Compare(DeclaratorNode n1, DeclaratorNode n2)
+        {
+            if (n1 is VariableDeclaratorNode v1 && n2 is VariableDeclaratorNode v2) {
                 var evaluator = new ExpressionEvaluator();
                 
                 // TODO fix if initializer contains something other than constants - identifiers or function calls
@@ -20,17 +20,15 @@ namespace RICC.Core.Comparers
                 object? v2init = v2.Initializer is { } ? evaluator.Visit(v2.Initializer) : null;
                 if (!v1init?.Equals(v2init) ?? false) {
                     CoreLog.VariableInitializerMismatch(v1.Identifier, v1.Line, v1init, v2init);
-                    return false;
+                    return this.Result;
                 }
-            } else if (x is ArrayDeclaratorNode a1 && y is ArrayDeclaratorNode a2) {
+            } else if (n1 is ArrayDeclaratorNode a1 && n2 is ArrayDeclaratorNode a2) {
                 // TODO
-            } else if (x is FunctionDeclaratorNode f1 && y is FunctionDeclaratorNode f2) {
+            } else if (n1 is FunctionDeclaratorNode f1 && n2 is FunctionDeclaratorNode f2) {
                 // TODO
             }
 
-            return true;
+            return this.Result;
         }
-
-        public int GetHashCode([DisallowNull] DeclaratorNode obj) => obj.GetHashCode();
     }
 }

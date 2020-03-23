@@ -9,11 +9,8 @@ namespace RICC.AST.Nodes
 {
     public abstract class ASTNode : IEquatable<ASTNode>
     {
-        public static bool operator ==(ASTNode x, ASTNode y)
-            => x.Equals(y);
-
-        public static bool operator !=(ASTNode x, ASTNode y)
-            => !(x == y);
+        public static bool operator ==(ASTNode x, ASTNode y) => x.Equals(y);
+        public static bool operator !=(ASTNode x, ASTNode y) => !(x == y);
 
 
         [JsonProperty(Order = 0)]

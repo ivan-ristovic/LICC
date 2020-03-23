@@ -26,7 +26,9 @@ namespace RICC.Core
                 return;
             }
 
-            Log.Information("RESULT: {EqualityResult}", new TranslationUnitNodeComparer().Equals(this.srcTree, this.dstTree));
+            ComparerResult result = new TranslationUnitNodeComparer().Compare(this.srcTree, this.dstTree);
+            result.LogIssues();
+            Log.Information("EQUALITY TEST RESULT: {EqualityResult}", result.Success);
         }
     }
 }

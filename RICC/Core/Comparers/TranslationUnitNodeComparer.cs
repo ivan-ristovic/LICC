@@ -2,61 +2,54 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using RICC.AST.Nodes;
+using RICC.Core.Common;
 using Serilog;
 
 namespace RICC.Core.Comparers
 {
-    internal sealed class TranslationUnitNodeComparer : IEqualityComparer<TranslationUnitNode>
+    internal sealed class TranslationUnitNodeComparer : IASTNodeComparer<TranslationUnitNode>
     {
-        public bool Equals([AllowNull] TranslationUnitNode x, [AllowNull] TranslationUnitNode y)
-        {
-            if (x is null || y is null) {
-                Log.Fatal("Null tree given to comparer - this should not happen");
-                return false;
-            }
+        public ComparerResult Result { get; } = new ComparerResult();
 
-            if (!this.TryMatchDeclarations(x, y)) {
+
+        public ComparerResult Compare(TranslationUnitNode n1, TranslationUnitNode n2) 
+        {
+            this.TryMatchDeclarations(n1, n2);
+            if (!this.Result.Success) {
                 Log.Information("Failed to match found declarations to all expected declarations.");
-                return false;
+                return this.Result;
             }
             Log.Information("Matched all expected top-level declarations.");
 
             // TODO
-            return true;
+            return this.Result;
         }
 
-        public int GetHashCode([DisallowNull] TranslationUnitNode obj) => obj.GetHashCode();
 
-
-        private bool TryMatchDeclarations(TranslationUnitNode x, TranslationUnitNode y)
+        private void TryMatchDeclarations(TranslationUnitNode n1, TranslationUnitNode n2)
         {
-            bool equal = true;
-
             Log.Debug("Testing declarations...");
 
-            Dictionary<string, (DeclarationSpecifiersNode Specs, DeclaratorNode Declarator)> srcDecls = GetDeclarations(x);
-            Dictionary<string, (DeclarationSpecifiersNode Specs, DeclaratorNode Declarator)> dstDecls = GetDeclarations(y);
+            Dictionary<string, (DeclarationSpecifiersNode Specs, DeclaratorNode Declarator)> srcDecls = GetDeclarations(n1);
+            Dictionary<string, (DeclarationSpecifiersNode Specs, DeclaratorNode Declarator)> dstDecls = GetDeclarations(n2);
 
             var declComparer = new DeclaratorNodeComparer();
             foreach ((string identifier, (DeclarationSpecifiersNode expectedSpecs, DeclaratorNode expectedDecl)) in srcDecls) {
                 if (dstDecls.ContainsKey(identifier)) {
                     (DeclarationSpecifiersNode actualSpecs, DeclaratorNode actualDecl) = dstDecls[identifier];
                     if (expectedSpecs != actualSpecs)
-                        CoreLog.DeclarationSpecifiersMismatch(expectedDecl, expectedSpecs, actualSpecs);
-                    if (!declComparer.Equals(expectedDecl, actualDecl))
-                        equal = false;
+                        this.Result.WithWarning(new DeclSpecsMismatchWarning(expectedDecl, expectedSpecs, actualSpecs));
+                    declComparer.Compare(expectedDecl, actualDecl);
                 } else {
-                    CoreLog.DeclarationMissing(expectedSpecs, expectedDecl);
-                    equal = false;
+                    this.Result.WithWarning(new MissingDeclarationWarning(expectedSpecs, expectedDecl));
                 }
             }
+            this.Result.WithResult(declComparer.Result);
 
             foreach (string identifier in dstDecls.Keys.Except(srcDecls.Keys)) {
-                (DeclarationSpecifiersNode specs, DeclaratorNode declarator) = dstDecls[identifier];
-                CoreLog.ExtraDeclarationFound(specs, declarator);
+                (DeclarationSpecifiersNode specs, DeclaratorNode decl) = dstDecls[identifier];
+                this.Result.WithWarning(new ExtraDeclarationWarning(specs, decl));
             }
-
-            return equal;
 
 
             static Dictionary<string, (DeclarationSpecifiersNode Specs, DeclaratorNode Declarator)> GetDeclarations(ASTNode node)
