@@ -8,6 +8,6 @@ namespace RICC.AST.Builders
     {
         TParser CreateParser(string code);
         ASTNode BuildFromSource(string code);
-        ASTNode BuildFromSource(string code, Func<TParser, ParserRuleContext> entryProvider) ;
+        ASTNode BuildFromSource(string code, Func<TParser, ParserRuleContext> entryProvider);
     }
 }

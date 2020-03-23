@@ -69,8 +69,8 @@ namespace RICC
             if (src is null || dst is null)
                 return 1;
 
-            var comparer = new ComparerAlgorithm(src, dst);
-            comparer.Execute();
+            var comparer = new ASTComparer(src, dst);
+            comparer.AttemptMatch();
 
             return 0;
         }

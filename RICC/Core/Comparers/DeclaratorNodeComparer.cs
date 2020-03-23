@@ -1,16 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using RICC.AST.Nodes;
+﻿using RICC.AST.Nodes;
 using RICC.AST.Visitors;
 
 namespace RICC.Core.Comparers
 {
     internal sealed class DeclaratorNodeComparer : IASTNodeComparer<DeclaratorNode>
     {
-        public ComparerResult Result { get; } = new ComparerResult();
+        public MatchIssues Issues { get; } = new MatchIssues();
 
 
-        public ComparerResult Compare(DeclaratorNode n1, DeclaratorNode n2)
+        public MatchIssues Compare(DeclaratorNode n1, DeclaratorNode n2)
         {
             if (n1 is VariableDeclaratorNode v1 && n2 is VariableDeclaratorNode v2) {
                 var evaluator = new ExpressionEvaluator();
@@ -20,7 +18,7 @@ namespace RICC.Core.Comparers
                 object? v2init = v2.Initializer is { } ? evaluator.Visit(v2.Initializer) : null;
                 if (!v1init?.Equals(v2init) ?? false) {
                     CoreLog.VariableInitializerMismatch(v1.Identifier, v1.Line, v1init, v2init);
-                    return this.Result;
+                    return this.Issues;
                 }
             } else if (n1 is ArrayDeclaratorNode a1 && n2 is ArrayDeclaratorNode a2) {
                 // TODO
@@ -28,7 +26,7 @@ namespace RICC.Core.Comparers
                 // TODO
             }
 
-            return this.Result;
+            return this.Issues;
         }
     }
 }

@@ -7,36 +7,36 @@ using Serilog;
 
 namespace RICC.Core
 {
-    public sealed class ComparerResult : IEquatable<ComparerResult>
+    public sealed class MatchIssues : IEquatable<MatchIssues>
     {
-        public static bool operator ==(ComparerResult e1, ComparerResult e2) => e1.Equals(e2);
-        public static bool operator !=(ComparerResult e1, ComparerResult e2) => !(e1 == e2);
+        public static bool operator ==(MatchIssues e1, MatchIssues e2) => e1.Equals(e2);
+        public static bool operator !=(MatchIssues e1, MatchIssues e2) => !(e1 == e2);
 
 
-        public bool Success => !this.issues.Any(i => i is BaseError);
+        public bool NoSeriousIssues => !this.issues.Any(i => i is BaseError);
 
         private readonly List<BaseIssue> issues;
 
 
-        public ComparerResult()
+        public MatchIssues()
         {
             this.issues = new List<BaseIssue>();
         }
 
 
-        public ComparerResult WithWarning(BaseWarning wrn)
+        public MatchIssues AddWarning(BaseWarning wrn)
         {
             this.issues.Add(wrn);
             return this;
         }
 
-        public ComparerResult WithError(BaseError err)
+        public MatchIssues AddError(BaseError err)
         {
             this.issues.Add(err);
             return this;
         }
 
-        public ComparerResult WithResult(ComparerResult res)
+        public MatchIssues Add(MatchIssues res)
         {
             this.issues.AddRange(res.issues);
             return this;
@@ -44,17 +44,17 @@ namespace RICC.Core
 
         public void LogIssues()
         {
-            Log.Information("--- COMPARER RESULT ---");
+            Log.Information("--- AST MATCH ISSUES ---");
             foreach (BaseIssue issue in this.issues)
                 issue.LogIssue();
             Log.Information("-----------------------");
         }
 
-        public override bool Equals(object? obj) => this.Equals(obj as ComparerResult);
+        public override bool Equals(object? obj) => this.Equals(obj as MatchIssues);
 
         public override int GetHashCode() => base.GetHashCode();
 
-        public bool Equals([AllowNull] ComparerResult other)
+        public bool Equals([AllowNull] MatchIssues other)
         {
             if (ReferenceEquals(other, null))
                 return false;

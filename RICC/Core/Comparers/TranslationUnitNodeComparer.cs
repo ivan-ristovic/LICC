@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using RICC.AST.Nodes;
 using RICC.Core.Common;
@@ -9,20 +8,20 @@ namespace RICC.Core.Comparers
 {
     internal sealed class TranslationUnitNodeComparer : IASTNodeComparer<TranslationUnitNode>
     {
-        public ComparerResult Result { get; } = new ComparerResult();
+        public MatchIssues Issues { get; } = new MatchIssues();
 
 
-        public ComparerResult Compare(TranslationUnitNode n1, TranslationUnitNode n2) 
+        public MatchIssues Compare(TranslationUnitNode n1, TranslationUnitNode n2) 
         {
             this.TryMatchDeclarations(n1, n2);
-            if (!this.Result.Success) {
+            if (!this.Issues.NoSeriousIssues) {
                 Log.Information("Failed to match found declarations to all expected declarations.");
-                return this.Result;
+                return this.Issues;
             }
             Log.Information("Matched all expected top-level declarations.");
 
             // TODO
-            return this.Result;
+            return this.Issues;
         }
 
 
@@ -38,17 +37,17 @@ namespace RICC.Core.Comparers
                 if (dstDecls.ContainsKey(identifier)) {
                     (DeclarationSpecifiersNode actualSpecs, DeclaratorNode actualDecl) = dstDecls[identifier];
                     if (expectedSpecs != actualSpecs)
-                        this.Result.WithWarning(new DeclSpecsMismatchWarning(expectedDecl, expectedSpecs, actualSpecs));
+                        this.Issues.AddWarning(new DeclSpecsMismatchWarning(expectedDecl, expectedSpecs, actualSpecs));
                     declComparer.Compare(expectedDecl, actualDecl);
                 } else {
-                    this.Result.WithWarning(new MissingDeclarationWarning(expectedSpecs, expectedDecl));
+                    this.Issues.AddWarning(new MissingDeclarationWarning(expectedSpecs, expectedDecl));
                 }
             }
-            this.Result.WithResult(declComparer.Result);
+            this.Issues.Add(declComparer.Issues);
 
             foreach (string identifier in dstDecls.Keys.Except(srcDecls.Keys)) {
                 (DeclarationSpecifiersNode specs, DeclaratorNode decl) = dstDecls[identifier];
-                this.Result.WithWarning(new ExtraDeclarationWarning(specs, decl));
+                this.Issues.AddWarning(new ExtraDeclarationWarning(specs, decl));
             }
 
 

@@ -8,13 +8,13 @@ namespace RICC.Tests.Core
     internal sealed class ComparerTests
     {
         [Test]
-        public void BasicSameLanguageEqualityTests()
+        public void SameLanguageNoIssueTests()
         {
 
         }
 
         [Test]
-        public void BasicSameLanguageDifferenceTests()
+        public void SameLanguageMinorIssuesTests()
         {
 
         }

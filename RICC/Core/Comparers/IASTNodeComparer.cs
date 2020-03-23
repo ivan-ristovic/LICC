@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace RICC.Core.Comparers
+﻿namespace RICC.Core.Comparers
 {
     public interface IASTNodeComparer<T>
     {
-        ComparerResult Result { get; }
+        MatchIssues Issues { get; }
 
-        ComparerResult Compare(T n1, T n2);
+        MatchIssues Compare(T n1, T n2);
     }
 }
