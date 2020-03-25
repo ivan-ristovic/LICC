@@ -69,7 +69,7 @@ namespace RICC
             if (src is null || dst is null)
                 return 1;
 
-            var comparer = new ASTComparer(src, dst);
+            var comparer = new ASTNodeComparer(src, dst);
             comparer.AttemptMatch();
 
             return 0;

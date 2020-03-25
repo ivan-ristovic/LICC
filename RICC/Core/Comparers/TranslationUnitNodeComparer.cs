@@ -6,19 +6,15 @@ using Serilog;
 
 namespace RICC.Core.Comparers
 {
-    internal sealed class TranslationUnitNodeComparer : IASTNodeComparer<TranslationUnitNode>
+    internal sealed class TranslationUnitNodeComparer : ASTNodeComparerBase<TranslationUnitNode>
     {
-        public MatchIssues Issues { get; } = new MatchIssues();
-
-
-        public MatchIssues Compare(TranslationUnitNode n1, TranslationUnitNode n2) 
+        public override MatchIssues Compare(TranslationUnitNode n1, TranslationUnitNode n2) 
         {
             this.TryMatchDeclarations(n1, n2);
-            if (!this.Issues.NoSeriousIssues) {
-                Log.Information("Failed to match found declarations to all expected declarations.");
-                return this.Issues;
-            }
-            Log.Information("Matched all expected top-level declarations.");
+            if (!this.Issues.NoSeriousIssues)
+                Log.Error("Failed to match found declarations to all expected declarations.");
+            else 
+                Log.Debug("Matched all expected top-level declarations.");
 
             // TODO
             return this.Issues;
