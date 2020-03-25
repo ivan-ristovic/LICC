@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using RICC.AST.Nodes;
 using Serilog;
 
 namespace RICC.Core.Common
@@ -39,7 +38,7 @@ namespace RICC.Core.Common
                 return false;
 
             var o = other as InitializerMismatchError;
-            return this.Identifier.Equals(o?.Identifier) && this.Expected == o?.Expected && this.Actual == o?.Actual;
+            return Equals(this.Identifier, o?.Identifier) && Equals(this.Expected, o?.Expected) && Equals(this.Actual, o?.Actual);
         }
     }
 }
