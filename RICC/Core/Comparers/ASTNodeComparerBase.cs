@@ -2,7 +2,7 @@
 
 namespace RICC.Core.Comparers
 {
-    public abstract class ASTNodeComparerBase<T> : IAbstractASTNodeComparer
+    public abstract class ASTNodeComparerBase<T> : IASTNodeComparer
         where T : ASTNode
     {
         public MatchIssues Issues { get; } = new MatchIssues();

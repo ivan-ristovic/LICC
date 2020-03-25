@@ -33,7 +33,7 @@ namespace RICC.Core
                 return new MatchIssues();
             }
 
-            IAbstractASTNodeComparer comparer = this.DeduceComparer();
+            IASTNodeComparer comparer = this.DeduceComparer();
             Log.Debug("Deduced comparer of type {ComparerTypeName}", comparer.GetType().Name);
 
             MatchIssues issues = comparer.Compare(this.srcTree, this.dstTree);
@@ -43,7 +43,7 @@ namespace RICC.Core
         }
 
 
-        private IAbstractASTNodeComparer DeduceComparer()
+        private IASTNodeComparer DeduceComparer()
         {
             string @namespace = $"{this.GetType().Namespace}.Comparers";
             string comparerType = $"{this.nodeType.Name}Comparer";
@@ -59,7 +59,7 @@ namespace RICC.Core
             object? instance = Activator.CreateInstance(comparer);
             if (instance is null)
                 throw new Exception("Failed to find comparer for given ASTNode type.");
-            return (IAbstractASTNodeComparer)instance;
+            return (IASTNodeComparer)instance;
         }
     }
 }

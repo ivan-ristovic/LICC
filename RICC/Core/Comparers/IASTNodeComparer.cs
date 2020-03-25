@@ -2,7 +2,7 @@
 
 namespace RICC.Core.Comparers
 {
-    public interface IAbstractASTNodeComparer
+    public interface IASTNodeComparer
     {
         MatchIssues Issues { get; }
 
