@@ -33,7 +33,7 @@ namespace RICC.AST.Nodes
     public sealed class LambdaFunctionNode : ExpressionNode
     {
         [JsonIgnore]
-        public BlockStatementNode Definition => this.Children[1].As<BlockStatementNode>();
+        public BlockStatementNode Definition => this.Children.Last().As<BlockStatementNode>();
 
         [JsonIgnore]
         public FunctionParametersNode? ParametersNode => this.Children.ElementAtOrDefault(0) as FunctionParametersNode ?? null;

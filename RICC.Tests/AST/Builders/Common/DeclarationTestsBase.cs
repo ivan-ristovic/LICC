@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using RICC.AST.Nodes;
 using RICC.AST.Nodes.Common;
@@ -14,8 +16,8 @@ namespace RICC.Tests.AST.Builders.Common
                                                                  QualifierFlags qualifiers = QualifierFlags.None)
         {
             ASTNode ast = this.GenerateAST(src);
-            DeclarationStatementNode decl = ast is BlockStatementNode block 
-                ? block.Children.First().As<DeclarationStatementNode>() 
+            DeclarationStatementNode decl = ast is BlockStatementNode block
+                ? ExtractDeclarationFromBlock(block)
                 : ast.As<DeclarationStatementNode>();
             Assert.That(decl.Children, Has.Exactly(2).Items);
             Assert.That(decl.Specifiers.Parent, Is.EqualTo(decl));
@@ -24,6 +26,7 @@ namespace RICC.Tests.AST.Builders.Common
             Assert.That(decl.Specifiers.TypeName, Is.EqualTo(type));
             Assert.That(decl.Specifiers.Children, Is.Empty);
             return decl;
+
         }
 
         protected void AssertVariableDeclaration(string src,
@@ -126,6 +129,39 @@ namespace RICC.Tests.AST.Builders.Common
                 Assert.That(arr.Initializer.Initializers.Select(e => ExpressionEvaluator.Evaluate(e)), Is.EqualTo(init).Within(1e-10));
             } else {
                 Assert.That(arr.Initializer, Is.Null);
+            }
+        }
+
+
+        private DeclarationStatementNode ExtractDeclarationFromBlock(BlockStatementNode block)
+        {
+            if (block.Children.Count == 1)
+                return block.Children.Single().As<DeclarationStatementNode>();
+
+            var decls = block.Children
+                .Take(2)
+                .Cast<DeclarationStatementNode>()
+                .ToList()
+                ;
+            IEnumerable<DeclaratorNode> declarators = decls[0].DeclaratorList.Declarations
+                .Zip(decls[1].DeclaratorList.Declarations)
+                .Select(FormDeclarator)
+                ;
+            var declList = new DeclaratorListNode(decls[0].DeclaratorList.Line, declarators);
+            return new DeclarationStatementNode(decls[0].Line, decls[0].Specifiers, declList);
+
+
+            static DeclaratorNode FormDeclarator((DeclaratorNode, DeclaratorNode) decl)
+            {
+                switch (decl.Item1) {
+                    case VariableDeclaratorNode v1:
+                        VariableDeclaratorNode v2 = decl.Item2.As<VariableDeclaratorNode>();
+                        return v2.Initializer is null
+                            ? new VariableDeclaratorNode(v1.Line, v1.IdentifierNode)
+                            : new VariableDeclaratorNode(v1.Line, v1.IdentifierNode, v2.Initializer);
+                    default:
+                        throw new NotImplementedException();
+                }
             }
         }
     }
