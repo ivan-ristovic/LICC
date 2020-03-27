@@ -13,8 +13,8 @@ namespace RICC.Core.Comparers
     {
         public override MatchIssues Compare(BlockStatementNode n1, BlockStatementNode n2)
         {
-            Dictionary<string, DeclaredSymbol> srcSymbols = this.GetVars(n1);
-            Dictionary<string, DeclaredSymbol> dstSymbols = this.GetVars(n2);
+            Dictionary<string, DeclaredSymbol> srcSymbols = this.GetSymbols(n1);
+            Dictionary<string, DeclaredSymbol> dstSymbols = this.GetSymbols(n2);
 
             this.TestDeclarations(srcSymbols, dstSymbols);
 
@@ -23,35 +23,28 @@ namespace RICC.Core.Comparers
         }
 
 
-        private Dictionary<string, DeclaredSymbol> GetVars(BlockStatementNode node)
+        private Dictionary<string, DeclaredSymbol> GetSymbols(BlockStatementNode node)
         {
-            var vars = new Dictionary<string, DeclaredSymbol>();
+            var symbols = new Dictionary<string, DeclaredSymbol>();
 
             foreach (DeclarationStatementNode declStat in ASTNodeOperations.ExtractDeclarations(node)) {
                 foreach (DeclaratorNode decl in declStat.DeclaratorList.Declarations) {
-                    DeclaredSymbol v = decl switch
-                    {
-                        VariableDeclaratorNode var => new DeclaredVariable(decl.Identifier, declStat.Specifiers, var, var.Initializer),
-                        ArrayDeclaratorNode arr => new DeclaredArray(decl.Identifier, declStat.Specifiers, arr, arr.SizeExpression, arr.Initializer),
-                        FunctionDeclaratorNode f => new DeclaredFunction(decl.Identifier, declStat.Specifiers, f),
-                        _ => throw new NotImplementedException(),
-                    };
-                    if (v is DeclaredFunction df && vars.ContainsKey(df.Identifier)) {
+                    var symbol = DeclaredSymbol.From(declStat.Specifiers, decl);
+                    if (symbol is DeclaredFunction df && symbols.ContainsKey(df.Identifier)) {
                         if (!df.AddOverload(df.FunctionDeclarators.Single()))
                             throw new CompilationException($"Multiple overloads with same parameters found for function: {df.Identifier}", decl.Line);
                     }
-                    vars.Add(decl.Identifier, v);
+                    symbols.Add(decl.Identifier, symbol);
                 }
             }
 
-            return vars;
+            return symbols;
         }
 
         private void TestDeclarations(Dictionary<string, DeclaredSymbol> srcSymbols, Dictionary<string, DeclaredSymbol> dstSymbols)
         {
             Log.Debug("Testing declarations...");
 
-            var declComparer = new DeclaratorNodeComparer();
             foreach (DeclaredSymbol srcVar in srcSymbols.Select(kvp => kvp.Value)) {
                 if (!dstSymbols.ContainsKey(srcVar.Identifier))
                     this.Issues.AddWarning(new MissingDeclarationWarning(srcVar.Specifiers, srcVar.Declarator));
@@ -59,9 +52,10 @@ namespace RICC.Core.Comparers
 
                 if (srcVar.Specifiers != dstVar.Specifiers)
                     this.Issues.AddWarning(new DeclSpecsMismatchWarning(srcVar.Declarator, srcVar.Specifiers, dstVar.Specifiers));
-                declComparer.Compare(srcVar.Declarator, dstVar.Declarator);
+
+                var declComparer = new DeclaratorNodeComparer(srcVar, dstVar);
+                this.Issues.Add(declComparer.Compare(srcVar.Declarator, dstVar.Declarator));
             }
-            this.Issues.Add(declComparer.Issues);
 
             foreach (string identifier in dstSymbols.Keys.Except(srcSymbols.Keys)) {
                 DeclaredSymbol extra = dstSymbols[identifier];

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using RICC.AST.Nodes;
 using Serilog;
@@ -8,6 +9,18 @@ namespace RICC.Core.Comparers.Common
 {
     internal abstract class DeclaredSymbol
     {
+        public static DeclaredSymbol From(DeclarationSpecifiersNode specs, DeclaratorNode decl)
+        {
+            return decl switch
+            {
+                VariableDeclaratorNode var => new DeclaredVariable(decl.Identifier, specs, var, var.Initializer),
+                ArrayDeclaratorNode arr => new DeclaredArray(decl.Identifier, specs, arr, arr.SizeExpression, arr.Initializer),
+                FunctionDeclaratorNode f => new DeclaredFunction(decl.Identifier, specs, f),
+                _ => throw new NotImplementedException("Declarator node type not yet implemented"),
+            };
+        }
+
+
         public string Identifier { get; set; }
         public DeclarationSpecifiersNode Specifiers { get; set; }
         public DeclaratorNode Declarator { get; set; }

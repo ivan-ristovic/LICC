@@ -1,8 +1,10 @@
-﻿int gl_y = 2;
+﻿extern int x = 4;
+
+int gl_y = 2 + x - 1 + x;
 
 void f(const int x);
 
-int gl_x = 3;
+int gl_x = 3 * 4;
 
 
 int main()
