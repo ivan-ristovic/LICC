@@ -7,7 +7,7 @@ namespace RICC.Exceptions
         private static string FormErrorMessage(string msg, int line, int col)
             => $"L{line}:C{col}: {msg}";
 
-        
+
         public SyntaxException(string message)
             : base(message)
         {
@@ -21,7 +21,7 @@ namespace RICC.Exceptions
         }
 
         public SyntaxException(string message, int line, int col)
-            : base($"{message}, at: L{line}C{col}")
+            : base(FormErrorMessage(message, line, col))
         {
 
         }
