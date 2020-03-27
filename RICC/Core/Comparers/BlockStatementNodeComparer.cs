@@ -27,7 +27,11 @@ namespace RICC.Core.Comparers
         {
             var symbols = new Dictionary<string, DeclaredSymbol>();
 
-            foreach (DeclarationStatementNode declStat in ASTNodeOperations.ExtractDeclarations(node)) {
+            IEnumerable<DeclarationStatementNode> declStats = node.Children
+                .Where(c => c is DeclarationStatementNode)
+                .Cast<DeclarationStatementNode>()
+                ;
+            foreach (DeclarationStatementNode declStat in declStats) {
                 foreach (DeclaratorNode decl in declStat.DeclaratorList.Declarations) {
                     var symbol = DeclaredSymbol.From(declStat.Specifiers, decl);
                     if (symbol is DeclaredFunction df && symbols.ContainsKey(df.Identifier)) {
