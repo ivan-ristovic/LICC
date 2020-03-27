@@ -13,17 +13,17 @@ namespace RICC.Core.Comparers
     {
         public override MatchIssues Compare(BlockStatementNode n1, BlockStatementNode n2)
         {
-            Dictionary<string, DeclaredSymbol> srcSymbols = this.GetSymbols(n1);
-            Dictionary<string, DeclaredSymbol> dstSymbols = this.GetSymbols(n2);
+            Dictionary<string, DeclaredSymbol> srcSymbols = this.GetDeclaredSymbols(n1);
+            Dictionary<string, DeclaredSymbol> dstSymbols = this.GetDeclaredSymbols(n2);
 
-            this.TestDeclarations(srcSymbols, dstSymbols);
+            this.CompareSymbols(srcSymbols, dstSymbols);
 
             // TODO
             return this.Issues;
         }
 
 
-        private Dictionary<string, DeclaredSymbol> GetSymbols(BlockStatementNode node)
+        private Dictionary<string, DeclaredSymbol> GetDeclaredSymbols(BlockStatementNode node)
         {
             var symbols = new Dictionary<string, DeclaredSymbol>();
 
@@ -34,7 +34,7 @@ namespace RICC.Core.Comparers
             foreach (DeclarationStatementNode declStat in declStats) {
                 foreach (DeclaratorNode decl in declStat.DeclaratorList.Declarations) {
                     var symbol = DeclaredSymbol.From(declStat.Specifiers, decl);
-                    if (symbol is DeclaredFunction df && symbols.ContainsKey(df.Identifier)) {
+                    if (symbol is DeclaredFunctionSymbol df && symbols.ContainsKey(df.Identifier)) {
                         if (!df.AddOverload(df.FunctionDeclarators.Single()))
                             throw new CompilationException($"Multiple overloads with same parameters found for function: {df.Identifier}", decl.Line);
                     }
@@ -43,33 +43,6 @@ namespace RICC.Core.Comparers
             }
 
             return symbols;
-        }
-
-        private void TestDeclarations(Dictionary<string, DeclaredSymbol> srcSymbols, Dictionary<string, DeclaredSymbol> dstSymbols)
-        {
-            Log.Debug("Testing declarations...");
-
-            foreach (DeclaredSymbol srcVar in srcSymbols.Select(kvp => kvp.Value)) {
-                if (!dstSymbols.ContainsKey(srcVar.Identifier))
-                    this.Issues.AddWarning(new MissingDeclarationWarning(srcVar.Specifiers, srcVar.Declarator));
-                DeclaredSymbol dstVar = dstSymbols[srcVar.Identifier];
-
-                if (srcVar.Specifiers != dstVar.Specifiers)
-                    this.Issues.AddWarning(new DeclSpecsMismatchWarning(srcVar.Declarator, srcVar.Specifiers, dstVar.Specifiers));
-
-                var declComparer = new DeclaratorNodeComparer(srcVar, dstVar);
-                this.Issues.Add(declComparer.Compare(srcVar.Declarator, dstVar.Declarator));
-            }
-
-            foreach (string identifier in dstSymbols.Keys.Except(srcSymbols.Keys)) {
-                DeclaredSymbol extra = dstSymbols[identifier];
-                this.Issues.AddWarning(new ExtraDeclarationWarning(extra.Specifiers, extra.Declarator));
-            }
-
-            if (!this.Issues.NoSeriousIssues)
-                Log.Error("Failed to match found declarations to all expected declarations.");
-            else
-                Log.Debug("Matched all expected top-level declarations.");
         }
     }
 }

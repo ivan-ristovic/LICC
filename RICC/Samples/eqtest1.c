@@ -5,6 +5,7 @@ int gl_y = 2 + x - 1 + x;
 void f(const int x);
 
 int gl_x = 3 * 4;
+int arr[n+1] = { 1, x, x * x, x * x };
 
 
 int main()

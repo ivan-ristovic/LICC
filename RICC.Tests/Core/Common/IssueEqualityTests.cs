@@ -120,6 +120,7 @@ namespace RICC.Tests.Core.Common
 
         [Test]
         public void MissingDeclarationWarningEqualityTests()
+
         {
             var x = new MissingDeclarationWarning(
                 new DeclarationSpecifiersNode(1, "private", "int"),
@@ -153,6 +154,68 @@ namespace RICC.Tests.Core.Common
             this.AssertEquality(new[] { (x, y), (t, w) }, z, k, l);
         }
 
+        [Test]
+        public void ParameterMismatchWarningEqualityTests()
+        {
+            var p1 = new ParameterMismatchWarning("f", 1, true);
+            var p2 = new ParameterMismatchWarning("f", 2, true);
+            var p3 = new ParameterMismatchWarning("f", 2, false);
+            var p4 = new ParameterMismatchWarning("g", 2, true);
+            var p5 = new ParameterMismatchWarning("f", 1, 0,
+                new FunctionParameterNode(1,
+                    new DeclarationSpecifiersNode(1, "const", "int"),
+                    new VariableDeclaratorNode(1, new IdentifierNode(3, "x"))
+                ),
+                new FunctionParameterNode(1,
+                    new DeclarationSpecifiersNode(2, "", "int"),
+                    new VariableDeclaratorNode(2, new IdentifierNode(3, "x"))
+                )
+            );
+            var p6 = new ParameterMismatchWarning("f", 1, 0,
+                new FunctionParameterNode(1,
+                    new DeclarationSpecifiersNode(1, "const", "int"),
+                    new VariableDeclaratorNode(1, new IdentifierNode(3, "x"))
+                ),
+                new FunctionParameterNode(1,
+                    new DeclarationSpecifiersNode(2, "", "int"),
+                    new VariableDeclaratorNode(2, new IdentifierNode(3, "x"))
+                )
+            );
+            var p7 = new ParameterMismatchWarning("f", 1, 0,
+                new FunctionParameterNode(1,
+                    new DeclarationSpecifiersNode(1, "const", "int"),
+                    new VariableDeclaratorNode(1, new IdentifierNode(3, "x"))
+                ),
+                new FunctionParameterNode(1,
+                    new DeclarationSpecifiersNode(2, "const", "int"),
+                    new VariableDeclaratorNode(2, new IdentifierNode(3, "y"))
+                )
+            );
+            var p8 = new ParameterMismatchWarning("f", 1, 0,
+                new FunctionParameterNode(1,
+                    new DeclarationSpecifiersNode(1, "const", "int"),
+                    new VariableDeclaratorNode(1, new IdentifierNode(3, "x"))
+                ),
+                new FunctionParameterNode(1,
+                    new DeclarationSpecifiersNode(2, "const", "float"),
+                    new VariableDeclaratorNode(2, new IdentifierNode(3, "x"))
+                )
+            );
+
+            this.AssertEquality(new[] { (p1, p2), (p5, p6) }, p3, p4, p7, p8);
+        }
+
+        [Test]
+        public void SizeMismatchWarningEqualityTests()
+        {
+            var s1 = new SizeMismatchWarning("arr", 1, 3, 4);
+            var s2 = new SizeMismatchWarning("arr", 2, 3, 4);
+            var s3 = new SizeMismatchWarning("arr", 2, "n", "n+2");
+            var s4 = new SizeMismatchWarning("arrr", 2, "n", "n+2");
+
+            this.AssertEquality(new[] { (s1, s2) }, s3, s4);
+        }
+
 
         private void AssertEquality<T>(IReadOnlyList<(T, T)> equalPairs, params T[] others)
             where T : BaseIssue
@@ -179,8 +242,7 @@ namespace RICC.Tests.Core.Common
             }
 
 
-            static void AssertEq<T>(T x, T y, bool equal)
-                where T : BaseIssue
+            static void AssertEq(T x, T y, bool equal)
             {
                 Assert.That(x, equal ? Is.EqualTo(y) : Is.Not.EqualTo(y));
                 Assert.That(y, equal ? Is.EqualTo(x) : Is.Not.EqualTo(x));

@@ -13,9 +13,9 @@ namespace RICC.Core.Comparers.Common
         {
             return decl switch
             {
-                VariableDeclaratorNode var => new DeclaredVariable(decl.Identifier, specs, var, var.Initializer),
-                ArrayDeclaratorNode arr => new DeclaredArray(decl.Identifier, specs, arr, arr.SizeExpression, arr.Initializer),
-                FunctionDeclaratorNode f => new DeclaredFunction(decl.Identifier, specs, f),
+                VariableDeclaratorNode var => new DeclaredVariableSymbol(decl.Identifier, specs, var, var.Initializer),
+                ArrayDeclaratorNode arr => new DeclaredArraySymbol(decl.Identifier, specs, arr, arr.SizeExpression, arr.Initializer),
+                FunctionDeclaratorNode f => new DeclaredFunctionSymbol(decl.Identifier, specs, f),
                 _ => throw new NotImplementedException("Declarator node type not yet implemented"),
             };
         }
@@ -34,14 +34,14 @@ namespace RICC.Core.Comparers.Common
         }
     }
 
-    internal sealed class DeclaredVariable : DeclaredSymbol
+    internal sealed class DeclaredVariableSymbol : DeclaredSymbol
     {
         public VariableDeclaratorNode VariableDeclarator { get; set; }
         public ExpressionNode? Initializer { get; set; }
         public Expr? SymbolicInitializer { get; set; }
 
 
-        public DeclaredVariable(string name, DeclarationSpecifiersNode specs, VariableDeclaratorNode decl, ExpressionNode? init = null)
+        public DeclaredVariableSymbol(string name, DeclarationSpecifiersNode specs, VariableDeclaratorNode decl, ExpressionNode? init = null)
             : base(name, specs, decl)
         {
             this.VariableDeclarator = decl;
@@ -56,7 +56,7 @@ namespace RICC.Core.Comparers.Common
         }
     }
 
-    internal sealed class DeclaredArray : DeclaredSymbol
+    internal sealed class DeclaredArraySymbol : DeclaredSymbol
     {
         public ArrayDeclaratorNode ArrayDeclarator { get; set; }
         public ExpressionNode? SizeExpression { get; set; }
@@ -65,7 +65,7 @@ namespace RICC.Core.Comparers.Common
         public List<Expr?>? SymbolicInitializers { get; set; }
 
 
-        public DeclaredArray(string name, DeclarationSpecifiersNode specs, ArrayDeclaratorNode decl, ExpressionNode? size = null, ArrayInitializerListNode? init = null)
+        public DeclaredArraySymbol(string name, DeclarationSpecifiersNode specs, ArrayDeclaratorNode decl, ExpressionNode? size = null, ArrayInitializerListNode? init = null)
             : base(name, specs, decl)
         {
             this.ArrayDeclarator = decl;
@@ -95,12 +95,12 @@ namespace RICC.Core.Comparers.Common
         }
     }
 
-    internal sealed class DeclaredFunction : DeclaredSymbol
+    internal sealed class DeclaredFunctionSymbol : DeclaredSymbol
     {
         public List<FunctionDeclaratorNode> FunctionDeclarators { get; set; }
 
 
-        public DeclaredFunction(string name, DeclarationSpecifiersNode specs, FunctionDeclaratorNode decl)
+        public DeclaredFunctionSymbol(string name, DeclarationSpecifiersNode specs, FunctionDeclaratorNode decl)
             : base(name, specs, decl)
         {
             this.FunctionDeclarators = new List<FunctionDeclaratorNode>() { decl };

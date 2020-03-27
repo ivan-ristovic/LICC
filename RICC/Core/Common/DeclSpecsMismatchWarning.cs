@@ -25,7 +25,7 @@ namespace RICC.Core.Common
         public override void LogIssue()
         {
             Log.Warning("Declaration specifier mismatch for {Identifier}, declared at line {Line}: expected {ExpectedSpecs}, got {ActualSpecs}",
-                        this.Declarator.Identifier, this.Expected.Line, this.Expected, this.Actual);
+                        this.Declarator.Identifier, this.Actual.Line, this.Expected, this.Actual);
         }
 
         public override bool Equals(object? obj)

@@ -23,7 +23,7 @@ namespace RICC.Core.Common
         public override void LogIssue()
         {
             Log.Warning("Declarator mismatch for {Identifier}, declared at line {Line}: expected {ExpectedDecl}, got {ActualDecl}",
-                        this.Expected.Identifier, this.Expected.Line, this.Expected, this.Actual);
+                        this.Expected.Identifier, this.Actual.Line, this.Expected, this.Actual);
         }
 
         public override bool Equals(object? obj)
