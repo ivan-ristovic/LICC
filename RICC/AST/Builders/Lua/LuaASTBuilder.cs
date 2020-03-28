@@ -46,7 +46,7 @@ namespace RICC.AST.Builders.Lua
         public override ASTNode VisitChunk([NotNull] ChunkContext ctx)
         {
             BlockStatementNode block = this.Visit(ctx.block()).As<BlockStatementNode>();
-            return new TranslationUnitNode(block.Children);
+            return new SourceComponentNode(block.Children);
         }
 
         public override ASTNode VisitBlock([NotNull] BlockContext ctx)

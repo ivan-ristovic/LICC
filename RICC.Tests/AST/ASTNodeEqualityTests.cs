@@ -8,40 +8,40 @@ namespace RICC.Tests.AST
         [Test]
         public void BasicEqualityTest()
         {
-            ASTNode ast1 = new TranslationUnitNode(new BlockStatementNode(1));
-            ASTNode ast2 = new TranslationUnitNode(new BlockStatementNode(100));
+            ASTNode ast1 = new SourceComponentNode(new BlockStatementNode(1));
+            ASTNode ast2 = new SourceComponentNode(new BlockStatementNode(100));
             AssertNodes(ast1, ast2, eq: true);
         }
 
         [Test]
         public void BasicDifferenceTest()
         {
-            ASTNode ast1 = new TranslationUnitNode(new BlockStatementNode(1));
-            ASTNode ast2 = new TranslationUnitNode(new VariableDeclaratorNode(10, new IdentifierNode(10, "x")));
+            ASTNode ast1 = new SourceComponentNode(new BlockStatementNode(1));
+            ASTNode ast2 = new SourceComponentNode(new VariableDeclaratorNode(10, new IdentifierNode(10, "x")));
             AssertNodes(ast1, ast2, eq: false);
         }
 
         [Test]
         public void ExtraNodesDifferenceTest()
         {
-            ASTNode ast1 = new TranslationUnitNode(new BlockStatementNode(1));
-            ASTNode ast2 = new TranslationUnitNode(new BlockStatementNode(1), new BlockStatementNode(2));
+            ASTNode ast1 = new SourceComponentNode(new BlockStatementNode(1));
+            ASTNode ast2 = new SourceComponentNode(new BlockStatementNode(1), new BlockStatementNode(2));
             AssertNodes(ast1, ast2, eq: false);
         }
 
         [Test]
         public void BasicChildrenEqualityTest()
         {
-            ASTNode ast1 = new TranslationUnitNode(new VariableDeclaratorNode(10, new IdentifierNode(10, "x")));
-            ASTNode ast2 = new TranslationUnitNode(new VariableDeclaratorNode(12, new IdentifierNode(12, "x")));
+            ASTNode ast1 = new SourceComponentNode(new VariableDeclaratorNode(10, new IdentifierNode(10, "x")));
+            ASTNode ast2 = new SourceComponentNode(new VariableDeclaratorNode(12, new IdentifierNode(12, "x")));
             AssertNodes(ast1, ast2, eq: true);
         }
 
         [Test]
         public void BasicChildrenDifferenceTest()
         {
-            ASTNode ast1 = new TranslationUnitNode(new VariableDeclaratorNode(10, new IdentifierNode(10, "x")));
-            ASTNode ast2 = new TranslationUnitNode(new VariableDeclaratorNode(10, new IdentifierNode(10, "y")));
+            ASTNode ast1 = new SourceComponentNode(new VariableDeclaratorNode(10, new IdentifierNode(10, "x")));
+            ASTNode ast2 = new SourceComponentNode(new VariableDeclaratorNode(10, new IdentifierNode(10, "y")));
             AssertNodes(ast1, ast2, eq: false);
         }
 

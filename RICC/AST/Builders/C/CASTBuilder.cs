@@ -43,18 +43,18 @@ namespace RICC.AST.Builders.C
         }
 
         public override ASTNode VisitCompilationUnit([NotNull] CompilationUnitContext ctx)
-            => ctx.translationUnit() is null ? new TranslationUnitNode(Enumerable.Empty<ASTNode>()) : this.Visit(ctx.translationUnit());
+            => ctx.translationUnit() is null ? new SourceComponentNode(Enumerable.Empty<ASTNode>()) : this.Visit(ctx.translationUnit());
 
         public override ASTNode VisitTranslationUnit([NotNull] TranslationUnitContext ctx)
         {
             ASTNode decl = this.Visit(ctx.externalDeclaration());
 
             if (ctx.translationUnit() is null)
-                return new TranslationUnitNode(decl);
+                return new SourceComponentNode(decl);
 
-            TranslationUnitNode tu = this.Visit(ctx.translationUnit()).As<TranslationUnitNode>();
+            SourceComponentNode tu = this.Visit(ctx.translationUnit()).As<SourceComponentNode>();
             decl.Parent = tu;
-            return new TranslationUnitNode(tu.Children.Concat(new[] { decl }));
+            return new SourceComponentNode(tu.Children.Concat(new[] { decl }));
         }
     }
 }

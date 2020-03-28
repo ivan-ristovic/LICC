@@ -6,19 +6,19 @@ using RICC.Tests.AST.Builders.Common;
 
 namespace RICC.Tests.AST.Builders.Lua
 {
-    internal sealed class ChunkTests : TranslationUnitTestsBase
+    internal sealed class ChunkTests : SourceComponentTestsBase
     {
         [Test]
         public void BasicTest()
         {
-            TranslationUnitNode tu = this.AssertTranslationUnit(@"x = 2");
+            SourceComponentNode tu = this.AssertTranslationUnit(@"x = 2");
             Assert.That(tu.Children.Single(), Is.InstanceOf<DeclarationStatementNode>());
         }
 
         [Test]
         public void FunctionTest()
         {
-            TranslationUnitNode tu = this.AssertTranslationUnit(@"function two() return 2 end");
+            SourceComponentNode tu = this.AssertTranslationUnit(@"function two() return 2 end");
             Assert.That(tu.Children.Single(), Is.InstanceOf<FunctionDefinitionNode>());
         }
 

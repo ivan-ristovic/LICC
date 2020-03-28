@@ -9,7 +9,7 @@ namespace RICC.Tests.Core.Comparer
         public void DeclarationOrderTests()
         {
             this.Compare(
-                new TranslationUnitNode(
+                new SourceComponentNode(
                     new DeclarationStatementNode(1,
                         new DeclarationSpecifiersNode(1, "int"),
                         new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x")))
@@ -27,7 +27,7 @@ namespace RICC.Tests.Core.Comparer
                         new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "t")))
                     )
                 ),
-                new TranslationUnitNode(
+                new SourceComponentNode(
                     new DeclarationStatementNode(1,
                         new DeclarationSpecifiersNode(1, "double"),
                         new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "z")))
@@ -48,7 +48,7 @@ namespace RICC.Tests.Core.Comparer
             );
 
             this.Compare(
-                new TranslationUnitNode(
+                new SourceComponentNode(
                     new DeclarationStatementNode(1,
                         new DeclarationSpecifiersNode(1, "int"),
                         new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x")))
@@ -90,7 +90,7 @@ namespace RICC.Tests.Core.Comparer
                         )
                     )
                 ),
-                new TranslationUnitNode(
+                new SourceComponentNode(
                     new DeclarationStatementNode(1,
                         new DeclarationSpecifiersNode(1, "double"),
                         new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "z")))

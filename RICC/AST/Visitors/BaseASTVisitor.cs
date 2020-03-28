@@ -55,7 +55,7 @@ namespace RICC.AST.Visitors
         public virtual TResult Visit(RelationalExpressionNode node) => this.VisitChildren(node);
         public virtual TResult Visit(RelationalOperatorNode node) => this.VisitChildren(node);
         public virtual TResult Visit(ThrowStatementNode node) => this.VisitChildren(node);
-        public virtual TResult Visit(TranslationUnitNode node) => this.VisitChildren(node);
+        public virtual TResult Visit(SourceComponentNode node) => this.VisitChildren(node);
         public virtual TResult Visit(UnaryExpressionNode node) => this.VisitChildren(node);
         public virtual TResult Visit(UnaryOperatorNode node) => this.VisitChildren(node);
         public virtual TResult Visit(VariableDeclaratorNode node) => this.VisitChildren(node);
