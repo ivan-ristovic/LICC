@@ -34,9 +34,13 @@ namespace RICC.Core.Comparers
             foreach (DeclarationStatementNode declStat in declStats) {
                 foreach (DeclaratorNode decl in declStat.DeclaratorList.Declarations) {
                     var symbol = DeclaredSymbol.From(declStat.Specifiers, decl);
-                    if (symbol is DeclaredFunctionSymbol df && symbols.ContainsKey(df.Identifier)) {
-                        if (!df.AddOverload(df.FunctionDeclarators.Single()))
-                            throw new CompilationException($"Multiple overloads with same parameters found for function: {df.Identifier}", decl.Line);
+                    if (symbols.ContainsKey(decl.Identifier)) {
+                        if (symbol is DeclaredFunctionSymbol overload && symbols[decl.Identifier] is DeclaredFunctionSymbol df) {
+                            if (!df.AddOverload(overload.FunctionDeclarators.Single()))
+                                throw new CompilationException($"Multiple overloads with same parameters found for function: {df.Identifier}", decl.Line);
+                        } else {
+                            throw new CompilationException($"Same identifier found in multiple declarations: {decl.Identifier}", decl.Line);
+                        }
                     }
                     symbols.Add(decl.Identifier, symbol);
                 }

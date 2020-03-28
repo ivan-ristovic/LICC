@@ -45,13 +45,17 @@ namespace RICC.Core.Comparers
                     string? arr2size = arr2.SymbolicSize?.ToString() ?? arr2.SizeExpression?.GetText();
                     if (!arr1size?.Equals(arr2size) ?? false)
                         this.Issues.AddWarning(new SizeMismatchWarning(arr1.Identifier, arr2.Declarator.Line, arr1size, arr2size));
-                    IEnumerable<string?> v1init = arr1.SymbolicInitializers.Select(i => i?.ToString() ?? "null");
-                    IEnumerable<string?> v2init = arr2.SymbolicInitializers.Select(i => i?.ToString() ?? "null");
-                    int i = 0;
-                    foreach ((string? i1, string? i2) in v1init.Zip(v2init)) {
-                        if (!i1?.Equals(i2) ?? false)
-                            this.Issues.AddError(new InitializerMismatchError(arr1.Identifier, arr2.Declarator.Line, i1, i2, i));
-                        i++;
+                    IEnumerable<string?>? v1init = arr1.SymbolicInitializers?.Select(e => e?.ToString() ?? "null") ?? arr1.Initializer?.Select(e => e.GetText());
+                    IEnumerable<string?>? v2init = arr2.SymbolicInitializers?.Select(e => e?.ToString() ?? "null") ?? arr2.Initializer?.Select(e => e.GetText());
+                    if (v1init is { } && v2init is { }) {
+                        int i = 0;
+                        foreach ((string? i1, string? i2) in v1init.Zip(v2init)) {
+                            if (!i1?.Equals(i2) ?? false)
+                                this.Issues.AddError(new InitializerMismatchError(arr1.Identifier, arr2.Declarator.Line, i1, i2, i));
+                            i++;
+                        }
+                    } else if (v1init is { } || v2init is { }) {
+                        this.Issues.AddError(new InitializerMismatchError(arr1.Identifier, arr2.Declarator.Line, v1init, v2init));
                     }
                 } else {
                     if (!Equals(arrn1.Initializer, arrn2.Initializer))
