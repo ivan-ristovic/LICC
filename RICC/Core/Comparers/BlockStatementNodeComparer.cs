@@ -130,7 +130,7 @@ namespace RICC.Core.Comparers
                 object? srcValue = GetSymbolValue(srcSymbol);
                 object? dstValue = GetSymbolValue(dstSymbol);
                 if (!Equals(srcValue, dstValue))
-                    this.Issues.AddError(null);                 // block var value error
+                    ; //this.Issues.AddError(null);                 // block var value error
             }
 
 
