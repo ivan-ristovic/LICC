@@ -65,22 +65,12 @@ namespace RICC.Core.Comparers
                 }
             } else if (n1 is FunctionDeclaratorNode fn1 && n2 is FunctionDeclaratorNode fn2) {
                 if (this.Symbol1 is DeclaredFunctionSymbol f1 && this.Symbol2 is DeclaredFunctionSymbol f2) {
-                    if (f1.Specifiers != f2.Specifiers)
-                        this.Issues.AddWarning(new DeclSpecsMismatchWarning(f1.Declarator, f1.Specifiers, f2.Specifiers));
-                    this.Symbol1 = this.Symbol2 = null;
-                    foreach ((FunctionDeclaratorNode fdecl1, FunctionDeclaratorNode fdecl2) in f1.FunctionDeclarators.Zip(f2.FunctionDeclarators))
-                        this.Compare(fdecl1, fdecl2);
+                    if (f1.FunctionDeclarators.Count != f2.FunctionDeclarators.Count)
+                        this.Issues.AddWarning(new ParameterMismatchWarning(fn1.Identifier, fn2.Line));
+                    foreach ((FunctionDeclaratorNode fdecl1, FunctionDeclaratorNode fdecl2) in f1.FunctionDeclarators.Zip(f2.FunctionDeclarators)) 
+                        CheckFunctionParameters(fdecl1, fdecl2);
                 } else {
-                    if ((fn1.IsVariadic && !fn2.IsVariadic) || (!fn1.IsVariadic && fn2.IsVariadic)) {
-                        var wrn = new ParameterMismatchWarning(fn1.Identifier, fn2.Line);
-                        this.Issues.AddWarning(wrn);
-                    }
-                    int i = 1;
-                    foreach ((FunctionParameterNode fp1, FunctionParameterNode fp2) in fn1.Parameters.Zip(fn2.Parameters)) {
-                        if (fp1 != fp2)
-                            this.Issues.AddWarning(new ParameterMismatchWarning(fn1.Identifier, fn2.Line, i, fp1, fp2));
-                        i++;
-                    }
+                    CheckFunctionParameters(fn1, fn2);
                 }
             } else {
                 // Avoid logging same issue twice
@@ -89,6 +79,21 @@ namespace RICC.Core.Comparers
             }
 
             return this.Issues;
+
+
+            void CheckFunctionParameters(FunctionDeclaratorNode fdecl1, FunctionDeclaratorNode fdecl2)
+            {
+                if (fdecl1.IsVariadic != fdecl2.IsVariadic || fdecl1.Parameters?.Count() != fdecl2.Parameters?.Count())
+                    this.Issues.AddWarning(new ParameterMismatchWarning(fdecl1.Identifier, fdecl2.Line));
+                if (fdecl1.Parameters is { } && fdecl2.Parameters is { }) {
+                    int i = 1;
+                    foreach ((FunctionParameterNode fp1, FunctionParameterNode fp2) in fdecl1.Parameters.Zip(fdecl2.Parameters)) {
+                        if (fp1 != fp2)
+                            this.Issues.AddWarning(new ParameterMismatchWarning(fdecl1.Identifier, fdecl2.Line, i, fp1, fp2));
+                        i++;
+                    }
+                }
+            }
         }
     }
 }

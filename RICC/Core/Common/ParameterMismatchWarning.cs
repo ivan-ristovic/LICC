@@ -32,16 +32,22 @@ namespace RICC.Core.Common
             this.Order = order;
         }
 
+
         public override string ToString() => $"{base.ToString()}| {this.FunctionName}({this.Order}) | exp: {this.Expected} | got: {this.Actual}";
 
         public override void LogIssue()
         {
-            if (this.VariadicMismatch) {
-                Log.Warning("Variadic parameters mismatch for function {FunctionName}, at line {Line}",
-                            this.FunctionName, this.Line);
-            } else {
+            if (this.Expected is { } && this.Actual is { }) {
                 Log.Warning("Parameter {Order} mismatch for function {FunctionName}, at line {Line}: expected {ExpectedParams}, got {ActualParams}",
                             this.Order, this.FunctionName, this.Line, this.Expected, this.Actual);
+            } else {
+                if (this.VariadicMismatch) {
+                    Log.Warning("Variadic parameter mismatch for function {FunctionName}, at line {Line}",
+                                this.FunctionName, this.Line);
+                } else {
+                    Log.Warning("Parameter count mismatch for function {FunctionName}, at line {Line}",
+                                this.FunctionName, this.Line);
+                }
             }
         }
 

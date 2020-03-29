@@ -850,6 +850,81 @@ namespace RICC.Tests.Core.Comparer
         }
 
         [Test]
+        public void FunctionDeclarationTests()
+        {
+            this.Compare(
+                new SourceComponentNode(
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "int"),
+                        new DeclaratorListNode(1, new FunctionDeclaratorNode(1, new IdentifierNode(1, "f")))
+                    )
+                ),
+                new SourceComponentNode(
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "double"),
+                        new DeclaratorListNode(1, new FunctionDeclaratorNode(1, new IdentifierNode(1, "f")))
+                    )
+                ),
+                new MatchIssues()
+                    .AddWarning(
+                        new DeclSpecsMismatchWarning(
+                            new FunctionDeclaratorNode(1, new IdentifierNode(1, "f")),
+                            new DeclarationSpecifiersNode(1, "int"),
+                            new DeclarationSpecifiersNode(1, "double")
+                        )
+                    )
+            );
+
+            this.Compare(
+                new SourceComponentNode(
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "int"),
+                        new DeclaratorListNode(1, 
+                            new FunctionDeclaratorNode(1, 
+                                new IdentifierNode(1, "f"),
+                                new FunctionParametersNode(1, 
+                                    new FunctionParameterNode(1, 
+                                        new DeclarationSpecifiersNode(1, "int"), new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
+                                    ), 
+                                    new FunctionParameterNode(1,
+                                        new DeclarationSpecifiersNode(1, "int"), new VariableDeclaratorNode(1, new IdentifierNode(1, "y"))
+                                    )
+                                )
+                            )
+                        )
+                    )
+                ),
+                new SourceComponentNode(
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "int"),
+                        new DeclaratorListNode(1,
+                            new FunctionDeclaratorNode(1,
+                                new IdentifierNode(1, "f"),
+                                new FunctionParametersNode(1,
+                                    new FunctionParameterNode(1,
+                                        new DeclarationSpecifiersNode(1, "float"), new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
+                                    )
+                                )
+                            )
+                        )
+                    )
+                ),
+                new MatchIssues()
+                    .AddWarning(new ParameterMismatchWarning("f", 1))
+                    .AddWarning(
+                        new ParameterMismatchWarning("f", 1, 1,
+                            new FunctionParameterNode(1,
+                                new DeclarationSpecifiersNode(1, "int"), new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
+                            ),
+                            new FunctionParameterNode(1,
+                                new DeclarationSpecifiersNode(1, "float"), new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
+                            )
+                        )
+                    )
+            );
+        }
+
+        [Test]
         public void MixedTests()
         {
             this.Compare(
