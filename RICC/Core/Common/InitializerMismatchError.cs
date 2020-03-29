@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Serilog;
 
 namespace RICC.Core.Common
@@ -24,6 +27,7 @@ namespace RICC.Core.Common
             this.Order = order;
         }
 
+        public override string ToString() => $"{base.ToString()}| {this.Identifier}[{this.Order}] | exp: {this.Expected} | got: {this.Actual}";
 
         public override void LogIssue()
         {

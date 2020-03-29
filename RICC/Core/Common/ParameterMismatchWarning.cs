@@ -10,8 +10,8 @@ namespace RICC.Core.Common
         public string FunctionName { get; set; } = "<anon>";
         public int Line { get; set; }
         public int Order { get; set; }
-        public FunctionParameterNode Expected { get; set; }
-        public FunctionParameterNode Actual { get; set; }
+        public FunctionParameterNode? Expected { get; set; }
+        public FunctionParameterNode? Actual { get; set; }
         public bool VariadicMismatch { get; set; }
 
 
@@ -32,6 +32,7 @@ namespace RICC.Core.Common
             this.Order = order;
         }
 
+        public override string ToString() => $"{base.ToString()}| {this.FunctionName}({this.Order}) | exp: {this.Expected} | got: {this.Actual}";
 
         public override void LogIssue()
         {

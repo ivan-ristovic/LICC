@@ -64,5 +64,7 @@ namespace RICC.Core
 
             return this.issues.SequenceEqual(other.issues);
         }
+
+        public override string ToString() => string.Join(" ;; ", this.issues);
     }
 }

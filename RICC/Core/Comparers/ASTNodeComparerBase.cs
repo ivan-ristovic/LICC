@@ -23,8 +23,10 @@ namespace RICC.Core.Comparers
             Log.Debug("Testing declarations...");
 
             foreach (DeclaredSymbol srcVar in srcSymbols.Select(kvp => kvp.Value)) {
-                if (!dstSymbols.ContainsKey(srcVar.Identifier))
+                if (!dstSymbols.ContainsKey(srcVar.Identifier)) {
                     this.Issues.AddWarning(new MissingDeclarationWarning(srcVar.Specifiers, srcVar.Declarator));
+                    continue;
+                }
                 DeclaredSymbol dstVar = dstSymbols[srcVar.Identifier];
 
                 if (srcVar.Specifiers != dstVar.Specifiers)

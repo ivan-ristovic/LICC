@@ -20,6 +20,8 @@ namespace RICC.Core.Common
         }
 
 
+        public override string ToString() => $"{base.ToString()}| exp: {this.Expected} | got: {this.Actual}";
+
         public override void LogIssue()
         {
             Log.Warning("Declarator mismatch for {Identifier}, declared at line {Line}: expected {ExpectedDecl}, got {ActualDecl}",

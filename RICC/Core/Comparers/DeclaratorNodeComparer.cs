@@ -33,7 +33,7 @@ namespace RICC.Core.Comparers
                 if (this.Symbol1 is DeclaredVariableSymbol v1 && this.Symbol2 is DeclaredVariableSymbol v2) {
                     string? v1init = v1.SymbolicInitializer?.ToString() ?? v1.Initializer?.GetText();
                     string? v2init = v2.SymbolicInitializer?.ToString() ?? v2.Initializer?.GetText();
-                    if (!v1init?.Equals(v2init) ?? false)
+                    if (!Equals(v1init, v2init))
                         this.Issues.AddError(new InitializerMismatchError(v1.Identifier, v2.Declarator.Line, v1init, v2init));
                 } else {
                     if (!Equals(vn1.Initializer, vn2.Initializer))
@@ -43,19 +43,21 @@ namespace RICC.Core.Comparers
                 if (this.Symbol1 is DeclaredArraySymbol arr1 && this.Symbol2 is DeclaredArraySymbol arr2) {
                     string? arr1size = arr1.SymbolicSize?.ToString() ?? arr1.SizeExpression?.GetText();
                     string? arr2size = arr2.SymbolicSize?.ToString() ?? arr2.SizeExpression?.GetText();
-                    if (!arr1size?.Equals(arr2size) ?? false)
+                    if (!Equals(arr1size, arr2size))
                         this.Issues.AddWarning(new SizeMismatchWarning(arr1.Identifier, arr2.Declarator.Line, arr1size, arr2size));
                     IEnumerable<string?>? v1init = arr1.SymbolicInitializers?.Select(e => e?.ToString() ?? "null") ?? arr1.Initializer?.Select(e => e.GetText());
                     IEnumerable<string?>? v2init = arr2.SymbolicInitializers?.Select(e => e?.ToString() ?? "null") ?? arr2.Initializer?.Select(e => e.GetText());
-                    if (v1init is { } && v2init is { }) {
+                    if (v1init is { } && v2init is { } && v1init.Any() && v2init.Any()) {
                         int i = 0;
                         foreach ((string? i1, string? i2) in v1init.Zip(v2init)) {
-                            if (!i1?.Equals(i2) ?? false)
+                            if (!Equals(i1, i2))
                                 this.Issues.AddError(new InitializerMismatchError(arr1.Identifier, arr2.Declarator.Line, i1, i2, i));
                             i++;
                         }
                     } else if (v1init is { } || v2init is { }) {
-                        this.Issues.AddError(new InitializerMismatchError(arr1.Identifier, arr2.Declarator.Line, v1init, v2init));
+                        string? v1initStr = v1init is null ? null : (v1init.Any() ? $"[{string.Join(',', v1init)}]" : "[]");
+                        string? v2initStr = v2init is null ? null : (v2init.Any() ? $"[{string.Join(',', v2init)}]" : "[]");
+                        this.Issues.AddError(new InitializerMismatchError(arr1.Identifier, arr2.Declarator.Line, v1initStr, v2initStr));
                     }
                 } else {
                     if (!Equals(arrn1.Initializer, arrn2.Initializer))

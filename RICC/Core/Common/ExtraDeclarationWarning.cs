@@ -16,6 +16,7 @@ namespace RICC.Core.Common
             this.Declarator = declarator;
         }
 
+        public override string ToString() => $"{base.ToString()}| {this.Declarator.Identifier}";
 
         public override void LogIssue()
         {
