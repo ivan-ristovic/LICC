@@ -604,7 +604,6 @@ namespace RICC.Tests.Core.Comparer
         [Test]
         public void ArraySizeMismatchTests()
         {
-
             this.Compare(
                 new SourceComponentNode(
                     new DeclarationStatementNode(1,
@@ -629,6 +628,41 @@ namespace RICC.Tests.Core.Comparer
                 new MatchIssues()
                     .AddWarning(new SizeMismatchWarning("x", 1, "3", "z"))
                     .AddWarning(new SizeMismatchWarning("y", 1, null, "100"))
+            );
+
+            this.Compare(
+                new SourceComponentNode(
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "int"),
+                        new DeclaratorListNode(1, 
+                            new ArrayDeclaratorNode(1, 
+                                new IdentifierNode(1, "x"),
+                                new ArithmeticExpressionNode(1,
+                                    new IdentifierNode(1, "z"),
+                                    new ArithmeticOperatorNode(1, "+", BinaryOperations.ArithmeticFromSymbol("+")),
+                                    new LiteralNode(1, 1)
+                                )
+                            )
+                        )
+                    ),
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "float"),
+                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    )
+                ),
+                new SourceComponentNode(
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "float"),
+                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "y"), new IdentifierNode(1, "n")))
+                    ),
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "int"),
+                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "x"), new IdentifierNode(1, "z")))
+                    )
+                ),
+                new MatchIssues()
+                    .AddWarning(new SizeMismatchWarning("x", 1, "1 + z", "z"))
+                    .AddWarning(new SizeMismatchWarning("y", 1, null, "n"))
             );
         }
 
@@ -815,6 +849,81 @@ namespace RICC.Tests.Core.Comparer
             );
         }
 
-        // TODO
+        [Test]
+        public void MixedTests()
+        {
+            this.Compare(
+                new SourceComponentNode(
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "int"),
+                        new DeclaratorListNode(1,
+                            new ArrayDeclaratorNode(1,
+                                new IdentifierNode(1, "x"),
+                                new ArrayInitializerListNode(1,
+                                    new LiteralNode(1, 3),
+                                    new IdentifierNode(1, "x"),
+                                    new LiteralNode(1, 3)
+                                )
+                            )
+                        )
+                    ),
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "float"),
+                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "y"), new LiteralNode(1, 3)))
+                    ),
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "time_t"),
+                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "t")))
+                    )
+                ),
+                new SourceComponentNode(
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "int"),
+                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "y"), new LiteralNode(1, 4), new ArrayInitializerListNode(1)))
+                    ),
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "int"),
+                        new DeclaratorListNode(1,
+                            new ArrayDeclaratorNode(1,
+                                new IdentifierNode(1, "x"),
+                                new ArrayInitializerListNode(1,
+                                    new LiteralNode(1, 2),
+                                    new IdentifierNode(1, "x"),
+                                    new LiteralNode(1, 2)
+                                )
+                            )
+                        )
+                    ),
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "int"),
+                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "ex")))
+                    )
+                ),
+                new MatchIssues()
+                    .AddError(new InitializerMismatchError("x", 1, "3", "2", 0))
+                    .AddError(new InitializerMismatchError("x", 1, "3", "2", 2))
+                    .AddWarning(
+                        new DeclSpecsMismatchWarning(
+                            new ArrayDeclaratorNode(1, new IdentifierNode(1, "y"), new LiteralNode(1, 3)),
+                            new DeclarationSpecifiersNode(1, "float"),
+                            new DeclarationSpecifiersNode(1, "int")
+                        )
+                    )
+                    .AddWarning(new SizeMismatchWarning("y", 1, "3", "4"))
+                    .AddError(new InitializerMismatchError("y", 1, null, "[]"))
+                    .AddWarning(
+                        new MissingDeclarationWarning(
+                            new DeclarationSpecifiersNode(1, "time_t"),
+                            new VariableDeclaratorNode(1, new IdentifierNode(1, "t"))
+                        )
+                    )
+                    .AddWarning(
+                        new ExtraDeclarationWarning(
+                            new DeclarationSpecifiersNode(1, "int"),
+                            new VariableDeclaratorNode(1, new IdentifierNode(1, "ex"))
+                        )
+                    )
+            );
+        }
     }
 }
