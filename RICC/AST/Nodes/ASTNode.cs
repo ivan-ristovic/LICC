@@ -23,7 +23,7 @@ namespace RICC.AST.Nodes
         public int Line { get; }
 
         [JsonProperty(Order = 2)]
-        public IReadOnlyList<ASTNode> Children { get; }
+        public IReadOnlyList<ASTNode> Children { get; private set; }
 
 
         protected ASTNode(int line, params ASTNode[] children)
@@ -46,11 +46,24 @@ namespace RICC.AST.Nodes
         }
 
 
-        public virtual string GetText()
-            => string.Join(' ', this.Children.Select(c => c.GetText()));
-
         public T As<T>() where T : ASTNode
             => this as T ?? throw new NodeMismatchException(typeof(T), this.GetType());
+
+        public IEnumerable<T> ChildrenOfType<T>() => this.Children.Where(c => c is T).Cast<T>();
+
+        public ASTNode Copy()
+        {
+            var copy = (ASTNode)this.MemberwiseClone();
+            copy.Children = this.Children
+                .Select(c => c.Copy())
+                .ToList()
+                .AsReadOnly()
+                ;
+            return copy;
+        }
+
+        public ASTNode Substitute(ASTNode node, ASTNode replacement) 
+            => this.Copy().SubstituteNode(node, replacement);
 
 
         public override string ToString() 
@@ -61,6 +74,7 @@ namespace RICC.AST.Nodes
 
         public override bool Equals(object? obj)
             => this.Equals(obj as ASTNode);
+
 
         public virtual bool Equals([AllowNull] ASTNode other)
         {
@@ -74,6 +88,22 @@ namespace RICC.AST.Nodes
                 return false;
 
             return this.Children.Zip(other.Children).All(tup => tup.First.Equals(tup.Second));
+        }
+
+        public virtual string GetText()
+            => string.Join(' ', this.Children.Select(c => c.GetText()));
+
+
+        private ASTNode SubstituteNode(ASTNode node, ASTNode replacement)
+        {
+            if (node.Equals(this))
+                return replacement;
+            this.Children = this.Children
+                .Select(c => c.Substitute(node, replacement))
+                .ToList()
+                .AsReadOnly()
+                ;
+            return this;
         }
     }
 }

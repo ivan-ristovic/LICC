@@ -12,7 +12,6 @@ namespace RICC.Core.Comparers
         {
             Dictionary<string, DeclaredSymbol> srcSymbols = this.GetDeclaredSymbols(n1);
             Dictionary<string, DeclaredSymbol> dstSymbols = this.GetDeclaredSymbols(n2);
-
             this.CompareSymbols(srcSymbols, dstSymbols);
             return this.Issues;
         }
@@ -26,7 +25,7 @@ namespace RICC.Core.Comparers
                 var symbol = DeclaredSymbol.From(node.Specifiers, decl);
                 if (symbol is DeclaredFunctionSymbol df && symbols.ContainsKey(df.Identifier)) {
                     if (!df.AddOverload(df.FunctionDeclarators.Single()))
-                        throw new CompilationException($"Multiple overloads with same parameters found for function: {df.Identifier}", decl.Line);
+                        throw new SemanticErrorException($"Multiple overloads with same parameters found for function: {df.Identifier}", decl.Line);
                 }
                 symbols.Add(decl.Identifier, symbol);
             }

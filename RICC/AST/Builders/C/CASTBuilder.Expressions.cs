@@ -237,20 +237,23 @@ namespace RICC.AST.Builders.C
 
         public override ASTNode VisitPrimaryExpression([NotNull] PrimaryExpressionContext ctx)
         {
-            // TODO
             if (ctx.Identifier() is { }) {
                 string name = ctx.Identifier().GetText();
                 if (name.Equals("null", StringComparison.InvariantCultureIgnoreCase))
                     return new NullLiteralNode(ctx.Start.Line);
                 return new IdentifierNode(ctx.Start.Line, name);
-            } else if (ctx.Constant() is { })
+            } 
+            
+            if (ctx.Constant() is { })
                 return LiteralNode.FromString(ctx.Start.Line, ctx.Constant().GetText());
-            else if (ctx.expression() is { })
+            
+            if (ctx.expression() is { })
                 return this.Visit(ctx.expression());
-            else if (ctx.StringLiteral() is { })
+            
+            if (ctx.StringLiteral() is { })
                 return new LiteralNode(ctx.Start.Line, string.Join("", ctx.StringLiteral().Select(t => t.GetText()[1..^1])));
-            else // TODO
-                return null;
+            
+            throw new NotImplementedException("__*");
         }
 
         public override ASTNode VisitArgumentExpressionList([NotNull] ArgumentExpressionListContext ctx)
