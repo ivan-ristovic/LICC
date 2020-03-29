@@ -3,5 +3,6 @@
 *.vpp.working
 *.vpp.working-journal
 *.lock
+*vpp.bak*
 tmp/*
 
