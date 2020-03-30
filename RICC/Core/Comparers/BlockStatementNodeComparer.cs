@@ -13,8 +13,12 @@ namespace RICC.Core.Comparers
 {
     internal sealed class BlockStatementNodeComparer : ASTNodeComparerBase<BlockStatementNode>
     {
-        private Dictionary<string, DeclaredSymbol> srcSymbols = new Dictionary<string, DeclaredSymbol>();
-        private Dictionary<string, DeclaredSymbol> dstSymbols = new Dictionary<string, DeclaredSymbol>();
+        private readonly Dictionary<string, DeclaredSymbol> srcSymbols = new Dictionary<string, DeclaredSymbol>();
+        private readonly Dictionary<string, DeclaredSymbol> dstSymbols = new Dictionary<string, DeclaredSymbol>();
+
+        private Dictionary<string, DeclaredSymbol> localSrcSymbols = new Dictionary<string, DeclaredSymbol>();
+        private Dictionary<string, DeclaredSymbol> localDstSymbols = new Dictionary<string, DeclaredSymbol>();
+
 
 
         public BlockStatementNodeComparer()
@@ -31,29 +35,27 @@ namespace RICC.Core.Comparers
 
         public override MatchIssues Compare(BlockStatementNode n1, BlockStatementNode n2)
         {
-            this.srcSymbols = this.GetDeclaredSymbols(n1);
-            this.dstSymbols = this.GetDeclaredSymbols(n2);
-            this.CompareSymbols(this.srcSymbols, this.dstSymbols);
+            this.localSrcSymbols = this.GetDeclaredSymbols(n1, src: true);
+            this.localDstSymbols = this.GetDeclaredSymbols(n2, src: false);
+            this.CompareSymbols(this.localSrcSymbols, this.localDstSymbols);
 
-            this.PerformStatements(n1, this.srcSymbols);
-            this.PerformStatements(n2, this.dstSymbols);
+            this.PerformStatements(n1, src: true);
+            this.PerformStatements(n2, src: false);
             this.CompareSymbolValues(n2.Line);
-            // TODO remove locals!
-
-            // TODO
+            
             return this.Issues;
         }
 
 
-        private Dictionary<string, DeclaredSymbol> GetDeclaredSymbols(BlockStatementNode node)
+        private Dictionary<string, DeclaredSymbol> GetDeclaredSymbols(BlockStatementNode node, bool src)
         {
             var symbols = new Dictionary<string, DeclaredSymbol>();
 
             foreach (DeclarationStatementNode declStat in node.ChildrenOfType<DeclarationStatementNode>()) {
                 foreach (DeclaratorNode decl in declStat.DeclaratorList.Declarations) {
                     var symbol = DeclaredSymbol.From(declStat.Specifiers, decl);
-                    if (symbols.ContainsKey(decl.Identifier)) {
-                        if (symbol is DeclaredFunctionSymbol overload && symbols[decl.Identifier] is DeclaredFunctionSymbol df) {
+                    if (symbols.TryGetValue(decl.Identifier, out DeclaredSymbol? conf) || this.TryFindSymbol(decl.Identifier, src, out conf)) {
+                        if (symbol is DeclaredFunctionSymbol overload && conf is DeclaredFunctionSymbol df) {
                             if (!df.AddOverload(overload.FunctionDeclarators.Single()))
                                 throw new SemanticErrorException($"Multiple overloads with same parameters found for function: {df.Identifier}", decl.Line);
                         } else {
@@ -67,17 +69,24 @@ namespace RICC.Core.Comparers
             return symbols;
         }
 
-        private void PerformStatements(BlockStatementNode n1, Dictionary<string, DeclaredSymbol> symbols)
+        private bool TryFindSymbol(string key, bool src, out DeclaredSymbol? symbol)
+        {
+            return src
+                ? this.localSrcSymbols.TryGetValue(key, out symbol) || this.srcSymbols.TryGetValue(key, out symbol)
+                : this.localDstSymbols.TryGetValue(key, out symbol) || this.dstSymbols.TryGetValue(key, out symbol);
+        }
+
+        private void PerformStatements(BlockStatementNode n1, bool src)
         {
             foreach (StatementNode statement in n1.ChildrenOfType<StatementNode>()) {
                 switch (statement) {
                     case ExpressionStatementNode expr:
                         if (IsLvalueAssignment(expr, out ExpressionNode? lvalue, out ExpressionNode? rvalue)) {
                             if (lvalue is IdentifierNode var) {
-                                if (!symbols.TryGetValue(var.Identifier, out DeclaredSymbol? declSymbol))
+                                if (!this.TryFindSymbol(var.Identifier, src, out DeclaredSymbol? declSymbol))
                                     throw new SemanticErrorException($"{var.Identifier} symbol is not declared.");
                                 if (!(declSymbol is DeclaredVariableSymbol varSymbol))
-                                    throw new SemanticErrorException($"Cannot assign to symbol {declSymbol.Identifier}.");
+                                    throw new SemanticErrorException($"Cannot assign to symbol {var.Identifier}.");
 
                                 // TODO check assignment operator as well!
                                 Expr rvalueExpr = new SymbolicExpressionBuilder(rvalue!).Parse();
@@ -123,10 +132,16 @@ namespace RICC.Core.Comparers
 
         private void CompareSymbolValues(int blockEndLine)
         {
-            foreach ((string identifier, DeclaredSymbol srcSymbol) in this.srcSymbols) {
-                if (!this.dstSymbols.ContainsKey(identifier))
-                    continue;
-                DeclaredSymbol dstSymbol = this.dstSymbols[identifier];
+            foreach ((string identifier, DeclaredSymbol srcSymbol) in this.localSrcSymbols)
+                CompareSymbolWithMatchingDstSymbol(identifier, srcSymbol);
+            foreach ((string identifier, DeclaredSymbol srcSymbol) in this.srcSymbols)
+                CompareSymbolWithMatchingDstSymbol(identifier, srcSymbol);
+
+
+            void CompareSymbolWithMatchingDstSymbol(string identifier, DeclaredSymbol srcSymbol)
+            {
+                if (!this.TryFindSymbol(identifier, false, out DeclaredSymbol? dstSymbol) || dstSymbol is null)
+                    return;
                 string srcValue = this.GetSymbolValue(srcSymbol, src: true).ToString();
                 string dstValue = this.GetSymbolValue(dstSymbol, src: false).ToString();
                 if (!Equals(srcValue, dstValue))
@@ -134,9 +149,9 @@ namespace RICC.Core.Comparers
             }
         }
 
-        private Expr GetSymbolValue(DeclaredSymbol symbol, bool src = true)
+        private Expr GetSymbolValue(DeclaredSymbol symbol, bool src)
         {
-            Dictionary<string, Expr> symbolExprs = this.ExtractSymbolExprs(src ? this.srcSymbols : this.dstSymbols);
+            Dictionary<string, Expr> symbolExprs = this.ExtractSymbolExprs(src);
             switch (symbol) {
                 case DeclaredVariableSymbol var:
                     if (var.SymbolicInitializer is { })
@@ -157,10 +172,18 @@ namespace RICC.Core.Comparers
             return Expr.Undefined;
         }
 
-        private Dictionary<string, Expr> ExtractSymbolExprs(Dictionary<string, DeclaredSymbol> symbols)
+        private Dictionary<string, Expr> ExtractSymbolExprs(bool src)
         {
             var exprs = new Dictionary<string, Expr>();
-            foreach ((string identifier, DeclaredSymbol symbol) in symbols) {
+            foreach ((string identifier, DeclaredSymbol symbol) in src ? this.localSrcSymbols : this.localDstSymbols)
+                ExtractExprsFromSymbol(identifier, symbol);
+            foreach ((string identifier, DeclaredSymbol symbol) in src ? this.srcSymbols : this.dstSymbols)
+                ExtractExprsFromSymbol(identifier, symbol);
+            return exprs;
+
+
+            void ExtractExprsFromSymbol(string identifier, DeclaredSymbol symbol)
+            {
                 switch (symbol) {
                     case DeclaredVariableSymbol var:
                         if (var.SymbolicInitializer is { })
@@ -175,7 +198,7 @@ namespace RICC.Core.Comparers
                             for (int i = 0; i < arr.SymbolicInitializers.Count; i++)
                                 exprs.Add($"{identifier}[{i}]", arr.SymbolicInitializers[i] ?? Expr.Undefined);
                         } else if (arr.Initializer is { }) {
-                            for (int i = 0; i < arr.Initializer.Count; i++) 
+                            for (int i = 0; i < arr.Initializer.Count; i++)
                                 exprs.Add($"{identifier}[{i}]", new SymbolicExpressionBuilder(arr.Initializer[i]).Parse());
                         } else {
                             exprs.Add(identifier, Expr.Undefined);
@@ -183,7 +206,6 @@ namespace RICC.Core.Comparers
                         break;
                 }
             }
-            return exprs;
         }
     }
 }

@@ -22,6 +22,7 @@ namespace RICC.Core.Common
             this.Actual = actual;
         }
 
+
         public override string ToString() => $"{base.ToString()}| {this.Identifier} | exp: {this.Expected} | got: {this.Actual}";
 
         public override void LogIssue()
