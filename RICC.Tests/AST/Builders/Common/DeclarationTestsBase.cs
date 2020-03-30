@@ -46,7 +46,7 @@ namespace RICC.Tests.AST.Builders.Common
             if (value is { }) {
                 Assert.That(var.Initializer, Is.Not.Null);
                 Assert.That(var.Initializer!.Parent, Is.EqualTo(var));
-                Assert.That(ExpressionEvaluator.Evaluate(var.Initializer), Is.EqualTo(value).Within(1e-10));
+                Assert.That(ConstantExpressionEvaluator.Evaluate(var.Initializer), Is.EqualTo(value).Within(1e-10));
             } else {
                 Assert.That(var.Initializer, Is.Null);
             }
@@ -67,7 +67,7 @@ namespace RICC.Tests.AST.Builders.Common
             {
                 VariableDeclaratorNode var = declNode.As<VariableDeclaratorNode>();
                 return var.Initializer is null ? (var.Identifier, (object?)null)
-                                               : (var.Identifier, ExpressionEvaluator.Evaluate(var.Initializer));
+                                               : (var.Identifier, ConstantExpressionEvaluator.Evaluate(var.Initializer));
             }
         }
 
@@ -119,14 +119,14 @@ namespace RICC.Tests.AST.Builders.Common
             if (size is { }) {
                 Assert.That(arr.SizeExpression, Is.Not.Null);
                 Assert.That(arr.SizeExpression!.Parent, Is.EqualTo(arr));
-                Assert.That(ExpressionEvaluator.Evaluate(arr.SizeExpression!), Is.EqualTo(size));
+                Assert.That(ConstantExpressionEvaluator.Evaluate(arr.SizeExpression!), Is.EqualTo(size));
             } else {
                 Assert.That(arr.SizeExpression, Is.Null);
             }
             if (init is { } && init.Any()) {
                 Assert.That(arr.Initializer, Is.Not.Null);
                 Assert.That(arr.Initializer!.Parent, Is.EqualTo(arr));
-                Assert.That(arr.Initializer.Initializers.Select(e => ExpressionEvaluator.Evaluate(e)), Is.EqualTo(init).Within(1e-10));
+                Assert.That(arr.Initializer.Initializers.Select(e => ConstantExpressionEvaluator.Evaluate(e)), Is.EqualTo(init).Within(1e-10));
             } else {
                 Assert.That(arr.Initializer, Is.Null);
             }

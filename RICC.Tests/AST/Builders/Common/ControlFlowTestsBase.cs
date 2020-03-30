@@ -11,7 +11,7 @@ namespace RICC.Tests.AST.Builders.Common
             IfStatementNode node = this.GenerateAST(src).As<IfStatementNode>();
             Assert.That(node, Is.Not.Null);
             this.AssertChildrenParentProperties(node);
-            Assert.That(ExpressionEvaluator.Evaluate(node.Condition), Is.EqualTo(condValue));
+            Assert.That(ConstantExpressionEvaluator.Evaluate(node.Condition), Is.EqualTo(condValue));
             Assert.That(node.ThenStatement.Children, Has.Exactly(thenStatementCount).Items);
             if (elseStatementCount is { }) {
                 Assert.That(node.ElseStatement, Is.Not.Null);
@@ -27,7 +27,7 @@ namespace RICC.Tests.AST.Builders.Common
             WhileStatementNode node = this.GenerateAST(src).As<WhileStatementNode>();
             Assert.That(node, Is.Not.Null);
             this.AssertChildrenParentProperties(node);
-            Assert.That(ExpressionEvaluator.Evaluate(node.Condition), Is.EqualTo(condValue));
+            Assert.That(ConstantExpressionEvaluator.Evaluate(node.Condition), Is.EqualTo(condValue));
             if (node.Statement is BlockStatementNode block)
                 Assert.That(block.Children, Has.Exactly(statCount).Items);
             else

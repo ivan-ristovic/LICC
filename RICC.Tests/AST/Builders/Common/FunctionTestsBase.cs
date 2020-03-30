@@ -49,7 +49,7 @@ namespace RICC.Tests.AST.Builders.Common
             } else {
                 Assert.That(node.ReturnExpression, Is.Not.Null);
                 if (node.ReturnExpression is { })
-                    Assert.That(ExpressionEvaluator.Evaluate(node.ReturnExpression), Is.EqualTo(expected).Within(1e-10));
+                    Assert.That(ConstantExpressionEvaluator.Evaluate(node.ReturnExpression), Is.EqualTo(expected).Within(1e-10));
             }
         }
     }

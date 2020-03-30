@@ -1,78 +1,38 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Linq;
+using MathNet.Symbolics;
 using RICC.AST.Nodes;
-using RICC.AST.Nodes.Common;
 using RICC.Exceptions;
+using Expr = MathNet.Symbolics.SymbolicExpression;
 
 namespace RICC.AST.Visitors
 {
-    public sealed class ExpressionEvaluator : BaseASTVisitor<object?>
+    public sealed class ExpressionEvaluator
     {
-        public static object? Evaluate(ExpressionNode node)
-            => new ExpressionEvaluator().Visit(node);
+        private static readonly int _threshold = 10000;
 
-        public static bool TryEvaluateAs<T>(ExpressionNode node, out T result)
+
+        public static Expr TryEvaluate(ExpressionNode node, Dictionary<string, Expr> symbols)
         {
-            object? res = new ExpressionEvaluator().Visit(node);
-            if (res is { } && res is T castRes) {
-                result = castRes;
-                return true;
-            } else {
-                result = default!;
-                return false;
+            Expr expr = new SymbolicExpressionBuilder(node).Parse();
+
+            IEnumerable<Expr> vars = expr.CollectVariables();
+            bool canReduce = true;
+            for (int i = 0; canReduce && vars.Any(); i++) {
+                if (i > _threshold)
+                    throw new EvaluationException("Infinite cycle detected.");
+                canReduce = false;
+                foreach (Expr v in vars) {
+                    string varStr = v.VariableName;
+                    if (symbols.ContainsKey(varStr)) {
+                        expr = expr.Substitute(v, symbols[varStr]);
+                        canReduce = true;
+                    }
+                }
+                vars = expr.CollectVariables();
             }
+
+            return expr;
         }
-
-
-        public override object? Visit(ArithmeticExpressionNode node)
-        {
-            (object? l, object? r) = this.VisitBinaryOperands(node);
-            if (l is null || r is null || l is NullLiteralNode || r is NullLiteralNode)
-                throw new EvaluationException("Null reference in expression");
-            return node.Operator.As<ArithmeticOperatorNode>().ApplyTo(l, r);
-        }
-
-        public override object? Visit(RelationalExpressionNode node)
-        {
-            (object? l, object? r) = this.VisitBinaryOperands(node);
-            if (l is null || r is null || l is NullLiteralNode || r is NullLiteralNode)
-                    throw new EvaluationException("Null reference in expression");
-            if (l is bool || r is bool)
-                return node.Operator.As<RelationalOperatorNode>().ApplyTo(Convert.ToBoolean(l), Convert.ToBoolean(r));
-            return node.Operator.As<RelationalOperatorNode>().ApplyTo(l, r);
-        }
-
-        public override object? Visit(LogicExpressionNode node)
-        {
-            (object? l, object? r) = this.VisitBinaryOperands(node);
-            return node.Operator.As<BinaryLogicOperatorNode>().ApplyTo(Convert.ToBoolean(l), Convert.ToBoolean(r));
-        }
-
-        public override object? Visit(UnaryExpressionNode node)
-        {
-            object op = this.Visit(node.Operand as ASTNode) ?? throw new EvaluationException("Null reference in expression");
-            return node.Operator.ApplyTo(op);
-        }
-
-        public override object? Visit(IncrementExpressionNode node)
-        {
-            object op = this.Visit(node.Expr as ASTNode) ?? throw new EvaluationException("Null reference in expression");
-            return BinaryOperations.AddPrimitive(op, 1);
-        }
-
-        public override object? Visit(DecrementExpressionNode node)
-        {
-            object op = this.Visit(node.Expr as ASTNode) ?? throw new EvaluationException("Null reference in expression");
-            return BinaryOperations.SubtractPrimitive(op, 1);
-        }
-
-        public override object? Visit(LiteralNode node)
-            => node?.Value;
-
-        public override object? Visit(NullLiteralNode node)
-            => null;
-
-
-        private (object? left, object? right) VisitBinaryOperands(BinaryExpressionNode expr)
-            => (this.Visit(expr.LeftOperand as ASTNode), this.Visit(expr.RightOperand as ASTNode));
     }
 }

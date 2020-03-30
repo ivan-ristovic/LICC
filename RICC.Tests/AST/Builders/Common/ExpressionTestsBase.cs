@@ -12,13 +12,13 @@ namespace RICC.Tests.AST.Builders.Common
         protected void AssertEvaluationException(string code)
         {
             ExpressionNode expr = this.AssertExpression(code);
-            Assert.That(() => ExpressionEvaluator.TryEvaluateAs(expr, out object result), Throws.InstanceOf<EvaluationException>());
+            Assert.That(() => ConstantExpressionEvaluator.TryEvaluateAs(expr, out object result), Throws.InstanceOf<EvaluationException>());
         }
 
         protected void AssertExpressionValue<T>(string code, T expected)
         {
             ExpressionNode expr = this.AssertExpression(code);
-            Assert.That(ExpressionEvaluator.TryEvaluateAs(expr, out T result));
+            Assert.That(ConstantExpressionEvaluator.TryEvaluateAs(expr, out T result));
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Is.EqualTo(expected).Within(1e-10));
         }
@@ -47,7 +47,7 @@ namespace RICC.Tests.AST.Builders.Common
             Assert.That(literal, Is.Not.Null);
             Assert.That(literal.Value?.GetType(), Is.EqualTo(type));
             Assert.That(literal.Suffix, Is.EqualTo(suffix));
-            Assert.That(ExpressionEvaluator.Evaluate(literal), Is.EqualTo(value).Within(1e-10));
+            Assert.That(ConstantExpressionEvaluator.Evaluate(literal), Is.EqualTo(value).Within(1e-10));
         }
 
         protected void AssertFunctionCallExpression(string code, string fname, params object[] args)
@@ -62,7 +62,7 @@ namespace RICC.Tests.AST.Builders.Common
                 Assert.That(fcall.Arguments, Is.Not.Null);
                 Assert.That(fcall.Arguments!.Expressions.Count, Is.EqualTo(args.Length));
                 foreach ((ExpressionNode arg, object? expected) in fcall.Arguments!.Expressions.Zip(args))
-                    Assert.That(ExpressionEvaluator.Evaluate(arg), Is.EqualTo(expected).Within(1e-10));
+                    Assert.That(ConstantExpressionEvaluator.Evaluate(arg), Is.EqualTo(expected).Within(1e-10));
             }
         }
     }
