@@ -72,7 +72,7 @@ namespace RICC.AST.Visitors
             => null;
 
         public override object? Visit(IdentifierNode node)
-            => throw new EvaluationException("Cannot evaluate variables");
+            => throw new EvaluationException("Expression is not constant.");
         
 
         private (object? left, object? right) VisitBinaryOperands(BinaryExpressionNode expr)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -7,12 +8,13 @@ using Serilog;
 
 namespace RICC.Core
 {
-    public sealed class MatchIssues : IEquatable<MatchIssues>
+    public sealed class MatchIssues : IEquatable<MatchIssues>, IReadOnlyList<BaseIssue>
     {
         public static bool operator ==(MatchIssues e1, MatchIssues e2) => e1.Equals(e2);
         public static bool operator !=(MatchIssues e1, MatchIssues e2) => !(e1 == e2);
 
 
+        public int Count => issues.Count;
         public bool NoSeriousIssues => !this.issues.Any(i => i is BaseError);
 
         private readonly List<BaseIssue> issues;
@@ -21,6 +23,11 @@ namespace RICC.Core
         public MatchIssues()
         {
             this.issues = new List<BaseIssue>();
+        }
+
+        private MatchIssues(IEnumerable<BaseIssue> issues)
+        {
+            this.issues = issues.ToList();
         }
 
 
@@ -41,6 +48,9 @@ namespace RICC.Core
             this.issues.AddRange(res.issues);
             return this;
         }
+
+        public MatchIssues Take(int n)
+            => new MatchIssues(this.issues.Take(n));
 
         public void LogIssues()
         {
@@ -66,5 +76,11 @@ namespace RICC.Core
         }
 
         public override string ToString() => string.Join(" ;; ", this.issues);
+
+        public IEnumerator<BaseIssue> GetEnumerator() => this.issues.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+
+        public BaseIssue this[int index] => this.issues[index];
     }
 }

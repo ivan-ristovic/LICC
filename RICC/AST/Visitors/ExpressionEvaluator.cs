@@ -13,9 +13,10 @@ namespace RICC.AST.Visitors
 
 
         public static Expr TryEvaluate(ExpressionNode node, Dictionary<string, Expr> symbols)
-        {
-            Expr expr = new SymbolicExpressionBuilder(node).Parse();
+            => TryEvaluate(new SymbolicExpressionBuilder(node).Parse(), symbols);
 
+        public static Expr TryEvaluate(Expr expr, Dictionary<string, Expr> symbols)
+        {
             IEnumerable<Expr> vars = expr.CollectVariables();
             bool canReduce = true;
             for (int i = 0; canReduce && vars.Any(); i++) {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using RICC.AST.Nodes;
+using RICC.AST.Visitors;
 using RICC.Core.Common;
 using RICC.Core.Comparers.Common;
 using RICC.Exceptions;
@@ -79,10 +80,8 @@ namespace RICC.Core.Comparers
                                     throw new SemanticErrorException($"Cannot assign to symbol {declSymbol.Identifier}.");
 
                                 // TODO check assignment operator as well!
-                                Expr? oldValue = varSymbol.SymbolicInitializer;
-                                // FIXME make safe expr parsing (maybe this should be an extension to get expr from ExpressionNode)
-                                // Maybe a visitor that will substitute unknown expressions with variables and continue parsing
-                                varSymbol.SymbolicInitializer = Expr.Parse(rvalue.GetText()).Substitute(varSymbol.Identifier, oldValue);
+                                Expr rvalueExpr = new SymbolicExpressionBuilder(rvalue!).Parse();
+                                varSymbol.SymbolicInitializer = rvalueExpr.Substitute(varSymbol.Identifier, varSymbol.SymbolicInitializer);
                                 ExpressionNode? oldExpr = varSymbol.Initializer;
                                 if (oldExpr is { })
                                     varSymbol.Initializer = rvalue?.Substitute(var, oldExpr).As<ExpressionNode>();
@@ -128,19 +127,63 @@ namespace RICC.Core.Comparers
                 if (!this.dstSymbols.ContainsKey(identifier))
                     continue;
                 DeclaredSymbol dstSymbol = this.dstSymbols[identifier];
-                object? srcValue = GetSymbolValue(srcSymbol);
-                object? dstValue = GetSymbolValue(dstSymbol);
+                string srcValue = this.GetSymbolValue(srcSymbol, src: true).ToString();
+                string dstValue = this.GetSymbolValue(dstSymbol, src: false).ToString();
                 if (!Equals(srcValue, dstValue))
                     this.Issues.AddError(new BlockEndValueMismatchError(identifier, blockEndLine, srcValue, dstValue));
             }
+        }
 
-
-            static object? GetSymbolValue(DeclaredSymbol symbol)
-            {
-                // TODO switch and get symbolic initializer string value
-                // if sym init is null, evaluate expr and return
-                return null;
+        private Expr GetSymbolValue(DeclaredSymbol symbol, bool src = true)
+        {
+            Dictionary<string, Expr> symbolExprs = this.ExtractSymbolExprs(src ? this.srcSymbols : this.dstSymbols);
+            switch (symbol) {
+                case DeclaredVariableSymbol var:
+                    if (var.SymbolicInitializer is { })
+                        return ExpressionEvaluator.TryEvaluate(var.SymbolicInitializer, symbolExprs);
+                    if (var.Initializer is { })
+                        return ExpressionEvaluator.TryEvaluate(var.Initializer, symbolExprs);
+                    else
+                        return Expr.Undefined;
+                case DeclaredArraySymbol arr:
+                    // TODO
+                    break;
+                case DeclaredFunctionSymbol f:
+                    // TODO
+                    break;
             }
+
+            // TODO remove
+            return Expr.Undefined;
+        }
+
+        private Dictionary<string, Expr> ExtractSymbolExprs(Dictionary<string, DeclaredSymbol> symbols)
+        {
+            var exprs = new Dictionary<string, Expr>();
+            foreach ((string identifier, DeclaredSymbol symbol) in symbols) {
+                switch (symbol) {
+                    case DeclaredVariableSymbol var:
+                        if (var.SymbolicInitializer is { })
+                            exprs.Add(identifier, var.SymbolicInitializer);
+                        else if (var.Initializer is { })
+                            exprs.Add(identifier, new SymbolicExpressionBuilder(var.Initializer).Parse());
+                        else
+                            exprs.Add(identifier, Expr.Undefined);
+                        break;
+                    case DeclaredArraySymbol arr:
+                        if (arr.SymbolicInitializers is { }) {
+                            for (int i = 0; i < arr.SymbolicInitializers.Count; i++)
+                                exprs.Add($"{identifier}[{i}]", arr.SymbolicInitializers[i] ?? Expr.Undefined);
+                        } else if (arr.Initializer is { }) {
+                            for (int i = 0; i < arr.Initializer.Count; i++) 
+                                exprs.Add($"{identifier}[{i}]", new SymbolicExpressionBuilder(arr.Initializer[i]).Parse());
+                        } else {
+                            exprs.Add(identifier, Expr.Undefined);
+                        }
+                        break;
+                }
+            }
+            return exprs;
         }
     }
 }

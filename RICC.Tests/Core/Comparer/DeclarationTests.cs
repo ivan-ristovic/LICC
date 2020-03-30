@@ -669,7 +669,7 @@ namespace RICC.Tests.Core.Comparer
         [Test]
         public void InitializerMismatchTests()
         {
-            this.Compare(
+            this.PartialCompare(
                 new SourceComponentNode(
                     new DeclarationStatementNode(1,
                         new DeclarationSpecifiersNode(1, "int"),
@@ -695,7 +695,7 @@ namespace RICC.Tests.Core.Comparer
                     .AddError(new InitializerMismatchError("y", 1, null, "100"))
             );
 
-            this.Compare(
+            this.PartialCompare(
                 new SourceComponentNode(
                     new DeclarationStatementNode(1,
                         new DeclarationSpecifiersNode(1, "int"),
@@ -740,7 +740,7 @@ namespace RICC.Tests.Core.Comparer
                     .AddError(new InitializerMismatchError("y", 1, null, "[]"))
             );
 
-            this.Compare(
+            this.PartialCompare(
                 new SourceComponentNode(
                     new DeclarationStatementNode(1,
                         new DeclarationSpecifiersNode(1, "int"),
@@ -789,7 +789,7 @@ namespace RICC.Tests.Core.Comparer
                     .AddError(new InitializerMismatchError("y", 1, "[3]", "[]", 3))
             );
 
-            this.Compare(
+            this.PartialCompare(
                 new SourceComponentNode(
                     new DeclarationStatementNode(1,
                         new DeclarationSpecifiersNode(1, "int"),

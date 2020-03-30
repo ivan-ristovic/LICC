@@ -12,5 +12,11 @@ namespace RICC.Tests.Core.Comparer
             expectedIssues ??= new MatchIssues();
             Assert.That(issues, Is.EqualTo(expectedIssues));
         }
+
+        protected void PartialCompare(ASTNode src, ASTNode dst, MatchIssues expectedIssues)
+        {
+            MatchIssues issues = new ASTNodeComparer(src, dst).AttemptMatch();
+            Assert.That(issues.Take(expectedIssues.Count), Is.EqualTo(expectedIssues));
+        }
     }
 }
