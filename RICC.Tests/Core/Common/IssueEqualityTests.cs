@@ -216,6 +216,17 @@ namespace RICC.Tests.Core.Common
             this.AssertEquality(new[] { (s1, s2) }, s3, s4);
         }
 
+        [Test]
+        public void BlockEndValueMismatchErrorEqualityTests()
+        {
+            var s1 = new BlockEndValueMismatchError("arr", 1, 3, 4);
+            var s2 = new BlockEndValueMismatchError("arr", 2, 3, 4);
+            var s3 = new BlockEndValueMismatchError("arr", 2, "n", "n+2");
+            var s4 = new BlockEndValueMismatchError("arrr", 2, "n", "n+2");
+
+            this.AssertEquality(new[] { (s1, s2) }, s3, s4);
+        }
+
 
         private void AssertEquality<T>(IReadOnlyList<(T, T)> equalPairs, params T[] others)
             where T : BaseIssue

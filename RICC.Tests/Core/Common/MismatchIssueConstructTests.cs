@@ -109,5 +109,22 @@ namespace RICC.Tests.Core.Common
                 "a", 1, "x", "y"
             ), Throws.Nothing);
         }
+
+        [Test]
+        public void BlockEndValueMismatchErrorConstructTests()
+        {
+            Assert.That(() => new BlockEndValueMismatchError(
+                "a", 1, 2, 2
+            ), Throws.InstanceOf<ArgumentException>());
+            Assert.That(() => new BlockEndValueMismatchError(
+                "a", 1, "x", "x"
+            ), Throws.InstanceOf<ArgumentException>());
+            Assert.That(() => new BlockEndValueMismatchError(
+                "b", 1, 1, 2
+            ), Throws.Nothing);
+            Assert.That(() => new BlockEndValueMismatchError(
+                "a", 1, "x", "y"
+            ), Throws.Nothing);
+        }
     }
 }

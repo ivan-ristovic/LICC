@@ -36,8 +36,8 @@ namespace RICC.Core.Comparers
 
             this.PerformStatements(n1, this.srcSymbols);
             this.PerformStatements(n2, this.dstSymbols);
-            this.CompareSymbolValues();
-
+            this.CompareSymbolValues(n2.Line);
+            // TODO remove locals!
 
             // TODO
             return this.Issues;
@@ -81,6 +81,7 @@ namespace RICC.Core.Comparers
                                 // TODO check assignment operator as well!
                                 Expr? oldValue = varSymbol.SymbolicInitializer;
                                 // FIXME make safe expr parsing (maybe this should be an extension to get expr from ExpressionNode)
+                                // Maybe a visitor that will substitute unknown expressions with variables and continue parsing
                                 varSymbol.SymbolicInitializer = Expr.Parse(rvalue.GetText()).Substitute(varSymbol.Identifier, oldValue);
                                 ExpressionNode? oldExpr = varSymbol.Initializer;
                                 if (oldExpr is { })
@@ -121,7 +122,7 @@ namespace RICC.Core.Comparers
             }
         }
 
-        private void CompareSymbolValues()
+        private void CompareSymbolValues(int blockEndLine)
         {
             foreach ((string identifier, DeclaredSymbol srcSymbol) in this.srcSymbols) {
                 if (!this.dstSymbols.ContainsKey(identifier))
@@ -130,7 +131,7 @@ namespace RICC.Core.Comparers
                 object? srcValue = GetSymbolValue(srcSymbol);
                 object? dstValue = GetSymbolValue(dstSymbol);
                 if (!Equals(srcValue, dstValue))
-                    ; //this.Issues.AddError(null);                 // block var value error
+                    this.Issues.AddError(new BlockEndValueMismatchError(identifier, blockEndLine, srcValue, dstValue));
             }
 
 
@@ -138,7 +139,7 @@ namespace RICC.Core.Comparers
             {
                 // TODO switch and get symbolic initializer string value
                 // if sym init is null, evaluate expr and return
-                return new object();
+                return null;
             }
         }
     }

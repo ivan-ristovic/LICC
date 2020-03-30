@@ -4,16 +4,15 @@ using Serilog;
 
 namespace RICC.Core.Common
 {
-    public sealed class InitializerMismatchError : BaseError
+    public sealed class BlockEndValueMismatchError : BaseError
     {
         public object? Expected { get; set; }
         public object? Actual { get; set; }
         public string Identifier { get; set; }
         public int Line { get; set; }
-        public int? Order { get; set; }
 
 
-        public InitializerMismatchError(string identifier, int line, object? expected, object? actual, int? order = null)
+        public BlockEndValueMismatchError(string identifier, int line, object? expected, object? actual)
         {
             if (expected?.Equals(actual) ?? false)
                 throw new ArgumentException("Expected different objects");
@@ -21,26 +20,25 @@ namespace RICC.Core.Common
             this.Line = line;
             this.Expected = expected;
             this.Actual = actual;
-            this.Order = order;
         }
 
-        public override string ToString() => $"{base.ToString()}| {this.Identifier}[{this.Order}] | exp: {this.Expected} | got: {this.Actual}";
+        public override string ToString() => $"{base.ToString()}| {this.Identifier} | exp: {this.Expected} | got: {this.Actual}";
 
         public override void LogIssue()
         {
-            Log.Error("Initializer mismatch for {Identifier}{Order}, declared at line {Line}: expected {ExpectedValue}, got {ActualValue}",
-                      this.Identifier, this.Order is null ? "" : $"[{this.Order}]", this.Line, this.Expected, this.Actual);
+            Log.Error("Value mismatch for {Identifier} at the end of block starting at line {Line}: expected {ExpectedValue}, got {ActualValue}",
+                      this.Identifier, this.Line, this.Expected, this.Actual);
         }
 
         public override bool Equals(object? obj)
-            => this.Equals(obj as InitializerMismatchError);
+            => this.Equals(obj as BlockEndValueMismatchError);
 
         public override bool Equals([AllowNull] BaseIssue other)
         {
             if (!base.Equals(other))
                 return false;
 
-            var o = other as InitializerMismatchError;
+            var o = other as BlockEndValueMismatchError;
             return Equals(this.Identifier, o?.Identifier) && Equals(this.Expected, o?.Expected) && Equals(this.Actual, o?.Actual);
         }
     }
