@@ -10,13 +10,13 @@ namespace RICC.Tests.Core.Comparer
         {
             MatchIssues issues = new ASTNodeComparer(src, dst).AttemptMatch();
             expectedIssues ??= new MatchIssues();
-            Assert.That(issues == expectedIssues);
+            CollectionAssert.AreEqual(expectedIssues, issues);
         }
 
         protected void PartialCompare(ASTNode src, ASTNode dst, MatchIssues expectedIssues)
         {
             MatchIssues issues = new ASTNodeComparer(src, dst).AttemptMatch();
-            Assert.That(issues.Take(expectedIssues.Count) == expectedIssues);
+            CollectionAssert.AreEqual(expectedIssues, issues.Take(expectedIssues.Count));
         }
     }
 }

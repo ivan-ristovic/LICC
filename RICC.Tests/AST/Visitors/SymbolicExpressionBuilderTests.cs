@@ -29,7 +29,7 @@ namespace RICC.Tests.AST.Visitors
             this.AssertParse(
                 new ArithmeticExpressionNode(1,
                     new LiteralNode(1, 3),
-                    new ArithmeticOperatorNode(1, "+", BinaryOperations.ArithmeticFromSymbol("+")),
+                    ArithmeticOperatorNode.FromSymbol(1, "+"),
                     new LiteralNode(1, 1)
                 ),
                 Expr.Parse("4")
@@ -38,7 +38,7 @@ namespace RICC.Tests.AST.Visitors
             this.AssertParse(
                 new ArithmeticExpressionNode(1,
                     new IdentifierNode(1, "x"),
-                    new ArithmeticOperatorNode(1, "+", BinaryOperations.ArithmeticFromSymbol("+")),
+                    ArithmeticOperatorNode.FromSymbol(1, "+"),
                     new LiteralNode(1, 1)
                 ),
                 Expr.Parse("1 + x")
@@ -47,10 +47,10 @@ namespace RICC.Tests.AST.Visitors
             this.AssertParse(
                 new ArithmeticExpressionNode(1,
                     new IdentifierNode(1, "x"),
-                    new ArithmeticOperatorNode(1, "+", BinaryOperations.ArithmeticFromSymbol("+")),
+                    ArithmeticOperatorNode.FromSymbol(1, "+"),
                     new ArithmeticExpressionNode(1,
                         new IdentifierNode(1, "x"),
-                        new ArithmeticOperatorNode(1, "-", BinaryOperations.ArithmeticFromSymbol("-")),
+                        ArithmeticOperatorNode.FromSymbol(1, "-"),
                         new LiteralNode(1, 1)
                     )
                 ),
@@ -60,10 +60,10 @@ namespace RICC.Tests.AST.Visitors
             this.AssertWildcardParse(
                 new ArithmeticExpressionNode(1,
                     new IdentifierNode(1, "x"),
-                    new ArithmeticOperatorNode(1, "+", BinaryOperations.ArithmeticFromSymbol("<<")),
+                    ArithmeticOperatorNode.FromSymbol(1, "+"),
                     new ArithmeticExpressionNode(1,
                         new IdentifierNode(1, "x"),
-                        new ArithmeticOperatorNode(1, "<<", BinaryOperations.ArithmeticFromSymbol("-")),
+                        ArithmeticOperatorNode.FromBitwiseSymbol(1, "<<"),
                         new LiteralNode(1, 1)
                     )
                 ),
@@ -77,7 +77,7 @@ namespace RICC.Tests.AST.Visitors
             this.AssertParse(
                 new LogicExpressionNode(1,
                     new LiteralNode(1, true),
-                    new BinaryLogicOperatorNode(1, "and", (a, b) => a && b),
+                    BinaryLogicOperatorNode.FromSymbol(1, "&&"),
                     new LiteralNode(1, false)
                 ),
                 "False"
@@ -86,10 +86,10 @@ namespace RICC.Tests.AST.Visitors
             this.AssertParse(
                 new LogicExpressionNode(1,
                     new LiteralNode(1, true),
-                    new BinaryLogicOperatorNode(1, "and", (a, b) => a && b),
+                    BinaryLogicOperatorNode.FromSymbol(1, "&&"),
                     new LogicExpressionNode(1,
                         new LiteralNode(1, false),
-                        new BinaryLogicOperatorNode(1, "or", (a, b) => a || b),
+                        BinaryLogicOperatorNode.FromSymbol(1, "||"),
                         new LiteralNode(1, true)
                     )
                 ),
@@ -99,7 +99,7 @@ namespace RICC.Tests.AST.Visitors
             this.AssertWildcardParse(
                 new LogicExpressionNode(1,
                     new IdentifierNode(1, "x"),
-                    new BinaryLogicOperatorNode(1, "and", (a, b) => a && b),
+                    BinaryLogicOperatorNode.FromSymbol(1, "&&"),
                     new LiteralNode(1, 1)
                 ),
                 "?"

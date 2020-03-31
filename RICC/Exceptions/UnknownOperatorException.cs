@@ -13,19 +13,19 @@ namespace RICC.Exceptions
         }
 
         public UnknownOperatorException(string symbol)
-            : base("Unknown operator")
+            : base($"Unknown operator: {symbol}")
         {
             this.Symbol = symbol;
         }
 
         public UnknownOperatorException(string symbol, Exception? innerException)
-            : base("Unknown operator", innerException)
+            : base($"Unknown operator {symbol}", innerException)
         {
             this.Symbol = symbol;
         }
 
         public UnknownOperatorException(string symbol, string? paramName)
-            : base("Unknown operator", paramName)
+            : base($"Unknown operator {symbol}", paramName)
         {
             this.Symbol = symbol;
         }

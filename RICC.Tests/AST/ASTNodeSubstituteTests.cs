@@ -27,12 +27,12 @@ namespace RICC.Tests.AST
         {
             var ast1 = new ArithmeticExpressionNode(1,
                 new IdentifierNode(1, "x"),
-                new ArithmeticOperatorNode(1, "+", BinaryOperations.ArithmeticFromSymbol("+")),
+                ArithmeticOperatorNode.FromSymbol(1, "+"),
                 new IdentifierNode(1, "x")
             );
             var ast2 = new ArithmeticExpressionNode(1,
                 new LiteralNode(1, 1),
-                new ArithmeticOperatorNode(1, "+", BinaryOperations.ArithmeticFromSymbol("+")),
+                ArithmeticOperatorNode.FromSymbol(1, "+"),
                 new LiteralNode(1, 1)
             );
             Assert.That(ast1.Substitute(new IdentifierNode(2, "x"), new LiteralNode(2, 1)), Is.EqualTo(ast2));
@@ -43,10 +43,10 @@ namespace RICC.Tests.AST
         {
             var ast1 = new ArithmeticExpressionNode(1,
                 new IdentifierNode(1, "x"),
-                new ArithmeticOperatorNode(1, "+", BinaryOperations.ArithmeticFromSymbol("+")),
+                ArithmeticOperatorNode.FromSymbol(1, "+"),
                 new ArithmeticExpressionNode(1,
                     new IdentifierNode(1, "y"),
-                    new ArithmeticOperatorNode(1, "+", BinaryOperations.ArithmeticFromSymbol("+")),
+                    ArithmeticOperatorNode.FromSymbol(1, "+"),
                     new IdentifierNode(1, "x")
                 )
             );
@@ -58,10 +58,10 @@ namespace RICC.Tests.AST
             );
             var ast2 = new ArithmeticExpressionNode(1,
                 new IdentifierNode(1, "x"),
-                new ArithmeticOperatorNode(1, "+", BinaryOperations.ArithmeticFromSymbol("+")),
+                ArithmeticOperatorNode.FromSymbol(1, "+"),
                 new ArithmeticExpressionNode(1,
                     repl,
-                    new ArithmeticOperatorNode(1, "+", BinaryOperations.ArithmeticFromSymbol("+")),
+                    ArithmeticOperatorNode.FromSymbol(1, "+"),
                     new IdentifierNode(1, "x")
                 )
             );

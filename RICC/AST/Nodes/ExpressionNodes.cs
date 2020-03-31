@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using RICC.AST.Nodes.Common;
-using RICC.Exceptions;
 
 namespace RICC.AST.Nodes
 {
@@ -108,7 +106,22 @@ namespace RICC.AST.Nodes
             : base(line, left, @operator, right) { }
 
         public AssignmentExpressionNode(int line, ExpressionNode left, ExpressionNode right)
-            : base(line, left, new AssignmentOperatorNode(line, "=", BinaryOperations.AssignmentFromSymbol("=")), right) { }
+            : base(line, left, AssignmentOperatorNode.FromSymbol(line, "="), right) { }
+
+
+        public AssignmentExpressionNode SimplifyComplexAssignment()
+        {
+            if (this.Operator is ComplexAssignmentOperatorNode) {
+                string part = this.Operator.Symbol[..^-1];
+                var expanded = new ArithmeticExpressionNode(this.Line,
+                    this.LeftOperand,
+                    ArithmeticOperatorNode.FromSymbol(this.Operator.Line, "+"),
+                    this.RightOperand
+                );
+                return new AssignmentExpressionNode(this.Line, this.LeftOperand, expanded);
+            }
+            return this;
+        }
     }
 
     public sealed class IdentifierNode : ExpressionNode

@@ -59,7 +59,7 @@ namespace RICC.Tests.AST
                         new ArithmeticExpressionNode(
                             3,
                             new LiteralNode(4, 1),
-                            new ArithmeticOperatorNode(4, "+", (a, _) => a),
+                            ArithmeticOperatorNode.FromSymbol(4, "+"),
                             new LiteralNode(4, 1)
                         )
                     )
@@ -76,7 +76,7 @@ namespace RICC.Tests.AST
                         new ArithmeticExpressionNode(
                             3,
                             new LiteralNode(4, 1),
-                            new ArithmeticOperatorNode(4, "+", (_, b) => b),
+                            ArithmeticOperatorNode.FromSymbol(4, "+"),
                             new LiteralNode(4, 1)
                         )
                     )
@@ -99,7 +99,7 @@ namespace RICC.Tests.AST
                         new ArithmeticExpressionNode(
                             3,
                             new LiteralNode(4, 2),
-                            new ArithmeticOperatorNode(4, "+", (a, _) => a),
+                            ArithmeticOperatorNode.FromSymbol(4, "+"),
                             new LiteralNode(4, 1)
                         )
                     )
@@ -116,7 +116,7 @@ namespace RICC.Tests.AST
                         new ArithmeticExpressionNode(
                             3,
                             new LiteralNode(4, 1),
-                            new ArithmeticOperatorNode(4, "+", (_, b) => b),
+                            ArithmeticOperatorNode.FromSymbol(4, "+"),
                             new LiteralNode(4, 1)
                         )
                     )
@@ -139,7 +139,7 @@ namespace RICC.Tests.AST
                         new ArithmeticExpressionNode(
                             3,
                             new LiteralNode(4, 1),
-                            new ArithmeticOperatorNode(4, "-", (a, _) => a),
+                            ArithmeticOperatorNode.FromSymbol(4, "-"),
                             new LiteralNode(4, 1)
                         )
                     )
@@ -156,7 +156,7 @@ namespace RICC.Tests.AST
                         new ArithmeticExpressionNode(
                             3,
                             new LiteralNode(4, 1),
-                            new ArithmeticOperatorNode(4, "+", (_, b) => b),
+                            ArithmeticOperatorNode.FromSymbol(4, "+"),
                             new LiteralNode(4, 1)
                         )
                     )
@@ -179,7 +179,7 @@ namespace RICC.Tests.AST
                         new ArithmeticExpressionNode(
                             3,
                             new LiteralNode(4, 1),
-                            new ArithmeticOperatorNode(4, "+", (a, _) => a),
+                            ArithmeticOperatorNode.FromSymbol(4, "+"),
                             new LiteralNode(4, 1)
                         )
                     )
@@ -196,7 +196,7 @@ namespace RICC.Tests.AST
                         new ArithmeticExpressionNode(
                             3,
                             new LiteralNode(4, 1),
-                            new ArithmeticOperatorNode(4, "+", (_, b) => b),
+                            ArithmeticOperatorNode.FromSymbol(4, "+"),
                             new LiteralNode(4, 1)
                         )
                     )
@@ -219,7 +219,7 @@ namespace RICC.Tests.AST
                         new ArithmeticExpressionNode(
                             3,
                             new LiteralNode(4, 1),
-                            new ArithmeticOperatorNode(4, "+", (a, _) => a),
+                            ArithmeticOperatorNode.FromSymbol(4, "+"),
                             new LiteralNode(4, 1)
                         )
                     )
@@ -236,7 +236,7 @@ namespace RICC.Tests.AST
                         new ArithmeticExpressionNode(
                             3,
                             new LiteralNode(4, 1),
-                            new ArithmeticOperatorNode(4, "+", (_, b) => b),
+                            ArithmeticOperatorNode.FromSymbol(4, "+"),
                             new LiteralNode(4, 1)
                         )
                     )
@@ -452,15 +452,15 @@ namespace RICC.Tests.AST
                 1,
                 new ArithmeticExpressionNode(
                     2, 
-                    new LiteralNode(2, 3), 
-                    new ArithmeticOperatorNode(2, "+", (a, _) => a), 
+                    new LiteralNode(2, 3),
+                    ArithmeticOperatorNode.FromSymbol(2, "+"), 
                     new LiteralNode(2, 3)
                 ),
-                new ArithmeticOperatorNode(2, "-", (a, _) => a),
+                ArithmeticOperatorNode.FromSymbol(2, "-"),
                 new ArithmeticExpressionNode(
                     2,
                     new LiteralNode(2, 3),
-                    new ArithmeticOperatorNode(2, "+", (a, _) => a),
+                    ArithmeticOperatorNode.FromSymbol(2, "+"),
                     new LiteralNode(2, 3)
                 )
             );
@@ -469,14 +469,14 @@ namespace RICC.Tests.AST
                 new ArithmeticExpressionNode(
                     1,
                     new LiteralNode(1, 3),
-                    new ArithmeticOperatorNode(1, "+", (a, _) => a),
+                    ArithmeticOperatorNode.FromSymbol(1, "+"),
                     new LiteralNode(1, 3)
                 ),
-                new ArithmeticOperatorNode(1, "-", (a, _) => a),
+                ArithmeticOperatorNode.FromSymbol(1, "-"),
                 new ArithmeticExpressionNode(
                     1,
                     new LiteralNode(1, 3),
-                    new ArithmeticOperatorNode(1, "+", (a, _) => a),
+                    ArithmeticOperatorNode.FromSymbol(1, "+"),
                     new LiteralNode(1, 3)
                 )
             );
@@ -491,10 +491,10 @@ namespace RICC.Tests.AST
                 new ArithmeticExpressionNode(
                     2,
                     new LiteralNode(2, 3),
-                    new ArithmeticOperatorNode(2, "+", (a, _) => a),
+                    ArithmeticOperatorNode.FromSymbol(2, "+"),
                     new LiteralNode(2, 3)
                 ),
-                new ArithmeticOperatorNode(2, "-", (a, _) => a),
+                ArithmeticOperatorNode.FromSymbol(2, "-"),
                 new LiteralNode(2, 6)
             );
             ASTNode ast2 = new ArithmeticExpressionNode(
@@ -502,14 +502,14 @@ namespace RICC.Tests.AST
                 new ArithmeticExpressionNode(
                     1,
                     new LiteralNode(1, 3),
-                    new ArithmeticOperatorNode(1, "+", (a, _) => a),
+                    ArithmeticOperatorNode.FromSymbol(1, "+"),
                     new LiteralNode(1, 3)
                 ),
-                new ArithmeticOperatorNode(1, "-", (a, _) => a),
+                ArithmeticOperatorNode.FromSymbol(1, "-"),
                 new ArithmeticExpressionNode(
                     1,
                     new LiteralNode(1, 3),
-                    new ArithmeticOperatorNode(1, "+", (a, _) => a),
+                    ArithmeticOperatorNode.FromSymbol(1, "+"),
                     new LiteralNode(1, 3)
                 )
             );
@@ -524,14 +524,14 @@ namespace RICC.Tests.AST
                 new ArithmeticExpressionNode(
                     2,
                     new LiteralNode(2, 3),
-                    new ArithmeticOperatorNode(2, "+", (a, _) => a),
+                    ArithmeticOperatorNode.FromSymbol(2, "+"),
                     new LiteralNode(2, 3)
                 ),
-                new ArithmeticOperatorNode(2, "-", (a, _) => a),
+                ArithmeticOperatorNode.FromSymbol(2, "-"),
                 new ArithmeticExpressionNode(
                     1,
                     new LiteralNode(1, 3),
-                    new ArithmeticOperatorNode(1, "*", (a, _) => a),
+                    ArithmeticOperatorNode.FromSymbol(1, "*"),
                     new LiteralNode(1, 3)
                 )
             );
@@ -540,14 +540,14 @@ namespace RICC.Tests.AST
                 new ArithmeticExpressionNode(
                     1,
                     new LiteralNode(1, 3),
-                    new ArithmeticOperatorNode(1, "+", (a, _) => a),
+                    ArithmeticOperatorNode.FromSymbol(1, "+"),
                     new LiteralNode(1, 3)
                 ),
-                new ArithmeticOperatorNode(1, "-", (a, _) => a),
+                ArithmeticOperatorNode.FromSymbol(1, "-"),
                 new ArithmeticExpressionNode(
                     1,
                     new LiteralNode(1, 3),
-                    new ArithmeticOperatorNode(1, "+", (a, _) => a),
+                    ArithmeticOperatorNode.FromSymbol(1, "+"),
                     new LiteralNode(1, 3)
                 )
             );

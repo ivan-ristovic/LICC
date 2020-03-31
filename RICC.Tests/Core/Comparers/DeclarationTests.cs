@@ -639,7 +639,7 @@ namespace RICC.Tests.Core.Comparer
                                 new IdentifierNode(1, "x"),
                                 new ArithmeticExpressionNode(1,
                                     new IdentifierNode(1, "z"),
-                                    new ArithmeticOperatorNode(1, "+", BinaryOperations.ArithmeticFromSymbol("+")),
+                                    ArithmeticOperatorNode.FromSymbol(1, "+"),
                                     new LiteralNode(1, 1)
                                 )
                             )
@@ -774,7 +774,7 @@ namespace RICC.Tests.Core.Comparer
                                     new LiteralNode(1, 2),
                                     new ArithmeticExpressionNode(1, 
                                         new LiteralNode(1, 3), 
-                                        new ArithmeticOperatorNode(1, "+", BinaryOperations.ArithmeticFromSymbol("+")),
+                                        ArithmeticOperatorNode.FromSymbol(1, "+"),
                                         new IdentifierNode(1, "x")
                                     ),
                                     new LiteralNode(1, 2)
@@ -801,10 +801,10 @@ namespace RICC.Tests.Core.Comparer
                                     new ArithmeticExpressionNode(1,
                                         new ArithmeticExpressionNode(1,
                                             new LiteralNode(1, 4),
-                                            new ArithmeticOperatorNode(1, "-", BinaryOperations.ArithmeticFromSymbol("-")),
+                                            ArithmeticOperatorNode.FromSymbol(1, "-"),
                                             new LiteralNode(1, 1)
                                         ),
-                                        new ArithmeticOperatorNode(1, "+", BinaryOperations.ArithmeticFromSymbol("+")),
+                                        ArithmeticOperatorNode.FromSymbol(1, "+"),
                                         new IdentifierNode(1, "x")
                                     ),
                                     new LiteralNode(1, 3)
@@ -834,7 +834,7 @@ namespace RICC.Tests.Core.Comparer
                                     new LiteralNode(1, 2),
                                     new ArithmeticExpressionNode(1,
                                         new LiteralNode(1, 3),
-                                        new ArithmeticOperatorNode(1, "+", BinaryOperations.ArithmeticFromSymbol("+")),
+                                        ArithmeticOperatorNode.FromSymbol(1, "+"),
                                         new IdentifierNode(1, "x")
                                     ),
                                     new LiteralNode(1, 2)

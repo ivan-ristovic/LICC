@@ -41,7 +41,7 @@ namespace RICC.AST.Builders.Lua
                     return new WhileStatementNode(ctx.Start.Line, cond, body);
                 case "repeat":
                     ExpressionNode until = this.Visit(ctx.exp().Single()).As<ExpressionNode>();
-                    var negUntil = new UnaryExpressionNode(until.Line, new UnaryOperatorNode(until.Line, "not", UnaryOperations.NotPrimitive), until);
+                    var negUntil = new UnaryExpressionNode(until.Line, UnaryOperatorNode.FromSymbol(until.Line, "not"), until);
                     BlockStatementNode repeatBody = this.Visit(ctx.block().Single()).As<BlockStatementNode>();
                     return new BlockStatementNode(ctx.Start.Line, repeatBody, new WhileStatementNode(ctx.Start.Line, negUntil, repeatBody));
                 case "if":

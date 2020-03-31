@@ -69,8 +69,7 @@ namespace RICC.AST.Builders.Pseudo
         private ExpressionNode VisitArithmeticExpression(int line, ExpContext lexp, AopContext aop, ExpContext rexp)
         {
             ExpressionNode left = this.Visit(lexp).As<ExpressionNode>();
-            string symbol = aop.GetText();
-            var op = new ArithmeticOperatorNode(line, symbol, BinaryOperations.ArithmeticFromSymbol(symbol));
+            var op = ArithmeticOperatorNode.FromSymbol(line, aop.GetText());
             ExpressionNode right = this.Visit(rexp).As<ExpressionNode>();
             return new ArithmeticExpressionNode(line, left, op, right);
         }
@@ -78,8 +77,7 @@ namespace RICC.AST.Builders.Pseudo
         private ExpressionNode VisitRelationalExpression(int line, ExpContext lexp, RopContext rop, ExpContext rexp)
         {
             ExpressionNode left = this.Visit(lexp).As<ExpressionNode>();
-            string symbol = rop.GetText();
-            var op = new RelationalOperatorNode(line, symbol, BinaryOperations.RelationalFromSymbol(symbol));
+            var op = RelationalOperatorNode.FromSymbol(line, rop.GetText());
             ExpressionNode right = this.Visit(rexp).As<ExpressionNode>();
             return new RelationalExpressionNode(line, left, op, right);
         }
@@ -87,23 +85,15 @@ namespace RICC.AST.Builders.Pseudo
         private ExpressionNode VisitLogicExpression(int line, ExpContext lexp, LopContext lop, ExpContext rexp)
         {
             ExpressionNode left = this.Visit(lexp).As<ExpressionNode>();
-            string symbol = lop.GetText();
+            var op = BinaryLogicOperatorNode.FromSymbol(line, lop.GetText());
             ExpressionNode right = this.Visit(rexp).As<ExpressionNode>();
-            Func<bool, bool, bool> logic = symbol switch
-            {
-                "and" => (x, y) => x && y,
-                "or" => (x, y) => x || y,
-                _ => throw new UnknownOperatorException(symbol),
-            };
-            var op = new BinaryLogicOperatorNode(line, symbol, logic);
             return new LogicExpressionNode(line, left, op, right);
         }
 
         private ExpressionNode VisitUnaryExpression(int line, UopContext uop, ExpContext exp)
         {
+            var op = UnaryOperatorNode.FromSymbol(line, uop.GetText());
             ExpressionNode operand = this.Visit(exp).As<ExpressionNode>();
-            string symbol = uop.GetText();
-            var op = new UnaryOperatorNode(line, symbol, UnaryOperations.UnaryFromSymbol(symbol));
             return new UnaryExpressionNode(line, op, operand);
         }
     }

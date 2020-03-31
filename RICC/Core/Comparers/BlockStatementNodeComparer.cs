@@ -80,26 +80,12 @@ namespace RICC.Core.Comparers
         {
             foreach (StatementNode statement in n1.ChildrenOfType<StatementNode>()) {
                 switch (statement) {
-                    case ExpressionStatementNode expr:
-                        if (IsLvalueAssignment(expr, out ExpressionNode? lvalue, out ExpressionNode? rvalue)) {
-                            if (lvalue is IdentifierNode var) {
-                                if (!this.TryFindSymbol(var.Identifier, src, out DeclaredSymbol? declSymbol))
-                                    throw new SemanticErrorException($"{var.Identifier} symbol is not declared.");
-                                if (!(declSymbol is DeclaredVariableSymbol varSymbol))
-                                    throw new SemanticErrorException($"Cannot assign to symbol {var.Identifier}.");
-
-                                // TODO check assignment operator as well!
-                                Expr rvalueExpr = new SymbolicExpressionBuilder(rvalue!).Parse();
-                                varSymbol.SymbolicInitializer = rvalueExpr.Substitute(varSymbol.Identifier, varSymbol.SymbolicInitializer);
-                                ExpressionNode? oldExpr = varSymbol.Initializer;
-                                if (oldExpr is { })
-                                    varSymbol.Initializer = rvalue?.Substitute(var, oldExpr).As<ExpressionNode>();
-
-                                // TODO
-                            } else if (lvalue is ArrayAccessExpressionNode arr) {
-                                // TODO
-                                throw new NotImplementedException("Array assignment handling.");
-                            }
+                    case ExpressionStatementNode exprStat:
+                        if (exprStat.Expression is ExpressionListNode expList) {
+                            foreach (ExpressionNode expr in expList.Expressions)
+                                PerformAssignment(expr);
+                        } else {
+                            PerformAssignment(exprStat.Expression);
                         }
                         break;
                     case BlockStatementNode block:
@@ -110,11 +96,35 @@ namespace RICC.Core.Comparers
             }
 
 
-            static bool IsLvalueAssignment(ExpressionStatementNode stat, out ExpressionNode? lvalue, out ExpressionNode? rvalue)
+            void PerformAssignment(ExpressionNode? expr)
+            {
+                if (expr is null)
+                    return;
+                if (IsLvalueAssignment(expr, out ExpressionNode? lvalue, out ExpressionNode? rvalue)) {
+                    if (lvalue is IdentifierNode var) {
+                        if (!this.TryFindSymbol(var.Identifier, src, out DeclaredSymbol? declSymbol))
+                            throw new SemanticErrorException($"{var.Identifier} symbol is not declared.");
+                        if (!(declSymbol is DeclaredVariableSymbol varSymbol))
+                            throw new SemanticErrorException($"Cannot assign to symbol {var.Identifier}.");
+
+                        Expr rvalueExpr = new SymbolicExpressionBuilder(rvalue!).Parse();
+                        varSymbol.SymbolicInitializer = rvalueExpr.Substitute(varSymbol.Identifier, varSymbol.SymbolicInitializer);
+                        ExpressionNode? oldExpr = varSymbol.Initializer;
+                        if (oldExpr is { })
+                            varSymbol.Initializer = rvalue?.Substitute(var, oldExpr).As<ExpressionNode>();
+                    } else if (lvalue is ArrayAccessExpressionNode arr) {
+                        // TODO
+                        throw new NotImplementedException("Array assignment handling.");
+                    }
+                }
+            }
+
+            static bool IsLvalueAssignment(ExpressionNode expr, out ExpressionNode? lvalue, out ExpressionNode? rvalue)
             {
                 lvalue = rvalue = null;
 
-                if (stat.Expression is AssignmentExpressionNode ass) {
+                if (expr is AssignmentExpressionNode ass) {
+                    ass = ass.SimplifyComplexAssignment();
                     rvalue = ass.RightOperand;
                     if (ass.LeftOperand is IdentifierNode var) {
                         lvalue = var;

@@ -45,40 +45,33 @@ namespace RICC.AST.Builders.Lua
 
             if (ctx.operatorComparison() is { }) {
                 (ExpressionNode left, string symbol, ExpressionNode right) = ParseBinaryExpression();
-                var op = new RelationalOperatorNode(ctx.Start.Line, symbol, BinaryOperations.RelationalFromSymbol(symbol));
+                var op = RelationalOperatorNode.FromSymbol(ctx.Start.Line, symbol);
                 return new RelationalExpressionNode(ctx.Start.Line, left, op, right);
             }
 
             if (IsArithmeticExpressionContext(ctx)) {
                 (ExpressionNode left, string symbol, ExpressionNode right) = ParseBinaryExpression();
                 ArithmeticOperatorNode op = ctx.operatorBitwise() is { }
-                    ? new ArithmeticOperatorNode(ctx.Start.Line, symbol, BinaryOperations.BitwiseBinaryFromSymbol(symbol))
-                    : new ArithmeticOperatorNode(ctx.Start.Line, symbol, BinaryOperations.ArithmeticFromSymbol(symbol));
+                    ? ArithmeticOperatorNode.FromBitwiseSymbol(ctx.Start.Line, symbol)
+                    : ArithmeticOperatorNode.FromSymbol(ctx.Start.Line, symbol);
                 return new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
             }
 
             if (IsLogicExpressionContext(ctx, out string? logicOp)) {
                 if (ctx.operatorUnary() is { }) {
                     ExpressionNode notOperand = this.Visit(ctx.exp().First()).As<ExpressionNode>();
-                    var notOp = new UnaryOperatorNode(ctx.Start.Line, "not", UnaryOperations.UnaryFromSymbol("!"));
+                    var notOp = UnaryOperatorNode.FromSymbol(ctx.Start.Line, "not");
                     return new UnaryExpressionNode(ctx.Start.Line, notOp, notOperand);
                 }
 
                 (ExpressionNode left, string symbol, ExpressionNode right) = ParseBinaryExpression();
-                Func<bool, bool, bool> logic = symbol switch
-                {
-                    "and" => (x, y) => x && y,
-                    "or" => (x, y) => x || y,
-                    _ => throw new UnknownOperatorException(symbol),
-                };
-                var op = new BinaryLogicOperatorNode(ctx.Start.Line, symbol, logic);
+                var op = BinaryLogicOperatorNode.FromSymbol(ctx.Start.Line, symbol);
                 return new LogicExpressionNode(ctx.Start.Line, left, op, right);
             }
 
             if (ctx.operatorUnary() is { }) {
                 ExpressionNode unaryOperand = this.Visit(ctx.exp().First()).As<ExpressionNode>();
-                string symbol = ctx.children[0].GetText();
-                var unaryOp = new UnaryOperatorNode(ctx.Start.Line, symbol, UnaryOperations.UnaryFromSymbol(symbol));
+                var unaryOp = UnaryOperatorNode.FromSymbol(ctx.Start.Line, ctx.children[0].GetText());
                 return new UnaryExpressionNode(ctx.Start.Line, unaryOp, unaryOperand);
             }
 

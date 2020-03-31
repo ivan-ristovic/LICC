@@ -28,7 +28,7 @@ namespace RICC.AST.Builders.C
 
             ExpressionNode unary = this.Visit(ctx.unaryExpression()).As<ExpressionNode>();
             string symbol = ctx.children[1].GetText();
-            var op = new AssignmentOperatorNode(ctx.Start.Line, symbol, BinaryOperations.AssignmentFromSymbol(symbol));
+            var op = AssignmentOperatorNode.FromSymbol(ctx.Start.Line, symbol);
             ExpressionNode expr = this.Visit(ctx.assignmentExpression()).As<ExpressionNode>();
 
             return new AssignmentExpressionNode(ctx.Start.Line, unary, op, expr);
@@ -50,8 +50,7 @@ namespace RICC.AST.Builders.C
             if (ctx.ChildCount > 1) {
                 ExpressionNode left = this.Visit(ctx.logicalOrExpression()).As<ExpressionNode>();
                 ExpressionNode right = this.Visit(ctx.logicalAndExpression()).As<ExpressionNode>();
-                string symbol = ctx.children[1].GetText();
-                var op = new BinaryLogicOperatorNode(ctx.Start.Line, symbol, (x, y) => x || y);
+                var op = BinaryLogicOperatorNode.FromSymbol(ctx.Start.Line, ctx.children[1].GetText());
                 return new LogicExpressionNode(ctx.Start.Line, left, op, right);
             } else {
                 return this.Visit(ctx.logicalAndExpression());
@@ -63,8 +62,7 @@ namespace RICC.AST.Builders.C
             if (ctx.ChildCount > 1) {
                 ExpressionNode left = this.Visit(ctx.logicalAndExpression()).As<ExpressionNode>();
                 ExpressionNode right = this.Visit(ctx.inclusiveOrExpression()).As<ExpressionNode>();
-                string symbol = ctx.children[1].GetText();
-                var op = new BinaryLogicOperatorNode(ctx.Start.Line, symbol, (x, y) => x && y);
+                var op = BinaryLogicOperatorNode.FromSymbol(ctx.Start.Line, ctx.children[1].GetText());
                 return new LogicExpressionNode(ctx.Start.Line, left, op, right);
             } else {
                 return this.Visit(ctx.inclusiveOrExpression());
@@ -117,8 +115,7 @@ namespace RICC.AST.Builders.C
 
             ExpressionNode left = this.Visit(ctx.equalityExpression()).As<ExpressionNode>();
             ExpressionNode right = this.Visit(ctx.relationalExpression()).As<ExpressionNode>();
-            string symbol = ctx.children[1].GetText();
-            var op = new RelationalOperatorNode(ctx.Start.Line, symbol, BinaryOperations.RelationalFromSymbol(symbol));
+            var op = RelationalOperatorNode.FromSymbol(ctx.Start.Line, ctx.children[1].GetText());
             return new RelationalExpressionNode(ctx.Start.Line, left, op, right);
         }
 
@@ -129,8 +126,7 @@ namespace RICC.AST.Builders.C
 
             ExpressionNode left = this.Visit(ctx.relationalExpression()).As<ExpressionNode>();
             ExpressionNode right = this.Visit(ctx.shiftExpression()).As<ExpressionNode>();
-            string symbol = ctx.children[1].GetText();
-            var op = new RelationalOperatorNode(ctx.Start.Line, symbol, BinaryOperations.RelationalFromSymbol(symbol));
+            var op = RelationalOperatorNode.FromSymbol(ctx.Start.Line, ctx.children[1].GetText());
             return new RelationalExpressionNode(ctx.Start.Line, left, op, right);
         }
 
@@ -139,8 +135,7 @@ namespace RICC.AST.Builders.C
             if (ctx.ChildCount > 1) {
                 ExpressionNode left = this.Visit(ctx.shiftExpression()).As<ExpressionNode>();
                 ExpressionNode right = this.Visit(ctx.additiveExpression()).As<ExpressionNode>();
-                string symbol = ctx.children[1].GetText();
-                var op = new ArithmeticOperatorNode(ctx.Start.Line, symbol, BinaryOperations.ArithmeticFromSymbol(symbol));
+                var op = ArithmeticOperatorNode.FromSymbol(ctx.Start.Line, ctx.children[1].GetText());
                 return new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
             } else {
                 return this.Visit(ctx.additiveExpression());
@@ -152,8 +147,7 @@ namespace RICC.AST.Builders.C
             if (ctx.ChildCount > 1) {
                 ExpressionNode left = this.Visit(ctx.additiveExpression()).As<ExpressionNode>();
                 ExpressionNode right = this.Visit(ctx.multiplicativeExpression()).As<ExpressionNode>();
-                string symbol = ctx.children[1].GetText();
-                var op = new ArithmeticOperatorNode(ctx.Start.Line, symbol, BinaryOperations.ArithmeticFromSymbol(symbol));
+                var op = ArithmeticOperatorNode.FromSymbol(ctx.Start.Line, ctx.children[1].GetText());
                 return new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
             } else {
                 return this.Visit(ctx.multiplicativeExpression());
@@ -165,8 +159,7 @@ namespace RICC.AST.Builders.C
             if (ctx.ChildCount > 1) {
                 ExpressionNode left = this.Visit(ctx.multiplicativeExpression()).As<ExpressionNode>();
                 ExpressionNode right = this.Visit(ctx.castExpression()).As<ExpressionNode>();
-                string symbol = ctx.children[1].GetText();
-                var op = new ArithmeticOperatorNode(ctx.Start.Line, symbol, BinaryOperations.ArithmeticFromSymbol(symbol));
+                var op = ArithmeticOperatorNode.FromSymbol(ctx.Start.Line, ctx.children[1].GetText());
                 return new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
             } else {
                 return this.Visit(ctx.castExpression());
@@ -193,8 +186,7 @@ namespace RICC.AST.Builders.C
             } else {
                 expr = this.Visit(ctx.unaryExpression()).As<ExpressionNode>();
             }
-            string symbol = ctx.children[0].GetText();
-            var op = new UnaryOperatorNode(ctx.Start.Line, symbol, UnaryOperations.UnaryFromSymbol(symbol));
+            var op = UnaryOperatorNode.FromSymbol(ctx.Start.Line, ctx.children[0].GetText());
             return new UnaryExpressionNode(ctx.Start.Line, op, expr);
         }
 

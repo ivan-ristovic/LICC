@@ -45,6 +45,7 @@ namespace RICC.AST.Nodes.Common
             return symbol switch
             {
                 "=" => (a, b) => b,
+                ":=" => (a, b) => b,
                 "+=" => AddPrimitive,
                 "-=" => SubtractPrimitive,
                 "*=" => MultiplyPrimitive,
@@ -70,6 +71,19 @@ namespace RICC.AST.Nodes.Common
                 _ => throw new UnknownOperatorException(symbol),
             };
         }
+
+        public static Func<bool, bool, bool> LogicFromSymbol(string symbol)
+        {
+            return symbol switch
+            {
+                "&&" => (a, b) => a && b,
+                "and" => (a, b) => a && b,
+                "||" => (a, b) => a || b,
+                "or" => (a, b) => a || b,
+                _ => throw new UnknownOperatorException(symbol),
+            };
+        }
+
 
         public static object AddPrimitive(object x, object y)
         {
