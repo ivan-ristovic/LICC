@@ -9,9 +9,6 @@ namespace RICC.AST.Visitors
 {
     public sealed class ExpressionEvaluator
     {
-        private static readonly int _threshold = 10000;
-
-
         public static Expr TryEvaluate(ExpressionNode node, Dictionary<string, Expr> symbols)
             => TryEvaluate(new SymbolicExpressionBuilder(node).Parse(), symbols);
 
@@ -20,7 +17,7 @@ namespace RICC.AST.Visitors
             IEnumerable<Expr> vars = expr.CollectVariables();
             bool canReduce = true;
             for (int i = 0; canReduce && vars.Any(); i++) {
-                if (i > _threshold)
+                if (i > symbols.Count)
                     throw new EvaluationException("Infinite cycle detected.");
                 canReduce = false;
                 foreach (Expr v in vars) {
@@ -32,6 +29,9 @@ namespace RICC.AST.Visitors
                 }
                 vars = expr.CollectVariables();
             }
+
+            if (expr.Type == SymbolicExpressionType.Undefined)
+                throw new EvaluationException("Undefined variable found in expression");
 
             return expr;
         }

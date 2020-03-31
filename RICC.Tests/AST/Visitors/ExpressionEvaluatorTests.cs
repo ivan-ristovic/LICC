@@ -24,6 +24,7 @@ namespace RICC.Tests.AST.Visitors
         public void ConstantExpressionTests()
         {
             Assert.That(this.Evaluate("4"), Is.EqualTo("4"));
+            Assert.That(this.Evaluate("-4"), Is.EqualTo("-4"));
             Assert.That(this.Evaluate("1 + 3"), Is.EqualTo("4"));
             Assert.That(this.Evaluate("1 + (3*2)"), Is.EqualTo("7"));
             Assert.That(this.Evaluate("(1/1) + (3*2)"), Is.EqualTo("7"));
@@ -36,6 +37,7 @@ namespace RICC.Tests.AST.Visitors
         public void VariableExpressionTests()
         {
             Assert.That(this.Evaluate("1 + a"), Is.EqualTo("1 + a"));
+            Assert.That(this.Evaluate("0 - a"), Is.EqualTo("-a"));
             Assert.That(this.Evaluate("a + 1"), Is.EqualTo("1 + a"));
             Assert.That(this.Evaluate("a * 2 + 1"), Is.EqualTo("1 + 2*a"));
             Assert.That(this.Evaluate("a + a + 1"), Is.EqualTo("1 + 2*a"));
@@ -44,6 +46,7 @@ namespace RICC.Tests.AST.Visitors
             Assert.That(this.Evaluate("two * 2 + 1"), Is.EqualTo("5"));
             Assert.That(this.Evaluate("twoo + four + 1"), Is.EqualTo("7"));
             Assert.That(this.Evaluate("twoo + four + five"), Is.EqualTo("6 + five"));
+            Assert.That(this.Evaluate("-two"), Is.EqualTo("-2"));
         }
 
         [Test]

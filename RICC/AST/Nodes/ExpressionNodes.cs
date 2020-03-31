@@ -111,11 +111,11 @@ namespace RICC.AST.Nodes
 
         public AssignmentExpressionNode SimplifyComplexAssignment()
         {
-            if (this.Operator is ComplexAssignmentOperatorNode) {
-                string part = this.Operator.Symbol[..^-1];
+            if (this.Operator is ComplexAssignmentOperatorNode && this.Operator.Symbol.Length > 1) {
+                string part = this.Operator.Symbol.Substring(0, this.Operator.Symbol.IndexOf('='));
                 var expanded = new ArithmeticExpressionNode(this.Line,
                     this.LeftOperand,
-                    ArithmeticOperatorNode.FromSymbol(this.Operator.Line, "+"),
+                    ArithmeticOperatorNode.FromSymbol(this.Operator.Line, part),
                     this.RightOperand
                 );
                 return new AssignmentExpressionNode(this.Line, this.LeftOperand, expanded);

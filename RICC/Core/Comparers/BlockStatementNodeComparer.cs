@@ -15,10 +15,8 @@ namespace RICC.Core.Comparers
     {
         private readonly Dictionary<string, DeclaredSymbol> srcSymbols = new Dictionary<string, DeclaredSymbol>();
         private readonly Dictionary<string, DeclaredSymbol> dstSymbols = new Dictionary<string, DeclaredSymbol>();
-
         private Dictionary<string, DeclaredSymbol> localSrcSymbols = new Dictionary<string, DeclaredSymbol>();
         private Dictionary<string, DeclaredSymbol> localDstSymbols = new Dictionary<string, DeclaredSymbol>();
-
 
 
         public BlockStatementNodeComparer()
@@ -42,7 +40,7 @@ namespace RICC.Core.Comparers
             this.PerformStatements(n1, src: true);
             this.PerformStatements(n2, src: false);
             this.CompareSymbolValues(n2.Line);
-            
+
             return this.Issues;
         }
 
@@ -101,17 +99,17 @@ namespace RICC.Core.Comparers
                 if (expr is null)
                     return;
                 if (IsLvalueAssignment(expr, out ExpressionNode? lvalue, out ExpressionNode? rvalue)) {
-                    if (lvalue is IdentifierNode var) {
+                    if (lvalue is IdentifierNode var && rvalue is { }) {
                         if (!this.TryFindSymbol(var.Identifier, src, out DeclaredSymbol? declSymbol))
                             throw new SemanticErrorException($"{var.Identifier} symbol is not declared.");
                         if (!(declSymbol is DeclaredVariableSymbol varSymbol))
                             throw new SemanticErrorException($"Cannot assign to symbol {var.Identifier}.");
 
-                        Expr rvalueExpr = new SymbolicExpressionBuilder(rvalue!).Parse();
-                        varSymbol.SymbolicInitializer = rvalueExpr.Substitute(varSymbol.Identifier, varSymbol.SymbolicInitializer);
-                        ExpressionNode? oldExpr = varSymbol.Initializer;
-                        if (oldExpr is { })
-                            varSymbol.Initializer = rvalue?.Substitute(var, oldExpr).As<ExpressionNode>();
+                        Expr rvalueExpr = new SymbolicExpressionBuilder(rvalue).Parse();
+                        if (varSymbol.SymbolicInitializer is { })
+                            rvalueExpr = rvalueExpr.Substitute(varSymbol.Identifier, varSymbol.SymbolicInitializer);
+                        varSymbol.SymbolicInitializer = rvalueExpr;
+                        varSymbol.Initializer = rvalue.Substitute(var, varSymbol.Initializer).As<ExpressionNode>();
                     } else if (lvalue is ArrayAccessExpressionNode arr) {
                         // TODO
                         throw new NotImplementedException("Array assignment handling.");
@@ -152,68 +150,68 @@ namespace RICC.Core.Comparers
             {
                 if (!this.TryFindSymbol(identifier, false, out DeclaredSymbol? dstSymbol) || dstSymbol is null)
                     return;
-                string srcValue = this.GetSymbolValue(srcSymbol, src: true).ToString();
-                string dstValue = this.GetSymbolValue(dstSymbol, src: false).ToString();
+                string srcValue = GetInitSymbolValue(srcSymbol, src: true).ToString();
+                string dstValue = GetInitSymbolValue(dstSymbol, src: false).ToString();
                 if (!Equals(srcValue, dstValue))
                     this.Issues.AddError(new BlockEndValueMismatchError(identifier, blockEndLine, srcValue, dstValue));
             }
-        }
 
-        private Expr GetSymbolValue(DeclaredSymbol symbol, bool src)
-        {
-            Dictionary<string, Expr> symbolExprs = this.ExtractSymbolExprs(src);
-            switch (symbol) {
-                case DeclaredVariableSymbol var:
-                    if (var.SymbolicInitializer is { })
-                        return ExpressionEvaluator.TryEvaluate(var.SymbolicInitializer, symbolExprs);
-                    if (var.Initializer is { })
-                        return ExpressionEvaluator.TryEvaluate(var.Initializer, symbolExprs);
-                    else
-                        return Expr.Undefined;
-                case DeclaredArraySymbol arr:
-                    // TODO
-                    break;
-                case DeclaredFunctionSymbol f:
-                    // TODO
-                    break;
-            }
-
-            // TODO remove
-            return Expr.Undefined;
-        }
-
-        private Dictionary<string, Expr> ExtractSymbolExprs(bool src)
-        {
-            var exprs = new Dictionary<string, Expr>();
-            foreach ((string identifier, DeclaredSymbol symbol) in src ? this.localSrcSymbols : this.localDstSymbols)
-                ExtractExprsFromSymbol(identifier, symbol);
-            foreach ((string identifier, DeclaredSymbol symbol) in src ? this.srcSymbols : this.dstSymbols)
-                ExtractExprsFromSymbol(identifier, symbol);
-            return exprs;
-
-
-            void ExtractExprsFromSymbol(string identifier, DeclaredSymbol symbol)
+            Expr GetInitSymbolValue(DeclaredSymbol symbol, bool src)
             {
+                Dictionary<string, Expr> symbolExprs = ExtractSymbolExprs(src);
                 switch (symbol) {
                     case DeclaredVariableSymbol var:
                         if (var.SymbolicInitializer is { })
-                            exprs.Add(identifier, var.SymbolicInitializer);
-                        else if (var.Initializer is { })
-                            exprs.Add(identifier, new SymbolicExpressionBuilder(var.Initializer).Parse());
+                            return ExpressionEvaluator.TryEvaluate(var.SymbolicInitializer, symbolExprs);
+                        if (var.Initializer is { })
+                            return ExpressionEvaluator.TryEvaluate(var.Initializer, symbolExprs);
                         else
-                            exprs.Add(identifier, Expr.Undefined);
-                        break;
+                            return Expr.Undefined;
                     case DeclaredArraySymbol arr:
-                        if (arr.SymbolicInitializers is { }) {
-                            for (int i = 0; i < arr.SymbolicInitializers.Count; i++)
-                                exprs.Add($"{identifier}[{i}]", arr.SymbolicInitializers[i] ?? Expr.Undefined);
-                        } else if (arr.Initializer is { }) {
-                            for (int i = 0; i < arr.Initializer.Count; i++)
-                                exprs.Add($"{identifier}[{i}]", new SymbolicExpressionBuilder(arr.Initializer[i]).Parse());
-                        } else {
-                            exprs.Add(identifier, Expr.Undefined);
-                        }
+                        // TODO
                         break;
+                    case DeclaredFunctionSymbol f:
+                        // TODO
+                        break;
+                }
+
+                // TODO remove
+                return Expr.Undefined;
+            }
+
+            Dictionary<string, Expr> ExtractSymbolExprs(bool src)
+            {
+                var exprs = new Dictionary<string, Expr>();
+                foreach ((string identifier, DeclaredSymbol symbol) in src ? this.localSrcSymbols : this.localDstSymbols)
+                    ExtractExprsFromSymbol(identifier, symbol);
+                foreach ((string identifier, DeclaredSymbol symbol) in src ? this.srcSymbols : this.dstSymbols)
+                    ExtractExprsFromSymbol(identifier, symbol);
+                return exprs;
+
+
+                void ExtractExprsFromSymbol(string identifier, DeclaredSymbol symbol)
+                {
+                    switch (symbol) {
+                        case DeclaredVariableSymbol var:
+                            if (var.FirstSymbolicInitializer is { })
+                                exprs.Add(identifier, var.FirstSymbolicInitializer);
+                            else if (var.FirstInitializer is { })
+                                exprs.Add(identifier, new SymbolicExpressionBuilder(var.FirstInitializer).Parse());
+                            else
+                                exprs.Add(identifier, Expr.Undefined);
+                            break;
+                        case DeclaredArraySymbol arr:
+                            if (arr.SymbolicInitializers is { }) {
+                                for (int i = 0; i < arr.SymbolicInitializers.Count; i++)
+                                    exprs.Add($"{identifier}[{i}]", arr.SymbolicInitializers[i] ?? Expr.Undefined);
+                            } else if (arr.Initializer is { }) {
+                                for (int i = 0; i < arr.Initializer.Count; i++)
+                                    exprs.Add($"{identifier}[{i}]", new SymbolicExpressionBuilder(arr.Initializer[i]).Parse());
+                            } else {
+                                exprs.Add(identifier, Expr.Undefined);
+                            }
+                            break;
+                    }
                 }
             }
         }

@@ -62,8 +62,8 @@ namespace RICC.AST.Nodes
             return copy;
         }
 
-        public ASTNode Substitute(ASTNode node, ASTNode replacement) 
-            => this.Copy().SubstituteNode(node, replacement);
+        public ASTNode Substitute(ASTNode? node, ASTNode? replacement)
+            => node is null || replacement is null ? this.Copy() : this.Copy().SubstituteNode(node, replacement);
 
 
         public override string ToString() 

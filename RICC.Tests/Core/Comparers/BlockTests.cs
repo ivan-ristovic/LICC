@@ -78,6 +78,53 @@ namespace RICC.Tests.Core.Comparer
                 new MatchIssues()
                     .AddError(new BlockEndValueMismatchError("x", 1, "3", "2"))
             );
+
+            this.Compare(
+                new SourceComponentNode(
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "int"),
+                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new IdentifierNode(1, "p")))
+                    ),
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "int"),
+                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y"), new IdentifierNode(1, "x")))
+                    ),
+                    new ExpressionStatementNode(1,
+                        new AssignmentExpressionNode(1,
+                            new IdentifierNode(1, "x"),
+                            AssignmentOperatorNode.FromSymbol(1, "="),
+                            new ArithmeticExpressionNode(1,
+                                new IdentifierNode(1, "y"),
+                                ArithmeticOperatorNode.FromSymbol(1, "+"),
+                                new IdentifierNode(1, "y")
+                            )
+                        )
+                    )
+                ),
+                new SourceComponentNode(
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "int"),
+                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new IdentifierNode(1, "p")))
+                    ),
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "int"),
+                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y"), new IdentifierNode(1, "x")))
+                    ),
+                    new ExpressionStatementNode(1,
+                        new AssignmentExpressionNode(1,
+                            new IdentifierNode(1, "x"),
+                            AssignmentOperatorNode.FromSymbol(1, "="),
+                            new ArithmeticExpressionNode(1,
+                                new LiteralNode(1, 3),
+                                ArithmeticOperatorNode.FromSymbol(1, "*"),
+                                new IdentifierNode(1, "y")
+                            )
+                        )
+                    )
+                ),
+                new MatchIssues()
+                    .AddError(new BlockEndValueMismatchError("x", 1, "2*p", "3*p"))
+            );
         }
 
         [Test]
@@ -226,12 +273,12 @@ namespace RICC.Tests.Core.Comparer
                         new ExpressionListNode(1,
                             new AssignmentExpressionNode(1,
                                 new IdentifierNode(1, "x"),
-                                AssignmentOperatorNode.FromSymbol(1, "="),
+                                AssignmentOperatorNode.FromSymbol(1, "+="),
                                 new LiteralNode(1, 2)
                             ),
                             new AssignmentExpressionNode(1,
                                 new IdentifierNode(1, "x"),
-                                AssignmentOperatorNode.FromSymbol(1, "="),
+                                AssignmentOperatorNode.FromSymbol(1, "+="),
                                 new LiteralNode(1, 3)
                             )
                         )
@@ -245,11 +292,11 @@ namespace RICC.Tests.Core.Comparer
                     new ExpressionStatementNode(1,
                         new AssignmentExpressionNode(1,
                             new IdentifierNode(1, "x"),
-                            AssignmentOperatorNode.FromSymbol(1, "="),
+                            AssignmentOperatorNode.FromSymbol(1, "+="),
                             new ArithmeticExpressionNode(1,
                                 new IdentifierNode(1, "x"),
                                 ArithmeticOperatorNode.FromSymbol(1, "+"),
-                                new LiteralNode(1, 2)
+                                new LiteralNode(1, 4)
                             )
                         )
                     )
@@ -262,18 +309,15 @@ namespace RICC.Tests.Core.Comparer
                         new DeclarationSpecifiersNode(1, "int"),
                         new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 1)))
                     ),
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "int"),
+                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y"), new LiteralNode(1, 1)))
+                    ),
                     new ExpressionStatementNode(1,
-                        new ExpressionListNode(1,
-                            new AssignmentExpressionNode(1,
-                                new IdentifierNode(1, "x"),
-                                AssignmentOperatorNode.FromSymbol(1, "="),
-                                new LiteralNode(1, 2)
-                            ),
-                            new AssignmentExpressionNode(1,
-                                new IdentifierNode(1, "x"),
-                                AssignmentOperatorNode.FromSymbol(1, "="),
-                                new LiteralNode(1, 3)
-                            )
+                        new AssignmentExpressionNode(1,
+                            new IdentifierNode(1, "x"),
+                            AssignmentOperatorNode.FromSymbol(1, "+="),
+                            new IdentifierNode(1, "y")
                         )
                     )
                 ),
@@ -282,20 +326,71 @@ namespace RICC.Tests.Core.Comparer
                         new DeclarationSpecifiersNode(1, "int"),
                         new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 1)))
                     ),
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "int"),
+                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y"), new LiteralNode(1, 1)))
+                    ),
                     new ExpressionStatementNode(1,
                         new AssignmentExpressionNode(1,
                             new IdentifierNode(1, "x"),
-                            AssignmentOperatorNode.FromSymbol(1, "="),
-                            new ArithmeticExpressionNode(1,
+                            AssignmentOperatorNode.FromSymbol(1, "-="),
+                            new UnaryExpressionNode(1,
+                                UnaryOperatorNode.FromSymbol(1, "-"),
+                                new IdentifierNode(1, "y")
+                            )
+                        )
+                    )
+                )
+            );
+
+            this.Compare(
+                new SourceComponentNode(
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "int"),
+                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 1)))
+                    ),
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "int"),
+                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y"), new LiteralNode(1, 1)))
+                    ),
+                    new ExpressionStatementNode(1,
+                        new AssignmentExpressionNode(1,
+                            new IdentifierNode(1, "x"),
+                            AssignmentOperatorNode.FromSymbol(1, "+="),
+                            new IdentifierNode(1, "y")
+                        )
+                    )
+                ),
+                new SourceComponentNode(
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "int"),
+                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 1)))
+                    ),
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "int"),
+                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y"), new LiteralNode(1, 1)))
+                    ),
+                    new ExpressionStatementNode(1,
+                        new ExpressionListNode(1,
+                            new AssignmentExpressionNode(1,
                                 new IdentifierNode(1, "x"),
-                                ArithmeticOperatorNode.FromSymbol(1, "+"),
+                                AssignmentOperatorNode.FromSymbol(1, "+="),
+                                new UnaryExpressionNode(1,
+                                    UnaryOperatorNode.FromSymbol(1, "-"),
+                                    new IdentifierNode(1, "y")
+                                )
+                            ),
+                            new AssignmentExpressionNode(1,
+                                new IdentifierNode(1, "y"),
+                                AssignmentOperatorNode.FromSymbol(1, "+="),
                                 new LiteralNode(1, 1)
                             )
                         )
                     )
                 ),
                 new MatchIssues()
-                    .AddError(new BlockEndValueMismatchError("x", 1, "3", "2"))
+                    .AddError(new BlockEndValueMismatchError("x", 1, "2", "0"))
+                    .AddError(new BlockEndValueMismatchError("y", 1, "1", "2"))
             );
         }
     }
