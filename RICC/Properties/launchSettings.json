@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "RICC": {
-      "commandName": "Project",
-      "commandLineArgs": "cmp Samples/eqtest1.c Samples/eqtest2.c -v"
-    }
-  }
-}
