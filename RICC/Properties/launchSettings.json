@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "RICC": {
-      "commandName": "Project",
-      "commandLineArgs": "ast Samples/sample.lua -v"
-    }
-  }
-}
