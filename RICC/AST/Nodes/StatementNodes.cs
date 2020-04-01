@@ -63,7 +63,7 @@ namespace RICC.AST.Nodes
             : base(line, children) { }
 
 
-        public override string GetText() => $"{{ {string.Join(" ", this.Children.Select(c => c.GetText()))} }}";
+        public override string GetText() => $"{{ {string.Join("; ", this.Children.Select(c => c.GetText()))} }}";
     }
 
     public sealed class ExpressionStatementNode : SimpleStatementNode

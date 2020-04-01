@@ -20,6 +20,9 @@ namespace RICC.AST.Nodes.Common
 
         public static bool TryConvert(string str, out object? literal, out string? suffix)
         {
+            literal = suffix = null;
+            if (string.Equals(str, "null", StringComparison.InvariantCultureIgnoreCase))
+                return true;
             if (TryConvertToInt(_intRegex, str, 10, out literal, out suffix))
                 return true;
             if (TryConvertToInt(_intHRegex, str, 16, out literal, out suffix))

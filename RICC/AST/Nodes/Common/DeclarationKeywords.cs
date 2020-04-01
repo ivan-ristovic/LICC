@@ -18,7 +18,7 @@ namespace RICC.AST.Nodes.Common
                 .Distinct()
                 .ToArray();
 
-            if (split.Contains("private"))
+            if (split.Contains("private") || split.Contains("local"))
                 access = AccessModifiers.Private;
             else if (split.Contains("protected"))
                 access = AccessModifiers.Protected;

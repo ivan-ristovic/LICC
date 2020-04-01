@@ -34,6 +34,22 @@ namespace RICC.AST.Nodes
         public override string GetText() => string.Join(", ", this.Children.Select(c => c.GetText()));
     }
 
+    public sealed class IdentifierListNode : ExpressionNode
+    {
+        [JsonIgnore]
+        public IEnumerable<IdentifierNode> Identifiers => this.Children.Cast<IdentifierNode>();
+
+
+        public IdentifierListNode(int line, params IdentifierNode[] expressions)
+            : base(line, expressions) { }
+
+        public IdentifierListNode(int line, IEnumerable<IdentifierNode> expressions)
+            : base(line, expressions) { }
+
+
+        public override string GetText() => string.Join(", ", this.Children.Select(c => c.GetText()));
+    }
+
     public class UnaryExpressionNode : ExpressionNode
     {
         [JsonIgnore]
@@ -85,6 +101,9 @@ namespace RICC.AST.Nodes
     {
         public AssignmentExpressionNode(int line, ExpressionNode left, AssignmentOperatorNode @operator, ExpressionNode right)
             : base(line, left, @operator, right) { }
+
+        public AssignmentExpressionNode(int line, ExpressionNode left, ExpressionNode right)
+            : base(line, left, new AssignmentOperatorNode(line, "=", BinaryOperations.AssignmentFromSymbol("=")), right) { }
     }
 
     public sealed class IdentifierNode : ExpressionNode
@@ -168,17 +187,19 @@ namespace RICC.AST.Nodes
         public override string GetText() => $"{this.Expr.GetText()}--";
     }
 
-    public sealed class LiteralNode : ExpressionNode
+    public class LiteralNode : ExpressionNode
     {
         public static LiteralNode FromString(int line, string str)
         {
-            if (!Constants.TryConvert(str, out object? value, out string? suffix) || value is null)
-                throw new NotImplementedException($"Literal {str} is not supported");    
+            if (!Constants.TryConvert(str, out object? value, out string? suffix))
+                throw new NotImplementedException($"Literal {str} is not supported");
+            if (value is null)
+                return new NullLiteralNode(line);
             return new LiteralNode(line, value, suffix);
         }
 
 
-        public object Value { get; }
+        public object? Value { get; }
         public string? Suffix { get; }
         public TypeCode TypeCode { get; }
 
@@ -186,9 +207,19 @@ namespace RICC.AST.Nodes
         public LiteralNode(int line, object value, string? suffix = null)
             : base(line)
         {
+            if (value is null)
+                throw new ArgumentNullException("Value cannot be null. Use NullLiteralNode instead.");
             this.Suffix = suffix?.ToUpper();
             this.Value = value;
             this.TypeCode = Type.GetTypeCode(value.GetType());
+        }
+
+        protected LiteralNode(int line, object? value, TypeCode typeCode, string? suffix = null)
+            : base(line)
+        {
+            this.Suffix = suffix?.ToUpper();
+            this.Value = value;
+            this.TypeCode = typeCode;
         }
 
 
@@ -197,8 +228,23 @@ namespace RICC.AST.Nodes
         public override bool Equals([AllowNull] ASTNode other)
         {
             var lit = other as LiteralNode;
-            return base.Equals(other) && this.TypeCode.Equals(lit?.TypeCode) && this.Value.Equals(lit?.Value);
+            if (!base.Equals(other) || !this.TypeCode.Equals(lit?.TypeCode))
+                return false;
+            if (this.Value is null)
+                return lit.Value is null;
+            return this.Value.Equals(lit.Value);
         }
+    }
+
+    public sealed class NullLiteralNode : LiteralNode
+    {
+        public NullLiteralNode(int line)
+            : base(line, null, TypeCode.Empty) { }
+
+
+        public override string GetText() => "null";
+
+        public override bool Equals([AllowNull] ASTNode other) => other is NullLiteralNode;
     }
 
     public sealed class ConditionalExpressionNode : ExpressionNode
