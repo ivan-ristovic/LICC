@@ -23,3 +23,7 @@ Krenućemo od gramatika strogo tipiziranih proceduralnih programskih jezika, a z
 
 Ovakvi koncepti će biti inspiracija za definisanje AST čvorova, pri čemu će detaljno biti opisana motivacija i razlozi za odabir nekih specifičnosti. Na slici \ref{fig:UMLASTNode} se mogu videti osnovni apstraktni derivate klase \texttt{ASTNode}. Jedini direktna konkretizacija klase \texttt{ASTNode} koja nije apstraktna je klasa \texttt{SourceComponentNode}. Svrha ove klase je da označi granice izvornih fajlova u slučaju da se pravi AST od više različitih izvornih fajlova - stoga će koren svakog AST-a kreiranog od izvornog fajla biti tipa \texttt{SourceComponentNode} \footnote{Navedeno važi pod pretpostavkom da se stablo parsiranja čitavog izvornog fajla prevodi u AST. Biće dozvoljeno i prevođenje delova izvornog fajla, u kom slučaju koren AST-a neće biti tipa \texttt{SourceComponentNode}.}. U nastavku će biti detaljno opisane apstraktne konkretizacije klase \texttt{ASTNode} sa slike \ref{fig:UMLASTNode} zajedno sa svojim derivatima. 
 
+\input{chapters/31_declaration_nodes.tex}
+\input{chapters/32_operator_nodes.tex}
+\input{chapters/33_expression_nodes.tex}
+\input{chapters/34_statement_nodes.tex}
