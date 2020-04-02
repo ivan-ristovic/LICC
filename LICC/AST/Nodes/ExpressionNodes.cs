@@ -100,7 +100,7 @@ namespace LICC.AST.Nodes
             : base(line, left, @operator, right) { }
     }
 
-    public sealed class AssignmentExpressionNode : BinaryExpressionNode
+    public class AssignmentExpressionNode : BinaryExpressionNode
     {
         public AssignmentExpressionNode(int line, ExpressionNode left, AssignmentOperatorNode @operator, ExpressionNode right)
             : base(line, left, @operator, right) { }
@@ -140,7 +140,7 @@ namespace LICC.AST.Nodes
 
         public override string GetText() => this.Identifier;
 
-        public override bool Equals([AllowNull] ASTNode other) 
+        public override bool Equals([AllowNull] ASTNode other)
             => base.Equals(other) && this.Identifier.Equals(other.As<IdentifierNode>().Identifier);
     }
 
@@ -179,27 +179,27 @@ namespace LICC.AST.Nodes
         public override string GetText() => $"{this.Array.GetText()}[{this.IndexExpression.GetText()}]";
     }
 
-    public sealed class IncrementExpressionNode : ExpressionNode
+    public sealed class IncrementExpressionNode : AssignmentExpressionNode
     {
         [JsonIgnore]
         public ExpressionNode Expr => this.Children[0].As<ExpressionNode>();
 
 
         public IncrementExpressionNode(int line, ExpressionNode expr)
-            : base(line, expr) { }
+            : base(line, expr, AssignmentOperatorNode.FromSymbol(line, "+="), new LiteralNode(line, 1)) { }
 
 
-        public override string GetText() => $"{this.Expr.GetText()}++";
+        public override string GetText() => $"{this.LeftOperand.GetText()}++";
     }
 
-    public sealed class DecrementExpressionNode : ExpressionNode
+    public sealed class DecrementExpressionNode : AssignmentExpressionNode
     {
         [JsonIgnore]
         public ExpressionNode Expr => this.Children[0].As<ExpressionNode>();
 
 
         public DecrementExpressionNode(int line, ExpressionNode expr)
-            : base(line, expr) { }
+            : base(line, expr, AssignmentOperatorNode.FromSymbol(line, "-="), new LiteralNode(line, 1)) { }
 
 
         public override string GetText() => $"{this.Expr.GetText()}--";

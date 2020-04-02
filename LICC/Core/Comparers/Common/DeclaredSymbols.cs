@@ -39,18 +39,16 @@ namespace LICC.Core.Comparers.Common
         public VariableDeclaratorNode VariableDeclarator { get; set; }
         public ExpressionNode? Initializer { get; set; }
         public Expr? SymbolicInitializer { get; set; }
-        public ExpressionNode? FirstInitializer { get; }
-        public Expr? FirstSymbolicInitializer { get; }
 
 
         public DeclaredVariableSymbol(string name, DeclarationSpecifiersNode specs, VariableDeclaratorNode decl, ExpressionNode? init = null)
             : base(name, specs, decl)
         {
             this.VariableDeclarator = decl;
-            this.Initializer = this.FirstInitializer = init;
+            this.Initializer = init;
             if (init is { }) {
                 try {
-                    this.SymbolicInitializer = this.FirstSymbolicInitializer = Expr.Parse(init.GetText());
+                    this.SymbolicInitializer = Expr.Parse(init.GetText());
                 } catch {
                     Log.Debug("Failed to create symbolic expression for: {Expression}", init.GetText());
                 }

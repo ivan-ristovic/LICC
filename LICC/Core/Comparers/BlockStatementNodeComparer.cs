@@ -33,12 +33,13 @@ namespace LICC.Core.Comparers
 
         public override MatchIssues Compare(BlockStatementNode n1, BlockStatementNode n2)
         {
+            Log.Debug("Comparing block: `{SrcBlock}` with block: `{DstBlock}", n1, n2);
+
             this.localSrcSymbols = this.GetDeclaredSymbols(n1, src: true);
             this.localDstSymbols = this.GetDeclaredSymbols(n2, src: false);
             this.CompareSymbols(this.localSrcSymbols, this.localDstSymbols);
 
-            this.PerformStatements(n1, src: true);
-            this.PerformStatements(n2, src: false);
+            this.PerformStatements(n1, n2);
             this.CompareSymbolValues(n2.Line);
 
             return this.Issues;
@@ -74,27 +75,53 @@ namespace LICC.Core.Comparers
                 : this.localDstSymbols.TryGetValue(key, out symbol) || this.dstSymbols.TryGetValue(key, out symbol);
         }
 
-        private void PerformStatements(BlockStatementNode n1, bool src)
+        private void PerformStatements(BlockStatementNode n1, BlockStatementNode n2)
         {
-            foreach (StatementNode statement in n1.ChildrenOfType<StatementNode>()) {
+            var n1statements = n1.ChildrenOfType<StatementNode>().ToList();
+            var n2statements = n2.ChildrenOfType<StatementNode>().ToList();
+            if (!n1statements.Any() && !n2statements.Any())
+                return;
+            for (int i = 0, j = 0; true ; i++, j++) {
+                int ni = NextBlockIndex(n1statements, i);
+                int nj = NextBlockIndex(n2statements, j);
+
+                foreach (StatementNode statement in n1statements.GetRange(i, ni))
+                    PerformStatement(statement, src: true);
+                i += ni;
+
+                foreach (StatementNode statement in n2statements.GetRange(j, nj))
+                    PerformStatement(statement, src: false);
+                j += nj;
+
+                // TODO what if one ast has more blocks than the other?
+                if (i >= n1.Children.Count || j >= n2.Children.Count)
+                    break;
+             
+                var allSrcSymbols = new Dictionary<string, DeclaredSymbol>(this.localSrcSymbols.Concat(this.srcSymbols));
+                var allDstSymbols = new Dictionary<string, DeclaredSymbol>(this.localDstSymbols.Concat(this.dstSymbols));
+                // TODO it can be any compound statement, not just a block...
+                var comparer = new BlockStatementNodeComparer(allSrcSymbols, allDstSymbols);
+                this.Issues.Add(comparer.Compare(n1statements[i], n2statements[j]));
+                // TODO replace all symbols declared in this block with their values
+            }
+
+
+            void PerformStatement(StatementNode statement, bool src)
+            {
                 switch (statement) {
                     case ExpressionStatementNode exprStat:
                         if (exprStat.Expression is ExpressionListNode expList) {
                             foreach (ExpressionNode expr in expList.Expressions)
-                                PerformAssignment(expr);
+                                PerformAssignment(expr, src);
                         } else {
-                            PerformAssignment(exprStat.Expression);
+                            PerformAssignment(exprStat.Expression, src);
                         }
                         break;
-                    case BlockStatementNode block:
-                        // TODO recursive call, pass current symbols -- NEED TO REMOVE SYMBOLS AFTER CURRENT BLOCK!
-                        // update current issues with returned issues
-                        break;
+                        // TODO
                 }
             }
 
-
-            void PerformAssignment(ExpressionNode? expr)
+            void PerformAssignment(ExpressionNode? expr, bool src)
             {
                 if (expr is null)
                     return;
@@ -136,6 +163,15 @@ namespace LICC.Core.Comparers
 
                 return false;
             }
+
+            static int NextBlockIndex(IEnumerable<StatementNode> statements, int start = 0)
+            {
+                return statements
+                    .Skip(start)
+                    .TakeWhile(s => !(s is BlockStatementNode))
+                    .Count()
+                    ;
+            }
         }
 
         private void CompareSymbolValues(int blockEndLine)
@@ -150,21 +186,20 @@ namespace LICC.Core.Comparers
             {
                 if (!this.TryFindSymbol(identifier, false, out DeclaredSymbol? dstSymbol) || dstSymbol is null)
                     return;
-                string srcValue = GetInitSymbolValue(srcSymbol, src: true).ToString();
-                string dstValue = GetInitSymbolValue(dstSymbol, src: false).ToString();
+                string srcValue = GetInitSymbolValue(srcSymbol).ToString();
+                string dstValue = GetInitSymbolValue(dstSymbol).ToString();
                 if (!Equals(srcValue, dstValue))
                     this.Issues.AddError(new BlockEndValueMismatchError(identifier, blockEndLine, srcValue, dstValue));
             }
-
-            Expr GetInitSymbolValue(DeclaredSymbol symbol, bool src)
+            
+            static Expr GetInitSymbolValue(DeclaredSymbol symbol)
             {
-                Dictionary<string, Expr> symbolExprs = ExtractSymbolExprs(src);
                 switch (symbol) {
                     case DeclaredVariableSymbol var:
                         if (var.SymbolicInitializer is { })
-                            return ExpressionEvaluator.TryEvaluate(var.SymbolicInitializer, symbolExprs);
+                            return var.SymbolicInitializer;
                         if (var.Initializer is { })
-                            return ExpressionEvaluator.TryEvaluate(var.Initializer, symbolExprs);
+                            return new SymbolicExpressionBuilder(var.Initializer).Parse();
                         else
                             return Expr.Undefined;
                     case DeclaredArraySymbol arr:
@@ -177,42 +212,6 @@ namespace LICC.Core.Comparers
 
                 // TODO remove
                 return Expr.Undefined;
-            }
-
-            Dictionary<string, Expr> ExtractSymbolExprs(bool src)
-            {
-                var exprs = new Dictionary<string, Expr>();
-                foreach ((string identifier, DeclaredSymbol symbol) in src ? this.localSrcSymbols : this.localDstSymbols)
-                    ExtractExprsFromSymbol(identifier, symbol);
-                foreach ((string identifier, DeclaredSymbol symbol) in src ? this.srcSymbols : this.dstSymbols)
-                    ExtractExprsFromSymbol(identifier, symbol);
-                return exprs;
-
-
-                void ExtractExprsFromSymbol(string identifier, DeclaredSymbol symbol)
-                {
-                    switch (symbol) {
-                        case DeclaredVariableSymbol var:
-                            if (var.FirstSymbolicInitializer is { })
-                                exprs.Add(identifier, var.FirstSymbolicInitializer);
-                            else if (var.FirstInitializer is { })
-                                exprs.Add(identifier, new SymbolicExpressionBuilder(var.FirstInitializer).Parse());
-                            else
-                                exprs.Add(identifier, Expr.Undefined);
-                            break;
-                        case DeclaredArraySymbol arr:
-                            if (arr.SymbolicInitializers is { }) {
-                                for (int i = 0; i < arr.SymbolicInitializers.Count; i++)
-                                    exprs.Add($"{identifier}[{i}]", arr.SymbolicInitializers[i] ?? Expr.Undefined);
-                            } else if (arr.Initializer is { }) {
-                                for (int i = 0; i < arr.Initializer.Count; i++)
-                                    exprs.Add($"{identifier}[{i}]", new SymbolicExpressionBuilder(arr.Initializer[i]).Parse());
-                            } else {
-                                exprs.Add(identifier, Expr.Undefined);
-                            }
-                            break;
-                    }
-                }
             }
         }
     }
