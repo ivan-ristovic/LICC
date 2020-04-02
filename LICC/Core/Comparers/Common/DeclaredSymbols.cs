@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using LICC.AST.Nodes;
+using LICC.AST.Visitors;
 using Serilog;
 using Expr = MathNet.Symbolics.SymbolicExpression;
 
@@ -32,6 +33,9 @@ namespace LICC.Core.Comparers.Common
             this.Specifiers = specs;
             this.Declarator = decl;
         }
+
+
+        public abstract Expr GetInitSymbolValue(Dictionary<string, Expr> symbolExprs);
     }
 
     internal sealed class DeclaredVariableSymbol : DeclaredSymbol
@@ -53,6 +57,17 @@ namespace LICC.Core.Comparers.Common
                     Log.Debug("Failed to create symbolic expression for: {Expression}", init.GetText());
                 }
             }
+        }
+
+
+        public override Expr GetInitSymbolValue(Dictionary<string, Expr> symbolExprs)
+        {
+            if (this.SymbolicInitializer is { })
+                return ExpressionEvaluator.TryEvaluate(this.SymbolicInitializer, symbolExprs);
+            if (this.Initializer is { })
+                return ExpressionEvaluator.TryEvaluate(this.Initializer, symbolExprs);
+            else
+                return Expr.Undefined;
         }
     }
 
@@ -93,6 +108,11 @@ namespace LICC.Core.Comparers.Common
                 }
             }
         }
+
+
+        // TODO
+        public override Expr GetInitSymbolValue(Dictionary<string, Expr> symbolExprs)
+            => throw new NotImplementedException();
     }
 
     internal sealed class DeclaredFunctionSymbol : DeclaredSymbol
@@ -114,5 +134,9 @@ namespace LICC.Core.Comparers.Common
             this.FunctionDeclarators.Add(decl);
             return true;
         }
+
+
+        public override Expr GetInitSymbolValue(Dictionary<string, Expr> symbolExprs)
+            => throw new InvalidOperationException("Cannot get a value of a function symbol");
     }
 }

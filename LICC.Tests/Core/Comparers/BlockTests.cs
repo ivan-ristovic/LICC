@@ -471,7 +471,7 @@ namespace LICC.Tests.Core.Comparer
                 ),
                 new MatchIssues()
                     .AddError(new BlockEndValueMismatchError("y", 1, "2", "1"))
-                    .AddError(new BlockEndValueMismatchError("x", 1, "2 + y", "1 + y"))
+                    .AddError(new BlockEndValueMismatchError("x", 1, "4", "2"))
             );
         }
     }

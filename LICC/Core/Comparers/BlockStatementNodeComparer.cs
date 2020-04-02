@@ -41,10 +41,77 @@ namespace LICC.Core.Comparers
 
             this.PerformStatements(n1, n2);
             this.CompareSymbolValues(n2.Line);
+            this.SubstituteLocalsInGlobals();
 
             return this.Issues;
         }
 
+
+        private void SubstituteLocalsInGlobals()
+        {
+            Dictionary<string, Expr> srcSymbolExprs = ExtractSymbolExprs(src: true);
+            Dictionary<string, Expr> dstSymbolExprs = ExtractSymbolExprs(src: false);
+            foreach ((string _, DeclaredSymbol symbol) in this.localSrcSymbols)
+                Substitute(symbol, srcSymbolExprs, true);
+            foreach ((string _, DeclaredSymbol symbol) in this.localDstSymbols)
+                Substitute(symbol, dstSymbolExprs, false);
+
+
+            void Substitute(DeclaredSymbol localSymbol, Dictionary<string, Expr> symbolExprs, bool src)
+            {
+                if (!(localSymbol is DeclaredVariableSymbol localVarSymbol))
+                    return;
+                foreach ((string _, DeclaredSymbol symbol) in src ? this.srcSymbols : this.dstSymbols) {
+                    Expr replacement = localSymbol.GetInitSymbolValue(symbolExprs);
+                    switch (symbol) {
+                        case DeclaredVariableSymbol var:
+                            var.SymbolicInitializer = var.SymbolicInitializer?.Substitute(localSymbol.Identifier, replacement);
+                            var.Initializer = var.Initializer?.Substitute<ExpressionNode>(new IdentifierNode(1, localVarSymbol.Identifier), localVarSymbol.Initializer);
+                            break;
+                        case DeclaredArraySymbol arr:
+                            // TODO
+                            break;
+                        case DeclaredFunctionSymbol f:
+                            // TODO
+                            break;
+                    }
+                }
+            }
+
+            Dictionary<string, Expr> ExtractSymbolExprs(bool src)
+            {
+                var exprs = new Dictionary<string, Expr>();
+                foreach ((string identifier, DeclaredSymbol symbol) in src ? this.localSrcSymbols : this.localDstSymbols)
+                    ExtractExprsFromSymbol(identifier, symbol);
+                return exprs;
+
+
+                void ExtractExprsFromSymbol(string identifier, DeclaredSymbol symbol)
+                {
+                    switch (symbol) {
+                        case DeclaredVariableSymbol var:
+                            if (var.SymbolicInitializer is { })
+                                exprs.Add(identifier, var.SymbolicInitializer);
+                            else if (var.Initializer is { })
+                                exprs.Add(identifier, new SymbolicExpressionBuilder(var.Initializer).Parse());
+                            else
+                                exprs.Add(identifier, Expr.Undefined);
+                            break;
+                        case DeclaredArraySymbol arr:
+                            if (arr.SymbolicInitializers is { }) {
+                                for (int i = 0; i < arr.SymbolicInitializers.Count; i++)
+                                    exprs.Add($"{identifier}[{i}]", arr.SymbolicInitializers[i] ?? Expr.Undefined);
+                            } else if (arr.Initializer is { }) {
+                                for (int i = 0; i < arr.Initializer.Count; i++)
+                                    exprs.Add($"{identifier}[{i}]", new SymbolicExpressionBuilder(arr.Initializer[i]).Parse());
+                            } else {
+                                exprs.Add(identifier, Expr.Undefined);
+                            }
+                            break;
+                    }
+                }
+            }
+        }
 
         private Dictionary<string, DeclaredSymbol> GetDeclaredSymbols(BlockStatementNode node, bool src)
         {
@@ -81,7 +148,7 @@ namespace LICC.Core.Comparers
             var n2statements = n2.ChildrenOfType<StatementNode>().ToList();
             if (!n1statements.Any() && !n2statements.Any())
                 return;
-            for (int i = 0, j = 0; true ; i++, j++) {
+            for (int i = 0, j = 0; true; i++, j++) {
                 int ni = NextBlockIndex(n1statements, i);
                 int nj = NextBlockIndex(n2statements, j);
 
@@ -94,15 +161,14 @@ namespace LICC.Core.Comparers
                 j += nj;
 
                 // TODO what if one ast has more blocks than the other?
-                if (i >= n1.Children.Count || j >= n2.Children.Count)
+                if (i >= n1statements.Count || j >= n2statements.Count)
                     break;
-             
+
                 var allSrcSymbols = new Dictionary<string, DeclaredSymbol>(this.localSrcSymbols.Concat(this.srcSymbols));
                 var allDstSymbols = new Dictionary<string, DeclaredSymbol>(this.localDstSymbols.Concat(this.dstSymbols));
                 // TODO it can be any compound statement, not just a block...
                 var comparer = new BlockStatementNodeComparer(allSrcSymbols, allDstSymbols);
                 this.Issues.Add(comparer.Compare(n1statements[i], n2statements[j]));
-                // TODO replace all symbols declared in this block with their values
             }
 
 
@@ -136,7 +202,7 @@ namespace LICC.Core.Comparers
                         if (varSymbol.SymbolicInitializer is { })
                             rvalueExpr = rvalueExpr.Substitute(varSymbol.Identifier, varSymbol.SymbolicInitializer);
                         varSymbol.SymbolicInitializer = rvalueExpr;
-                        varSymbol.Initializer = rvalue.Substitute(var, varSymbol.Initializer).As<ExpressionNode>();
+                        varSymbol.Initializer = rvalue.Substitute<ExpressionNode>(var, varSymbol.Initializer);
                     } else if (lvalue is ArrayAccessExpressionNode arr) {
                         // TODO
                         throw new NotImplementedException("Array assignment handling.");
@@ -191,7 +257,7 @@ namespace LICC.Core.Comparers
                 if (!Equals(srcValue, dstValue))
                     this.Issues.AddError(new BlockEndValueMismatchError(identifier, blockEndLine, srcValue, dstValue));
             }
-            
+
             static Expr GetInitSymbolValue(DeclaredSymbol symbol)
             {
                 switch (symbol) {
