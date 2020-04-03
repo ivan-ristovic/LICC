@@ -65,6 +65,9 @@ namespace LICC.AST.Nodes
         public ASTNode Substitute(ASTNode? node, ASTNode? replacement)
             => node is null || replacement is null ? this.Copy() : this.Copy().SubstituteNode(node, replacement);
 
+        public T Substitute<T>(ASTNode? node, ASTNode? replacement) where T : ASTNode 
+            => this.Substitute(node as ASTNode, replacement as ASTNode).As<T>();
+
 
         public override string ToString() 
             => this.GetText();
