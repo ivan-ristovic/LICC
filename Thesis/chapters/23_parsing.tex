@@ -1,18 +1,29 @@
-\section{ANTLR}
-\label{sec:ANTLR}
+\section{Parsiranje gramatika programskih jezika}
+\label{sec:ParsingGrammars}
 
-Pretpostavljajući da imamo gramatiku proizvoljnog programskog jezika, postavlja se pitanje: \emph{Da li je moguće definisati postupak i zatim napraviti program koji će generisati kodove leksera i parsera napisane u određenom programskom jeziku za proizvoljnu gramatiku datu na ulazu?}. Odgovor je potvrdan i postoji veliki broj alata koji se mogu koristiti u ove svrhe, od kojih je navedeno par njih: 
-\begin{itemize}
-    \item \emph{GNU Bison} \cite{GNUBison}\\
-        GNU Bison je generator parsera i deo GNU projekta \cite{GNUProject}, često referisan samo kao \emph{Bison}. Bison generiše parser na osnovu korisnički definisanih kontekstno slobodnih gramatika \cite{ContextFreeGrammars}, upozoravajući pritom na dvosmislenosti prilikom parsiranja ili nemogućnost primena gramatičkih pravila. Generisani parser je najčešće C a ređe C++ kod, mada se u vreme pisanja ovog rada eksperimentiše sa Java podrškom. Generisani kodovi su u potpunosti prenosivi i ne zahtevaju specifične kompajlere. Bison može da, osim podrazumevanih \emph{LALR(1)} \cite{LALR1} parsera, generiše i kanoničke \emph{LR} \cite{LR}, \emph{IELR(1)} \cite{IELR1} i \emph{GLR} \cite{GLR} parsere.
-    \item \emph{Flex} \cite{Flex}\\
-        Kreiran kao alternativa \emph{lex}-u \cite{LexYacc}, Flex generiše samo leksere pa se stoga najčešće koristi u kombinaciji sa drugim alatima koji mogu da generišu parsere, kao što je \emph{BYACC}, opisan u nastavku.
-    \item \emph{BYACC} \cite{BYACC}\\
-        \emph{Berkeley YACC}, skraćeno \emph{BYACC}, pisan po ANSI C standardu i otvorenog koda, se smatra od strane mnogih kao \textit{najbolja varijanta YACC-a} \cite{LexYacc}. BYACC dozvoljava tzv. \emph{reentrant} kod - memorija je deljenja između poziva pa je bezbedno konkurentno izvršavanje koda - na način kompatibilan sa Bison-om i to je delom razlog njegove popularnosti.
-    \item \emph{ANTLR} \cite{ANTLR}\\
-        \emph{Another Tool for Language Recognition}, ili kraće \emph{ANTLR}, je generator \emph{LL(*)} \cite{LLStar} leksera i parsera pisan u programskom jeziku Java sa intuitivnim interfejsom za obilazak stabla parsiranja. Verzija $3$ podržava generisanje parsera u jezicima Ada95, ActionScript, C, C\#, Java, JavaScript, Objective-C, Perl, Python, Ruby, i Standard ML, dok verzija $4$ u vreme pisanja ovog rada samo generiše parsere u narednim jezicima: Java, C\#, C++, JavaScript, Python, Swift i Go.
-\end{itemize}
-ANTLR, verzije $4$, je izabran u ovom radu zbog svoje jednostavnosti, intuitivnosti i podrške za mnoge moderne programske jezike. Verzija $4$ je izabrana umesto verzije $3$ po preporuci autora, na osnovu eksperimentalne analize brzine i pouzdanosti verzije $4$ u odnosu na verziju $3$. Lekseri i parseri za ulazne gramatike će u implementaciji biti generisani u programskom jeziku C\#.
+Pretpostavljajući da imamo gramatiku proizvoljnog programskog jezika, postavlja se pitanje: \emph{Da li je moguće definisati postupak i zatim napraviti program koji će generisati kodove leksera i parsera napisane u određenom programskom jeziku za proizvoljnu gramatiku datu na ulazu?}. Odgovor je potvrdan i postoji veliki broj alata koji se mogu koristiti u ove svrhe, od kojih je navedeno par njih u odeljcima ispod.
+
+
+\subsection{GNU Bison}
+\label{subsec:GNUBison}
+
+\emph{GNU Bison} \cite{GNUBison} je generator parsera i deo GNU projekta \cite{GNUProject}, često referisan samo kao \emph{Bison}. Bison generiše parser na osnovu korisnički definisanih kontekstno slobodnih gramatika \cite{ContextFreeGrammars}, upozoravajući pritom na dvosmislenosti prilikom parsiranja ili nemogućnost primena gramatičkih pravila. Generisani parser je najčešće C a ređe C++ kod, mada se u vreme pisanja ovog rada eksperimentiše sa Java podrškom. Generisani kodovi su u potpunosti prenosivi i ne zahtevaju specifične kompajlere. Bison može da, osim podrazumevanih \emph{LALR(1)} \cite{LALR1} parsera, generiše i kanoničke \emph{LR} \cite{LR}, \emph{IELR(1)} \cite{IELR1} i \emph{GLR} \cite{GLR} parsere.
+
+\subsection{Flex}
+\label{subsec:Flex}
+
+\emph{Flex} \cite{Flex} je kreiran kao alternativa \emph{lex}-u \cite{LexYacc}, Flex generiše samo leksere pa se stoga najčešće koristi u kombinaciji sa drugim alatima koji mogu da generišu parsere, kao što je \emph{BYACC}, opisan u nastavku.
+
+\subsection{BYACC}
+\label{subsec:BYACC}
+
+\emph{Berkeley YACC}, skraćeno \emph{BYACC} \cite{BYACC}, pisan po ANSI C standardu i otvorenog koda, se smatra od strane mnogih kao \textit{najbolja varijanta YACC-a} \cite{LexYacc}. BYACC dozvoljava tzv. \emph{reentrant} kod - memorija je deljenja između poziva pa je bezbedno konkurentno izvršavanje koda - na način kompatibilan sa Bison-om i to je delom razlog njegove popularnosti.
+
+\subsection{ANTLR}
+\label{subsec:ANTLR}
+\emph{Another Tool for Language Recognition}, ili kraće \emph{ANTLR} \cite{ANTLR}, je generator \emph{LL(*)} \cite{LLStar} leksera i parsera pisan u programskom jeziku Java sa intuitivnim interfejsom za obilazak stabla parsiranja. Verzija $3$ podržava generisanje parsera u jezicima Ada95, ActionScript, C, C\#, Java, JavaScript, Objective-C, Perl, Python, Ruby, i Standard ML, dok verzija $4$ u vreme pisanja ovog rada samo generiše parsere u narednim jezicima: Java, C\#, C++, JavaScript, Python, Swift i Go.
+
+ANTLR verzije $4$ je izabran u ovom radu zbog svoje jednostavnosti, intuitivnosti i podrške za mnoge moderne programske jezike. Verzija $4$ je izabrana umesto verzije $3$ po preporuci autora, na osnovu eksperimentalne analize brzine i pouzdanosti verzije $4$ u odnosu na verziju $3$. Lekseri i parseri za ulazne gramatike će u implementaciji biti generisani u programskom jeziku C\#.
 
 Parseri generisani koristeći ANTLR koriste novu tehnologiju koja se naziva \emph{Prilagodljiv LL(*)} (engl. \emph{Adaptive LL(*)}) ili \emph{ALL(*)} \cite{ANTLRReference}, dizajniranu od strane Terensa Para, autora ANTLR-a, i Sema Harvela. \emph{ALL(*)} vrši \emph{dinamičku analizu} gramatike u fazi izvršavanja, dok su starije verzije radile analizu pre pokretanja parsera, tzv. \emph{statičku analizu}. Ovaj pristup je takođe efikasniji zbog značajno manjeg prostora ulaznih sekvenci.
 
@@ -31,8 +42,8 @@ Najbolji aspekt ANTLR-a je lakoća definisanja gramatičkih pravila koji opisuju
 \end{figure}
 
 
-\subsection{Preduslovi za pokretanje ANTLR4}
-\label{subsec:ANTLRInstallation}
+\subsubsection{Preduslovi za pokretanje ANTLR4}
+\label{subsubsec:ANTLRInstallation}
 
 Kako bi ANTLR generisao parser u proizvoljnom programskom jeziku, potrebno je instalirati ANTLR i imati \emph{Java Runtime Environment} (skr. \emph{JRE}) instaliran na sistemu i dostupan globalno pokretanjem putem komande \texttt{java}. Instalacija se sastoji od preuzimanja najnovijeg \emph{.jar} fajla
 \footnote{Takođe je moguće kompajlirati izvorni kod dostupan na servisu GitHub \url{https://github.com/antlr/antlr4}}, sa zvanične stranice \cite{ANTLR} ili recimo korišćenjem \emph{curl} alata: 
