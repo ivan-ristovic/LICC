@@ -58,7 +58,7 @@ namespace LICC.Core
 
             object? instance = Activator.CreateInstance(comparer);
             if (instance is null)
-                throw new Exception("Failed to find comparer for given ASTNode type.");
+                throw new Exception("Failed to instantiate comparer for given ASTNode type.");
             return (IASTNodeComparer)instance;
         }
     }

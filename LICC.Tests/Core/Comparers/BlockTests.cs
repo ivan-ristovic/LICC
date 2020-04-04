@@ -473,6 +473,85 @@ namespace LICC.Tests.Core.Comparer
                     .AddError(new BlockEndValueMismatchError("y", 1, "2", "1"))
                     .AddError(new BlockEndValueMismatchError("x", 1, "4", "2"))
             );
+
+            this.Compare(
+                new SourceComponentNode(
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "int"),
+                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new IdentifierNode(1, "p")))
+                    ),
+                    new BlockStatementNode(1,
+                        new DeclarationStatementNode(1,
+                            new DeclarationSpecifiersNode(1, "int"),
+                            new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                        ), 
+                        new DeclarationStatementNode(1,
+                            new DeclarationSpecifiersNode(1, "int"),
+                            new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "z")))
+                        ),
+                        new ExpressionStatementNode(1,
+                            new AssignmentExpressionNode(1,
+                                new IdentifierNode(1, "z"),
+                                AssignmentOperatorNode.FromSymbol(1, "="),
+                                new IdentifierNode(1, "q")
+                            )
+                        ),
+                        new ExpressionStatementNode(1,
+                            new AssignmentExpressionNode(1,
+                                new IdentifierNode(1, "y"),
+                                AssignmentOperatorNode.FromSymbol(1, "="),
+                                new IdentifierNode(1, "z")
+                            )
+                        ),
+                        new ExpressionStatementNode(1,
+                            new AssignmentExpressionNode(1,
+                                new IdentifierNode(1, "x"),
+                                AssignmentOperatorNode.FromSymbol(1, "="),
+                                new IdentifierNode(1, "y")
+                            )
+                        )
+                    )
+                ),
+                new SourceComponentNode(
+                    new DeclarationStatementNode(1,
+                        new DeclarationSpecifiersNode(1, "int"),
+                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new IdentifierNode(1, "p")))
+                    ),
+                    new BlockStatementNode(1,
+                        new DeclarationStatementNode(1,
+                            new DeclarationSpecifiersNode(1, "int"),
+                            new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                        ),
+                        new DeclarationStatementNode(1,
+                            new DeclarationSpecifiersNode(1, "int"),
+                            new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "z")))
+                        ),
+                        new ExpressionStatementNode(1,
+                            new AssignmentExpressionNode(1,
+                                new IdentifierNode(1, "z"),
+                                AssignmentOperatorNode.FromSymbol(1, "="),
+                                new IdentifierNode(1, "w")
+                            )
+                        ),
+                        new ExpressionStatementNode(1,
+                            new AssignmentExpressionNode(1,
+                                new IdentifierNode(1, "y"),
+                                AssignmentOperatorNode.FromSymbol(1, "="),
+                                new IdentifierNode(1, "z")
+                            )
+                        ),
+                        new ExpressionStatementNode(1,
+                            new AssignmentExpressionNode(1,
+                                new IdentifierNode(1, "x"),
+                                AssignmentOperatorNode.FromSymbol(1, "="),
+                                new IdentifierNode(1, "y")
+                            )
+                        )
+                    )
+                ), new MatchIssues()
+                    .AddError(new BlockEndValueMismatchError("z", 1, "q", "w"))
+                    .AddError(new BlockEndValueMismatchError("x", 1, "q", "w"))
+            );
         }
     }
 }
