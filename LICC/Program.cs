@@ -69,6 +69,11 @@ namespace LICC
             if (src is null || dst is null)
                 return 1;
 
+            if (!new ASTStructureMatcher(src, dst).AttemptMatch()) {
+                Log.Fatal("Structue match failed.");
+                return 1;
+            }
+
             var comparer = new ASTNodeComparer(src, dst);
             comparer.AttemptMatch();
 
