@@ -1,0 +1,29 @@
+\babel@toc {serbian}{}
+\contentsline {chapter}{\chapternumberline {1}Uvod}{1}{chapter.1}
+\contentsline {chapter}{\chapternumberline {2}Pregled relevantnih pojmova}{3}{chapter.2}
+\contentsline {section}{\numberline {2.1}Apstraktna sintaksna stabla - AST}{3}{section.2.1}
+\contentsline {section}{\numberline {2.2}Simboli\IeC {\v c}ko izra\IeC {\v c}unavanje}{10}{section.2.2}
+\contentsline {section}{\numberline {2.3}Obrasci za projektovanje}{14}{section.2.3}
+\contentsline {subsection}{Obrazac \csqQQ {34}Posmatra\IeC {\v c}\csqQQ {34}}{15}{section*.1}
+\contentsline {subsection}{Obrazac \csqQQ {34}Posetilac\csqQQ {34}}{16}{section*.2}
+\contentsline {section}{\numberline {2.4}Parsiranje gramatika programskih jezika}{16}{section.2.4}
+\contentsline {subsection}{GNU Bison}{16}{section*.3}
+\contentsline {subsection}{Flex}{17}{section*.4}
+\contentsline {subsection}{BYACC}{18}{section*.5}
+\contentsline {subsection}{ANTLR}{18}{section*.6}
+\contentsline {subsubsection}{Preduslovi za pokretanje ANTLR4}{19}{section*.7}
+\contentsline {subsection}{Generisanje parsera koriste\IeC {\'c}i ANTLR4}{20}{section*.8}
+\contentsline {subsection}{Obilazak stabla parsiranja}{28}{section*.9}
+\contentsline {section}{\numberline {2.5}Programske paradigme i gramati\IeC {\v c}ke razlike programskih jezika}{31}{section.2.5}
+\contentsline {subsection}{Imperativna paradigma}{32}{section*.10}
+\contentsline {subsection}{Strukturna paradigma}{33}{section*.11}
+\contentsline {subsection}{Logi\IeC {\v c}ka paradigma}{33}{section*.12}
+\contentsline {subsection}{Funkcionalna paradigma}{34}{section*.13}
+\contentsline {subsection}{Objektno-orijentisana paradigma}{35}{section*.14}
+\contentsline {subsection}{Odnos proceduralnih i skript jezika}{36}{section*.15}
+\contentsline {chapter}{\chapternumberline {3}Opis zajedni\IeC {\v c}ke AST apstrakcije}{39}{chapter.3}
+\contentsline {section}{\numberline {3.1}\IeC {\v C}vorovi deklaracija}{41}{section.3.1}
+\contentsline {section}{\numberline {3.2}\IeC {\v C}vorovi operatora}{42}{section.3.2}
+\contentsline {section}{\numberline {3.3}\IeC {\v C}vorovi izraza}{43}{section.3.3}
+\contentsline {section}{\numberline {3.4}\IeC {\v C}vorovi naredbi}{44}{section.3.4}
+\contentsline {chapter}{\chapternumberline {4}Zaklju\IeC {\v c}ak}{46}{chapter.4}
