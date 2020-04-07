@@ -3,6 +3,7 @@ using System.Linq;
 using LICC.AST.Nodes;
 using LICC.Core.Comparers.Common;
 using LICC.Exceptions;
+using Serilog;
 
 namespace LICC.Core.Comparers
 {
@@ -10,6 +11,7 @@ namespace LICC.Core.Comparers
     {
         public override MatchIssues Compare(DeclarationStatementNode n1, DeclarationStatementNode n2)
         {
+            Log.Debug("Comparing declarations: `{SrcDecl}` with block: `{DstDecl}", n1, n2);
             Dictionary<string, DeclaredSymbol> srcSymbols = this.GetDeclaredSymbols(n1);
             Dictionary<string, DeclaredSymbol> dstSymbols = this.GetDeclaredSymbols(n2);
             this.CompareSymbols(srcSymbols, dstSymbols);

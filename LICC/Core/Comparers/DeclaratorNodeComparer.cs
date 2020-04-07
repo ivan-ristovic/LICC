@@ -3,6 +3,7 @@ using System.Linq;
 using LICC.AST.Nodes;
 using LICC.Core.Common;
 using LICC.Core.Comparers.Common;
+using Serilog;
 
 namespace LICC.Core.Comparers
 {
@@ -26,6 +27,8 @@ namespace LICC.Core.Comparers
 
         public override MatchIssues Compare(DeclaratorNode n1, DeclaratorNode n2)
         {
+            Log.Debug("Comparing declarators: `{SrcDecl}` with block: `{DstDecl}", n1, n2);
+
             if (n1.Identifier != n2.Identifier)
                 this.Issues.AddWarning(new DeclaratorMismatchWarning(n1, n2));
 

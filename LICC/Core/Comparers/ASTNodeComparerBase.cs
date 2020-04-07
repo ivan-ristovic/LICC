@@ -7,8 +7,7 @@ using Serilog;
 
 namespace LICC.Core.Comparers
 {
-    internal abstract class ASTNodeComparerBase<T> : IASTNodeComparer
-        where T : ASTNode
+    internal abstract class ASTNodeComparerBase<T> : IASTNodeComparer where T : ASTNode
     {
         public MatchIssues Issues { get; } = new MatchIssues();
 
