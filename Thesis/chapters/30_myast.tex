@@ -14,10 +14,10 @@ Kao što je opisano u odeljku \ref{sec:Paradigms}, dosta različitih "pod-paradi
     \centering
         \includegraphics[scale=0.7]{images/ast_go.png}
     \caption{Prikaz AST-a isečka koda pisanog u programskom jeziku Go. Prikazano putem \url{https://astexplorer.net/}}
-    \label{fig:ASTLua}
+    \label{fig:ASTGo}
 \end{figure}
 
-U ovoj poglavlju će biti predstavljena AST apstrakcija dizajnirana tako da je uz pomoć nje moguće predstaviti kodove proizvoljnog imperativnog programskog jezika. To uključuje i skript jezike koji, kako će biti pokazano u ovom radu, mogu da se posmatraju na istom nivou kao i svoji proceduralni "rođaci" od kojih potiču.
+U ovoj poglavlju će biti predstavljena AST apstrakcija dizajnirana tako da je uz pomoć nje moguće predstaviti kodove proizvoljnog imperativnog programskog jezika. To uključuje i skript jezike koji, kako će biti pokazano u ovom radu, mogu da se posmatraju na istom nivou kao i svoji proceduralni "rođaci".
 
 Kako bi se kreirala smislena apstrakcija stabla parsiranja, potrebno je identifikovati bitne informacije u stablu parsiranja ali i koncepte same gramatike koji su od značaja. Najjednostavnije rešenje je mimikovati čvorove stabla parsiranja, ukoliko su gramatička pravila kreirana tako da oslikaju koncepte jezika koji gramatika definiše. Na primer, ukoliko u gramatici imamo pravilo \texttt{deklaracija} sa alternativama \texttt{deklaracijaPromenljive} i \texttt{deklaracijaFunkcije}, možemo kreirati apstraktni koncept \texttt{Deklaracija} sa konkretizacijama \texttt{DeklaracijaPromenljive} i \texttt{DeklaracijaFunkcije}. Kako se definišu deklaracije promenljivih i funkcija zavisi dalje od definicija pravila \texttt{deklaracijaPromenljive} i \texttt{deklaracijaFunkcije}. Naravno, nije uvek moguće primeniti ovakav postupak. Takođe, nekada u gramatici definišemo pomoćna pravila kako bismo se izborili sa rekurzijom ili izbegli neke tipove rekurzije - ta pravila ne bi trebalo da imaju odgovarajuće tipove u apstrakciji. 
 
@@ -38,4 +38,3 @@ Na slici \ref{fig:ASTNode} se mogu videti osnovni tipovi AST čvorova zasnovani 
 \input{chapters/32_operator_nodes.tex}
 \input{chapters/33_expression_nodes.tex}
 \input{chapters/34_statement_nodes.tex}
-

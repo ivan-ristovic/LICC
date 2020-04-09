@@ -1,0 +1,105 @@
+\begin{thebibliography}{10}
+
+\bibitem{ANTLR}
+{ANTLR4}.
+\newblock \url{https://www.antlr.org/}.
+
+\bibitem{BYACC}
+{BYACC}.
+\newblock \url{http://byaccj.sourceforge.net/}.
+
+\bibitem{Clang}
+{Clang}.
+\newblock \url{https://clang.llvm.org/}.
+
+\bibitem{ContextFreeGrammars}
+{Context-Free Grammars}.
+\newblock
+  \url{https://www.cs.rochester.edu/~nelson/courses/csc_173/grammars/cfg.html}.
+
+\bibitem{EngineeringCompilers}
+Keith Cooper and Linda Torczon.
+\newblock {\em Engineering a Compiler, 2nd Edition}.
+\newblock 2013.
+
+\bibitem{IELR1}
+Joel Denny and Brian Malloy.
+\newblock {IELR(1): practical LR(1) parser tables for non-LR(1) grammars with
+  conflict resolution}.
+\newblock pages 240--245. Association for Computing Machinery, New York, NY,
+  United States.
+
+\bibitem{DesignPatterns}
+{Design Patterns}.
+\newblock \url{http://www.vincehuston.org/dp/}.
+
+\bibitem{Flex}
+{Flex}.
+\newblock \url{https://www.gnu.org/software/flex/}.
+
+\bibitem{DesignPatternsBook}
+Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides.
+\newblock {\em Design Patterns: Elements of Reusable Object-Oriented Software}.
+\newblock 1995.
+
+\bibitem{GLR}
+{GLR}.
+\newblock
+  \url{https://www.gnu.org/software/bison/manual/html_node/GLR-Parsers.html}.
+
+\bibitem{GNUBison}
+{GNU Bison}.
+\newblock \url{https://www.gnu.org/software/bison/}.
+
+\bibitem{GNUProject}
+{GNU Project}.
+\newblock \url{https://www.gnu.org/gnu/thegnuproject.en.html}.
+
+\bibitem{KLEE}
+{KLEE}.
+\newblock \url{https://klee.github.io/}.
+
+\bibitem{LALR1}
+{LALR1}.
+\newblock \url{https://web.cs.dal.ca/~sjackson/lalr1.html}.
+
+\bibitem{LexYacc}
+{LexYacc}.
+\newblock \url{http://dinosaur.compilertools.net/}.
+
+\bibitem{LLVM}
+{LLVM}.
+\newblock \url{https://llvm.org/}.
+
+\bibitem{LR}
+{LR}.
+\newblock \url{http://pages.cpsc.ucalgary.ca/~robin/class/411/LR.1.html}.
+
+\bibitem{ANTLRReference}
+Terrence Parr.
+\newblock {\em The Definitive ANTLR 4 Reference}.
+\newblock 2012.
+
+\bibitem{ProgrammingParadigms}
+{ProgrammingParadigms}.
+\newblock \url{https://cs.lmu.edu/~ray/notes/paradigms/}.
+
+\bibitem{SMT}
+{SMT}.
+\newblock
+  \url{https://resources.mpi-inf.mpg.de/departments/rg1/conferences/vtsa08/slides/barret2_smt.pdf}.
+
+\bibitem{SymbolicExecution}
+{Symbolic Execution}.
+\newblock \url{https://www.cs.umd.edu/~mwh/se-tutorial/symbolic-exec.pdf}.
+
+\bibitem{UML}
+{Design Patterns}.
+\newblock \url{https://www.uml.org/}.
+
+\bibitem{CompilerConstruction}
+William~M. Waite and Gerhard Goos.
+\newblock {\em Compiler Construction}.
+\newblock 1995.
+
+\end{thebibliography}
