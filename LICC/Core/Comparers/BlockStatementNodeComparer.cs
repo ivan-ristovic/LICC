@@ -216,14 +216,41 @@ namespace LICC.Core.Comparers
             {
                 FunctionDefinitionNode? dstDef = n2
                     .ChildrenOfType<FunctionDefinitionNode>()
-                    .FirstOrDefault(f => f.Specifiers == srcDef.Specifiers && f.Declarator == srcDef.Declarator)
+                    .FirstOrDefault(MatchWithSrcDefViaParamNames)
                     ;
                 if (dstDef is null) {
                     this.Issues.AddError(new MissingFunctionDefinitionError(srcDef.Specifiers, srcDef.Declarator));
                     return;
                 }
 
+                if (srcDef.Specifiers != dstDef.Specifiers)
+                    this.Issues.AddWarning(new DeclSpecsMismatchWarning(dstDef.Declarator, srcDef.Specifiers, dstDef.Specifiers));
+                if (srcDef.ParametersNode is { } && dstDef.ParametersNode is { })
+                    this.Issues.Add(new FunctionParametersNodeComparer().Compare(srcDef.ParametersNode, dstDef.ParametersNode));
                 this.Issues.Add(new FunctionDefinitionNodeComparer(this.localSrcSymbols, this.localDstSymbols).Compare(srcDef, dstDef));
+
+
+                bool MatchWithSrcDefViaParamNames(FunctionDefinitionNode f)
+                {
+                    if (f.Identifier != srcDef.Identifier)
+                        return false;
+
+                    if (srcDef.Parameters is null)
+                        return f.Parameters is null;
+
+                    if (f.Parameters is null)
+                        return false;
+
+                    if (f.Parameters.Count() != srcDef.Parameters.Count())
+                        return false;
+
+                    foreach ((FunctionParameterNode p1, FunctionParameterNode p2) in f.Parameters.Zip(srcDef.Parameters)) {
+                        if (p1.Declarator.Identifier != p2.Declarator.Identifier)
+                            return false;
+                    }
+
+                    return true;
+                }
             }
 
             static bool IsLvalueAssignment(ExpressionNode expr, out ExpressionNode? lvalue, out ExpressionNode? rvalue)

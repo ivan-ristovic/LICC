@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using LICC.AST.Nodes;
 using LICC.Core.Comparers.Common;
 using LICC.Exceptions;

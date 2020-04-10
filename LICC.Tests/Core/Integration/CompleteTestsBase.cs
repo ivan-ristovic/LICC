@@ -30,7 +30,7 @@ namespace LICC.Tests.Core.Integration
         {
             MatchIssues issues = new ASTNodeComparer(src, dst).AttemptMatch();
             expectedIssues ??= new MatchIssues();
-            Assert.That(issues, Is.EqualTo(expectedIssues));
+            CollectionAssert.AreEqual(expectedIssues, issues);
         }
     }
 }
