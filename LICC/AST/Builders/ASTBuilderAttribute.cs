@@ -14,8 +14,6 @@ namespace LICC.AST.Builders
 
         public ASTBuilderAttribute(string fileExtension)
         {
-            //if (_fileExtensions.Contains(fileExtension))
-            //    throw new ArgumentException($"Another builder is already registered for file extension: {_fileExtensions}");
             this.FileExtension = fileExtension;
             _fileExtensions.Add(fileExtension);
         }

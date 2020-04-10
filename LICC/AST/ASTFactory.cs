@@ -1,11 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using LICC.AST.Builders;
-using LICC.AST.Builders.C;
-using LICC.AST.Builders.Lua;
-using LICC.AST.Builders.Pseudo;
 using LICC.AST.Nodes;
 using LICC.Exceptions;
 using Serilog;
@@ -21,18 +19,16 @@ namespace LICC.AST
                 ast = BuildFromFile(path);
                 return true;
             } catch (SyntaxException e) {
-                Log.Fatal(e, "[{Path}] Syntax error - {Details}", path, e.Message ?? "unknown");
-                return false;
+                Log.Fatal(e, "[{Path}] Syntax error: {Details}", path, e.Message ?? "unknown");
             } catch (NotImplementedException e) {
-                Log.Fatal(e, "[{Path}] Not supported - {Details}", path, e.Message ?? "unknown");
-                return false;
+                Log.Fatal(e, "[{Path}] Not supported: {Details}", path, e.Message ?? "unknown");
             } catch (UnsupportedLanguageException e) {
                 Log.Fatal(e, "[{Path}] Not supported language", path);
-                return false;
             } catch (Exception e) {
                 Log.Fatal(e, "[{Path}] Unknown error", path);
-                return false;
             }
+
+            return false;
         }
 
         public static ASTNode BuildFromFile(string path)
@@ -42,13 +38,17 @@ namespace LICC.AST
             var fi = new FileInfo(path);
             string code = File.ReadAllText(path);
 
-            Type? builderType = Assembly
+            IEnumerable<Type> builderTypes = Assembly
                 .GetExecutingAssembly()
                 .GetExportedTypes()
-                .SingleOrDefault(t => t.GetCustomAttributes<ASTBuilderAttribute>().Any(a => a.FileExtension == fi.Extension))
+                .Where(t => t.GetCustomAttributes<ASTBuilderAttribute>().Any(a => a.FileExtension == fi.Extension))
                 ;
-            if (builderType is null)
+            if (!builderTypes.Any())
                 throw new UnsupportedLanguageException();
+
+            Type? builderType = builderTypes.SingleOrDefault();
+            if (builderType is null)
+                throw new AmbiguousMatchException("Multiple builders are registered to handle that file type.");
 
             if (!(Activator.CreateInstance(builderType) is IAbstractASTBuilder builder))
                 throw new NotImplementedException("The builder for required file extension is found but does not inherit IAbstractASTBuilder class.");
