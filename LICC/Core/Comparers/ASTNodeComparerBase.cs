@@ -21,18 +21,18 @@ namespace LICC.Core.Comparers
         {
             Log.Debug("Testing declarations...");
 
-            foreach (DeclaredSymbol srcVar in srcSymbols.Select(kvp => kvp.Value)) {
-                if (!dstSymbols.ContainsKey(srcVar.Identifier)) {
-                    this.Issues.AddWarning(new MissingDeclarationWarning(srcVar.Specifiers, srcVar.Declarator));
+            foreach ((string identifier, DeclaredSymbol srcSymbol) in srcSymbols) {
+                if (!dstSymbols.ContainsKey(identifier)) {
+                    this.Issues.AddWarning(new MissingDeclarationWarning(srcSymbol.Specifiers, srcSymbol.Declarator));
                     continue;
                 }
-                DeclaredSymbol dstVar = dstSymbols[srcVar.Identifier];
+                DeclaredSymbol dstSymbol = dstSymbols[identifier];
 
-                if (srcVar.Specifiers != dstVar.Specifiers)
-                    this.Issues.AddWarning(new DeclSpecsMismatchWarning(srcVar.Declarator, srcVar.Specifiers, dstVar.Specifiers));
+                if (srcSymbol.Specifiers != dstSymbol.Specifiers)
+                    this.Issues.AddWarning(new DeclSpecsMismatchWarning(srcSymbol.Declarator, srcSymbol.Specifiers, dstSymbol.Specifiers));
 
-                var declComparer = new DeclaratorNodeComparer(srcVar, dstVar);
-                this.Issues.Add(declComparer.Compare(srcVar.Declarator, dstVar.Declarator));
+                var declComparer = new DeclaratorNodeComparer(srcSymbol, dstSymbol);
+                this.Issues.Add(declComparer.Compare(srcSymbol.Declarator, dstSymbol.Declarator));
             }
 
             foreach (string identifier in dstSymbols.Keys.Except(srcSymbols.Keys)) {

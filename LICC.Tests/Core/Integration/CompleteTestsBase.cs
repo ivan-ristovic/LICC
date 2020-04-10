@@ -10,7 +10,7 @@ namespace LICC.Tests.Core.Integration
     internal abstract class CompleteTestsBase
     {
         [Test]
-        public abstract void NoDifferenceTests();
+        public abstract void SemanticEquivallenceTests();
 
         [Test]
         public abstract void DifferenceTests();

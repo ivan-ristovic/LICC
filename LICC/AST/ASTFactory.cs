@@ -1,5 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using LICC.AST.Builders;
 using LICC.AST.Builders.C;
 using LICC.AST.Builders.Lua;
 using LICC.AST.Builders.Pseudo;
@@ -38,13 +41,19 @@ namespace LICC.AST
 
             var fi = new FileInfo(path);
             string code = File.ReadAllText(path);
-            return fi.Extension switch
-            {
-                ".c" => new CASTBuilder().BuildFromSource(code),
-                ".lua" => new LuaASTBuilder().BuildFromSource(code),
-                ".psc" => new PseudoASTBuilder().BuildFromSource(code),
-                _ => throw new UnsupportedLanguageException(),
-            };
+
+            Type? builderType = Assembly
+                .GetExecutingAssembly()
+                .GetExportedTypes()
+                .SingleOrDefault(t => t.GetCustomAttributes<ASTBuilderAttribute>().Any(a => a.FileExtension == fi.Extension))
+                ;
+            if (builderType is null)
+                throw new UnsupportedLanguageException();
+
+            if (!(Activator.CreateInstance(builderType) is IAbstractASTBuilder builder))
+                throw new NotImplementedException("The builder for required file extension is found but does not inherit IAbstractASTBuilder class.");
+
+            return builder.BuildFromSource(code);
         }
     }
 }

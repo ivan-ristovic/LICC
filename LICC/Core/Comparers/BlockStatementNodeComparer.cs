@@ -122,8 +122,8 @@ namespace LICC.Core.Comparers
                     var symbol = DeclaredSymbol.From(declStat.Specifiers, decl);
                     if (symbols.TryGetValue(decl.Identifier, out DeclaredSymbol? conf) || this.TryFindSymbol(decl.Identifier, src, out conf)) {
                         if (symbol is DeclaredFunctionSymbol overload && conf is DeclaredFunctionSymbol df) {
-                            if (!df.AddOverload(overload.FunctionDeclarators.Single()))
-                                throw new SemanticErrorException($"Multiple overloads with same parameters found for function: {df.Identifier}", decl.Line);
+                            if (!df.AddOverload(overload.FunctionDeclarator))
+                                throw new SemanticErrorException($"Multiple overloads with same parameters found for function: {df.Declarator}", decl.Line);
                         } else {
                             throw new SemanticErrorException($"Same identifier found in multiple declarations: {decl.Identifier}", decl.Line);
                         }
@@ -183,7 +183,9 @@ namespace LICC.Core.Comparers
                             PerformAssignment(exprStat.Expression, src);
                         }
                         break;
-                        // TODO
+                    case FunctionDefinitionNode fdef:
+                        CompareWithMatchingFunctionDefinition(fdef);
+                        break;
                 }
             }
 
@@ -208,6 +210,20 @@ namespace LICC.Core.Comparers
                         throw new NotImplementedException("Array assignment handling.");
                     }
                 }
+            }
+
+            void CompareWithMatchingFunctionDefinition(FunctionDefinitionNode srcDef)
+            {
+                FunctionDefinitionNode? dstDef = n2
+                    .ChildrenOfType<FunctionDefinitionNode>()
+                    .FirstOrDefault(f => f.Specifiers == srcDef.Specifiers && f.Declarator == srcDef.Declarator)
+                    ;
+                if (dstDef is null) {
+                    this.Issues.AddError(new MissingFunctionDefinitionError(srcDef.Specifiers, srcDef.Declarator));
+                    return;
+                }
+
+                this.Issues.Add(new FunctionDefinitionNodeComparer(this.localSrcSymbols, this.localDstSymbols).Compare(srcDef, dstDef));
             }
 
             static bool IsLvalueAssignment(ExpressionNode expr, out ExpressionNode? lvalue, out ExpressionNode? rvalue)

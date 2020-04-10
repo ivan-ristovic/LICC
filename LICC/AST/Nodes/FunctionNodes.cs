@@ -59,11 +59,11 @@ namespace LICC.AST.Nodes
             => $"lambda ({this.ParametersNode?.GetText() ?? ""}): {this.Definition.GetText()}";
     }
 
-    public sealed class FunctionDefinitionNode : ASTNode
+    public sealed class FunctionDefinitionNode : StatementNode
     {
         [JsonIgnore]
-        public DeclarationKeywords Keywords => this.Children[0].As<DeclarationSpecifiersNode>().Keywords;
-        
+        public DeclarationSpecifiersNode Specifiers => this.Children[0].As<DeclarationSpecifiersNode>();
+
         [JsonIgnore]
         public FunctionDeclaratorNode Declarator => this.Children[1].As<FunctionDeclaratorNode>();
 
@@ -81,7 +81,10 @@ namespace LICC.AST.Nodes
         
         [JsonIgnore]
         public bool IsVariadic => this.Declarator.IsVariadic;
-        
+
+        [JsonIgnore]
+        public DeclarationKeywords Keywords => this.Specifiers.Keywords;
+
         [JsonIgnore]
         public FunctionParametersNode? ParametersNode => this.Declarator.ParametersNode;
         

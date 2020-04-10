@@ -15,15 +15,15 @@ namespace LICC.Core.Common
         public bool VariadicMismatch { get; set; }
 
 
-        public ParameterMismatchWarning(string name, int line, bool variadicMismatch = true)
+        public ParameterMismatchWarning(string fname, int line, bool variadicMismatch = true)
         {
-            this.FunctionName = name;
+            this.FunctionName = fname;
             this.Line = line;
             this.VariadicMismatch = variadicMismatch;
         }
 
-        public ParameterMismatchWarning(string name, int line, int order, FunctionParameterNode expected, FunctionParameterNode actual)
-            : this(name, line, variadicMismatch: false)
+        public ParameterMismatchWarning(string fname, int line, int order, FunctionParameterNode expected, FunctionParameterNode actual)
+            : this(fname, line, variadicMismatch: false)
         {
             if (Equals(expected, actual))
                 throw new ArgumentException("Expected different objects");

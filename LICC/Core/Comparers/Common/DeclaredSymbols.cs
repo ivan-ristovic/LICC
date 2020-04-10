@@ -117,24 +117,25 @@ namespace LICC.Core.Comparers.Common
 
     internal sealed class DeclaredFunctionSymbol : DeclaredSymbol
     {
-        public List<FunctionDeclaratorNode> FunctionDeclarators { get; set; }
+        public HashSet<FunctionDeclaratorNode> Overloads { get; set; }
+        public FunctionDeclaratorNode FunctionDeclarator { get; set; }
 
 
         public DeclaredFunctionSymbol(string name, DeclarationSpecifiersNode specs, FunctionDeclaratorNode decl)
             : base(name, specs, decl)
         {
-            this.FunctionDeclarators = new List<FunctionDeclaratorNode>() { decl };
+            this.Declarator = this.FunctionDeclarator = decl;
+            this.Overloads = new HashSet<FunctionDeclaratorNode> { decl };
         }
 
 
         public bool AddOverload(FunctionDeclaratorNode decl)
         {
-            if (this.FunctionDeclarators.Any(d => d.Equals(decl)))
+            if (this.Overloads.Contains(decl))
                 return false;
-            this.FunctionDeclarators.Add(decl);
+            this.Overloads.Add(decl);
             return true;
         }
-
 
         public override Expr GetInitSymbolValue(Dictionary<string, Expr> symbolExprs)
             => throw new InvalidOperationException("Cannot get a value of a function symbol");

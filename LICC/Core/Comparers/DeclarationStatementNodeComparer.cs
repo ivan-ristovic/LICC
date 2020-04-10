@@ -26,7 +26,7 @@ namespace LICC.Core.Comparers
             foreach (DeclaratorNode decl in node.DeclaratorList.Declarations) {
                 var symbol = DeclaredSymbol.From(node.Specifiers, decl);
                 if (symbol is DeclaredFunctionSymbol df && symbols.ContainsKey(df.Identifier)) {
-                    if (!df.AddOverload(df.FunctionDeclarators.Single()))
+                    if (!df.AddOverload(df.FunctionDeclarator))
                         throw new SemanticErrorException($"Multiple overloads with same parameters found for function: {df.Identifier}", decl.Line);
                 }
                 symbols.Add(decl.Identifier, symbol);

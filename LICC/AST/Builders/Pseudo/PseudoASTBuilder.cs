@@ -10,6 +10,7 @@ using static LICC.AST.Builders.Pseudo.PseudoParser;
 
 namespace LICC.AST.Builders.Pseudo
 {
+    [ASTBuilder(".psc")]
     public sealed partial class PseudoASTBuilder : PseudoBaseVisitor<ASTNode>, IASTBuilder<PseudoParser>
     {
         public PseudoParser CreateParser(string code)

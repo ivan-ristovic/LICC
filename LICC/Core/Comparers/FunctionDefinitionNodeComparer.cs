@@ -1,0 +1,58 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using LICC.AST.Nodes;
+using LICC.Core.Common;
+using LICC.Core.Comparers.Common;
+
+namespace LICC.Core.Comparers
+{
+    internal sealed class FunctionDefinitionNodeComparer : ASTNodeComparerBase<FunctionDefinitionNode>
+    {
+        private readonly Dictionary<string, DeclaredSymbol> srcGlobals = new Dictionary<string, DeclaredSymbol>();
+        private readonly Dictionary<string, DeclaredSymbol> dstGlobals = new Dictionary<string, DeclaredSymbol>();
+
+
+        public FunctionDefinitionNodeComparer()
+        {
+
+        }
+
+        public FunctionDefinitionNodeComparer(Dictionary<string, DeclaredSymbol> srcSymbols, Dictionary<string, DeclaredSymbol> dstSymbols)
+        {
+            this.srcGlobals = srcSymbols;
+            this.dstGlobals = dstSymbols;
+        }
+
+
+        public override MatchIssues Compare(FunctionDefinitionNode n1, FunctionDefinitionNode n2) 
+        {
+            this.Issues.Add(new DeclaratorNodeComparer().Compare(n1.Declarator, n2.Declarator));
+            if (n1.ParametersNode is { } && n2.ParametersNode is { })
+                this.Issues.Add(new FunctionParametersNodeComparer().Compare(n1.ParametersNode, n2.ParametersNode));
+            else if (n1.ParametersNode is { } || n2.ParametersNode is { })
+                this.Issues.AddWarning(new ParameterMismatchWarning(n1.Identifier, n2.Line, n1.IsVariadic != n2.IsVariadic));
+
+            Dictionary<string, DeclaredSymbol> srcOuterVars = this.AddParameterSymbols(this.srcGlobals, n1);
+            Dictionary<string, DeclaredSymbol> dstOuterVars = this.AddParameterSymbols(this.dstGlobals, n2);
+
+            this.Issues.Add(new BlockStatementNodeComparer(srcOuterVars, dstOuterVars).Compare(n1.Definition, n2.Definition));
+            return this.Issues;
+        }
+
+
+        private Dictionary<string, DeclaredSymbol> AddParameterSymbols(Dictionary<string, DeclaredSymbol> srcGlobals, FunctionDefinitionNode n1)
+        {
+            if (!n1.Parameters?.Any() ?? true)
+                return srcGlobals;
+                
+            var allSymbols = new Dictionary<string, DeclaredSymbol>(srcGlobals);
+
+            IEnumerable<DeclaredSymbol> symbols = n1.Parameters.Select(p => DeclaredSymbol.From(p.DeclarationSpecifiers, p.Declarator));
+            foreach (DeclaredSymbol symbol in symbols)
+                allSymbols.Add(symbol.Identifier, symbol); // TODO same as global?
+
+            return allSymbols;
+        }
+    }
+}

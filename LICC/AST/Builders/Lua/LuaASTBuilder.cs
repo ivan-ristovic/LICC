@@ -12,6 +12,7 @@ using static LICC.AST.Builders.Lua.LuaParser;
 
 namespace LICC.AST.Builders.Lua
 {
+    [ASTBuilder(".lua")]
     public sealed partial class LuaASTBuilder : LuaBaseVisitor<ASTNode>, IASTBuilder<LuaParser>
     {
         public LuaParser CreateParser(string code)

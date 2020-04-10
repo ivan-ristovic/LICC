@@ -68,9 +68,9 @@ namespace LICC.Core.Comparers
                 }
             } else if (n1 is FunctionDeclaratorNode fn1 && n2 is FunctionDeclaratorNode fn2) {
                 if (this.Symbol1 is DeclaredFunctionSymbol f1 && this.Symbol2 is DeclaredFunctionSymbol f2) {
-                    if (f1.FunctionDeclarators.Count != f2.FunctionDeclarators.Count)
+                    if (f1.Overloads.Count != f2.Overloads.Count)
                         this.Issues.AddWarning(new ParameterMismatchWarning(fn1.Identifier, fn2.Line));
-                    foreach ((FunctionDeclaratorNode fdecl1, FunctionDeclaratorNode fdecl2) in f1.FunctionDeclarators.Zip(f2.FunctionDeclarators)) 
+                    foreach ((FunctionDeclaratorNode fdecl1, FunctionDeclaratorNode fdecl2) in f1.Overloads.Zip(f2.Overloads)) 
                         CheckFunctionParameters(fdecl1, fdecl2);
                 } else {
                     CheckFunctionParameters(fn1, fn2);

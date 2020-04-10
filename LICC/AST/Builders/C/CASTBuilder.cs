@@ -10,6 +10,7 @@ using static LICC.AST.Builders.C.CParser;
 
 namespace LICC.AST.Builders.C
 {
+    [ASTBuilder(".c")]
     public sealed partial class CASTBuilder : CBaseVisitor<ASTNode>, IASTBuilder<CParser>
     {
         public CParser CreateParser(string code)
