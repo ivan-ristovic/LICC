@@ -29,15 +29,17 @@ namespace LICC.Core.Comparers
                 DeclaredSymbol dstSymbol = dstSymbols[identifier];
 
                 if (srcSymbol.Specifiers != dstSymbol.Specifiers)
-                    this.Issues.AddWarning(new DeclSpecsMismatchWarning(srcSymbol.Declarator, srcSymbol.Specifiers, dstSymbol.Specifiers));
+                    this.Issues.AddWarning(new DeclSpecsMismatchWarning(dstSymbol.Declarator, srcSymbol.Specifiers, dstSymbol.Specifiers));
 
                 var declComparer = new DeclaratorNodeComparer(srcSymbol, dstSymbol);
                 this.Issues.Add(declComparer.Compare(srcSymbol.Declarator, dstSymbol.Declarator));
             }
 
             foreach (string identifier in dstSymbols.Keys.Except(srcSymbols.Keys)) {
-                DeclaredSymbol extra = dstSymbols[identifier];
-                this.Issues.AddWarning(new ExtraDeclarationWarning(extra.Specifiers, extra.Declarator));
+                if (!identifier.StartsWith("tmp__")) {
+                    DeclaredSymbol extra = dstSymbols[identifier];
+                    this.Issues.AddWarning(new ExtraDeclarationWarning(extra.Specifiers, extra.Declarator));
+                }
             }
 
             if (!this.Issues.NoSeriousIssues)

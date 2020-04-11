@@ -112,6 +112,8 @@ namespace LICC.AST.Builders.Lua
                         var tmpDeclSpecs = new DeclarationSpecifiersNode(block.Line);
                         var tmpDecl = new DeclarationStatementNode(block.Line, tmpDeclSpecs, tmpDeclList);
                         nodes.Add(tmpDecl);
+                        foreach (string v in tmpDeclList.Declarations.Select(d => d.Identifier))
+                            declaredVars.Add(v);
 
                         // Add tmp assignments
                         var tmpAssignments = new ExpressionListNode(block.Line, declList.Select(decl => CreateTmpAssignment(decl)));
@@ -119,7 +121,7 @@ namespace LICC.AST.Builders.Lua
 
 
                         static IdentifierNode CreateTmpIdentifier(IdentifierNode id)
-                            => new IdentifierNode(id.Line, $"*_{id.Identifier}");
+                            => new IdentifierNode(id.Line, $"tmp__{id.Identifier}");
 
                         static DeclaratorNode CreateTmpDeclarator(AssignmentExpressionNode expr)
                             => CreateDeclarator(CreateTmpIdentifier(expr.LeftOperand.As<IdentifierNode>()), expr.RightOperand);
@@ -131,7 +133,29 @@ namespace LICC.AST.Builders.Lua
                         }
                     } else {
                         nodes.Add(new BlockStatementNode(block.Line, this.AddDeclarations(block.Children, declaredVars)));
-                    } 
+                    }
+                } else if (stat is FunctionDefinitionNode fdef) {
+                    var @params = new List<string>();
+                    if (fdef.Parameters is { })
+                        @params.AddRange(fdef.Parameters.Select(p => p.Declarator.Identifier));
+                    @params = @params.Except(declaredVars).ToList();
+
+                    foreach (string p in @params)
+                        declaredVars.Add(p);
+                    var alteredDefinition = new BlockStatementNode(fdef.Definition.Line, this.AddDeclarations(fdef.Definition.Children, declaredVars));
+                    nodes.Add(new FunctionDefinitionNode(fdef.Line, fdef.Specifiers, fdef.Declarator, alteredDefinition));
+                    foreach (string p in @params)
+                        declaredVars.Remove(p);
+                } else if (stat is IfStatementNode @if) {
+                    IfStatementNode alteredIf;
+                    var alteredThen = new BlockStatementNode(@if.ThenStatement.Line, this.AddDeclarations(@if.ThenStatement.Children, declaredVars));
+                    if (@if.ElseStatement is { }) {
+                        var alteredElse = new BlockStatementNode(@if.ElseStatement.Line, this.AddDeclarations(@if.ElseStatement.Children, declaredVars));
+                        alteredIf = new IfStatementNode(@if.Line, @if.Condition, alteredThen, alteredElse);
+                    } else {
+                        alteredIf = new IfStatementNode(@if.Line, @if.Condition, alteredThen);
+                    }
+                    nodes.Add(alteredIf);
                 } else {
                     nodes.Add(stat);
                 }

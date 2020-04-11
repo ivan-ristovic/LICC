@@ -133,7 +133,7 @@ namespace LICC.AST.Nodes
     public class FunctionParameterNode : ASTNode
     {
         [JsonIgnore]
-        public DeclarationSpecifiersNode DeclarationSpecifiers => this.Children[0].As<DeclarationSpecifiersNode>();
+        public DeclarationSpecifiersNode Specifiers => this.Children[0].As<DeclarationSpecifiersNode>();
         
         [JsonIgnore]
         public DeclaratorNode Declarator => this.Children[1].As<DeclaratorNode>();

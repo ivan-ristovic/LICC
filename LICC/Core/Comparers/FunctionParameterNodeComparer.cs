@@ -5,13 +5,13 @@ namespace LICC.Core.Comparers
 {
     internal sealed class FunctionParameterNodeComparer : ASTNodeComparerBase<FunctionParameterNode>
     {
-        public string FunctionName { get; set; }
+        public string? FunctionName { get; set; }
         public int Line { get; set; }
 
 
         public FunctionParameterNodeComparer()
         {
-            this.FunctionName = "<unknown_function>";
+
         }
 
         public FunctionParameterNodeComparer(string functionName, int line)
@@ -23,8 +23,8 @@ namespace LICC.Core.Comparers
 
         public override MatchIssues Compare(FunctionParameterNode n1param, FunctionParameterNode n2param)
         {
-            if (!n1param.Equals(n2param))
-                this.Issues.AddWarning(new DeclSpecsMismatchWarning(n1param.Declarator, n1param.DeclarationSpecifiers, n2param.DeclarationSpecifiers));
+            if (this.FunctionName is null && !n1param.Specifiers.Equals(n2param.Specifiers))
+                this.Issues.AddWarning(new DeclSpecsMismatchWarning(n2param.Declarator, n1param.Specifiers, n2param.Specifiers));
 
             this.Issues.Add(new DeclaratorNodeComparer().Compare(n1param.Declarator, n2param.Declarator));
             return this.Issues;

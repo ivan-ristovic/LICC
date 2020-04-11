@@ -40,75 +40,106 @@ namespace LICC.Core.Comparers
             this.CompareSymbols(this.localSrcSymbols, this.localDstSymbols);
 
             this.PerformStatements(n1, n2);
+
+            Dictionary<string, Expr> srcSymbolExprs = this.ExtractSymbolExprs(src: true);
+            Dictionary<string, Expr> dstSymbolExprs = this.ExtractSymbolExprs(src: false);
+            this.SubstituteTemporaryVariables(srcSymbolExprs, dstSymbolExprs);
+            this.SubstituteMissingVariables(srcSymbolExprs);
+            this.SubstituteExtraVariables(dstSymbolExprs);
             this.CompareSymbolValues(n2.Line);
-            this.SubstituteLocalsInGlobals();
+            this.SubstituteLocalsInGlobals(srcSymbolExprs, dstSymbolExprs);
 
             return this.Issues;
         }
 
 
-        private void SubstituteLocalsInGlobals()
+        private void SubstituteMissingVariables(Dictionary<string, Expr> symbolExprs)
         {
-            Dictionary<string, Expr> srcSymbolExprs = ExtractSymbolExprs(src: true);
-            Dictionary<string, Expr> dstSymbolExprs = ExtractSymbolExprs(src: false);
+            foreach ((string identifier, DeclaredSymbol symbol) in this.localSrcSymbols) {
+                if (!this.localDstSymbols.ContainsKey(identifier))
+                    this.Substitute(symbol, symbolExprs, true);
+            }
+        }
+
+        private void SubstituteExtraVariables(Dictionary<string, Expr> symbolExprs)
+        {
+            foreach ((string identifier, DeclaredSymbol symbol) in this.localDstSymbols) {
+                if (!this.localSrcSymbols.ContainsKey(identifier))
+                    this.Substitute(symbol, symbolExprs, false);
+            }
+        }
+
+        private void SubstituteTemporaryVariables(Dictionary<string, Expr> srcSymbolExprs, Dictionary<string, Expr> dstSymbolExprs)
+        {
+            foreach ((string identifier, DeclaredSymbol symbol) in this.localSrcSymbols) {
+                if (identifier.StartsWith("tmp__"))
+                    this.Substitute(symbol, srcSymbolExprs, true);
+            }
+            foreach ((string identifier, DeclaredSymbol symbol) in this.localDstSymbols) {
+                if (identifier.StartsWith("tmp__"))
+                    this.Substitute(symbol, dstSymbolExprs, false);
+            }
+        }
+
+        private void SubstituteLocalsInGlobals(Dictionary<string, Expr> srcSymbolExprs, Dictionary<string, Expr> dstSymbolExprs)
+        {
             foreach ((string _, DeclaredSymbol symbol) in this.localSrcSymbols)
-                Substitute(symbol, srcSymbolExprs, true);
+                this.Substitute(symbol, srcSymbolExprs, true);
             foreach ((string _, DeclaredSymbol symbol) in this.localDstSymbols)
-                Substitute(symbol, dstSymbolExprs, false);
+                this.Substitute(symbol, dstSymbolExprs, false);
+        }
 
-
-            void Substitute(DeclaredSymbol localSymbol, Dictionary<string, Expr> symbolExprs, bool src)
-            {
-                if (!(localSymbol is DeclaredVariableSymbol localVarSymbol))
-                    return;
-                foreach ((string _, DeclaredSymbol symbol) in src ? this.srcSymbols : this.dstSymbols) {
-                    Expr replacement = localSymbol.GetInitSymbolValue(symbolExprs);
-                    switch (symbol) {
-                        case DeclaredVariableSymbol var:
-                            var.SymbolicInitializer = var.SymbolicInitializer?.Substitute(localSymbol.Identifier, replacement);
-                            var.Initializer = var.Initializer?.Substitute<ExpressionNode>(new IdentifierNode(1, localVarSymbol.Identifier), localVarSymbol.Initializer);
-                            break;
-                        case DeclaredArraySymbol arr:
-                            // TODO
-                            break;
-                        case DeclaredFunctionSymbol f:
-                            // TODO
-                            break;
-                    }
+        private void Substitute(DeclaredSymbol localSymbol, Dictionary<string, Expr> symbolExprs, bool src)
+        {
+            if (!(localSymbol is DeclaredVariableSymbol localVarSymbol))
+                return;
+            foreach ((string _, DeclaredSymbol symbol) in src ? this.srcSymbols : this.dstSymbols) {
+                Expr replacement = localSymbol.GetInitSymbolValue(symbolExprs);
+                switch (symbol) {
+                    case DeclaredVariableSymbol var:
+                        var.SymbolicInitializer = var.SymbolicInitializer?.Substitute(localSymbol.Identifier, replacement);
+                        var.Initializer = var.Initializer?.Substitute<ExpressionNode>(new IdentifierNode(1, localVarSymbol.Identifier), localVarSymbol.Initializer);
+                        break;
+                    case DeclaredArraySymbol arr:
+                        // TODO
+                        break;
+                    case DeclaredFunctionSymbol f:
+                        // TODO
+                        break;
                 }
             }
+        }
 
-            Dictionary<string, Expr> ExtractSymbolExprs(bool src)
+        private Dictionary<string, Expr> ExtractSymbolExprs(bool src)
+        {
+            var exprs = new Dictionary<string, Expr>();
+            foreach ((string identifier, DeclaredSymbol symbol) in src ? this.localSrcSymbols : this.localDstSymbols)
+                ExtractExprsFromSymbol(identifier, symbol);
+            return exprs;
+
+
+            void ExtractExprsFromSymbol(string identifier, DeclaredSymbol symbol)
             {
-                var exprs = new Dictionary<string, Expr>();
-                foreach ((string identifier, DeclaredSymbol symbol) in src ? this.localSrcSymbols : this.localDstSymbols)
-                    ExtractExprsFromSymbol(identifier, symbol);
-                return exprs;
-
-
-                void ExtractExprsFromSymbol(string identifier, DeclaredSymbol symbol)
-                {
-                    switch (symbol) {
-                        case DeclaredVariableSymbol var:
-                            if (var.SymbolicInitializer is { })
-                                exprs.Add(identifier, var.SymbolicInitializer);
-                            else if (var.Initializer is { })
-                                exprs.Add(identifier, new SymbolicExpressionBuilder(var.Initializer).Parse());
-                            else
-                                exprs.Add(identifier, Expr.Undefined);
-                            break;
-                        case DeclaredArraySymbol arr:
-                            if (arr.SymbolicInitializers is { }) {
-                                for (int i = 0; i < arr.SymbolicInitializers.Count; i++)
-                                    exprs.Add($"{identifier}[{i}]", arr.SymbolicInitializers[i] ?? Expr.Undefined);
-                            } else if (arr.Initializer is { }) {
-                                for (int i = 0; i < arr.Initializer.Count; i++)
-                                    exprs.Add($"{identifier}[{i}]", new SymbolicExpressionBuilder(arr.Initializer[i]).Parse());
-                            } else {
-                                exprs.Add(identifier, Expr.Undefined);
-                            }
-                            break;
-                    }
+                switch (symbol) {
+                    case DeclaredVariableSymbol var:
+                        if (var.SymbolicInitializer is { })
+                            exprs.Add(identifier, var.SymbolicInitializer);
+                        else if (var.Initializer is { })
+                            exprs.Add(identifier, new SymbolicExpressionBuilder(var.Initializer).Parse());
+                        else
+                            exprs.Add(identifier, Expr.Undefined);
+                        break;
+                    case DeclaredArraySymbol arr:
+                        if (arr.SymbolicInitializers is { }) {
+                            for (int i = 0; i < arr.SymbolicInitializers.Count; i++)
+                                exprs.Add($"{identifier}[{i}]", arr.SymbolicInitializers[i] ?? Expr.Undefined);
+                        } else if (arr.Initializer is { }) {
+                            for (int i = 0; i < arr.Initializer.Count; i++)
+                                exprs.Add($"{identifier}[{i}]", new SymbolicExpressionBuilder(arr.Initializer[i]).Parse());
+                        } else {
+                            exprs.Add(identifier, Expr.Undefined);
+                        }
+                        break;
                 }
             }
         }
@@ -295,13 +326,13 @@ namespace LICC.Core.Comparers
             {
                 if (!this.TryFindSymbol(identifier, false, out DeclaredSymbol? dstSymbol) || dstSymbol is null)
                     return;
-                string srcValue = GetInitSymbolValue(srcSymbol).ToString();
-                string dstValue = GetInitSymbolValue(dstSymbol).ToString();
+                string srcValue = GetSymbolInitializer(srcSymbol).ToString();
+                string dstValue = GetSymbolInitializer(dstSymbol).ToString();
                 if (!Equals(srcValue, dstValue))
                     this.Issues.AddError(new BlockEndValueMismatchError(identifier, blockEndLine, srcValue, dstValue));
             }
 
-            static Expr GetInitSymbolValue(DeclaredSymbol symbol)
+            static Expr GetSymbolInitializer(DeclaredSymbol symbol)
             {
                 switch (symbol) {
                     case DeclaredVariableSymbol var:

@@ -31,41 +31,6 @@ namespace LICC.Tests.Core.Integration
                 ")
             );
 
-            MatchIssues issues = new MatchIssues()
-                .AddWarning(
-                    new DeclSpecsMismatchWarning(
-                        new FunctionDeclaratorNode(1,
-                            new IdentifierNode(1, "swap"),
-                            new FunctionParametersNode(1,
-                                new FunctionParameterNode(1,
-                                    new DeclarationSpecifiersNode(1, "integer"),
-                                    new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
-                                ),
-                                new FunctionParameterNode(1,
-                                    new DeclarationSpecifiersNode(1, "integer"),
-                                    new VariableDeclaratorNode(1, new IdentifierNode(1, "y"))
-                                )
-                            )
-                        ),
-                        new DeclarationSpecifiersNode(1, "void"),
-                        new DeclarationSpecifiersNode(1, "object")
-                    )
-                )
-                .AddWarning(
-                    new ParameterMismatchWarning(
-                        "swap", 1, 0,
-                        new FunctionParameterNode(1, new DeclarationSpecifiersNode(1, "integer"), new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))),
-                        new FunctionParameterNode(1, new DeclarationSpecifiersNode(1), new VariableDeclaratorNode(1, new IdentifierNode(1, "x")))
-                    )
-                )
-                .AddWarning(
-                    new ParameterMismatchWarning(
-                        "swap", 1, 1,
-                        new FunctionParameterNode(1, new DeclarationSpecifiersNode(1, "integer"), new VariableDeclaratorNode(1, new IdentifierNode(1, "y"))),
-                        new FunctionParameterNode(1, new DeclarationSpecifiersNode(1), new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
-                    )
-                );
-
             this.Compare(
                 this.FromPseudoSource(@"
                     algorithm Swap 
@@ -83,7 +48,49 @@ namespace LICC.Tests.Core.Integration
                         x, y = y, x
                     end
                 "),
-                issues
+                new MatchIssues()
+                    .AddWarning(
+                        new DeclSpecsMismatchWarning(
+                            new FunctionDeclaratorNode(1,
+                                new IdentifierNode(1, "swap"),
+                                new FunctionParametersNode(1,
+                                    new FunctionParameterNode(1,
+                                        new DeclarationSpecifiersNode(1, "object"),
+                                        new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
+                                    ),
+                                    new FunctionParameterNode(1,
+                                        new DeclarationSpecifiersNode(1, "object"),
+                                        new VariableDeclaratorNode(1, new IdentifierNode(1, "y"))
+                                    )
+                                )
+                            ),
+                            new DeclarationSpecifiersNode(1, "void"),
+                            new DeclarationSpecifiersNode(1, "object")
+                        )
+                    )
+                    .AddWarning(
+                        new ParameterMismatchWarning(
+                            "swap", 1, 1,
+                            new FunctionParameterNode(1, new DeclarationSpecifiersNode(1, "integer"), new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))),
+                            new FunctionParameterNode(1, new DeclarationSpecifiersNode(1), new VariableDeclaratorNode(1, new IdentifierNode(1, "x")))
+                        )
+                    )
+                    .AddWarning(
+                        new ParameterMismatchWarning(
+                            "swap", 1, 2,
+                            new FunctionParameterNode(1, new DeclarationSpecifiersNode(1, "integer"), new VariableDeclaratorNode(1, new IdentifierNode(1, "y"))),
+                            new FunctionParameterNode(1, new DeclarationSpecifiersNode(1), new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                        )
+                    )
+                    .AddWarning(
+                        new MissingDeclarationWarning(
+                            new DeclarationSpecifiersNode(1, "integer"),
+                            new VariableDeclaratorNode(1,
+                                new IdentifierNode(1, "tmp"),
+                                new IdentifierNode(1, "x")
+                            )
+                        )
+                    )
             );
 
 
@@ -91,9 +98,9 @@ namespace LICC.Tests.Core.Integration
                 this.FromPseudoSource(@"
                     algorithm Swap 
                     begin
-                        procedure swap(x : integer, y : integer)
+                        procedure swap(x : object, y : object)
                         begin
-                            declare integer tmp = x
+                            declare object tmp = x
                             x = y  
                             y = tmp
                         end
@@ -106,7 +113,26 @@ namespace LICC.Tests.Core.Integration
                         y = tmp
                     end
                 "),
-                issues
+                new MatchIssues()
+                    .AddWarning(
+                        new DeclSpecsMismatchWarning(
+                            new FunctionDeclaratorNode(1,
+                                new IdentifierNode(1, "swap"),
+                                new FunctionParametersNode(1,
+                                    new FunctionParameterNode(1,
+                                        new DeclarationSpecifiersNode(1, "object"),
+                                        new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
+                                    ),
+                                    new FunctionParameterNode(1,
+                                        new DeclarationSpecifiersNode(1, "object"),
+                                        new VariableDeclaratorNode(1, new IdentifierNode(1, "y"))
+                                    )
+                                )
+                            ),
+                            new DeclarationSpecifiersNode(1, "void"),
+                            new DeclarationSpecifiersNode(1, "object")
+                        )
+                    )
             );
         }
 
@@ -119,7 +145,8 @@ namespace LICC.Tests.Core.Integration
                     begin
                         procedure swap(x : integer, y : integer)
                         begin
-                            declare integer tmp = x
+                            declare integer tmp
+                            tmp = x
                             x = y  
                             y = tmp
                         end
@@ -137,11 +164,11 @@ namespace LICC.Tests.Core.Integration
                                 new IdentifierNode(1, "swap"),
                                 new FunctionParametersNode(1,
                                     new FunctionParameterNode(1,
-                                        new DeclarationSpecifiersNode(1, "integer"),
+                                        new DeclarationSpecifiersNode(1, "object"),
                                         new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
                                     ),
                                     new FunctionParameterNode(1,
-                                        new DeclarationSpecifiersNode(1, "integer"),
+                                        new DeclarationSpecifiersNode(1, "object"),
                                         new VariableDeclaratorNode(1, new IdentifierNode(1, "y"))
                                     )
                                 )
@@ -152,18 +179,23 @@ namespace LICC.Tests.Core.Integration
                     )
                     .AddWarning(
                         new ParameterMismatchWarning(
-                            "swap", 1, 0,
+                            "swap", 1, 1,
                             new FunctionParameterNode(1, new DeclarationSpecifiersNode(1, "integer"), new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))),
                             new FunctionParameterNode(1, new DeclarationSpecifiersNode(1), new VariableDeclaratorNode(1, new IdentifierNode(1, "x")))
                         )
                     )
                     .AddWarning(
                         new ParameterMismatchWarning(
-                            "swap", 1, 1,
+                            "swap", 1, 2,
                             new FunctionParameterNode(1, new DeclarationSpecifiersNode(1, "integer"), new VariableDeclaratorNode(1, new IdentifierNode(1, "y"))),
                             new FunctionParameterNode(1, new DeclarationSpecifiersNode(1), new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
                         )
                     )
+                    .AddWarning(
+                        new MissingDeclarationWarning(new DeclarationSpecifiersNode(1, "integer"), new VariableDeclaratorNode(1, new IdentifierNode(1, "tmp")))
+                    )
+                    .AddError(new BlockEndValueMismatchError("x", 1, "y", "x"))
+                    .AddError(new BlockEndValueMismatchError("y", 1, "x", "y"))
             );
         }
     }

@@ -979,7 +979,7 @@ namespace LICC.Tests.Core.Comparer
                     .AddError(new InitializerMismatchError("x", 1, "3", "2", 2))
                     .AddWarning(
                         new DeclSpecsMismatchWarning(
-                            new ArrayDeclaratorNode(1, new IdentifierNode(1, "y"), new LiteralNode(1, 3)),
+                            new ArrayDeclaratorNode(1, new IdentifierNode(1, "y"), new LiteralNode(1, 4), new ArrayInitializerListNode(1)),
                             new DeclarationSpecifiersNode(1, "float"),
                             new DeclarationSpecifiersNode(1, "int")
                         )

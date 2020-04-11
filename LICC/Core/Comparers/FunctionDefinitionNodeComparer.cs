@@ -48,7 +48,7 @@ namespace LICC.Core.Comparers
                 
             var allSymbols = new Dictionary<string, DeclaredSymbol>(srcGlobals);
 
-            IEnumerable<DeclaredSymbol> symbols = n1.Parameters.Select(p => DeclaredSymbol.From(p.DeclarationSpecifiers, p.Declarator));
+            IEnumerable<DeclaredSymbol> symbols = n1.Parameters.Select(p => DeclaredSymbol.From(p.Specifiers, p.Declarator));
             foreach (DeclaredSymbol symbol in symbols)
                 allSymbols.Add(symbol.Identifier, symbol); // TODO same as global?
 

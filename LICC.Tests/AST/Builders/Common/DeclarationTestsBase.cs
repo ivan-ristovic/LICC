@@ -93,9 +93,9 @@ namespace LICC.Tests.AST.Builders.Common
 
             static (QualifierFlags, string, string) ExtractParamInfo(FunctionParameterNode param)
             {
-                Assert.That(param.DeclarationSpecifiers.Keywords.AccessModifiers, Is.EqualTo(AccessModifiers.Unspecified));
-                QualifierFlags qf = param.DeclarationSpecifiers.Keywords.QualifierFlags;
-                string type = param.DeclarationSpecifiers.TypeName;
+                Assert.That(param.Specifiers.Keywords.AccessModifiers, Is.EqualTo(AccessModifiers.Unspecified));
+                QualifierFlags qf = param.Specifiers.Keywords.QualifierFlags;
+                string type = param.Specifiers.TypeName;
                 return (qf, type, param.Declarator.Identifier);
             }
         }
