@@ -38,6 +38,6 @@ namespace LICC.Tests.AST.Builders.Lua
 
 
         protected override ASTNode GenerateAST(string src)
-            => new LuaASTBuilder().BuildFromSource(src, p => p.block());
+            => new LuaASTBuilder().BuildFromSource(src, p => p.chunk());
     }
 }

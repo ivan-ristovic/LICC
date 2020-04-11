@@ -16,8 +16,8 @@ namespace LICC.Tests.AST.Builders.Common
                                                                  QualifierFlags qualifiers = QualifierFlags.None)
         {
             ASTNode ast = this.GenerateAST(src);
-            DeclarationStatementNode decl = ast is BlockStatementNode block
-                ? ExtractDeclarationFromBlock(block)
+            DeclarationStatementNode decl = ast is SourceComponentNode block
+                ? this.ExtractDeclarationFromBlock(block)
                 : ast.As<DeclarationStatementNode>();
             Assert.That(decl.Children, Has.Exactly(2).Items);
             Assert.That(decl.Specifiers.Parent, Is.EqualTo(decl));
@@ -26,7 +26,6 @@ namespace LICC.Tests.AST.Builders.Common
             Assert.That(decl.Specifiers.TypeName, Is.EqualTo(type));
             Assert.That(decl.Specifiers.Children, Is.Empty);
             return decl;
-
         }
 
         protected void AssertVariableDeclaration(string src,
@@ -133,12 +132,12 @@ namespace LICC.Tests.AST.Builders.Common
         }
 
 
-        private DeclarationStatementNode ExtractDeclarationFromBlock(BlockStatementNode block)
+        private DeclarationStatementNode ExtractDeclarationFromBlock(SourceComponentNode src)
         {
-            if (block.Children.Count == 1)
-                return block.Children.Single().As<DeclarationStatementNode>();
+            if (src.Children.Count == 1)
+                return src.Children.Single().As<DeclarationStatementNode>();
 
-            var decls = block.Children
+            var decls = src.Children
                 .Take(2)
                 .Cast<DeclarationStatementNode>()
                 .ToList()
