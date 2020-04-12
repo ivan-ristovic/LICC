@@ -25,7 +25,7 @@ namespace LICC.AST
             } catch (UnsupportedLanguageException e) {
                 Log.Fatal(e, "[{Path}] Not supported language", path);
             } catch (Exception e) {
-                Log.Fatal(e, "[{Path}] Unknown error", path);
+                Log.Fatal(e, "[{Path}] Exception occured", path);
             }
 
             return false;

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "LICC.Visualizer": {
+      "commandName": "Project",
+      "commandLineArgs": "-v Samples/1.c"
+    }
+  }
+}
