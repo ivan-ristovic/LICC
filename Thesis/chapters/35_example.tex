@@ -1,0 +1,25 @@
+\section{Primer kreiranja apstrakcije}
+\label{sec:MyASTExample}
+
+U prethodnim odeljcima je opisana zajednička apstrakcija tako što su opisani čvorovi AST stabla. U ovom odeljku će biti pokazano kako izgleda takav AST na primerima izvornih kodova proceduralnih i skript jezika. Za predstavnika proceduralnih jezika će biti izabran programski jezik C (slika \ref{fig:MyASTExampleC}), dok će za predstavnika skript jezika biti izabran programski jezik Lua (slika \ref{fig:MyASTExampleLua}).
+
+\begin{figure}[h!]
+\begin{lstlisting}
+int f(int x) 
+{
+    if (x > 10)
+        return 1;
+    else
+        return 0;
+}
+
+int main() 
+{
+    int var = 3;
+	printf("Hello world!\nvar: %d\n", f(var));
+	return 0;
+}
+\end{lstlisting}
+\caption{Primer izvornog koda pisanog u programskom jeziku C.}
+\label{fig:MyASTExampleC}
+\end{figure}
