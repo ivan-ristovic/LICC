@@ -5,48 +5,48 @@ using Newtonsoft.Json;
 
 namespace LICC.AST.Nodes
 {
-    public sealed class DictionaryDeclaratorNode : DeclaratorNode
+    public sealed class DictDeclNode : DeclNode
     {
         [JsonIgnore]
-        public DictionaryInitializerNode? Initializer => this.Children.ElementAtOrDefault(1)?.As<DictionaryInitializerNode>();
+        public DictInitNode? Initializer => this.Children.ElementAtOrDefault(1)?.As<DictInitNode>();
 
 
-        public DictionaryDeclaratorNode(int line, IdentifierNode identifier)
+        public DictDeclNode(int line, IdNode identifier)
             : base(line, identifier) { }
 
-        public DictionaryDeclaratorNode(int line, IdentifierNode identifier, DictionaryInitializerNode initializer)
+        public DictDeclNode(int line, IdNode identifier, DictInitNode initializer)
             : base(line, identifier, initializer) { }
 
 
         public override string GetText() => $"{this.Identifier} = {this.Initializer?.GetText() ?? "{}"}";
     }
 
-    public sealed class DictionaryEntryNode : ASTNode
+    public sealed class DictEntryNode : ASTNode
     {
         [JsonIgnore]
-        public IdentifierNode Key => this.Children[0].As<IdentifierNode>();
+        public IdNode Key => this.Children[0].As<IdNode>();
 
         [JsonIgnore]
-        public ExpressionNode Value => this.Children[1].As<ExpressionNode>();
+        public ExprNode Value => this.Children[1].As<ExprNode>();
 
 
-        public DictionaryEntryNode(int line, IdentifierNode key, ExpressionNode value)
+        public DictEntryNode(int line, IdNode key, ExprNode value)
             : base(line, key, value) { }
 
 
         public override string GetText() => $"'{this.Key}' : {this.Value}";
     }
 
-    public sealed class DictionaryInitializerNode : ExpressionNode
+    public sealed class DictInitNode : ExprNode
     {
         [JsonIgnore]
-        public IEnumerable<DictionaryEntryNode> Entries => this.Children.Cast<DictionaryEntryNode>();
+        public IEnumerable<DictEntryNode> Entries => this.Children.Cast<DictEntryNode>();
 
 
-        public DictionaryInitializerNode(int line, IEnumerable<DictionaryEntryNode> entries)
+        public DictInitNode(int line, IEnumerable<DictEntryNode> entries)
             : base(line, entries) { }
 
-        public DictionaryInitializerNode(int line, params DictionaryEntryNode[] entries)
+        public DictInitNode(int line, params DictEntryNode[] entries)
             : base(line, entries) { }
 
 

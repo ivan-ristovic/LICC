@@ -29,43 +29,43 @@ namespace LICC.AST.Visitors
             => this.Visit(this.Node);
 
 
-        public override Expr Visit(ArithmeticExpressionNode node)
+        public override Expr Visit(ArithmExprNode node)
             => this.EvaluateBinaryExpression(node);
 
-        public override Expr Visit(RelationalExpressionNode node)
+        public override Expr Visit(RelExprNode node)
             => this.EvaluateBinaryExpression(node);
 
-        public override Expr Visit(LogicExpressionNode node)
+        public override Expr Visit(LogicExprNode node)
             => this.EvaluateBinaryExpression(node);
 
-        public override Expr Visit(UnaryExpressionNode node)
+        public override Expr Visit(UnaryExprNode node)
             => this.EvaluateUnaryExpression(node);
 
-        public override Expr Visit(IdentifierNode node) 
+        public override Expr Visit(IdNode node) 
             => Expr.Variable(node.Identifier);
 
-        public override Expr Visit(LiteralNode node)
+        public override Expr Visit(LitExprNode node)
             // TODO string literals need to be substituted as well...
             => node.Value is null ? Expr.Undefined : Expr.Parse(node.Value.ToString());
 
-        public override Expr Visit(NullLiteralNode node)
+        public override Expr Visit(NullLitExprNode node)
             => Expr.Undefined;
 
 
-        private Expr EvaluateBinaryExpression(BinaryExpressionNode node)
+        private Expr EvaluateBinaryExpression(BinaryExprNode node)
         {
             Expr left = this.Visit(node.LeftOperand);
             Expr right = this.Visit(node.RightOperand);
             return this.TryEvaluate(node, $"{left} {node.Operator.Symbol} {right}");
         }
 
-        private Expr EvaluateUnaryExpression(UnaryExpressionNode node)
+        private Expr EvaluateUnaryExpression(UnaryExprNode node)
         {
             Expr operand = this.Visit(node.Operand);
             return this.TryEvaluate(node, $"{node.Operator.Symbol}({operand})");
         }
 
-        private Expr TryEvaluate(ExpressionNode e, string exprStr)
+        private Expr TryEvaluate(ExprNode e, string exprStr)
         {
             Expr expr;
             object? constantValue = null;

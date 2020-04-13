@@ -20,20 +20,20 @@ namespace LICC.Tests.AST.Builders.C
         [Test]
         public void SimpleBlockTest()
         {
-            BlockStatementNode block = this.AssertBlock(@" 
+            BlockStatNode block = this.AssertBlock(@" 
                 {           // line 2
                             // line 3
                     int x;  // line 4, block begins
                 }
             ");
             Assert.That(block.Line, Is.EqualTo(4));
-            Assert.That(block.Children.Single(), Is.InstanceOf<DeclarationStatementNode>());
+            Assert.That(block.Children.Single(), Is.InstanceOf<DeclStatNode>());
         }
 
         [Test]
         public void ComplexBlockTest()
         {
-            BlockStatementNode block = this.AssertBlock(@" 
+            BlockStatNode block = this.AssertBlock(@" 
                 {           // line 2
                     int x;  // line 3, block begins
                     if (x) {
@@ -50,9 +50,9 @@ namespace LICC.Tests.AST.Builders.C
             ");
             Assert.That(block.Line, Is.EqualTo(3));
             Assert.That(block.Children, Has.Exactly(3).Items);
-            Assert.That(block.Children.ElementAt(0), Is.InstanceOf<DeclarationStatementNode>());
-            Assert.That(block.Children.ElementAt(1), Is.InstanceOf<IfStatementNode>());
-            Assert.That(block.Children.ElementAt(2), Is.InstanceOf<DeclarationStatementNode>());
+            Assert.That(block.Children.ElementAt(0), Is.InstanceOf<DeclStatNode>());
+            Assert.That(block.Children.ElementAt(1), Is.InstanceOf<IfStatNode>());
+            Assert.That(block.Children.ElementAt(2), Is.InstanceOf<DeclStatNode>());
         }
 
 

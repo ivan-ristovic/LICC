@@ -6,11 +6,11 @@ namespace LICC.Core.Common
 {
     public sealed class MissingFunctionDefinitionError : BaseError
     {
-        public DeclarationSpecifiersNode DeclarationSpecifiers { get; set; }
-        public FunctionDeclaratorNode Declarator { get; set; }
+        public DeclSpecsNode DeclarationSpecifiers { get; set; }
+        public FuncDeclNode Declarator { get; set; }
 
 
-        public MissingFunctionDefinitionError(DeclarationSpecifiersNode declarationSpecifiers, FunctionDeclaratorNode fdecl)
+        public MissingFunctionDefinitionError(DeclSpecsNode declarationSpecifiers, FuncDeclNode fdecl)
         {
             this.DeclarationSpecifiers = declarationSpecifiers;
             this.Declarator = fdecl;

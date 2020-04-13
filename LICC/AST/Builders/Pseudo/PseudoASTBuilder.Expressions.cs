@@ -35,66 +35,66 @@ namespace LICC.AST.Builders.Pseudo
 
         public override ASTNode VisitVar([NotNull] VarContext ctx)
         {
-            var v = new IdentifierNode(ctx.Start.Line, ctx.NAME().GetText());
+            var v = new IdNode(ctx.Start.Line, ctx.NAME().GetText());
             if (ctx.iexp() is null)
                 return v;
 
-            ExpressionNode arrIndex = this.Visit(ctx.iexp()).As<ExpressionNode>();
-            return new ArrayAccessExpressionNode(ctx.Start.Line, v, arrIndex);
+            ExprNode arrIndex = this.Visit(ctx.iexp()).As<ExprNode>();
+            return new ArrAccessExprNode(ctx.Start.Line, v, arrIndex);
         }
 
         public override ASTNode VisitIexp([NotNull] IexpContext ctx)
             => this.Visit(ctx.children.First());
 
         public override ASTNode VisitLiteral([NotNull] LiteralContext ctx)
-            => LiteralNode.FromString(ctx.Start.Line, ctx.children.Single().GetText());
+            => LitExprNode.FromString(ctx.Start.Line, ctx.children.Single().GetText());
 
         public override ASTNode VisitAexp([NotNull] AexpContext ctx)
             => this.VisitArithmeticExpression(ctx.Start.Line, ctx.exp()[0], ctx.aop(), ctx.exp()[1]);
 
         public override ASTNode VisitCexp([NotNull] CexpContext ctx)
         {
-            var fname = new IdentifierNode(ctx.Start.Line, ctx.NAME().GetText());
+            var fname = new IdNode(ctx.Start.Line, ctx.NAME().GetText());
             if (ctx.explist() is null)
-                return new FunctionCallExpressionNode(ctx.Start.Line, fname);
+                return new FuncCallExprNode(ctx.Start.Line, fname);
 
-            ExpressionListNode args = this.Visit(ctx.explist()).As<ExpressionListNode>();
-            return new FunctionCallExpressionNode(ctx.Start.Line, fname, args);
+            ExprListNode args = this.Visit(ctx.explist()).As<ExprListNode>();
+            return new FuncCallExprNode(ctx.Start.Line, fname, args);
         }
 
         public override ASTNode VisitExplist([NotNull] ExplistContext ctx)
-            => new ExpressionListNode(ctx.Start.Line, ctx.exp().Select(e => this.Visit(e).As<ExpressionNode>()));
+            => new ExprListNode(ctx.Start.Line, ctx.exp().Select(e => this.Visit(e).As<ExprNode>()));
 
 
-        private ExpressionNode VisitArithmeticExpression(int line, ExpContext lexp, AopContext aop, ExpContext rexp)
+        private ExprNode VisitArithmeticExpression(int line, ExpContext lexp, AopContext aop, ExpContext rexp)
         {
-            ExpressionNode left = this.Visit(lexp).As<ExpressionNode>();
-            var op = ArithmeticOperatorNode.FromSymbol(line, aop.GetText());
-            ExpressionNode right = this.Visit(rexp).As<ExpressionNode>();
-            return new ArithmeticExpressionNode(line, left, op, right);
+            ExprNode left = this.Visit(lexp).As<ExprNode>();
+            var op = ArithmOpNode.FromSymbol(line, aop.GetText());
+            ExprNode right = this.Visit(rexp).As<ExprNode>();
+            return new ArithmExprNode(line, left, op, right);
         }
 
-        private ExpressionNode VisitRelationalExpression(int line, ExpContext lexp, RopContext rop, ExpContext rexp)
+        private ExprNode VisitRelationalExpression(int line, ExpContext lexp, RopContext rop, ExpContext rexp)
         {
-            ExpressionNode left = this.Visit(lexp).As<ExpressionNode>();
-            var op = RelationalOperatorNode.FromSymbol(line, rop.GetText());
-            ExpressionNode right = this.Visit(rexp).As<ExpressionNode>();
-            return new RelationalExpressionNode(line, left, op, right);
+            ExprNode left = this.Visit(lexp).As<ExprNode>();
+            var op = RelOpNode.FromSymbol(line, rop.GetText());
+            ExprNode right = this.Visit(rexp).As<ExprNode>();
+            return new RelExprNode(line, left, op, right);
         }
 
-        private ExpressionNode VisitLogicExpression(int line, ExpContext lexp, LopContext lop, ExpContext rexp)
+        private ExprNode VisitLogicExpression(int line, ExpContext lexp, LopContext lop, ExpContext rexp)
         {
-            ExpressionNode left = this.Visit(lexp).As<ExpressionNode>();
-            var op = BinaryLogicOperatorNode.FromSymbol(line, lop.GetText());
-            ExpressionNode right = this.Visit(rexp).As<ExpressionNode>();
-            return new LogicExpressionNode(line, left, op, right);
+            ExprNode left = this.Visit(lexp).As<ExprNode>();
+            var op = BinaryLogicOpNode.FromSymbol(line, lop.GetText());
+            ExprNode right = this.Visit(rexp).As<ExprNode>();
+            return new LogicExprNode(line, left, op, right);
         }
 
-        private ExpressionNode VisitUnaryExpression(int line, UopContext uop, ExpContext exp)
+        private ExprNode VisitUnaryExpression(int line, UopContext uop, ExpContext exp)
         {
-            var op = UnaryOperatorNode.FromSymbol(line, uop.GetText());
-            ExpressionNode operand = this.Visit(exp).As<ExpressionNode>();
-            return new UnaryExpressionNode(line, op, operand);
+            var op = UnaryOpNode.FromSymbol(line, uop.GetText());
+            ExprNode operand = this.Visit(exp).As<ExprNode>();
+            return new UnaryExprNode(line, op, operand);
         }
     }
 }

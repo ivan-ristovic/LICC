@@ -8,90 +8,92 @@ using LICC.AST.Nodes.Common;
 
 namespace LICC.AST.Nodes
 {
-    public abstract class StatementNode : ASTNode
+    public abstract class StatNode : ASTNode
     {
-        protected StatementNode(int line, IEnumerable<ASTNode> children)
+        protected StatNode(int line, IEnumerable<ASTNode> children)
             : base(line, children) { }
 
-        protected StatementNode(int line, params ASTNode[] children)
+        protected StatNode(int line, params ASTNode[] children)
             : base(line, children) { }
 
 
         public override string GetText() => $"{base.GetText()};";
     }
 
-    public sealed class EmptyStatementNode : StatementNode
+    public sealed class EmptyStatNode : StatNode
     {
-        public EmptyStatementNode(int line)
+        public EmptyStatNode(int line)
             : base(line) { }
     }
 
-    public abstract class SimpleStatementNode : StatementNode
+    public abstract class SimpleStatNode : StatNode
     {
-        protected SimpleStatementNode(int line, IEnumerable<ASTNode> children)
+        protected SimpleStatNode(int line, IEnumerable<ASTNode> children)
             : base(line, children) { }
 
-        protected SimpleStatementNode(int line, params ASTNode[] children)
+        protected SimpleStatNode(int line, params ASTNode[] children)
             : base(line, children) { }
     }
 
-    public class DeclarationStatementNode : SimpleStatementNode
+    public class DeclStatNode : SimpleStatNode
     {
-        public DeclarationSpecifiersNode Specifiers => this.Children.ElementAt(0).As<DeclarationSpecifiersNode>();
-        public DeclaratorListNode DeclaratorList => this.Children.ElementAt(1).As<DeclaratorListNode>();
+        [JsonIgnore]
+        public DeclSpecsNode Specifiers => this.Children.ElementAt(0).As<DeclSpecsNode>();
+        [JsonIgnore]
+        public DeclListNode DeclaratorList => this.Children.ElementAt(1).As<DeclListNode>();
 
 
-        public DeclarationStatementNode(int line, DeclarationSpecifiersNode declSpecs, DeclaratorListNode declList)
+        public DeclStatNode(int line, DeclSpecsNode declSpecs, DeclListNode declList)
             : base(line, declSpecs, declList) { }
     }
 
-    public abstract class CompoundStatementNode : StatementNode
+    public abstract class CompStatNode : StatNode
     {
-        protected CompoundStatementNode(int line, IEnumerable<ASTNode> children)
+        protected CompStatNode(int line, IEnumerable<ASTNode> children)
             : base(line, children) { }
 
-        protected CompoundStatementNode(int line, params ASTNode[] children)
+        protected CompStatNode(int line, params ASTNode[] children)
             : base(line, children) { }
     }
 
-    public sealed class BlockStatementNode : CompoundStatementNode
+    public sealed class BlockStatNode : CompStatNode
     {
-        public BlockStatementNode(int line, IEnumerable<ASTNode> children)
+        public BlockStatNode(int line, IEnumerable<ASTNode> children)
             : base(line, children) { }
 
-        public BlockStatementNode(int line, params ASTNode[] children)
+        public BlockStatNode(int line, params ASTNode[] children)
             : base(line, children) { }
 
 
         public override string GetText() => $"{{ {string.Join(" ", this.Children.Select(c => c.GetText()))} }}";
     }
 
-    public sealed class ExpressionStatementNode : SimpleStatementNode
+    public sealed class ExprStatNode : SimpleStatNode
     {
         [JsonIgnore]
-        public ExpressionNode Expression => this.Children.First().As<ExpressionNode>();
+        public ExprNode Expression => this.Children.First().As<ExprNode>();
 
 
-        public ExpressionStatementNode(int line, ExpressionNode expr)
+        public ExprStatNode(int line, ExprNode expr)
             : base(line, expr) { }
     }
 
-    public sealed class IfStatementNode : CompoundStatementNode
+    public sealed class IfStatNode : CompStatNode
     {
         [JsonIgnore]
-        public ExpressionNode Condition => this.Children[0].As<ExpressionNode>();
+        public ExprNode Condition => this.Children[0].As<ExprNode>();
 
         [JsonIgnore]
-        public StatementNode ThenStatement => this.Children[1].As<StatementNode>();
+        public StatNode ThenStatement => this.Children[1].As<StatNode>();
 
         [JsonIgnore]
-        public StatementNode? ElseStatement => this.Children.ElementAtOrDefault(2)?.As<StatementNode>() ?? null;
+        public StatNode? ElseStatement => this.Children.ElementAtOrDefault(2)?.As<StatNode>() ?? null;
 
 
-        public IfStatementNode(int line, ExpressionNode condition, StatementNode thenBlock)
+        public IfStatNode(int line, ExprNode condition, StatNode thenBlock)
             : base(line, condition, thenBlock) { }
 
-        public IfStatementNode(int line, ExpressionNode condition, StatementNode thenBlock, StatementNode elseBlock)
+        public IfStatNode(int line, ExprNode condition, StatNode thenBlock, StatNode elseBlock)
             : base(line, condition, thenBlock, elseBlock) { }
 
 
@@ -99,30 +101,30 @@ namespace LICC.AST.Nodes
             => $"if {this.Condition.GetText()} {this.ThenStatement.GetText()} {(this.ElseStatement is null ? "" : $"else {this.ElseStatement.GetText()}")}";
     }
 
-    public sealed class JumpStatementNode : SimpleStatementNode
+    public sealed class JumpStatNode : SimpleStatNode
     {
         public JumpStatementType Type { get; set; }
 
         [JsonIgnore]
-        public ExpressionNode? ReturnExpression => this.Children.FirstOrDefault() as ExpressionNode ?? null;
+        public ExprNode? ReturnExpression => this.Children.FirstOrDefault() as ExprNode ?? null;
 
         [JsonIgnore]
-        public IdentifierNode? GotoLabel => this.Children.First() as IdentifierNode ?? null;
+        public IdNode? GotoLabel => this.Children.First() as IdNode ?? null;
 
 
-        public JumpStatementNode(int line, JumpStatementType type)
+        public JumpStatNode(int line, JumpStatementType type)
             : base(line)
         {
             this.Type = type;
         }
 
-        public JumpStatementNode(int line, ExpressionNode? returnExpr)
+        public JumpStatNode(int line, ExprNode? returnExpr)
             : base(line, returnExpr is null ? Enumerable.Empty<ASTNode>() : new[] { returnExpr })
         {
             this.Type = JumpStatementType.Return;
         }
 
-        public JumpStatementNode(int line, IdentifierNode label)
+        public JumpStatNode(int line, IdNode label)
             : base(line, label)
         {
             this.Type = JumpStatementType.Goto;
@@ -141,15 +143,15 @@ namespace LICC.AST.Nodes
         }
     }
 
-    public sealed class LabeledStatementNode : SimpleStatementNode
+    public sealed class LabeledStatNode : SimpleStatNode
     {
         public string Label { get; }
 
         [JsonIgnore]
-        public StatementNode Statement => this.Children.First().As<StatementNode>();
+        public StatNode Statement => this.Children.First().As<StatNode>();
 
 
-        public LabeledStatementNode(int line, string label, StatementNode statement)
+        public LabeledStatNode(int line, string label, StatNode statement)
             : base(line, statement)
         {
             this.Label = label;
@@ -159,51 +161,51 @@ namespace LICC.AST.Nodes
         public override string GetText() => $"{this.Label}: {this.Statement.GetText()}";
 
         public override bool Equals([AllowNull] ASTNode other)
-            => base.Equals(other) && this.Label.Equals((other as LabeledStatementNode)?.Label);
+            => base.Equals(other) && this.Label.Equals((other as LabeledStatNode)?.Label);
     }
 
-    public abstract class IterationStatementNode : CompoundStatementNode
+    public abstract class IterStatNode : CompStatNode
     {
         [JsonIgnore]
-        public ExpressionNode Condition => this.Children[0].As<ExpressionNode>();
+        public ExprNode Condition => this.Children[0].As<ExprNode>();
 
         [JsonIgnore]
-        public StatementNode Statement => this.Children[1].As<StatementNode>();
+        public StatNode Statement => this.Children[1].As<StatNode>();
 
 
-        protected IterationStatementNode(int line, ExpressionNode condition, StatementNode statement)
+        protected IterStatNode(int line, ExprNode condition, StatNode statement)
             : base(line, condition, statement) { }
 
-        protected IterationStatementNode(int line, IEnumerable<ASTNode> children)
+        protected IterStatNode(int line, IEnumerable<ASTNode> children)
             : base(line, children) { }
     }
 
-    public sealed class WhileStatementNode : IterationStatementNode
+    public sealed class WhileStatNode : IterStatNode
     {
-        public WhileStatementNode(int line, ExpressionNode condition, StatementNode statement)
+        public WhileStatNode(int line, ExprNode condition, StatNode statement)
             : base(line, condition, statement) { }
 
 
         public override string GetText() => $"while {this.Condition.GetText()} {{ {this.Statement.GetText()} }}";
     }
 
-    public sealed class ForStatementNode : IterationStatementNode
+    public sealed class ForStatNode : IterStatNode
     {
         public DeclarationNode? ForDeclaration { get; }
-        public ExpressionNode? InitExpression { get; }
-        public ExpressionNode? IncrementExpression { get; }
+        public ExprNode? InitExpression { get; }
+        public ExprNode? IncrementExpression { get; }
 
 
-        public ForStatementNode(int line, DeclarationNode decl, ExpressionNode? condition, ExpressionNode? expr, StatementNode statement)
-            : base(line, new ASTNode[] { condition ?? new LiteralNode(line, true), statement })
+        public ForStatNode(int line, DeclarationNode decl, ExprNode? condition, ExprNode? expr, StatNode statement)
+            : base(line, new ASTNode[] { condition ?? new LitExprNode(line, true), statement })
         {
             this.ForDeclaration = decl;
             this.InitExpression = null;
             this.IncrementExpression = expr;
         }
 
-        public ForStatementNode(int line, ExpressionNode? initExpr, ExpressionNode? condition, ExpressionNode? incExpr, StatementNode statement)
-            : base(line, new ASTNode[] { condition ?? new LiteralNode(line, true), statement })
+        public ForStatNode(int line, ExprNode? initExpr, ExprNode? condition, ExprNode? incExpr, StatNode statement)
+            : base(line, new ASTNode[] { condition ?? new LitExprNode(line, true), statement })
         {
             this.ForDeclaration = null;
             this.InitExpression = initExpr;
@@ -230,13 +232,13 @@ namespace LICC.AST.Nodes
         }
     }
 
-    public sealed class ThrowStatementNode : StatementNode
+    public sealed class ThrowStatNode : StatNode
     {
         [JsonIgnore]
-        ExpressionNode Expression => this.Children.Single().As<ExpressionNode>();
+        ExprNode Expression => this.Children.Single().As<ExprNode>();
 
 
-        public ThrowStatementNode(int line, ExpressionNode exp)
+        public ThrowStatNode(int line, ExprNode exp)
             : base(line, exp) { }
 
 

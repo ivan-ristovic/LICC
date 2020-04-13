@@ -10,24 +10,24 @@ namespace LICC.Core.Comparers.Common
 {
     internal abstract class DeclaredSymbol
     {
-        public static DeclaredSymbol From(DeclarationSpecifiersNode specs, DeclaratorNode decl)
+        public static DeclaredSymbol From(DeclSpecsNode specs, DeclNode decl)
         {
             return decl switch
             {
-                VariableDeclaratorNode var => new DeclaredVariableSymbol(decl.Identifier, specs, var, var.Initializer),
-                ArrayDeclaratorNode arr => new DeclaredArraySymbol(decl.Identifier, specs, arr, arr.SizeExpression, arr.Initializer),
-                FunctionDeclaratorNode f => new DeclaredFunctionSymbol(decl.Identifier, specs, f),
+                VarDeclNode var => new DeclaredVariableSymbol(decl.Identifier, specs, var, var.Initializer),
+                ArrDeclNode arr => new DeclaredArraySymbol(decl.Identifier, specs, arr, arr.SizeExpression, arr.Initializer),
+                FuncDeclNode f => new DeclaredFunctionSymbol(decl.Identifier, specs, f),
                 _ => throw new NotImplementedException("Declarator node type not yet implemented"),
             };
         }
 
 
         public string Identifier { get; set; }
-        public DeclarationSpecifiersNode Specifiers { get; set; }
-        public DeclaratorNode Declarator { get; set; }
+        public DeclSpecsNode Specifiers { get; set; }
+        public DeclNode Declarator { get; set; }
 
 
-        public DeclaredSymbol(string identifier, DeclarationSpecifiersNode specs, DeclaratorNode decl)
+        public DeclaredSymbol(string identifier, DeclSpecsNode specs, DeclNode decl)
         {
             this.Identifier = identifier;
             this.Specifiers = specs;
@@ -40,12 +40,12 @@ namespace LICC.Core.Comparers.Common
 
     internal sealed class DeclaredVariableSymbol : DeclaredSymbol
     {
-        public VariableDeclaratorNode VariableDeclarator { get; set; }
-        public ExpressionNode? Initializer { get; set; }
+        public VarDeclNode VariableDeclarator { get; set; }
+        public ExprNode? Initializer { get; set; }
         public Expr? SymbolicInitializer { get; set; }
 
 
-        public DeclaredVariableSymbol(string name, DeclarationSpecifiersNode specs, VariableDeclaratorNode decl, ExpressionNode? init = null)
+        public DeclaredVariableSymbol(string name, DeclSpecsNode specs, VarDeclNode decl, ExprNode? init = null)
             : base(name, specs, decl)
         {
             this.VariableDeclarator = decl;
@@ -73,14 +73,14 @@ namespace LICC.Core.Comparers.Common
 
     internal sealed class DeclaredArraySymbol : DeclaredSymbol
     {
-        public ArrayDeclaratorNode ArrayDeclarator { get; set; }
-        public ExpressionNode? SizeExpression { get; set; }
-        public List<ExpressionNode>? Initializer { get; set; }
+        public ArrDeclNode ArrayDeclarator { get; set; }
+        public ExprNode? SizeExpression { get; set; }
+        public List<ExprNode>? Initializer { get; set; }
         public Expr? SymbolicSize { get; set; }
         public List<Expr?>? SymbolicInitializers { get; set; }
 
 
-        public DeclaredArraySymbol(string name, DeclarationSpecifiersNode specs, ArrayDeclaratorNode decl, ExpressionNode? size = null, ArrayInitializerListNode? init = null)
+        public DeclaredArraySymbol(string name, DeclSpecsNode specs, ArrDeclNode decl, ExprNode? size = null, ArrInitListNode? init = null)
             : base(name, specs, decl)
         {
             this.ArrayDeclarator = decl;
@@ -117,19 +117,19 @@ namespace LICC.Core.Comparers.Common
 
     internal sealed class DeclaredFunctionSymbol : DeclaredSymbol
     {
-        public HashSet<FunctionDeclaratorNode> Overloads { get; set; }
-        public FunctionDeclaratorNode FunctionDeclarator { get; set; }
+        public HashSet<FuncDeclNode> Overloads { get; set; }
+        public FuncDeclNode FunctionDeclarator { get; set; }
 
 
-        public DeclaredFunctionSymbol(string name, DeclarationSpecifiersNode specs, FunctionDeclaratorNode decl)
+        public DeclaredFunctionSymbol(string name, DeclSpecsNode specs, FuncDeclNode decl)
             : base(name, specs, decl)
         {
             this.Declarator = this.FunctionDeclarator = decl;
-            this.Overloads = new HashSet<FunctionDeclaratorNode> { decl };
+            this.Overloads = new HashSet<FuncDeclNode> { decl };
         }
 
 
-        public bool AddOverload(FunctionDeclaratorNode decl)
+        public bool AddOverload(FuncDeclNode decl)
         {
             if (this.Overloads.Contains(decl))
                 return false;

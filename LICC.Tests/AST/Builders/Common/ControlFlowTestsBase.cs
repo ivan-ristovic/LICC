@@ -6,9 +6,9 @@ namespace LICC.Tests.AST.Builders.Common
 {
     internal abstract class ControlFlowTestsBase : ASTBuilderTestBase
     {
-        protected IfStatementNode AssertIfStatement(string src, object condValue, int thenStatementCount = 1, int? elseStatementCount = null)
+        protected IfStatNode AssertIfStatement(string src, object condValue, int thenStatementCount = 1, int? elseStatementCount = null)
         {
-            IfStatementNode node = this.GenerateAST(src).As<IfStatementNode>();
+            IfStatNode node = this.GenerateAST(src).As<IfStatNode>();
             Assert.That(node, Is.Not.Null);
             this.AssertChildrenParentProperties(node);
             Assert.That(ConstantExpressionEvaluator.Evaluate(node.Condition), Is.EqualTo(condValue));
@@ -22,13 +22,13 @@ namespace LICC.Tests.AST.Builders.Common
             return node;
         }
 
-        protected WhileStatementNode AssertWhileStatement(string src, object condValue, int statCount = 1)
+        protected WhileStatNode AssertWhileStatement(string src, object condValue, int statCount = 1)
         {
-            WhileStatementNode node = this.GenerateAST(src).As<WhileStatementNode>();
+            WhileStatNode node = this.GenerateAST(src).As<WhileStatNode>();
             Assert.That(node, Is.Not.Null);
             this.AssertChildrenParentProperties(node);
             Assert.That(ConstantExpressionEvaluator.Evaluate(node.Condition), Is.EqualTo(condValue));
-            if (node.Statement is BlockStatementNode block)
+            if (node.Statement is BlockStatNode block)
                 Assert.That(block.Children, Has.Exactly(statCount).Items);
             else
                 Assert.That(node.Statement.Children, Has.Exactly(statCount).Items);

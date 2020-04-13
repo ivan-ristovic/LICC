@@ -7,33 +7,33 @@ using LICC.Core.Common;
 
 namespace LICC.Core.Comparers
 {
-    internal sealed class FunctionParametersNodeComparer : ASTNodeComparerBase<FunctionParametersNode>
+    internal sealed class FuncParamsNodeComparer : ASTNodeComparerBase<FuncParamsNode>
     {
         public string FunctionName { get; set; }
         public int Line { get; set; }
 
 
-        public FunctionParametersNodeComparer()
+        public FuncParamsNodeComparer()
         {
             this.FunctionName = "<unknown_function>";
         }
 
-        public FunctionParametersNodeComparer(string fname, int line)
+        public FuncParamsNodeComparer(string fname, int line)
         {
             this.FunctionName = fname;
             this.Line = line;
         }
 
 
-        public override MatchIssues Compare(FunctionParametersNode n1, FunctionParametersNode n2)
+        public override MatchIssues Compare(FuncParamsNode n1, FuncParamsNode n2)
         {
             var n1Params = n1.Parameters.ToList();
             var n2Params = n2.Parameters.ToList();
             if (n1Params.Count != n2Params.Count)
                 this.Issues.AddWarning(new ParameterMismatchWarning(this.FunctionName, this.Line));
 
-            foreach ((FunctionParameterNode n1param, FunctionParameterNode n2param) in n1Params.Zip(n2Params))
-                this.Issues.Add(new FunctionParameterNodeComparer(this.FunctionName, this.Line).Compare(n1param, n2param));
+            foreach ((FuncParamNode n1param, FuncParamNode n2param) in n1Params.Zip(n2Params))
+                this.Issues.Add(new FuncParamNodeComparer(this.FunctionName, this.Line).Compare(n1param, n2param));
 
             return this.Issues;
         }

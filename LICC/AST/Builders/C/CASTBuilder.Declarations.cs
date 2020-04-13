@@ -14,9 +14,9 @@ namespace LICC.AST.Builders.C
             if (ctx.staticAssertDeclaration() is { } || ctx.initDeclaratorList() is null)
                 throw new NotImplementedException();
 
-            DeclarationSpecifiersNode declSpecs = this.Visit(ctx.declarationSpecifiers()).As<DeclarationSpecifiersNode>();
-            DeclaratorListNode var = this.Visit(ctx.initDeclaratorList()).As<DeclaratorListNode>();
-            return new DeclarationStatementNode(ctx.Start.Line, declSpecs, var);
+            DeclSpecsNode declSpecs = this.Visit(ctx.declarationSpecifiers()).As<DeclSpecsNode>();
+            DeclListNode var = this.Visit(ctx.initDeclaratorList()).As<DeclListNode>();
+            return new DeclStatNode(ctx.Start.Line, declSpecs, var);
         }
 
         public override ASTNode VisitDeclarator([NotNull] DeclaratorContext ctx)
@@ -29,7 +29,7 @@ namespace LICC.AST.Builders.C
 
             if (ctx.Identifier() is { }) {
                 if (ctx.ChildCount == 1)
-                    return new VariableDeclaratorNode(ctx.Start.Line, new IdentifierNode(ctx.Start.Line, ctx.Identifier().ToString() ?? "<unknown_name>"));
+                    return new VarDeclNode(ctx.Start.Line, new IdNode(ctx.Start.Line, ctx.Identifier().ToString() ?? "<unknown_name>"));
                 else
                     throw new NotImplementedException("bit field");
             }
@@ -37,26 +37,26 @@ namespace LICC.AST.Builders.C
             if (ctx.typeQualifierList() is { } || ctx.typeSpecifier() is { } || ctx.pointer() is { })
                 throw new NotImplementedException("qualified arrays and function pointers");
 
-            DeclaratorNode decl = this.Visit(ctx.directDeclarator()).As<DeclaratorNode>();
-            if (decl is VariableDeclaratorNode var) {
+            DeclNode decl = this.Visit(ctx.directDeclarator()).As<DeclNode>();
+            if (decl is VarDeclNode var) {
                 if (AreBracketsTokensPresent(ctx)) {
                     if (ctx.assignmentExpression() is { }) {
-                        ExpressionNode sizeExpr = this.Visit(ctx.assignmentExpression()).As<ExpressionNode>();
-                        return new ArrayDeclaratorNode(ctx.Start.Line, var.IdentifierNode, sizeExpr);
+                        ExprNode sizeExpr = this.Visit(ctx.assignmentExpression()).As<ExprNode>();
+                        return new ArrDeclNode(ctx.Start.Line, var.IdentifierNode, sizeExpr);
                     } else {
-                        return new ArrayDeclaratorNode(ctx.Start.Line, var.IdentifierNode);
+                        return new ArrDeclNode(ctx.Start.Line, var.IdentifierNode);
                     }
                 } else if (AreParenTokensPresent(ctx)) {
                     if (ctx.parameterTypeList() is { }) {
-                        FunctionParametersNode @params = this.Visit(ctx.parameterTypeList()).As<FunctionParametersNode>();
-                        return new FunctionDeclaratorNode(ctx.Start.Line, var.IdentifierNode, @params);
+                        FuncParamsNode @params = this.Visit(ctx.parameterTypeList()).As<FuncParamsNode>();
+                        return new FuncDeclNode(ctx.Start.Line, var.IdentifierNode, @params);
                     } else {
-                        return new FunctionDeclaratorNode(ctx.Start.Line, var.IdentifierNode);
+                        return new FuncDeclNode(ctx.Start.Line, var.IdentifierNode);
                     }
                 } else {
                     return var;
                 }
-            } else if (decl is ArrayDeclaratorNode arr) {
+            } else if (decl is ArrDeclNode arr) {
                 if (AreBracketsTokensPresent(ctx)) {
                     throw new NotImplementedException("multidimensional arrays");
                 } else if (AreParenTokensPresent(ctx)) {
@@ -83,41 +83,41 @@ namespace LICC.AST.Builders.C
             string[] specs = ctx.children.Select(c => c.GetText()).ToArray();
             int unsignedIndex = Array.IndexOf(specs, "unsigned");
             string type = unsignedIndex != -1 ? string.Join(' ', specs[unsignedIndex..]) : specs.Last();
-            return new DeclarationSpecifiersNode(ctx.Start.Line, string.Join(' ', specs), type);
+            return new DeclSpecsNode(ctx.Start.Line, string.Join(' ', specs), type);
         }
 
         public override ASTNode VisitInitDeclaratorList([NotNull] InitDeclaratorListContext ctx)
         {
-            DeclaratorNode decl = this.Visit(ctx.initDeclarator()).As<DeclaratorNode>();
+            DeclNode decl = this.Visit(ctx.initDeclarator()).As<DeclNode>();
 
             if (ctx.initDeclaratorList() is null)
-                return new DeclaratorListNode(ctx.Start.Line, decl);
+                return new DeclListNode(ctx.Start.Line, decl);
 
-            DeclaratorListNode list = this.Visit(ctx.initDeclaratorList()).As<DeclaratorListNode>();
-            return new DeclaratorListNode(ctx.Start.Line, list.Declarations.Concat(new[] { decl }));
+            DeclListNode list = this.Visit(ctx.initDeclaratorList()).As<DeclListNode>();
+            return new DeclListNode(ctx.Start.Line, list.Declarations.Concat(new[] { decl }));
         }
 
         public override ASTNode VisitInitDeclarator([NotNull] InitDeclaratorContext ctx)
         {
-            DeclaratorNode declarator = this.Visit(ctx.declarator()).As<DeclaratorNode>();
+            DeclNode declarator = this.Visit(ctx.declarator()).As<DeclNode>();
             ASTNode? init = null;
             if (ctx.initializer() is { })
                 init = this.Visit(ctx.initializer());
 
-            if (declarator is VariableDeclaratorNode var)
-                return init is null ? var : new VariableDeclaratorNode(ctx.Start.Line, var.IdentifierNode, init.As<ExpressionNode>());
+            if (declarator is VarDeclNode var)
+                return init is null ? var : new VarDeclNode(ctx.Start.Line, var.IdentifierNode, init.As<ExprNode>());
 
-            if (declarator is ArrayDeclaratorNode arr) {
+            if (declarator is ArrDeclNode arr) {
                 if (arr.SizeExpression is null) {
                     if (init is null)
-                        return new ArrayDeclaratorNode(ctx.Start.Line, arr.IdentifierNode);
+                        return new ArrDeclNode(ctx.Start.Line, arr.IdentifierNode);
                     else
-                        return new ArrayDeclaratorNode(ctx.Start.Line, arr.IdentifierNode, init.As<ArrayInitializerListNode>());
+                        return new ArrDeclNode(ctx.Start.Line, arr.IdentifierNode, init.As<ArrInitListNode>());
                 } else {
                     if (init is null)
-                        return new ArrayDeclaratorNode(ctx.Start.Line, arr.IdentifierNode, arr.SizeExpression);
+                        return new ArrDeclNode(ctx.Start.Line, arr.IdentifierNode, arr.SizeExpression);
                     else
-                        return new ArrayDeclaratorNode(ctx.Start.Line, arr.IdentifierNode, arr.SizeExpression, init.As<ArrayInitializerListNode>());
+                        return new ArrDeclNode(ctx.Start.Line, arr.IdentifierNode, arr.SizeExpression, init.As<ArrInitListNode>());
                 }
             }
 
@@ -129,13 +129,13 @@ namespace LICC.AST.Builders.C
             if (ctx.designation() is { })
                 throw new NotImplementedException();
 
-            ExpressionNode init = this.Visit(ctx.initializer()).As<ExpressionNode>();
+            ExprNode init = this.Visit(ctx.initializer()).As<ExprNode>();
 
             if (ctx.initializerList() is null)
-                return new ArrayInitializerListNode(ctx.Start.Line, init);
+                return new ArrInitListNode(ctx.Start.Line, init);
 
-            ArrayInitializerListNode list = this.Visit(ctx.initializerList()).As<ArrayInitializerListNode>();
-            return new ArrayInitializerListNode(ctx.Start.Line, list.Initializers.Concat(new[] { init }));
+            ArrInitListNode list = this.Visit(ctx.initializerList()).As<ArrInitListNode>();
+            return new ArrInitListNode(ctx.Start.Line, list.Initializers.Concat(new[] { init }));
         }
 
         public override ASTNode VisitInitializer([NotNull] InitializerContext ctx)

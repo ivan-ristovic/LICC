@@ -142,10 +142,10 @@ namespace LICC.Tests.AST.Builders.C
         [Test]
         public void UnaryExpressionTests()
         {
-            Assert.That(this.AssertExpression("y++"), Is.InstanceOf<IncrementExpressionNode>());
-            Assert.That(this.AssertExpression("y--"), Is.InstanceOf<DecrementExpressionNode>());
-            Assert.That(this.AssertExpression("++y"), Is.InstanceOf<UnaryExpressionNode>());
-            Assert.That(this.AssertExpression("--y"), Is.InstanceOf<UnaryExpressionNode>());
+            Assert.That(this.AssertExpression("y++"), Is.InstanceOf<IncExprNode>());
+            Assert.That(this.AssertExpression("y--"), Is.InstanceOf<DecExprNode>());
+            Assert.That(this.AssertExpression("++y"), Is.InstanceOf<UnaryExprNode>());
+            Assert.That(this.AssertExpression("--y"), Is.InstanceOf<UnaryExprNode>());
             this.AssertExpressionValue("++1", 2);
             this.AssertExpressionValue("--1", 0);
             this.AssertExpressionValue("-1", -1);

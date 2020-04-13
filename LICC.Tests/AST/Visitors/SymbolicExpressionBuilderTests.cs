@@ -11,60 +11,60 @@ namespace LICC.Tests.AST.Visitors
         [Test]
         public void ConstantTests()
         {
-            this.AssertParse(new LiteralNode(1, 3), Expr.Parse("3"));
-            this.AssertParse(new LiteralNode(1, 4.3), Expr.Parse("4.3"));
-            this.AssertParse(new NullLiteralNode(1), Expr.Undefined);
+            this.AssertParse(new LitExprNode(1, 3), Expr.Parse("3"));
+            this.AssertParse(new LitExprNode(1, 4.3), Expr.Parse("4.3"));
+            this.AssertParse(new NullLitExprNode(1), Expr.Undefined);
         }
 
         [Test]
         public void VariableTests()
         {
-            this.AssertParse(new IdentifierNode(1, "x"), Expr.Variable("x"));
-            this.AssertParse(new IdentifierNode(1, "xyz"), Expr.Variable("xyz"));
+            this.AssertParse(new IdNode(1, "x"), Expr.Variable("x"));
+            this.AssertParse(new IdNode(1, "xyz"), Expr.Variable("xyz"));
         }
 
         [Test]
         public void ArithmeticExpressionTests()
         {
             this.AssertParse(
-                new ArithmeticExpressionNode(1,
-                    new LiteralNode(1, 3),
-                    ArithmeticOperatorNode.FromSymbol(1, "+"),
-                    new LiteralNode(1, 1)
+                new ArithmExprNode(1,
+                    new LitExprNode(1, 3),
+                    ArithmOpNode.FromSymbol(1, "+"),
+                    new LitExprNode(1, 1)
                 ),
                 Expr.Parse("4")
             );
 
             this.AssertParse(
-                new ArithmeticExpressionNode(1,
-                    new IdentifierNode(1, "x"),
-                    ArithmeticOperatorNode.FromSymbol(1, "+"),
-                    new LiteralNode(1, 1)
+                new ArithmExprNode(1,
+                    new IdNode(1, "x"),
+                    ArithmOpNode.FromSymbol(1, "+"),
+                    new LitExprNode(1, 1)
                 ),
                 Expr.Parse("1 + x")
             );
             
             this.AssertParse(
-                new ArithmeticExpressionNode(1,
-                    new IdentifierNode(1, "x"),
-                    ArithmeticOperatorNode.FromSymbol(1, "+"),
-                    new ArithmeticExpressionNode(1,
-                        new IdentifierNode(1, "x"),
-                        ArithmeticOperatorNode.FromSymbol(1, "-"),
-                        new LiteralNode(1, 1)
+                new ArithmExprNode(1,
+                    new IdNode(1, "x"),
+                    ArithmOpNode.FromSymbol(1, "+"),
+                    new ArithmExprNode(1,
+                        new IdNode(1, "x"),
+                        ArithmOpNode.FromSymbol(1, "-"),
+                        new LitExprNode(1, 1)
                     )
                 ),
                 Expr.Parse("-1 + 2*x")
             );
             
             this.AssertWildcardParse(
-                new ArithmeticExpressionNode(1,
-                    new IdentifierNode(1, "x"),
-                    ArithmeticOperatorNode.FromSymbol(1, "+"),
-                    new ArithmeticExpressionNode(1,
-                        new IdentifierNode(1, "x"),
-                        ArithmeticOperatorNode.FromBitwiseSymbol(1, "<<"),
-                        new LiteralNode(1, 1)
+                new ArithmExprNode(1,
+                    new IdNode(1, "x"),
+                    ArithmOpNode.FromSymbol(1, "+"),
+                    new ArithmExprNode(1,
+                        new IdNode(1, "x"),
+                        ArithmOpNode.FromBitwiseSymbol(1, "<<"),
+                        new LitExprNode(1, 1)
                     )
                 ),
                 "? + x"
@@ -75,32 +75,32 @@ namespace LICC.Tests.AST.Visitors
         public void LogicExpressionTests()
         {
             this.AssertParse(
-                new LogicExpressionNode(1,
-                    new LiteralNode(1, true),
-                    BinaryLogicOperatorNode.FromSymbol(1, "&&"),
-                    new LiteralNode(1, false)
+                new LogicExprNode(1,
+                    new LitExprNode(1, true),
+                    BinaryLogicOpNode.FromSymbol(1, "&&"),
+                    new LitExprNode(1, false)
                 ),
                 "False"
             );
 
             this.AssertParse(
-                new LogicExpressionNode(1,
-                    new LiteralNode(1, true),
-                    BinaryLogicOperatorNode.FromSymbol(1, "&&"),
-                    new LogicExpressionNode(1,
-                        new LiteralNode(1, false),
-                        BinaryLogicOperatorNode.FromSymbol(1, "||"),
-                        new LiteralNode(1, true)
+                new LogicExprNode(1,
+                    new LitExprNode(1, true),
+                    BinaryLogicOpNode.FromSymbol(1, "&&"),
+                    new LogicExprNode(1,
+                        new LitExprNode(1, false),
+                        BinaryLogicOpNode.FromSymbol(1, "||"),
+                        new LitExprNode(1, true)
                     )
                 ),
                 "True"
             );
 
             this.AssertWildcardParse(
-                new LogicExpressionNode(1,
-                    new IdentifierNode(1, "x"),
-                    BinaryLogicOperatorNode.FromSymbol(1, "&&"),
-                    new LiteralNode(1, 1)
+                new LogicExprNode(1,
+                    new IdNode(1, "x"),
+                    BinaryLogicOpNode.FromSymbol(1, "&&"),
+                    new LitExprNode(1, 1)
                 ),
                 "?"
             );

@@ -12,85 +12,85 @@ namespace LICC.Tests.Core.Comparer
         public void EmptyFunctionNoParamsTests()
         {
             this.Compare(
-                new SourceComponentNode(
-                    new FunctionDefinitionNode(1,
-                        new DeclarationSpecifiersNode(1, "static", "void"),
-                        new FunctionDeclaratorNode(1, new IdentifierNode(1, "f")),
-                        new BlockStatementNode(1)
+                new SourceNode(
+                    new FuncDefNode(1,
+                        new DeclSpecsNode(1, "static", "void"),
+                        new FuncDeclNode(1, new IdNode(1, "f")),
+                        new BlockStatNode(1)
                     )
                 ),
-                new SourceComponentNode(
-                    new FunctionDefinitionNode(1,
-                        new DeclarationSpecifiersNode(1, "static", "void"),
-                        new FunctionDeclaratorNode(1, new IdentifierNode(1, "f")),
-                        new BlockStatementNode(1)
+                new SourceNode(
+                    new FuncDefNode(1,
+                        new DeclSpecsNode(1, "static", "void"),
+                        new FuncDeclNode(1, new IdNode(1, "f")),
+                        new BlockStatNode(1)
                     )
                 )
             );
 
             this.Compare(
-                new SourceComponentNode(
-                    new FunctionDefinitionNode(1,
-                        new DeclarationSpecifiersNode(1, "void"),
-                        new FunctionDeclaratorNode(1, new IdentifierNode(1, "f")),
-                        new BlockStatementNode(1)
+                new SourceNode(
+                    new FuncDefNode(1,
+                        new DeclSpecsNode(1, "void"),
+                        new FuncDeclNode(1, new IdNode(1, "f")),
+                        new BlockStatNode(1)
                     )
                 ),
-                new SourceComponentNode(
-                    new FunctionDefinitionNode(1,
-                        new DeclarationSpecifiersNode(1, "void"),
-                        new FunctionDeclaratorNode(1, new IdentifierNode(1, "f")),
-                        new BlockStatementNode(1, new EmptyStatementNode(1))
+                new SourceNode(
+                    new FuncDefNode(1,
+                        new DeclSpecsNode(1, "void"),
+                        new FuncDeclNode(1, new IdNode(1, "f")),
+                        new BlockStatNode(1, new EmptyStatNode(1))
                     )
                 )
             );
 
             this.Compare(
-                new SourceComponentNode(
-                    new FunctionDefinitionNode(1,
-                        new DeclarationSpecifiersNode(1, "static", "void"),
-                        new FunctionDeclaratorNode(1, new IdentifierNode(1, "f")),
-                        new BlockStatementNode(1)
+                new SourceNode(
+                    new FuncDefNode(1,
+                        new DeclSpecsNode(1, "static", "void"),
+                        new FuncDeclNode(1, new IdNode(1, "f")),
+                        new BlockStatNode(1)
                     )
                 ),
-                new SourceComponentNode(
-                    new FunctionDefinitionNode(1,
-                        new DeclarationSpecifiersNode(1, "void"),
-                        new FunctionDeclaratorNode(1, new IdentifierNode(1, "f")),
-                        new BlockStatementNode(1)
+                new SourceNode(
+                    new FuncDefNode(1,
+                        new DeclSpecsNode(1, "void"),
+                        new FuncDeclNode(1, new IdNode(1, "f")),
+                        new BlockStatNode(1)
                     )
                 ),
                 new MatchIssues()
                     .AddWarning(
                         new DeclSpecsMismatchWarning(
-                            new FunctionDeclaratorNode(1, new IdentifierNode(1, "f")),
-                            new DeclarationSpecifiersNode(1, "static", "void"),
-                            new DeclarationSpecifiersNode(1, "void")
+                            new FuncDeclNode(1, new IdNode(1, "f")),
+                            new DeclSpecsNode(1, "static", "void"),
+                            new DeclSpecsNode(1, "void")
                         )
                     )
             );
 
             this.Compare(
-                new SourceComponentNode(
-                    new FunctionDefinitionNode(1,
-                        new DeclarationSpecifiersNode(1, "void"),
-                        new FunctionDeclaratorNode(1, new IdentifierNode(1, "f")),
-                        new BlockStatementNode(1)
+                new SourceNode(
+                    new FuncDefNode(1,
+                        new DeclSpecsNode(1, "void"),
+                        new FuncDeclNode(1, new IdNode(1, "f")),
+                        new BlockStatNode(1)
                     )
                 ),
-                new SourceComponentNode(
-                    new FunctionDefinitionNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new FunctionDeclaratorNode(1, new IdentifierNode(1, "f")),
-                        new BlockStatementNode(1)
+                new SourceNode(
+                    new FuncDefNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new FuncDeclNode(1, new IdNode(1, "f")),
+                        new BlockStatNode(1)
                     )
                 ),
                 new MatchIssues()
                     .AddWarning(
                         new DeclSpecsMismatchWarning(
-                            new FunctionDeclaratorNode(1, new IdentifierNode(1, "f")),
-                            new DeclarationSpecifiersNode(1, "void"),
-                            new DeclarationSpecifiersNode(1, "int")
+                            new FuncDeclNode(1, new IdNode(1, "f")),
+                            new DeclSpecsNode(1, "void"),
+                            new DeclSpecsNode(1, "int")
                         )
                     )
             );

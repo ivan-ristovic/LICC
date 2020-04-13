@@ -59,7 +59,7 @@ namespace LICC.Tests.AST.Visitors
         private string Evaluate(string expr)
             => ExpressionEvaluator.TryEvaluate(this.GenerateAST(expr), this.symbols).ToString();
 
-        private ExpressionNode GenerateAST(string src)
-            => new PseudoASTBuilder().BuildFromSource(src, p => p.exp()).As<ExpressionNode>();
+        private ExprNode GenerateAST(string src)
+            => new PseudoASTBuilder().BuildFromSource(src, p => p.exp()).As<ExprNode>();
     }
 }

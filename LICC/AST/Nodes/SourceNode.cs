@@ -2,24 +2,24 @@
 
 namespace LICC.AST.Nodes
 {
-    public sealed class SourceComponentNode : ASTNode
+    public sealed class SourceNode : ASTNode
     {
         public string? Name { get; set; }
 
 
-        public SourceComponentNode(IEnumerable<ASTNode> children)
+        public SourceNode(IEnumerable<ASTNode> children)
             : base(1, children) { }
 
-        public SourceComponentNode(params ASTNode[] children)
+        public SourceNode(params ASTNode[] children)
             : base(1, children) { }
 
-        public SourceComponentNode(string name, IEnumerable<ASTNode> children)
+        public SourceNode(string name, IEnumerable<ASTNode> children)
             : base(1, children) 
         {
             this.Name = name;
         }
 
-        public SourceComponentNode(string name, params ASTNode[] children)
+        public SourceNode(string name, params ASTNode[] children)
             : base(1, children)
         {
             this.Name = name;

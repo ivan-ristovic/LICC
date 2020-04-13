@@ -44,18 +44,18 @@ namespace LICC.AST.Builders.C
         }
 
         public override ASTNode VisitCompilationUnit([NotNull] CompilationUnitContext ctx)
-            => ctx.translationUnit() is null ? new SourceComponentNode(Enumerable.Empty<ASTNode>()) : this.Visit(ctx.translationUnit());
+            => ctx.translationUnit() is null ? new SourceNode(Enumerable.Empty<ASTNode>()) : this.Visit(ctx.translationUnit());
 
         public override ASTNode VisitTranslationUnit([NotNull] TranslationUnitContext ctx)
         {
             ASTNode decl = this.Visit(ctx.externalDeclaration());
 
             if (ctx.translationUnit() is null)
-                return new SourceComponentNode(decl);
+                return new SourceNode(decl);
 
-            SourceComponentNode tu = this.Visit(ctx.translationUnit()).As<SourceComponentNode>();
+            SourceNode tu = this.Visit(ctx.translationUnit()).As<SourceNode>();
             decl.Parent = tu;
-            return new SourceComponentNode(tu.Children.Concat(new[] { decl }));
+            return new SourceNode(tu.Children.Concat(new[] { decl }));
         }
     }
 }

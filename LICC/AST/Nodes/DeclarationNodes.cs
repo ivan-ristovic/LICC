@@ -18,31 +18,31 @@ namespace LICC.AST.Nodes
             : base(line, children) { }
     }
 
-    public class DeclarationSpecifiersNode : ASTNode
+    public class DeclSpecsNode : ASTNode
     {
-        public DeclarationKeywords Keywords { get; }
+        public DeclKeywords Keywords { get; }
         public string TypeName { get; }
 
         [JsonIgnore]
         public Type? Type { get; }
 
 
-        public DeclarationSpecifiersNode(int line)
+        public DeclSpecsNode(int line)
             : this(line, "object")
         {
 
         }
 
-        public DeclarationSpecifiersNode(int line, string type)
+        public DeclSpecsNode(int line, string type)
             : this(line, "", type)
         {
 
         }
 
-        public DeclarationSpecifiersNode(int line, string specs, string type)
+        public DeclSpecsNode(int line, string specs, string type)
             : base(line)
         {
-            this.Keywords = DeclarationKeywords.Parse(specs);
+            this.Keywords = DeclKeywords.Parse(specs);
             this.TypeName = type.Trim();
             TypeCode? typeCode = Types.TypeCodeFor(this.TypeName);
             if (typeCode is null)
@@ -63,61 +63,61 @@ namespace LICC.AST.Nodes
         }
 
         public override bool Equals(object? obj)
-            => this.Equals(obj as DeclarationSpecifiersNode);
+            => this.Equals(obj as DeclSpecsNode);
 
         public override bool Equals([AllowNull] ASTNode other)
         {
             if (!base.Equals(other))
                 return false;
 
-            var decl = other as DeclarationSpecifiersNode;
+            var decl = other as DeclSpecsNode;
             if (!this.Keywords.Equals(decl?.Keywords))
                 return false;
             return this.Type is { } ? this.Type.Equals(decl?.Type) : this.TypeName.Equals(decl?.TypeName);
         }
     }
 
-    public abstract class DeclaratorNode : DeclarationNode
+    public abstract class DeclNode : DeclarationNode
     {
         [JsonIgnore]
-        public IdentifierNode IdentifierNode => this.Children.First().As<IdentifierNode>();
+        public IdNode IdentifierNode => this.Children.First().As<IdNode>();
 
         [JsonIgnore]
         public string Identifier => this.IdentifierNode.Identifier;
 
 
-        public DeclaratorNode(int line, IdentifierNode identifier, params ASTNode[] children)
+        public DeclNode(int line, IdNode identifier, params ASTNode[] children)
             : base(line, new[] { identifier }.Concat(children)) { }
 
-        public DeclaratorNode(int line, IdentifierNode identifier, IEnumerable<ASTNode> children)
+        public DeclNode(int line, IdNode identifier, IEnumerable<ASTNode> children)
             : base(line, new[] { identifier }.Concat(children)) { }
     }
 
-    public sealed class DeclaratorListNode : DeclarationNode
+    public sealed class DeclListNode : DeclarationNode
     {
         [JsonIgnore]
-        public IEnumerable<DeclaratorNode> Declarations => this.Children.Cast<DeclaratorNode>();
+        public IEnumerable<DeclNode> Declarations => this.Children.Cast<DeclNode>();
 
 
-        public DeclaratorListNode(int line, IEnumerable<DeclaratorNode> decls)
+        public DeclListNode(int line, IEnumerable<DeclNode> decls)
             : base(line, decls) { }
 
-        public DeclaratorListNode(int line, params DeclaratorNode[] decls)
+        public DeclListNode(int line, params DeclNode[] decls)
             : base(line, decls) { }
 
         public override string GetText() => string.Join(", ", this.Children.Select(c => c.GetText()));
     }
 
-    public sealed class VariableDeclaratorNode : DeclaratorNode
+    public sealed class VarDeclNode : DeclNode
     {
         [JsonIgnore]
-        public ExpressionNode? Initializer => this.Children.ElementAtOrDefault(1)?.As<ExpressionNode>();
+        public ExprNode? Initializer => this.Children.ElementAtOrDefault(1)?.As<ExprNode>();
 
 
-        public VariableDeclaratorNode(int line, IdentifierNode identifier)
+        public VarDeclNode(int line, IdNode identifier)
             : base(line, identifier) { }
 
-        public VariableDeclaratorNode(int line, IdentifierNode identifier, ExpressionNode initializer)
+        public VarDeclNode(int line, IdNode identifier, ExprNode initializer)
             : base(line, identifier, initializer) { }
 
 

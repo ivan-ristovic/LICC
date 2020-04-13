@@ -10,15 +10,15 @@ namespace LICC.Tests.AST.Builders.Common
 {
     internal abstract class DeclarationTestsBase : ASTBuilderTestBase
     {
-        protected DeclarationStatementNode AssertDeclarationNode(string src,
+        protected DeclStatNode AssertDeclarationNode(string src,
                                                                  string type,
                                                                  AccessModifiers access = AccessModifiers.Unspecified,
                                                                  QualifierFlags qualifiers = QualifierFlags.None)
         {
             ASTNode ast = this.GenerateAST(src);
-            DeclarationStatementNode decl = ast is SourceComponentNode block
+            DeclStatNode decl = ast is SourceNode block
                 ? this.ExtractDeclarationFromBlock(block)
-                : ast.As<DeclarationStatementNode>();
+                : ast.As<DeclStatNode>();
             Assert.That(decl.Children, Has.Exactly(2).Items);
             Assert.That(decl.Specifiers.Parent, Is.EqualTo(decl));
             Assert.That(decl.Specifiers.Keywords.AccessModifiers, Is.EqualTo(access));
@@ -35,13 +35,13 @@ namespace LICC.Tests.AST.Builders.Common
                                                  QualifierFlags qualifiers = QualifierFlags.None,
                                                  object? value = null)
         {
-            DeclarationStatementNode decl = this.AssertDeclarationNode(src, type, access, qualifiers);
+            DeclStatNode decl = this.AssertDeclarationNode(src, type, access, qualifiers);
 
             Assert.That(decl.DeclaratorList.Parent, Is.EqualTo(decl));
-            VariableDeclaratorNode var = decl.DeclaratorList.Declarations.Single().As<VariableDeclaratorNode>();
+            VarDeclNode var = decl.DeclaratorList.Declarations.Single().As<VarDeclNode>();
             Assert.That(var.Parent, Is.EqualTo(decl.DeclaratorList));
             Assert.That(var.Identifier, Is.EqualTo(identifier));
-            Assert.That(var.Children.First().As<IdentifierNode>().Identifier, Is.EqualTo(identifier));
+            Assert.That(var.Children.First().As<IdNode>().Identifier, Is.EqualTo(identifier));
             if (value is { }) {
                 Assert.That(var.Initializer, Is.Not.Null);
                 Assert.That(var.Initializer!.Parent, Is.EqualTo(var));
@@ -57,14 +57,14 @@ namespace LICC.Tests.AST.Builders.Common
                                                      QualifierFlags qualifiers = QualifierFlags.None,
                                                      params (string Identifier, object? Value)[] vars)
         {
-            DeclarationStatementNode decl = this.AssertDeclarationNode(src, type, access, qualifiers);
+            DeclStatNode decl = this.AssertDeclarationNode(src, type, access, qualifiers);
             Assert.That(decl.DeclaratorList.Parent, Is.EqualTo(decl));
             Assert.That(decl.DeclaratorList.Declarations.Select(var => ExtractIdentifierAndValue(var)), Is.EqualTo(vars).Within(1e-6));
 
 
             static (string, object?) ExtractIdentifierAndValue(DeclarationNode declNode)
             {
-                VariableDeclaratorNode var = declNode.As<VariableDeclaratorNode>();
+                VarDeclNode var = declNode.As<VarDeclNode>();
                 return var.Initializer is null ? (var.Identifier, (object?)null)
                                                : (var.Identifier, ConstantExpressionEvaluator.Evaluate(var.Initializer));
             }
@@ -78,9 +78,9 @@ namespace LICC.Tests.AST.Builders.Common
                                                  bool isVariadic = false,
                                                  params (QualifierFlags Qualifiers, string Type, string Identifier)[] @params)
         {
-            DeclarationStatementNode decl = this.AssertDeclarationNode(src, returnType, access, qualifiers);
+            DeclStatNode decl = this.AssertDeclarationNode(src, returnType, access, qualifiers);
 
-            FunctionDeclaratorNode fdecl = decl.DeclaratorList.Declarations.Single().As<FunctionDeclaratorNode>();
+            FuncDeclNode fdecl = decl.DeclaratorList.Declarations.Single().As<FuncDeclNode>();
             Assert.That(fdecl.Identifier, Is.EqualTo(fname));
             Assert.That(fdecl.IsVariadic, Is.EqualTo(isVariadic));
             if (@params.Any()) {
@@ -91,7 +91,7 @@ namespace LICC.Tests.AST.Builders.Common
             }
 
 
-            static (QualifierFlags, string, string) ExtractParamInfo(FunctionParameterNode param)
+            static (QualifierFlags, string, string) ExtractParamInfo(FuncParamNode param)
             {
                 Assert.That(param.Specifiers.Keywords.AccessModifiers, Is.EqualTo(AccessModifiers.Unspecified));
                 QualifierFlags qf = param.Specifiers.Keywords.QualifierFlags;
@@ -108,13 +108,13 @@ namespace LICC.Tests.AST.Builders.Common
                                               QualifierFlags qualifiers = QualifierFlags.None,
                                               params object[]? init)
         {
-            DeclarationStatementNode decl = this.AssertDeclarationNode(src, type, access, qualifiers);
+            DeclStatNode decl = this.AssertDeclarationNode(src, type, access, qualifiers);
 
             Assert.That(decl.DeclaratorList.Parent, Is.EqualTo(decl));
-            ArrayDeclaratorNode arr = decl.DeclaratorList.Declarations.First().As<ArrayDeclaratorNode>();
+            ArrDeclNode arr = decl.DeclaratorList.Declarations.First().As<ArrDeclNode>();
             Assert.That(arr.Parent, Is.EqualTo(decl.DeclaratorList));
             Assert.That(arr.Identifier, Is.EqualTo(arrName));
-            Assert.That(arr.Children.First().As<IdentifierNode>().Identifier, Is.EqualTo(arrName));
+            Assert.That(arr.Children.First().As<IdNode>().Identifier, Is.EqualTo(arrName));
             if (size is { }) {
                 Assert.That(arr.SizeExpression, Is.Not.Null);
                 Assert.That(arr.SizeExpression!.Parent, Is.EqualTo(arr));
@@ -132,32 +132,32 @@ namespace LICC.Tests.AST.Builders.Common
         }
 
 
-        private DeclarationStatementNode ExtractDeclarationFromBlock(SourceComponentNode src)
+        private DeclStatNode ExtractDeclarationFromBlock(SourceNode src)
         {
             if (src.Children.Count == 1)
-                return src.Children.Single().As<DeclarationStatementNode>();
+                return src.Children.Single().As<DeclStatNode>();
 
             var decls = src.Children
                 .Take(2)
-                .Cast<DeclarationStatementNode>()
+                .Cast<DeclStatNode>()
                 .ToList()
                 ;
-            IEnumerable<DeclaratorNode> declarators = decls[0].DeclaratorList.Declarations
+            IEnumerable<DeclNode> declarators = decls[0].DeclaratorList.Declarations
                 .Zip(decls[1].DeclaratorList.Declarations)
                 .Select(FormDeclarator)
                 ;
-            var declList = new DeclaratorListNode(decls[0].DeclaratorList.Line, declarators);
-            return new DeclarationStatementNode(decls[0].Line, decls[0].Specifiers, declList);
+            var declList = new DeclListNode(decls[0].DeclaratorList.Line, declarators);
+            return new DeclStatNode(decls[0].Line, decls[0].Specifiers, declList);
 
 
-            static DeclaratorNode FormDeclarator((DeclaratorNode, DeclaratorNode) decl)
+            static DeclNode FormDeclarator((DeclNode, DeclNode) decl)
             {
                 switch (decl.Item1) {
-                    case VariableDeclaratorNode v1:
-                        VariableDeclaratorNode v2 = decl.Item2.As<VariableDeclaratorNode>();
+                    case VarDeclNode v1:
+                        VarDeclNode v2 = decl.Item2.As<VarDeclNode>();
                         return v2.Initializer is null
-                            ? new VariableDeclaratorNode(v1.Line, v1.IdentifierNode)
-                            : new VariableDeclaratorNode(v1.Line, v1.IdentifierNode, v2.Initializer);
+                            ? new VarDeclNode(v1.Line, v1.IdentifierNode)
+                            : new VarDeclNode(v1.Line, v1.IdentifierNode, v2.Initializer);
                     default:
                         throw new NotImplementedException();
                 }

@@ -6,11 +6,11 @@ namespace LICC.Core.Common
 {
     public sealed class ExtraDeclarationWarning : BaseWarning
     {
-        public DeclarationSpecifiersNode DeclarationSpecifiers { get; set; }
-        public DeclaratorNode Declarator { get; set; }
+        public DeclSpecsNode DeclarationSpecifiers { get; set; }
+        public DeclNode Declarator { get; set; }
 
 
-        public ExtraDeclarationWarning(DeclarationSpecifiersNode declarationSpecifiers, DeclaratorNode declarator)
+        public ExtraDeclarationWarning(DeclSpecsNode declarationSpecifiers, DeclNode declarator)
         {
             this.DeclarationSpecifiers = declarationSpecifiers;
             this.Declarator = declarator;

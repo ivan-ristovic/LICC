@@ -9,7 +9,7 @@ namespace LICC.AST.Visitors
 {
     public sealed class ExpressionEvaluator
     {
-        public static Expr TryEvaluate(ExpressionNode node, Dictionary<string, Expr> symbols)
+        public static Expr TryEvaluate(ExprNode node, Dictionary<string, Expr> symbols)
             => TryEvaluate(new SymbolicExpressionBuilder(node).Parse(), symbols);
 
         public static Expr TryEvaluate(Expr expr, Dictionary<string, Expr> symbols)

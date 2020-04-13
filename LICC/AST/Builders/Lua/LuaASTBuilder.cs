@@ -46,8 +46,8 @@ namespace LICC.AST.Builders.Lua
 
         public override ASTNode VisitChunk([NotNull] ChunkContext ctx)
         {
-            BlockStatementNode block = this.Visit(ctx.block()).As<BlockStatementNode>();
-            return new SourceComponentNode(this.AddDeclarations(block.Children));
+            BlockStatNode block = this.Visit(ctx.block()).As<BlockStatNode>();
+            return new SourceNode(this.AddDeclarations(block.Children));
         }
 
         public override ASTNode VisitBlock([NotNull] BlockContext ctx)
@@ -58,7 +58,7 @@ namespace LICC.AST.Builders.Lua
             if (ctx.retstat() is { })
                 statements = statements.Concat(new[] { this.Visit(ctx.retstat()) });
 
-            return new BlockStatementNode(ctx.Start.Line, statements);
+            return new BlockStatNode(ctx.Start.Line, statements);
         }
 
 
@@ -68,73 +68,73 @@ namespace LICC.AST.Builders.Lua
 
             var nodes = new List<ASTNode>();
             foreach (ASTNode stat in statements) {
-                if (stat is ExpressionStatementNode expr && expr.Expression is AssignmentExpressionNode assignmentExpr) {
-                    if (assignmentExpr.LeftOperand is IdentifierNode v) {
+                if (stat is ExprStatNode expr && expr.Expression is AssignExprNode assignmentExpr) {
+                    if (assignmentExpr.LeftOperand is IdNode v) {
                         if (IsDeclared(v)) {
-                            nodes.Add(new ExpressionStatementNode(v.Line, assignmentExpr));
+                            nodes.Add(new ExprStatNode(v.Line, assignmentExpr));
                         } else {
-                            var declList = new DeclaratorListNode(v.Line, CreateDeclarator(v, assignmentExpr.RightOperand));
-                            var declSpecs = new DeclarationSpecifiersNode(v.Line);
-                            nodes.Add(new DeclarationStatementNode(v.Line, declSpecs, declList));
+                            var declList = new DeclListNode(v.Line, CreateDeclarator(v, assignmentExpr.RightOperand));
+                            var declSpecs = new DeclSpecsNode(v.Line);
+                            nodes.Add(new DeclStatNode(v.Line, declSpecs, declList));
                             declaredVars.Add(v.Identifier);
                         }
-                    } else if (assignmentExpr.LeftOperand is ArrayAccessExpressionNode arr) {
-                        IdentifierNode arrayExpr = arr.Array as IdentifierNode ?? throw new NotSupportedException("Complex array access expressions");
+                    } else if (assignmentExpr.LeftOperand is ArrAccessExprNode arr) {
+                        IdNode arrayExpr = arr.Array as IdNode ?? throw new NotSupportedException("Complex array access expressions");
                         if (!IsDeclared(arrayExpr)) {
-                            var declList = new DeclaratorListNode(arr.Line, new ArrayDeclaratorNode(arr.Line, arrayExpr));
-                            var declSpecs = new DeclarationSpecifiersNode(arr.Line);
-                            nodes.Add(new DeclarationStatementNode(arr.Line, declSpecs, declList));
+                            var declList = new DeclListNode(arr.Line, new ArrDeclNode(arr.Line, arrayExpr));
+                            var declSpecs = new DeclSpecsNode(arr.Line);
+                            nodes.Add(new DeclStatNode(arr.Line, declSpecs, declList));
                             declaredVars.Add(arrayExpr.Identifier);
                         }
                         nodes.Add(stat);
                     } else {
                         Log.Debug("Skipping statement: {Stat}", stat.GetText());
                     }
-                } else if (stat is BlockStatementNode block) {
-                    if (block.Children.All(c => c is AssignmentExpressionNode ae && ae.LeftOperand is IdentifierNode)) {
-                        var declSpecs = new DeclarationSpecifiersNode(block.Line);
-                        IEnumerable<AssignmentExpressionNode> declList = block.Children.Cast<AssignmentExpressionNode>();
+                } else if (stat is BlockStatNode block) {
+                    if (block.Children.All(c => c is AssignExprNode ae && ae.LeftOperand is IdNode)) {
+                        var declSpecs = new DeclSpecsNode(block.Line);
+                        IEnumerable<AssignExprNode> declList = block.Children.Cast<AssignExprNode>();
 
                         // Declare non-declared vars
                         var notDeclared = declList
-                            .Where(e => !IsDeclared(e.LeftOperand.As<IdentifierNode>()))
-                            .Select(e => CreateDeclarator(e.LeftOperand.As<IdentifierNode>(), e.RightOperand, ignoreInitializer: true))
+                            .Where(e => !IsDeclared(e.LeftOperand.As<IdNode>()))
+                            .Select(e => CreateDeclarator(e.LeftOperand.As<IdNode>(), e.RightOperand, ignoreInitializer: true))
                             .ToList()
                             ;
                         if (notDeclared.Any()) {
-                            nodes.Add(new DeclarationStatementNode(block.Line, declSpecs, new DeclaratorListNode(block.Line, notDeclared)));
+                            nodes.Add(new DeclStatNode(block.Line, declSpecs, new DeclListNode(block.Line, notDeclared)));
                             foreach (string v in notDeclared.Select(d => d.Identifier))
                                 declaredVars.Add(v);
                         }
 
                         // Declare temporary variables and initialize them
-                        var tmpDeclList = new DeclaratorListNode(block.Line, declList.Select(d => CreateTmpDeclarator(d)));
-                        var tmpDeclSpecs = new DeclarationSpecifiersNode(block.Line);
-                        var tmpDecl = new DeclarationStatementNode(block.Line, tmpDeclSpecs, tmpDeclList);
+                        var tmpDeclList = new DeclListNode(block.Line, declList.Select(d => CreateTmpDeclarator(d)));
+                        var tmpDeclSpecs = new DeclSpecsNode(block.Line);
+                        var tmpDecl = new DeclStatNode(block.Line, tmpDeclSpecs, tmpDeclList);
                         nodes.Add(tmpDecl);
                         foreach (string v in tmpDeclList.Declarations.Select(d => d.Identifier))
                             declaredVars.Add(v);
 
                         // Add tmp assignments
-                        var tmpAssignments = new ExpressionListNode(block.Line, declList.Select(decl => CreateTmpAssignment(decl)));
-                        nodes.Add(new ExpressionStatementNode(block.Line, tmpAssignments));
+                        var tmpAssignments = new ExprListNode(block.Line, declList.Select(decl => CreateTmpAssignment(decl)));
+                        nodes.Add(new ExprStatNode(block.Line, tmpAssignments));
 
 
-                        static IdentifierNode CreateTmpIdentifier(IdentifierNode id)
-                            => new IdentifierNode(id.Line, $"tmp__{id.Identifier}");
+                        static IdNode CreateTmpIdentifier(IdNode id)
+                            => new IdNode(id.Line, $"tmp__{id.Identifier}");
 
-                        static DeclaratorNode CreateTmpDeclarator(AssignmentExpressionNode expr)
-                            => CreateDeclarator(CreateTmpIdentifier(expr.LeftOperand.As<IdentifierNode>()), expr.RightOperand);
+                        static DeclNode CreateTmpDeclarator(AssignExprNode expr)
+                            => CreateDeclarator(CreateTmpIdentifier(expr.LeftOperand.As<IdNode>()), expr.RightOperand);
 
-                        static ExpressionNode CreateTmpAssignment(AssignmentExpressionNode expr)
+                        static ExprNode CreateTmpAssignment(AssignExprNode expr)
                         {
-                            IdentifierNode tmpId = CreateTmpIdentifier(expr.LeftOperand.As<IdentifierNode>());
-                            return new AssignmentExpressionNode(expr.Line, expr.LeftOperand, tmpId);
+                            IdNode tmpId = CreateTmpIdentifier(expr.LeftOperand.As<IdNode>());
+                            return new AssignExprNode(expr.Line, expr.LeftOperand, tmpId);
                         }
                     } else {
-                        nodes.Add(new BlockStatementNode(block.Line, this.AddDeclarations(block.Children, declaredVars)));
+                        nodes.Add(new BlockStatNode(block.Line, this.AddDeclarations(block.Children, declaredVars)));
                     }
-                } else if (stat is FunctionDefinitionNode fdef) {
+                } else if (stat is FuncDefNode fdef) {
                     var @params = new List<string>();
                     if (fdef.Parameters is { })
                         @params.AddRange(fdef.Parameters.Select(p => p.Declarator.Identifier));
@@ -142,18 +142,18 @@ namespace LICC.AST.Builders.Lua
 
                     foreach (string p in @params)
                         declaredVars.Add(p);
-                    var alteredDefinition = new BlockStatementNode(fdef.Definition.Line, this.AddDeclarations(fdef.Definition.Children, declaredVars));
-                    nodes.Add(new FunctionDefinitionNode(fdef.Line, fdef.Specifiers, fdef.Declarator, alteredDefinition));
+                    var alteredDefinition = new BlockStatNode(fdef.Definition.Line, this.AddDeclarations(fdef.Definition.Children, declaredVars));
+                    nodes.Add(new FuncDefNode(fdef.Line, fdef.Specifiers, fdef.Declarator, alteredDefinition));
                     foreach (string p in @params)
                         declaredVars.Remove(p);
-                } else if (stat is IfStatementNode @if) {
-                    IfStatementNode alteredIf;
-                    var alteredThen = new BlockStatementNode(@if.ThenStatement.Line, this.AddDeclarations(@if.ThenStatement.Children, declaredVars));
+                } else if (stat is IfStatNode @if) {
+                    IfStatNode alteredIf;
+                    var alteredThen = new BlockStatNode(@if.ThenStatement.Line, this.AddDeclarations(@if.ThenStatement.Children, declaredVars));
                     if (@if.ElseStatement is { }) {
-                        var alteredElse = new BlockStatementNode(@if.ElseStatement.Line, this.AddDeclarations(@if.ElseStatement.Children, declaredVars));
-                        alteredIf = new IfStatementNode(@if.Line, @if.Condition, alteredThen, alteredElse);
+                        var alteredElse = new BlockStatNode(@if.ElseStatement.Line, this.AddDeclarations(@if.ElseStatement.Children, declaredVars));
+                        alteredIf = new IfStatNode(@if.Line, @if.Condition, alteredThen, alteredElse);
                     } else {
-                        alteredIf = new IfStatementNode(@if.Line, @if.Condition, alteredThen);
+                        alteredIf = new IfStatNode(@if.Line, @if.Condition, alteredThen);
                     }
                     nodes.Add(alteredIf);
                 } else {
@@ -164,34 +164,34 @@ namespace LICC.AST.Builders.Lua
             return nodes.AsReadOnly();
 
 
-            bool IsDeclared(IdentifierNode node)
+            bool IsDeclared(IdNode node)
                 => declaredVars.Contains(node.Identifier);
                 //=> nodes.Any(n => n is DeclarationStatementNode decl && decl.DeclaratorList.Declarations.Any(d => d.IdentifierNode.Equals(node)));
 
-            static DeclaratorNode CreateDeclarator(IdentifierNode identifier, ExpressionNode initializer, bool ignoreInitializer = false)
+            static DeclNode CreateDeclarator(IdNode identifier, ExprNode initializer, bool ignoreInitializer = false)
             {
                 if (ignoreInitializer) {
                     return initializer switch
                     {
-                        ExpressionListNode expList => new ArrayDeclaratorNode(
+                        ExprListNode expList => new ArrDeclNode(
                             identifier.Line,
                             identifier,
-                            LiteralNode.FromString(expList.Line, expList.Expressions.Count().ToString())
+                            LitExprNode.FromString(expList.Line, expList.Expressions.Count().ToString())
                         ),
-                        DictionaryInitializerNode dict => new DictionaryDeclaratorNode(identifier.Line, identifier),
-                        ExpressionNode varInit => new VariableDeclaratorNode(identifier.Line, identifier),
+                        DictInitNode dict => new DictDeclNode(identifier.Line, identifier),
+                        ExprNode varInit => new VarDeclNode(identifier.Line, identifier),
                         _ => throw new SyntaxException("Unexpected variable initializer"),
                     };
                 } else {
                     return initializer switch
                     {
-                        ExpressionListNode expList => new ArrayDeclaratorNode(
+                        ExprListNode expList => new ArrDeclNode(
                             identifier.Line,
                             identifier,
-                            new ArrayInitializerListNode(expList.Line, expList.Expressions)
+                            new ArrInitListNode(expList.Line, expList.Expressions)
                         ),
-                        DictionaryInitializerNode dict => new DictionaryDeclaratorNode(identifier.Line, identifier, dict),
-                        ExpressionNode varInit => new VariableDeclaratorNode(identifier.Line, identifier, varInit),
+                        DictInitNode dict => new DictDeclNode(identifier.Line, identifier, dict),
+                        ExprNode varInit => new VarDeclNode(identifier.Line, identifier, varInit),
                         _ => throw new SyntaxException("Unexpected variable initializer"),
                     };
                 }

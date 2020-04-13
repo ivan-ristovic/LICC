@@ -5,11 +5,11 @@ namespace LICC.Tests.AST.Builders.Common
 {
     internal abstract class SourceComponentTestsBase : ASTBuilderTestBase
     {
-        protected SourceComponentNode AssertTranslationUnit(string src, bool empty = false)
+        protected SourceNode AssertTranslationUnit(string src, bool empty = false)
         {
-            SourceComponentNode sc = this.GenerateAST(src).As<SourceComponentNode>();
+            SourceNode sc = this.GenerateAST(src).As<SourceNode>();
             Assert.That(sc, Is.Not.Null);
-            Assert.That(sc, Is.InstanceOf<SourceComponentNode>());
+            Assert.That(sc, Is.InstanceOf<SourceNode>());
             Assert.That(sc.Line, Is.EqualTo(1));
             Assert.That(sc.Parent, Is.Null);
             Assert.That(sc.Children, empty ? Is.Empty : Is.Not.Empty);

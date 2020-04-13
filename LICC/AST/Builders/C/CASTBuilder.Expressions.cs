@@ -26,32 +26,32 @@ namespace LICC.AST.Builders.C
             if (ctx.conditionalExpression() is { })
                 return this.Visit(ctx.conditionalExpression());
 
-            ExpressionNode unary = this.Visit(ctx.unaryExpression()).As<ExpressionNode>();
+            ExprNode unary = this.Visit(ctx.unaryExpression()).As<ExprNode>();
             string symbol = ctx.children[1].GetText();
-            var op = AssignmentOperatorNode.FromSymbol(ctx.Start.Line, symbol);
-            ExpressionNode expr = this.Visit(ctx.assignmentExpression()).As<ExpressionNode>();
+            var op = AssignOpNode.FromSymbol(ctx.Start.Line, symbol);
+            ExprNode expr = this.Visit(ctx.assignmentExpression()).As<ExprNode>();
 
-            return new AssignmentExpressionNode(ctx.Start.Line, unary, op, expr);
+            return new AssignExprNode(ctx.Start.Line, unary, op, expr);
         }
 
         public override ASTNode VisitConditionalExpression([NotNull] ConditionalExpressionContext ctx)
         {
-            ExpressionNode expr = this.Visit(ctx.logicalOrExpression()).As<ExpressionNode>();
+            ExprNode expr = this.Visit(ctx.logicalOrExpression()).As<ExprNode>();
             if (ctx.expression() is null)
                 return expr;
 
-            ExpressionNode thenExpr = this.Visit(ctx.expression()).As<ExpressionNode>();
-            ExpressionNode elseExpr = this.Visit(ctx.conditionalExpression()).As<ExpressionNode>();
-            return new ConditionalExpressionNode(ctx.Start.Line, expr, thenExpr, elseExpr);
+            ExprNode thenExpr = this.Visit(ctx.expression()).As<ExprNode>();
+            ExprNode elseExpr = this.Visit(ctx.conditionalExpression()).As<ExprNode>();
+            return new CondExprNode(ctx.Start.Line, expr, thenExpr, elseExpr);
         }
 
         public override ASTNode VisitLogicalOrExpression([NotNull] LogicalOrExpressionContext ctx)
         {
             if (ctx.ChildCount > 1) {
-                ExpressionNode left = this.Visit(ctx.logicalOrExpression()).As<ExpressionNode>();
-                ExpressionNode right = this.Visit(ctx.logicalAndExpression()).As<ExpressionNode>();
-                var op = BinaryLogicOperatorNode.FromSymbol(ctx.Start.Line, ctx.children[1].GetText());
-                return new LogicExpressionNode(ctx.Start.Line, left, op, right);
+                ExprNode left = this.Visit(ctx.logicalOrExpression()).As<ExprNode>();
+                ExprNode right = this.Visit(ctx.logicalAndExpression()).As<ExprNode>();
+                var op = BinaryLogicOpNode.FromSymbol(ctx.Start.Line, ctx.children[1].GetText());
+                return new LogicExprNode(ctx.Start.Line, left, op, right);
             } else {
                 return this.Visit(ctx.logicalAndExpression());
             }
@@ -60,10 +60,10 @@ namespace LICC.AST.Builders.C
         public override ASTNode VisitLogicalAndExpression([NotNull] LogicalAndExpressionContext ctx)
         {
             if (ctx.ChildCount > 1) {
-                ExpressionNode left = this.Visit(ctx.logicalAndExpression()).As<ExpressionNode>();
-                ExpressionNode right = this.Visit(ctx.inclusiveOrExpression()).As<ExpressionNode>();
-                var op = BinaryLogicOperatorNode.FromSymbol(ctx.Start.Line, ctx.children[1].GetText());
-                return new LogicExpressionNode(ctx.Start.Line, left, op, right);
+                ExprNode left = this.Visit(ctx.logicalAndExpression()).As<ExprNode>();
+                ExprNode right = this.Visit(ctx.inclusiveOrExpression()).As<ExprNode>();
+                var op = BinaryLogicOpNode.FromSymbol(ctx.Start.Line, ctx.children[1].GetText());
+                return new LogicExprNode(ctx.Start.Line, left, op, right);
             } else {
                 return this.Visit(ctx.inclusiveOrExpression());
             }
@@ -72,11 +72,11 @@ namespace LICC.AST.Builders.C
         public override ASTNode VisitInclusiveOrExpression([NotNull] InclusiveOrExpressionContext ctx)
         {
             if (ctx.ChildCount > 1) {
-                ExpressionNode left = this.Visit(ctx.inclusiveOrExpression()).As<ExpressionNode>();
-                ExpressionNode right = this.Visit(ctx.exclusiveOrExpression()).As<ExpressionNode>();
+                ExprNode left = this.Visit(ctx.inclusiveOrExpression()).As<ExprNode>();
+                ExprNode right = this.Visit(ctx.exclusiveOrExpression()).As<ExprNode>();
                 string symbol = ctx.children[1].GetText();
-                var op = new ArithmeticOperatorNode(ctx.Start.Line, symbol, BinaryOperations.BitwiseOrPrimitive);
-                return new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
+                var op = new ArithmOpNode(ctx.Start.Line, symbol, BinaryOperations.BitwiseOrPrimitive);
+                return new ArithmExprNode(ctx.Start.Line, left, op, right);
             } else {
                 return this.Visit(ctx.exclusiveOrExpression());
             }
@@ -85,11 +85,11 @@ namespace LICC.AST.Builders.C
         public override ASTNode VisitExclusiveOrExpression([NotNull] ExclusiveOrExpressionContext ctx)
         {
             if (ctx.ChildCount > 1) {
-                ExpressionNode left = this.Visit(ctx.exclusiveOrExpression()).As<ExpressionNode>();
-                ExpressionNode right = this.Visit(ctx.andExpression()).As<ExpressionNode>();
+                ExprNode left = this.Visit(ctx.exclusiveOrExpression()).As<ExprNode>();
+                ExprNode right = this.Visit(ctx.andExpression()).As<ExprNode>();
                 string symbol = ctx.children[1].GetText();
-                var op = new ArithmeticOperatorNode(ctx.Start.Line, symbol, BinaryOperations.BitwiseXorPrimitive);
-                return new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
+                var op = new ArithmOpNode(ctx.Start.Line, symbol, BinaryOperations.BitwiseXorPrimitive);
+                return new ArithmExprNode(ctx.Start.Line, left, op, right);
             } else {
                 return this.Visit(ctx.andExpression());
             }
@@ -98,11 +98,11 @@ namespace LICC.AST.Builders.C
         public override ASTNode VisitAndExpression([NotNull] AndExpressionContext ctx)
         {
             if (ctx.ChildCount > 1) {
-                ExpressionNode left = this.Visit(ctx.andExpression()).As<ExpressionNode>();
-                ExpressionNode right = this.Visit(ctx.equalityExpression()).As<ExpressionNode>();
+                ExprNode left = this.Visit(ctx.andExpression()).As<ExprNode>();
+                ExprNode right = this.Visit(ctx.equalityExpression()).As<ExprNode>();
                 string symbol = ctx.children[1].GetText();
-                var op = new ArithmeticOperatorNode(ctx.Start.Line, symbol, BinaryOperations.BitwiseAndPrimitive);
-                return new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
+                var op = new ArithmOpNode(ctx.Start.Line, symbol, BinaryOperations.BitwiseAndPrimitive);
+                return new ArithmExprNode(ctx.Start.Line, left, op, right);
             } else {
                 return this.Visit(ctx.equalityExpression());
             }
@@ -113,10 +113,10 @@ namespace LICC.AST.Builders.C
             if (ctx.equalityExpression() is null)
                 return this.Visit(ctx.relationalExpression());
 
-            ExpressionNode left = this.Visit(ctx.equalityExpression()).As<ExpressionNode>();
-            ExpressionNode right = this.Visit(ctx.relationalExpression()).As<ExpressionNode>();
-            var op = RelationalOperatorNode.FromSymbol(ctx.Start.Line, ctx.children[1].GetText());
-            return new RelationalExpressionNode(ctx.Start.Line, left, op, right);
+            ExprNode left = this.Visit(ctx.equalityExpression()).As<ExprNode>();
+            ExprNode right = this.Visit(ctx.relationalExpression()).As<ExprNode>();
+            var op = RelOpNode.FromSymbol(ctx.Start.Line, ctx.children[1].GetText());
+            return new RelExprNode(ctx.Start.Line, left, op, right);
         }
 
         public override ASTNode VisitRelationalExpression([NotNull] RelationalExpressionContext ctx)
@@ -124,19 +124,19 @@ namespace LICC.AST.Builders.C
             if (ctx.relationalExpression() is null)
                 return this.Visit(ctx.shiftExpression());
 
-            ExpressionNode left = this.Visit(ctx.relationalExpression()).As<ExpressionNode>();
-            ExpressionNode right = this.Visit(ctx.shiftExpression()).As<ExpressionNode>();
-            var op = RelationalOperatorNode.FromSymbol(ctx.Start.Line, ctx.children[1].GetText());
-            return new RelationalExpressionNode(ctx.Start.Line, left, op, right);
+            ExprNode left = this.Visit(ctx.relationalExpression()).As<ExprNode>();
+            ExprNode right = this.Visit(ctx.shiftExpression()).As<ExprNode>();
+            var op = RelOpNode.FromSymbol(ctx.Start.Line, ctx.children[1].GetText());
+            return new RelExprNode(ctx.Start.Line, left, op, right);
         }
 
         public override ASTNode VisitShiftExpression([NotNull] ShiftExpressionContext ctx)
         {
             if (ctx.ChildCount > 1) {
-                ExpressionNode left = this.Visit(ctx.shiftExpression()).As<ExpressionNode>();
-                ExpressionNode right = this.Visit(ctx.additiveExpression()).As<ExpressionNode>();
-                var op = ArithmeticOperatorNode.FromSymbol(ctx.Start.Line, ctx.children[1].GetText());
-                return new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
+                ExprNode left = this.Visit(ctx.shiftExpression()).As<ExprNode>();
+                ExprNode right = this.Visit(ctx.additiveExpression()).As<ExprNode>();
+                var op = ArithmOpNode.FromSymbol(ctx.Start.Line, ctx.children[1].GetText());
+                return new ArithmExprNode(ctx.Start.Line, left, op, right);
             } else {
                 return this.Visit(ctx.additiveExpression());
             }
@@ -145,10 +145,10 @@ namespace LICC.AST.Builders.C
         public override ASTNode VisitAdditiveExpression([NotNull] AdditiveExpressionContext ctx)
         {
             if (ctx.ChildCount > 1) {
-                ExpressionNode left = this.Visit(ctx.additiveExpression()).As<ExpressionNode>();
-                ExpressionNode right = this.Visit(ctx.multiplicativeExpression()).As<ExpressionNode>();
-                var op = ArithmeticOperatorNode.FromSymbol(ctx.Start.Line, ctx.children[1].GetText());
-                return new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
+                ExprNode left = this.Visit(ctx.additiveExpression()).As<ExprNode>();
+                ExprNode right = this.Visit(ctx.multiplicativeExpression()).As<ExprNode>();
+                var op = ArithmOpNode.FromSymbol(ctx.Start.Line, ctx.children[1].GetText());
+                return new ArithmExprNode(ctx.Start.Line, left, op, right);
             } else {
                 return this.Visit(ctx.multiplicativeExpression());
             }
@@ -157,10 +157,10 @@ namespace LICC.AST.Builders.C
         public override ASTNode VisitMultiplicativeExpression([NotNull] MultiplicativeExpressionContext ctx)
         {
             if (ctx.ChildCount > 1) {
-                ExpressionNode left = this.Visit(ctx.multiplicativeExpression()).As<ExpressionNode>();
-                ExpressionNode right = this.Visit(ctx.castExpression()).As<ExpressionNode>();
-                var op = ArithmeticOperatorNode.FromSymbol(ctx.Start.Line, ctx.children[1].GetText());
-                return new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
+                ExprNode left = this.Visit(ctx.multiplicativeExpression()).As<ExprNode>();
+                ExprNode right = this.Visit(ctx.castExpression()).As<ExprNode>();
+                var op = ArithmOpNode.FromSymbol(ctx.Start.Line, ctx.children[1].GetText());
+                return new ArithmExprNode(ctx.Start.Line, left, op, right);
             } else {
                 return this.Visit(ctx.castExpression());
             }
@@ -178,16 +178,16 @@ namespace LICC.AST.Builders.C
             if (ctx.postfixExpression() is { })
                 return this.Visit(ctx.postfixExpression());
 
-            ExpressionNode expr;
+            ExprNode expr;
             if (ctx.unaryExpression() is null) {
                 if (ctx.castExpression() is null)
                     throw new NotImplementedException("extended unary expressions (sizeof, alignof, gcc extensions");
-                expr = this.Visit(ctx.castExpression()).As<ExpressionNode>();
+                expr = this.Visit(ctx.castExpression()).As<ExprNode>();
             } else {
-                expr = this.Visit(ctx.unaryExpression()).As<ExpressionNode>();
+                expr = this.Visit(ctx.unaryExpression()).As<ExprNode>();
             }
-            var op = UnaryOperatorNode.FromSymbol(ctx.Start.Line, ctx.children[0].GetText());
-            return new UnaryExpressionNode(ctx.Start.Line, op, expr);
+            var op = UnaryOpNode.FromSymbol(ctx.Start.Line, ctx.children[0].GetText());
+            return new UnaryExprNode(ctx.Start.Line, op, expr);
         }
 
         public override ASTNode VisitPostfixExpression([NotNull] PostfixExpressionContext ctx)
@@ -198,26 +198,26 @@ namespace LICC.AST.Builders.C
             if (ctx.typeName() is { } || ctx.initializerList() is { })
                 throw new NotImplementedException("initializers");
 
-            ExpressionNode expr = this.Visit(ctx.postfixExpression()).As<ExpressionNode>();
+            ExprNode expr = this.Visit(ctx.postfixExpression()).As<ExprNode>();
             switch (ctx.children[1].GetText()) {
                 case "(":
-                    if (expr is IdentifierNode fname) {
+                    if (expr is IdNode fname) {
                         if (ctx.argumentExpressionList() is { }) {
-                            ExpressionListNode? args = this.Visit(ctx.argumentExpressionList()).As<ExpressionListNode>();
-                            return new FunctionCallExpressionNode(ctx.Start.Line, fname, args);
+                            ExprListNode? args = this.Visit(ctx.argumentExpressionList()).As<ExprListNode>();
+                            return new FuncCallExprNode(ctx.Start.Line, fname, args);
                         } else {
-                            return new FunctionCallExpressionNode(ctx.Start.Line, fname);
+                            return new FuncCallExprNode(ctx.Start.Line, fname);
                         }
                     } else {
                         throw new NotImplementedException("complex function calls");
                     }
                 case "[":
-                    ExpressionNode indexExpr = this.Visit(ctx.expression()).As<ExpressionNode>();
-                    return new ArrayAccessExpressionNode(ctx.Start.Line, expr, indexExpr);
+                    ExprNode indexExpr = this.Visit(ctx.expression()).As<ExprNode>();
+                    return new ArrAccessExprNode(ctx.Start.Line, expr, indexExpr);
                 case "++":
-                    return new IncrementExpressionNode(ctx.Start.Line, expr);
+                    return new IncExprNode(ctx.Start.Line, expr);
                 case "--":
-                    return new DecrementExpressionNode(ctx.Start.Line, expr);
+                    return new DecExprNode(ctx.Start.Line, expr);
                 case "->":
                     throw new NotImplementedException("->");
                 case ".":
@@ -232,33 +232,33 @@ namespace LICC.AST.Builders.C
             if (ctx.Identifier() is { }) {
                 string name = ctx.Identifier().GetText();
                 if (name.Equals("null", StringComparison.InvariantCultureIgnoreCase))
-                    return new NullLiteralNode(ctx.Start.Line);
-                return new IdentifierNode(ctx.Start.Line, name);
+                    return new NullLitExprNode(ctx.Start.Line);
+                return new IdNode(ctx.Start.Line, name);
             } 
             
             if (ctx.Constant() is { })
-                return LiteralNode.FromString(ctx.Start.Line, ctx.Constant().GetText());
+                return LitExprNode.FromString(ctx.Start.Line, ctx.Constant().GetText());
             
             if (ctx.expression() is { })
                 return this.Visit(ctx.expression());
             
             if (ctx.StringLiteral() is { })
-                return new LiteralNode(ctx.Start.Line, string.Join("", ctx.StringLiteral().Select(t => t.GetText()[1..^1])));
+                return new LitExprNode(ctx.Start.Line, string.Join("", ctx.StringLiteral().Select(t => t.GetText()[1..^1])));
             
             throw new NotImplementedException("__*");
         }
 
         public override ASTNode VisitArgumentExpressionList([NotNull] ArgumentExpressionListContext ctx)
         {
-            ExpressionListNode args;
-            ExpressionNode arg = this.Visit(ctx.assignmentExpression()).As<ExpressionNode>();
+            ExprListNode args;
+            ExprNode arg = this.Visit(ctx.assignmentExpression()).As<ExprNode>();
 
             if (ctx.argumentExpressionList() is null)
-                return new ExpressionListNode(ctx.Start.Line, arg);
+                return new ExprListNode(ctx.Start.Line, arg);
 
-            args = this.Visit(ctx.argumentExpressionList()).As<ExpressionListNode>();
+            args = this.Visit(ctx.argumentExpressionList()).As<ExprListNode>();
             arg.Parent = args;
-            return new ExpressionListNode(ctx.Start.Line, args.Expressions.Concat(new[] { arg }));
+            return new ExprListNode(ctx.Start.Line, args.Expressions.Concat(new[] { arg }));
         }
     }
 }

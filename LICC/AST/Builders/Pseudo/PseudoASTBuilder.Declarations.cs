@@ -13,19 +13,19 @@ namespace LICC.AST.Builders.Pseudo
         {
             switch (ctx.children.First().GetText()) {
                 case "declare":
-                    var declSpecs = new DeclarationSpecifiersNode(ctx.Start.Line, GetTypeName());
-                    var name = new IdentifierNode(ctx.Start.Line, ctx.NAME().GetText());
-                    DeclaratorNode decl;
+                    var declSpecs = new DeclSpecsNode(ctx.Start.Line, GetTypeName());
+                    var name = new IdNode(ctx.Start.Line, ctx.NAME().GetText());
+                    DeclNode decl;
                     if (ctx.type().typename().children.Count > 1) {
                         switch (ctx.type().typename().children.Last().GetText()) {
                             case "array":
                             case "list":
                             case "set":
                                 if (ctx.exp() is { }) {
-                                    ExpressionNode init = this.Visit(ctx.exp()).As<ExpressionNode>();
-                                    decl = new ArrayDeclaratorNode(ctx.Start.Line, name, init);
+                                    ExprNode init = this.Visit(ctx.exp()).As<ExprNode>();
+                                    decl = new ArrDeclNode(ctx.Start.Line, name, init);
                                 } else {
-                                    decl = new ArrayDeclaratorNode(ctx.Start.Line, name);
+                                    decl = new ArrDeclNode(ctx.Start.Line, name);
                                 }
                                 break;
                             default:
@@ -33,22 +33,22 @@ namespace LICC.AST.Builders.Pseudo
                         }
                     } else {
                         if (ctx.exp() is { }) {
-                            ExpressionNode init = this.Visit(ctx.exp()).As<ExpressionNode>();
-                            decl = new VariableDeclaratorNode(ctx.Start.Line, name, init);
+                            ExprNode init = this.Visit(ctx.exp()).As<ExprNode>();
+                            decl = new VarDeclNode(ctx.Start.Line, name, init);
                         } else {
-                            decl = new VariableDeclaratorNode(ctx.Start.Line, name);
+                            decl = new VarDeclNode(ctx.Start.Line, name);
                         }
                     }
-                    var declList = new DeclaratorListNode(ctx.Start.Line, decl);
-                    return new DeclarationStatementNode(ctx.Start.Line, declSpecs, declList);
+                    var declList = new DeclListNode(ctx.Start.Line, decl);
+                    return new DeclStatNode(ctx.Start.Line, declSpecs, declList);
                 case "procedure":
                 case "function":
-                    var fdeclSpecs = new DeclarationSpecifiersNode(ctx.Start.Line, GetTypeName());
-                    var fname = new IdentifierNode(ctx.Start.Line, ctx.NAME().GetText());
-                    FunctionParametersNode fparams = this.Visit(ctx.parlist()).As<FunctionParametersNode>();
-                    var fdecl = new FunctionDeclaratorNode(ctx.Start.Line, fname, fparams);
-                    BlockStatementNode body = this.Visit(ctx.block()).As<BlockStatementNode>();
-                    return new FunctionDefinitionNode(ctx.Start.Line, fdeclSpecs, fdecl, body);
+                    var fdeclSpecs = new DeclSpecsNode(ctx.Start.Line, GetTypeName());
+                    var fname = new IdNode(ctx.Start.Line, ctx.NAME().GetText());
+                    FuncParamsNode fparams = this.Visit(ctx.parlist()).As<FuncParamsNode>();
+                    var fdecl = new FuncDeclNode(ctx.Start.Line, fname, fparams);
+                    BlockStatNode body = this.Visit(ctx.block()).As<BlockStatNode>();
+                    return new FuncDefNode(ctx.Start.Line, fdeclSpecs, fdecl, body);
                 default:
                     throw new SyntaxException("Invalid statement");
             }
@@ -59,26 +59,26 @@ namespace LICC.AST.Builders.Pseudo
 
         public override ASTNode VisitParlist([NotNull] ParlistContext ctx)
         {
-            IEnumerable<FunctionParameterNode> @params = ctx.NAME().Zip(ctx.type(), (name, type) => {
-                var declSpecs = new DeclarationSpecifiersNode(type.Start.Line, type.typename().GetText());
-                var identifier = new IdentifierNode(ctx.Start.Line, name.GetText());
-                DeclaratorNode decl;
+            IEnumerable<FuncParamNode> @params = ctx.NAME().Zip(ctx.type(), (name, type) => {
+                var declSpecs = new DeclSpecsNode(type.Start.Line, type.typename().GetText());
+                var identifier = new IdNode(ctx.Start.Line, name.GetText());
+                DeclNode decl;
                 if (type.typename().children.Count > 1) {
                     switch (type.typename().children.Last().GetText()) {
                         case "array":
                         case "list":
                         case "set":
-                            decl = new ArrayDeclaratorNode(ctx.Start.Line, identifier);
+                            decl = new ArrDeclNode(ctx.Start.Line, identifier);
                             break;
                         default:
                             throw new SyntaxException("Invalid complex type");
                     }
                 } else {
-                    decl = new VariableDeclaratorNode(ctx.Start.Line, identifier);
+                    decl = new VarDeclNode(ctx.Start.Line, identifier);
                 }
-                return new FunctionParameterNode(type.Start.Line, declSpecs, decl);
+                return new FuncParamNode(type.Start.Line, declSpecs, decl);
             });
-            return new FunctionParametersNode(ctx.Start.Line, @params);
+            return new FuncParamsNode(ctx.Start.Line, @params);
         }
     }
 }

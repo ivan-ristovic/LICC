@@ -22,36 +22,36 @@ namespace LICC.AST.Builders.Pseudo
 
             switch (ctx.children.First().GetText()) {
                 case "pass": 
-                    return new EmptyStatementNode(ctx.Start.Line);
+                    return new EmptyStatNode(ctx.Start.Line);
                 case "return": 
-                    return new JumpStatementNode(ctx.Start.Line, this.Visit(ctx.exp()).As<ExpressionNode>());
+                    return new JumpStatNode(ctx.Start.Line, this.Visit(ctx.exp()).As<ExprNode>());
                 case "error":
-                    return new ThrowStatementNode(ctx.Start.Line, new LiteralNode(ctx.Start.Line, ctx.STRING().GetText()));
+                    return new ThrowStatNode(ctx.Start.Line, new LitExprNode(ctx.Start.Line, ctx.STRING().GetText()));
                 case "if":
-                    ExpressionNode cond = this.Visit(ctx.exp()).As<ExpressionNode>();
-                    BlockStatementNode thenBlock = this.Visit(ctx.block().First()).As<BlockStatementNode>();
+                    ExprNode cond = this.Visit(ctx.exp()).As<ExprNode>();
+                    BlockStatNode thenBlock = this.Visit(ctx.block().First()).As<BlockStatNode>();
                     if (ctx.block().Length > 1) {
-                        BlockStatementNode? elseBlock = this.Visit(ctx.block().Last()).As<BlockStatementNode>();
-                        return new IfStatementNode(ctx.Start.Line, cond, thenBlock, elseBlock);
+                        BlockStatNode? elseBlock = this.Visit(ctx.block().Last()).As<BlockStatNode>();
+                        return new IfStatNode(ctx.Start.Line, cond, thenBlock, elseBlock);
                     } else {
-                        return new IfStatementNode(ctx.Start.Line, cond, thenBlock);
+                        return new IfStatNode(ctx.Start.Line, cond, thenBlock);
                     }
                 case "while":
-                    ExpressionNode whileCond = this.Visit(ctx.exp()).As<ExpressionNode>();
-                    BlockStatementNode whileBlock = this.Visit(ctx.block().Single()).As<BlockStatementNode>();
-                    return new WhileStatementNode(ctx.Start.Line, whileCond, whileBlock);
+                    ExprNode whileCond = this.Visit(ctx.exp()).As<ExprNode>();
+                    BlockStatNode whileBlock = this.Visit(ctx.block().Single()).As<BlockStatNode>();
+                    return new WhileStatNode(ctx.Start.Line, whileCond, whileBlock);
                 case "repeat":
-                    ExpressionNode repeatCond = this.Visit(ctx.exp()).As<ExpressionNode>();
-                    var notOp = new UnaryOperatorNode(ctx.Start.Line, "not", UnaryOperations.NegatePrimitive);
-                    ExpressionNode negatedCond = new UnaryExpressionNode(ctx.Start.Line, notOp, repeatCond);
-                    BlockStatementNode repeatBlock = this.Visit(ctx.block().Single()).As<BlockStatementNode>();
-                    var loop = new WhileStatementNode(ctx.Start.Line, negatedCond, repeatBlock);
-                    var block = new BlockStatementNode(ctx.Start.Line, repeatBlock, loop);
-                    return new WhileStatementNode(ctx.Start.Line, repeatCond, repeatBlock);
+                    ExprNode repeatCond = this.Visit(ctx.exp()).As<ExprNode>();
+                    var notOp = new UnaryOpNode(ctx.Start.Line, "not", UnaryOperations.NegatePrimitive);
+                    ExprNode negatedCond = new UnaryExprNode(ctx.Start.Line, notOp, repeatCond);
+                    BlockStatNode repeatBlock = this.Visit(ctx.block().Single()).As<BlockStatNode>();
+                    var loop = new WhileStatNode(ctx.Start.Line, negatedCond, repeatBlock);
+                    var block = new BlockStatNode(ctx.Start.Line, repeatBlock, loop);
+                    return new WhileStatNode(ctx.Start.Line, repeatCond, repeatBlock);
                 case "increment":
-                    return new IncrementExpressionNode(ctx.Start.Line, this.Visit(ctx.var()).As<ExpressionNode>());
+                    return new IncExprNode(ctx.Start.Line, this.Visit(ctx.var()).As<ExprNode>());
                 case "decrement":
-                    return new DecrementExpressionNode(ctx.Start.Line, this.Visit(ctx.var()).As<ExpressionNode>());
+                    return new DecExprNode(ctx.Start.Line, this.Visit(ctx.var()).As<ExprNode>());
                 default:
                     throw new SyntaxException("Invalid statement");
             }
@@ -59,10 +59,10 @@ namespace LICC.AST.Builders.Pseudo
 
         public override ASTNode VisitAssignment([NotNull] AssignmentContext ctx)
         {
-            ExpressionNode left = this.Visit(ctx.var()).As<ExpressionNode>();
-            ExpressionNode right = this.Visit(ctx.exp()).As<ExpressionNode>();
-            var assignment = new AssignmentExpressionNode(ctx.Start.Line, left, right);
-            return new ExpressionStatementNode(ctx.Start.Line, assignment);
+            ExprNode left = this.Visit(ctx.var()).As<ExprNode>();
+            ExprNode right = this.Visit(ctx.exp()).As<ExprNode>();
+            var assignment = new AssignExprNode(ctx.Start.Line, left, right);
+            return new ExprStatNode(ctx.Start.Line, assignment);
         }
     }
 }

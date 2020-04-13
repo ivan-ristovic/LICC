@@ -11,24 +11,24 @@ namespace LICC.Tests.Core.Common
         public void DeclaratorMismatchWarningEqualityTests()
         {
             var x = new DeclaratorMismatchWarning(
-                new VariableDeclaratorNode(1, new IdentifierNode(1, "a")),
-                new VariableDeclaratorNode(2, new IdentifierNode(2, "b"))
+                new VarDeclNode(1, new IdNode(1, "a")),
+                new VarDeclNode(2, new IdNode(2, "b"))
             );
             var y = new DeclaratorMismatchWarning(
-                new VariableDeclaratorNode(1, new IdentifierNode(1, "a")),
-                new VariableDeclaratorNode(1, new IdentifierNode(3, "b"))
+                new VarDeclNode(1, new IdNode(1, "a")),
+                new VarDeclNode(1, new IdNode(3, "b"))
             );
             var z = new DeclaratorMismatchWarning(
-                new ArrayDeclaratorNode(1, new IdentifierNode(1, "a")),
-                new VariableDeclaratorNode(2, new IdentifierNode(2, "a"))
+                new ArrDeclNode(1, new IdNode(1, "a")),
+                new VarDeclNode(2, new IdNode(2, "a"))
             );
             var t = new DeclaratorMismatchWarning(
-                new ArrayDeclaratorNode(1, new IdentifierNode(1, "a")),
-                new ArrayDeclaratorNode(2, new IdentifierNode(2, "b"))
+                new ArrDeclNode(1, new IdNode(1, "a")),
+                new ArrDeclNode(2, new IdNode(2, "b"))
             );
             var w = new DeclaratorMismatchWarning(
-                new ArrayDeclaratorNode(1, new IdentifierNode(1, "a")),
-                new ArrayDeclaratorNode(2, new IdentifierNode(3, "b"))
+                new ArrDeclNode(1, new IdNode(1, "a")),
+                new ArrDeclNode(2, new IdNode(3, "b"))
             );
 
             this.AssertEquality(new[] { (x, y), (t, w) }, z);
@@ -38,29 +38,29 @@ namespace LICC.Tests.Core.Common
         public void DeclSpecsMismatchWarningEqualityTests()
         {
             var x = new DeclSpecsMismatchWarning(
-                new VariableDeclaratorNode(1, new IdentifierNode(1, "a")),
-                new DeclarationSpecifiersNode(1, "private", "int"),
-                new DeclarationSpecifiersNode(2, "public", "int")
+                new VarDeclNode(1, new IdNode(1, "a")),
+                new DeclSpecsNode(1, "private", "int"),
+                new DeclSpecsNode(2, "public", "int")
             );
             var y = new DeclSpecsMismatchWarning(
-                new VariableDeclaratorNode(1, new IdentifierNode(1, "a")),
-                new DeclarationSpecifiersNode(1, "private", "int"),
-                new DeclarationSpecifiersNode(2, "public", "int")
+                new VarDeclNode(1, new IdNode(1, "a")),
+                new DeclSpecsNode(1, "private", "int"),
+                new DeclSpecsNode(2, "public", "int")
             );
             var z = new DeclSpecsMismatchWarning(
-                new ArrayDeclaratorNode(1, new IdentifierNode(1, "a")),
-                new DeclarationSpecifiersNode(1, "", "int"),
-                new DeclarationSpecifiersNode(2, "public", "int")
+                new ArrDeclNode(1, new IdNode(1, "a")),
+                new DeclSpecsNode(1, "", "int"),
+                new DeclSpecsNode(2, "public", "int")
             );
             var t = new DeclSpecsMismatchWarning(
-                new ArrayDeclaratorNode(1, new IdentifierNode(1, "a")),
-                new DeclarationSpecifiersNode(1, "private", "point"),
-                new DeclarationSpecifiersNode(2, "public", "int")
+                new ArrDeclNode(1, new IdNode(1, "a")),
+                new DeclSpecsNode(1, "private", "point"),
+                new DeclSpecsNode(2, "public", "int")
             );
             var w = new DeclSpecsMismatchWarning(
-                new ArrayDeclaratorNode(1, new IdentifierNode(1, "a")),
-                new DeclarationSpecifiersNode(1, "private", "point"),
-                new DeclarationSpecifiersNode(2, "public", "int")
+                new ArrDeclNode(1, new IdNode(1, "a")),
+                new DeclSpecsNode(1, "private", "point"),
+                new DeclSpecsNode(2, "public", "int")
             );
 
             this.AssertEquality(new[] { (x, y), (t, w) }, z);
@@ -70,32 +70,32 @@ namespace LICC.Tests.Core.Common
         public void ExtraDeclarationWarningEqualityTests()
         {
             var x = new ExtraDeclarationWarning(
-                new DeclarationSpecifiersNode(1, "private", "int"),
-                new VariableDeclaratorNode(1, new IdentifierNode(1, "a"))
+                new DeclSpecsNode(1, "private", "int"),
+                new VarDeclNode(1, new IdNode(1, "a"))
             );
             var y = new ExtraDeclarationWarning(
-                new DeclarationSpecifiersNode(1, "private", "int"),
-                new VariableDeclaratorNode(1, new IdentifierNode(1, "a"))
+                new DeclSpecsNode(1, "private", "int"),
+                new VarDeclNode(1, new IdNode(1, "a"))
             );
             var z = new ExtraDeclarationWarning(
-                new DeclarationSpecifiersNode(1, "", "int"),
-                new ArrayDeclaratorNode(1, new IdentifierNode(1, "a"))
+                new DeclSpecsNode(1, "", "int"),
+                new ArrDeclNode(1, new IdNode(1, "a"))
             );
             var t = new ExtraDeclarationWarning(
-                new DeclarationSpecifiersNode(1, "private", "point"),
-                new ArrayDeclaratorNode(1, new IdentifierNode(1, "a"))
+                new DeclSpecsNode(1, "private", "point"),
+                new ArrDeclNode(1, new IdNode(1, "a"))
             );
             var w = new ExtraDeclarationWarning(
-                new DeclarationSpecifiersNode(1, "private", "point"),
-                new ArrayDeclaratorNode(1, new IdentifierNode(1, "a"))
+                new DeclSpecsNode(1, "private", "point"),
+                new ArrDeclNode(1, new IdNode(1, "a"))
             );
             var k = new ExtraDeclarationWarning(
-                new DeclarationSpecifiersNode(1, "", "int"),
-                new ArrayDeclaratorNode(1, new IdentifierNode(1, "b"))
+                new DeclSpecsNode(1, "", "int"),
+                new ArrDeclNode(1, new IdNode(1, "b"))
             );
             var l = new ExtraDeclarationWarning(
-                new DeclarationSpecifiersNode(1, "private", "int"),
-                new ArrayDeclaratorNode(1, new IdentifierNode(1, "b"))
+                new DeclSpecsNode(1, "private", "int"),
+                new ArrDeclNode(1, new IdNode(1, "b"))
             );
 
             this.AssertEquality(new[] { (x, y), (t, w) }, z, k, l);
@@ -123,32 +123,32 @@ namespace LICC.Tests.Core.Common
 
         {
             var x = new MissingDeclarationWarning(
-                new DeclarationSpecifiersNode(1, "private", "int"),
-                new VariableDeclaratorNode(1, new IdentifierNode(1, "a"))
+                new DeclSpecsNode(1, "private", "int"),
+                new VarDeclNode(1, new IdNode(1, "a"))
             );
             var y = new MissingDeclarationWarning(
-                new DeclarationSpecifiersNode(1, "private", "int"),
-                new VariableDeclaratorNode(1, new IdentifierNode(1, "a"))
+                new DeclSpecsNode(1, "private", "int"),
+                new VarDeclNode(1, new IdNode(1, "a"))
             );
             var z = new MissingDeclarationWarning(
-                new DeclarationSpecifiersNode(1, "", "int"),
-                new ArrayDeclaratorNode(1, new IdentifierNode(1, "a"))
+                new DeclSpecsNode(1, "", "int"),
+                new ArrDeclNode(1, new IdNode(1, "a"))
             );
             var t = new MissingDeclarationWarning(
-                new DeclarationSpecifiersNode(1, "private", "point"),
-                new ArrayDeclaratorNode(1, new IdentifierNode(1, "a"))
+                new DeclSpecsNode(1, "private", "point"),
+                new ArrDeclNode(1, new IdNode(1, "a"))
             );
             var w = new MissingDeclarationWarning(
-                new DeclarationSpecifiersNode(1, "private", "point"),
-                new ArrayDeclaratorNode(1, new IdentifierNode(1, "a"))
+                new DeclSpecsNode(1, "private", "point"),
+                new ArrDeclNode(1, new IdNode(1, "a"))
             );
             var k = new MissingDeclarationWarning(
-                new DeclarationSpecifiersNode(1, "", "int"),
-                new ArrayDeclaratorNode(1, new IdentifierNode(1, "b"))
+                new DeclSpecsNode(1, "", "int"),
+                new ArrDeclNode(1, new IdNode(1, "b"))
             );
             var l = new MissingDeclarationWarning(
-                new DeclarationSpecifiersNode(1, "private", "int"),
-                new ArrayDeclaratorNode(1, new IdentifierNode(1, "b"))
+                new DeclSpecsNode(1, "private", "int"),
+                new ArrDeclNode(1, new IdNode(1, "b"))
             );
 
             this.AssertEquality(new[] { (x, y), (t, w) }, z, k, l);
@@ -162,43 +162,43 @@ namespace LICC.Tests.Core.Common
             var p3 = new ParameterMismatchWarning("f", 2, false);
             var p4 = new ParameterMismatchWarning("g", 2, true);
             var p5 = new ParameterMismatchWarning("f", 1, 0,
-                new FunctionParameterNode(1,
-                    new DeclarationSpecifiersNode(1, "const", "int"),
-                    new VariableDeclaratorNode(1, new IdentifierNode(3, "x"))
+                new FuncParamNode(1,
+                    new DeclSpecsNode(1, "const", "int"),
+                    new VarDeclNode(1, new IdNode(3, "x"))
                 ),
-                new FunctionParameterNode(1,
-                    new DeclarationSpecifiersNode(2, "", "int"),
-                    new VariableDeclaratorNode(2, new IdentifierNode(3, "x"))
+                new FuncParamNode(1,
+                    new DeclSpecsNode(2, "", "int"),
+                    new VarDeclNode(2, new IdNode(3, "x"))
                 )
             );
             var p6 = new ParameterMismatchWarning("f", 1, 0,
-                new FunctionParameterNode(1,
-                    new DeclarationSpecifiersNode(1, "const", "int"),
-                    new VariableDeclaratorNode(1, new IdentifierNode(3, "x"))
+                new FuncParamNode(1,
+                    new DeclSpecsNode(1, "const", "int"),
+                    new VarDeclNode(1, new IdNode(3, "x"))
                 ),
-                new FunctionParameterNode(1,
-                    new DeclarationSpecifiersNode(2, "", "int"),
-                    new VariableDeclaratorNode(2, new IdentifierNode(3, "x"))
+                new FuncParamNode(1,
+                    new DeclSpecsNode(2, "", "int"),
+                    new VarDeclNode(2, new IdNode(3, "x"))
                 )
             );
             var p7 = new ParameterMismatchWarning("f", 1, 0,
-                new FunctionParameterNode(1,
-                    new DeclarationSpecifiersNode(1, "const", "int"),
-                    new VariableDeclaratorNode(1, new IdentifierNode(3, "x"))
+                new FuncParamNode(1,
+                    new DeclSpecsNode(1, "const", "int"),
+                    new VarDeclNode(1, new IdNode(3, "x"))
                 ),
-                new FunctionParameterNode(1,
-                    new DeclarationSpecifiersNode(2, "const", "int"),
-                    new VariableDeclaratorNode(2, new IdentifierNode(3, "y"))
+                new FuncParamNode(1,
+                    new DeclSpecsNode(2, "const", "int"),
+                    new VarDeclNode(2, new IdNode(3, "y"))
                 )
             );
             var p8 = new ParameterMismatchWarning("f", 1, 0,
-                new FunctionParameterNode(1,
-                    new DeclarationSpecifiersNode(1, "const", "int"),
-                    new VariableDeclaratorNode(1, new IdentifierNode(3, "x"))
+                new FuncParamNode(1,
+                    new DeclSpecsNode(1, "const", "int"),
+                    new VarDeclNode(1, new IdNode(3, "x"))
                 ),
-                new FunctionParameterNode(1,
-                    new DeclarationSpecifiersNode(2, "const", "float"),
-                    new VariableDeclaratorNode(2, new IdentifierNode(3, "x"))
+                new FuncParamNode(1,
+                    new DeclSpecsNode(2, "const", "float"),
+                    new VarDeclNode(2, new IdNode(3, "x"))
                 )
             );
 

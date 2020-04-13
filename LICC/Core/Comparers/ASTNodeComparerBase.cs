@@ -31,7 +31,7 @@ namespace LICC.Core.Comparers
                 if (srcSymbol.Specifiers != dstSymbol.Specifiers)
                     this.Issues.AddWarning(new DeclSpecsMismatchWarning(dstSymbol.Declarator, srcSymbol.Specifiers, dstSymbol.Specifiers));
 
-                var declComparer = new DeclaratorNodeComparer(srcSymbol, dstSymbol);
+                var declComparer = new DeclNodeComparer(srcSymbol, dstSymbol);
                 this.Issues.Add(declComparer.Compare(srcSymbol.Declarator, dstSymbol.Declarator));
             }
 

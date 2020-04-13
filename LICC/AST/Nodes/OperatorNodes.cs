@@ -5,12 +5,12 @@ using LICC.AST.Nodes.Common;
 
 namespace LICC.AST.Nodes
 {
-    public abstract class OperatorNode : ASTNode
+    public abstract class OpNode : ASTNode
     {
         public string Symbol { get; }
 
 
-        protected OperatorNode(int line, string symbol)
+        protected OpNode(int line, string symbol)
             : base(line)
         {
             this.Symbol = symbol;
@@ -20,89 +20,89 @@ namespace LICC.AST.Nodes
         public override string GetText() => this.Symbol;
 
         public override bool Equals([AllowNull] ASTNode other)
-            => base.Equals(other) && this.Symbol.Equals((other as OperatorNode)?.Symbol);
+            => base.Equals(other) && this.Symbol.Equals((other as OpNode)?.Symbol);
     }
 
-    public abstract class BinaryOperatorNode : OperatorNode
+    public abstract class BinaryOpNode : OpNode
     {
         [JsonIgnore]
         public Func<object, object, object> ApplyTo { get; set; }
 
 
-        protected BinaryOperatorNode(int line, string symbol, Func<object, object, object> logic)
+        protected BinaryOpNode(int line, string symbol, Func<object, object, object> logic)
             : base(line, symbol)
         {
             this.ApplyTo = logic;
         }
     }
 
-    public sealed class UnaryOperatorNode : OperatorNode
+    public sealed class UnaryOpNode : OpNode
     {
-        public static UnaryOperatorNode FromSymbol(int line, string symbol)
-            => new UnaryOperatorNode(line, symbol, UnaryOperations.UnaryFromSymbol(symbol));
+        public static UnaryOpNode FromSymbol(int line, string symbol)
+            => new UnaryOpNode(line, symbol, UnaryOperations.UnaryFromSymbol(symbol));
 
 
         [JsonIgnore]
         public Func<object, object> ApplyTo { get; set; }
 
 
-        public UnaryOperatorNode(int line, string symbol, Func<object, object> logic)
+        public UnaryOpNode(int line, string symbol, Func<object, object> logic)
             : base(line, symbol)
         {
             this.ApplyTo = logic;
         }
     }
 
-    public sealed class ArithmeticOperatorNode : BinaryOperatorNode
+    public sealed class ArithmOpNode : BinaryOpNode
     {
-        public static ArithmeticOperatorNode FromSymbol(int line, string symbol)
-            => new ArithmeticOperatorNode(line, symbol, BinaryOperations.ArithmeticFromSymbol(symbol));
+        public static ArithmOpNode FromSymbol(int line, string symbol)
+            => new ArithmOpNode(line, symbol, BinaryOperations.ArithmeticFromSymbol(symbol));
 
-        public static ArithmeticOperatorNode FromBitwiseSymbol(int line, string symbol)
-            => new ArithmeticOperatorNode(line, symbol, BinaryOperations.BitwiseBinaryFromSymbol(symbol));
+        public static ArithmOpNode FromBitwiseSymbol(int line, string symbol)
+            => new ArithmOpNode(line, symbol, BinaryOperations.BitwiseBinaryFromSymbol(symbol));
 
 
-        public ArithmeticOperatorNode(int line, string symbol, Func<object, object, object> logic)
+        public ArithmOpNode(int line, string symbol, Func<object, object, object> logic)
             : base(line, symbol, logic) { }
     }
 
-    public sealed class RelationalOperatorNode : BinaryOperatorNode
+    public sealed class RelOpNode : BinaryOpNode
     {
-        public static RelationalOperatorNode FromSymbol(int line, string symbol)
-            => new RelationalOperatorNode(line, symbol, BinaryOperations.RelationalFromSymbol(symbol));
+        public static RelOpNode FromSymbol(int line, string symbol)
+            => new RelOpNode(line, symbol, BinaryOperations.RelationalFromSymbol(symbol));
 
 
-        public RelationalOperatorNode(int line, string symbol, Func<object, object, bool> logic)
+        public RelOpNode(int line, string symbol, Func<object, object, bool> logic)
             : base(line, symbol, (x, y) => logic(x, y)) { }
     }
 
-    public sealed class BinaryLogicOperatorNode : BinaryOperatorNode
+    public sealed class BinaryLogicOpNode : BinaryOpNode
     {
-        public static BinaryLogicOperatorNode FromSymbol(int line, string symbol)
-            => new BinaryLogicOperatorNode(line, symbol, BinaryOperations.LogicFromSymbol(symbol));
+        public static BinaryLogicOpNode FromSymbol(int line, string symbol)
+            => new BinaryLogicOpNode(line, symbol, BinaryOperations.LogicFromSymbol(symbol));
         
         
-        public BinaryLogicOperatorNode(int line, string symbol, Func<bool, bool, bool> logic)
+        public BinaryLogicOpNode(int line, string symbol, Func<bool, bool, bool> logic)
             : base(line, symbol, (x, y) => logic(Convert.ToBoolean(x), Convert.ToBoolean(y))) { }
     }
 
-    public class AssignmentOperatorNode : BinaryOperatorNode
+    public class AssignOpNode : BinaryOpNode
     {
-        public static AssignmentOperatorNode FromSymbol(int line, string symbol)
+        public static AssignOpNode FromSymbol(int line, string symbol)
         {
             return symbol == "=" || symbol == ":="
-                ? new AssignmentOperatorNode(line, symbol, (a, b) => b)
-                : new ComplexAssignmentOperatorNode(line, symbol, BinaryOperations.AssignmentFromSymbol(symbol));
+                ? new AssignOpNode(line, symbol, (a, b) => b)
+                : new ComplexAssignOpNode(line, symbol, BinaryOperations.AssignmentFromSymbol(symbol));
         }
 
 
-        public AssignmentOperatorNode(int line, string symbol, Func<object, object, object> logic)
+        public AssignOpNode(int line, string symbol, Func<object, object, object> logic)
             : base(line, symbol, logic) { }
     }
 
-    public sealed class ComplexAssignmentOperatorNode : AssignmentOperatorNode
+    public sealed class ComplexAssignOpNode : AssignOpNode
     {
-        public ComplexAssignmentOperatorNode(int line, string symbol, Func<object, object, object> logic)
+        public ComplexAssignOpNode(int line, string symbol, Func<object, object, object> logic)
             : base(line, symbol, logic) { }
     }
 }

@@ -7,22 +7,22 @@ using LICC.AST.Nodes.Common;
 
 namespace LICC.AST.Nodes
 {
-    public sealed class FunctionDeclaratorNode : DeclaratorNode
+    public sealed class FuncDeclNode : DeclNode
     {
         [JsonIgnore]
         public bool IsVariadic => this.ParametersNode?.IsVariadic ?? false;
 
         [JsonIgnore]
-        public FunctionParametersNode? ParametersNode => this.Children.ElementAtOrDefault(1) as FunctionParametersNode ?? null;
+        public FuncParamsNode? ParametersNode => this.Children.ElementAtOrDefault(1) as FuncParamsNode ?? null;
 
         [JsonIgnore]
-        public IEnumerable<FunctionParameterNode>? Parameters => this.ParametersNode?.Parameters;
+        public IEnumerable<FuncParamNode>? Parameters => this.ParametersNode?.Parameters;
 
 
-        public FunctionDeclaratorNode(int line, IdentifierNode identifier)
+        public FuncDeclNode(int line, IdNode identifier)
             : base(line, identifier) { }
 
-        public FunctionDeclaratorNode(int line, IdentifierNode identifier, FunctionParametersNode @params)
+        public FuncDeclNode(int line, IdNode identifier, FuncParamsNode @params)
             : base(line, identifier, @params) { }
 
 
@@ -30,25 +30,25 @@ namespace LICC.AST.Nodes
             => $"{this.Identifier}({this.ParametersNode?.GetText() ?? ""})";
     }
 
-    public sealed class LambdaFunctionNode : ExpressionNode
+    public sealed class LambdaFuncExprNode : ExprNode
     {
         [JsonIgnore]
-        public BlockStatementNode Definition => this.Children.Last().As<BlockStatementNode>();
+        public BlockStatNode Definition => this.Children.Last().As<BlockStatNode>();
 
         [JsonIgnore]
-        public FunctionParametersNode? ParametersNode => this.Children.ElementAtOrDefault(0) as FunctionParametersNode ?? null;
+        public FuncParamsNode? ParametersNode => this.Children.ElementAtOrDefault(0) as FuncParamsNode ?? null;
 
         [JsonIgnore]
-        public IEnumerable<FunctionParameterNode>? Parameters => this.ParametersNode?.Parameters;
+        public IEnumerable<FuncParamNode>? Parameters => this.ParametersNode?.Parameters;
 
 
-        public LambdaFunctionNode(int line, BlockStatementNode def)
+        public LambdaFuncExprNode(int line, BlockStatNode def)
             : base(line, def)
         {
 
         }
 
-        public LambdaFunctionNode(int line, FunctionParametersNode @params, BlockStatementNode def)
+        public LambdaFuncExprNode(int line, FuncParamsNode @params, BlockStatNode def)
             : base(line, @params, def)
         {
 
@@ -59,22 +59,22 @@ namespace LICC.AST.Nodes
             => $"lambda ({this.ParametersNode?.GetText() ?? ""}): {this.Definition.GetText()}";
     }
 
-    public sealed class FunctionDefinitionNode : StatementNode
+    public sealed class FuncDefNode : StatNode
     {
         [JsonIgnore]
-        public DeclarationSpecifiersNode Specifiers => this.Children[0].As<DeclarationSpecifiersNode>();
+        public DeclSpecsNode Specifiers => this.Children[0].As<DeclSpecsNode>();
 
         [JsonIgnore]
-        public FunctionDeclaratorNode Declarator => this.Children[1].As<FunctionDeclaratorNode>();
+        public FuncDeclNode Declarator => this.Children[1].As<FuncDeclNode>();
 
         [JsonIgnore]
-        public BlockStatementNode Definition => this.Children[2].As<BlockStatementNode>();
+        public BlockStatNode Definition => this.Children[2].As<BlockStatNode>();
 
         [JsonIgnore]
-        public string ReturnTypeName => this.Children[0].As<DeclarationSpecifiersNode>().TypeName;
+        public string ReturnTypeName => this.Children[0].As<DeclSpecsNode>().TypeName;
         
         [JsonIgnore]
-        public Type? ReturnType => this.Children[0].As<DeclarationSpecifiersNode>().Type;
+        public Type? ReturnType => this.Children[0].As<DeclSpecsNode>().Type;
         
         [JsonIgnore]
         public string Identifier => this.Declarator.Identifier;
@@ -83,16 +83,16 @@ namespace LICC.AST.Nodes
         public bool IsVariadic => this.Declarator.IsVariadic;
 
         [JsonIgnore]
-        public DeclarationKeywords Keywords => this.Specifiers.Keywords;
+        public DeclKeywords Keywords => this.Specifiers.Keywords;
 
         [JsonIgnore]
-        public FunctionParametersNode? ParametersNode => this.Declarator.ParametersNode;
+        public FuncParamsNode? ParametersNode => this.Declarator.ParametersNode;
         
         [JsonIgnore]
-        public IEnumerable<FunctionParameterNode>? Parameters => this.ParametersNode?.Parameters;
+        public IEnumerable<FuncParamNode>? Parameters => this.ParametersNode?.Parameters;
 
 
-        public FunctionDefinitionNode(int line, DeclarationSpecifiersNode declSpecs, FunctionDeclaratorNode decl, BlockStatementNode body)
+        public FuncDefNode(int line, DeclSpecsNode declSpecs, FuncDeclNode decl, BlockStatNode body)
             : base(line, declSpecs, decl, body)
         {
 
@@ -103,21 +103,21 @@ namespace LICC.AST.Nodes
             => $"{this.Keywords} {this.ReturnTypeName} {this.Declarator.GetText()} {this.Definition.GetText()}";
     }
 
-    public sealed class FunctionParametersNode : ASTNode
+    public sealed class FuncParamsNode : ASTNode
     {
         public bool IsVariadic { get; set; }
 
         [JsonIgnore]
-        public IEnumerable<FunctionParameterNode> Parameters => this.Children.Cast<FunctionParameterNode>();
+        public IEnumerable<FuncParamNode> Parameters => this.Children.Cast<FuncParamNode>();
      
 
-        public FunctionParametersNode(int line, IEnumerable<FunctionParameterNode> @params)
+        public FuncParamsNode(int line, IEnumerable<FuncParamNode> @params)
             : base(line, @params)
         {
 
         }
 
-        public FunctionParametersNode(int line, params FunctionParameterNode[] @params)
+        public FuncParamsNode(int line, params FuncParamNode[] @params)
             : base(line, @params)
         {
 
@@ -127,19 +127,19 @@ namespace LICC.AST.Nodes
         public override string GetText() => string.Join(", ", this.Children.Select(c => c.GetText()));
 
         public override bool Equals([AllowNull] ASTNode other)
-            => base.Equals(other) && this.IsVariadic.Equals((other as FunctionParametersNode)?.IsVariadic);
+            => base.Equals(other) && this.IsVariadic.Equals((other as FuncParamsNode)?.IsVariadic);
     }
 
-    public class FunctionParameterNode : ASTNode
+    public class FuncParamNode : ASTNode
     {
         [JsonIgnore]
-        public DeclarationSpecifiersNode Specifiers => this.Children[0].As<DeclarationSpecifiersNode>();
+        public DeclSpecsNode Specifiers => this.Children[0].As<DeclSpecsNode>();
         
         [JsonIgnore]
-        public DeclaratorNode Declarator => this.Children[1].As<DeclaratorNode>();
+        public DeclNode Declarator => this.Children[1].As<DeclNode>();
 
 
-        public FunctionParameterNode(int line, DeclarationSpecifiersNode declSpecs, DeclaratorNode declarator)
+        public FuncParamNode(int line, DeclSpecsNode declSpecs, DeclNode declarator)
             : base(line, declSpecs, declarator)
         {
 

@@ -51,43 +51,43 @@ namespace LICC.Tests.Core.Integration
                 new MatchIssues()
                     .AddWarning(
                         new DeclSpecsMismatchWarning(
-                            new FunctionDeclaratorNode(1,
-                                new IdentifierNode(1, "swap"),
-                                new FunctionParametersNode(1,
-                                    new FunctionParameterNode(1,
-                                        new DeclarationSpecifiersNode(1, "object"),
-                                        new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
+                            new FuncDeclNode(1,
+                                new IdNode(1, "swap"),
+                                new FuncParamsNode(1,
+                                    new FuncParamNode(1,
+                                        new DeclSpecsNode(1, "object"),
+                                        new VarDeclNode(1, new IdNode(1, "x"))
                                     ),
-                                    new FunctionParameterNode(1,
-                                        new DeclarationSpecifiersNode(1, "object"),
-                                        new VariableDeclaratorNode(1, new IdentifierNode(1, "y"))
+                                    new FuncParamNode(1,
+                                        new DeclSpecsNode(1, "object"),
+                                        new VarDeclNode(1, new IdNode(1, "y"))
                                     )
                                 )
                             ),
-                            new DeclarationSpecifiersNode(1, "void"),
-                            new DeclarationSpecifiersNode(1, "object")
+                            new DeclSpecsNode(1, "void"),
+                            new DeclSpecsNode(1, "object")
                         )
                     )
                     .AddWarning(
                         new ParameterMismatchWarning(
                             "swap", 1, 1,
-                            new FunctionParameterNode(1, new DeclarationSpecifiersNode(1, "integer"), new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))),
-                            new FunctionParameterNode(1, new DeclarationSpecifiersNode(1), new VariableDeclaratorNode(1, new IdentifierNode(1, "x")))
+                            new FuncParamNode(1, new DeclSpecsNode(1, "integer"), new VarDeclNode(1, new IdNode(1, "x"))),
+                            new FuncParamNode(1, new DeclSpecsNode(1), new VarDeclNode(1, new IdNode(1, "x")))
                         )
                     )
                     .AddWarning(
                         new ParameterMismatchWarning(
                             "swap", 1, 2,
-                            new FunctionParameterNode(1, new DeclarationSpecifiersNode(1, "integer"), new VariableDeclaratorNode(1, new IdentifierNode(1, "y"))),
-                            new FunctionParameterNode(1, new DeclarationSpecifiersNode(1), new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                            new FuncParamNode(1, new DeclSpecsNode(1, "integer"), new VarDeclNode(1, new IdNode(1, "y"))),
+                            new FuncParamNode(1, new DeclSpecsNode(1), new VarDeclNode(1, new IdNode(1, "y")))
                         )
                     )
                     .AddWarning(
                         new MissingDeclarationWarning(
-                            new DeclarationSpecifiersNode(1, "integer"),
-                            new VariableDeclaratorNode(1,
-                                new IdentifierNode(1, "tmp"),
-                                new IdentifierNode(1, "x")
+                            new DeclSpecsNode(1, "integer"),
+                            new VarDeclNode(1,
+                                new IdNode(1, "tmp"),
+                                new IdNode(1, "x")
                             )
                         )
                     )
@@ -116,21 +116,21 @@ namespace LICC.Tests.Core.Integration
                 new MatchIssues()
                     .AddWarning(
                         new DeclSpecsMismatchWarning(
-                            new FunctionDeclaratorNode(1,
-                                new IdentifierNode(1, "swap"),
-                                new FunctionParametersNode(1,
-                                    new FunctionParameterNode(1,
-                                        new DeclarationSpecifiersNode(1, "object"),
-                                        new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
+                            new FuncDeclNode(1,
+                                new IdNode(1, "swap"),
+                                new FuncParamsNode(1,
+                                    new FuncParamNode(1,
+                                        new DeclSpecsNode(1, "object"),
+                                        new VarDeclNode(1, new IdNode(1, "x"))
                                     ),
-                                    new FunctionParameterNode(1,
-                                        new DeclarationSpecifiersNode(1, "object"),
-                                        new VariableDeclaratorNode(1, new IdentifierNode(1, "y"))
+                                    new FuncParamNode(1,
+                                        new DeclSpecsNode(1, "object"),
+                                        new VarDeclNode(1, new IdNode(1, "y"))
                                     )
                                 )
                             ),
-                            new DeclarationSpecifiersNode(1, "void"),
-                            new DeclarationSpecifiersNode(1, "object")
+                            new DeclSpecsNode(1, "void"),
+                            new DeclSpecsNode(1, "object")
                         )
                     )
             );
@@ -160,39 +160,39 @@ namespace LICC.Tests.Core.Integration
                 new MatchIssues()
                     .AddWarning(
                         new DeclSpecsMismatchWarning(
-                            new FunctionDeclaratorNode(1,
-                                new IdentifierNode(1, "swap"),
-                                new FunctionParametersNode(1,
-                                    new FunctionParameterNode(1,
-                                        new DeclarationSpecifiersNode(1, "object"),
-                                        new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
+                            new FuncDeclNode(1,
+                                new IdNode(1, "swap"),
+                                new FuncParamsNode(1,
+                                    new FuncParamNode(1,
+                                        new DeclSpecsNode(1, "object"),
+                                        new VarDeclNode(1, new IdNode(1, "x"))
                                     ),
-                                    new FunctionParameterNode(1,
-                                        new DeclarationSpecifiersNode(1, "object"),
-                                        new VariableDeclaratorNode(1, new IdentifierNode(1, "y"))
+                                    new FuncParamNode(1,
+                                        new DeclSpecsNode(1, "object"),
+                                        new VarDeclNode(1, new IdNode(1, "y"))
                                     )
                                 )
                             ),
-                            new DeclarationSpecifiersNode(1, "void"),
-                            new DeclarationSpecifiersNode(1, "object")
+                            new DeclSpecsNode(1, "void"),
+                            new DeclSpecsNode(1, "object")
                         )
                     )
                     .AddWarning(
                         new ParameterMismatchWarning(
                             "swap", 1, 1,
-                            new FunctionParameterNode(1, new DeclarationSpecifiersNode(1, "integer"), new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))),
-                            new FunctionParameterNode(1, new DeclarationSpecifiersNode(1), new VariableDeclaratorNode(1, new IdentifierNode(1, "x")))
+                            new FuncParamNode(1, new DeclSpecsNode(1, "integer"), new VarDeclNode(1, new IdNode(1, "x"))),
+                            new FuncParamNode(1, new DeclSpecsNode(1), new VarDeclNode(1, new IdNode(1, "x")))
                         )
                     )
                     .AddWarning(
                         new ParameterMismatchWarning(
                             "swap", 1, 2,
-                            new FunctionParameterNode(1, new DeclarationSpecifiersNode(1, "integer"), new VariableDeclaratorNode(1, new IdentifierNode(1, "y"))),
-                            new FunctionParameterNode(1, new DeclarationSpecifiersNode(1), new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                            new FuncParamNode(1, new DeclSpecsNode(1, "integer"), new VarDeclNode(1, new IdNode(1, "y"))),
+                            new FuncParamNode(1, new DeclSpecsNode(1), new VarDeclNode(1, new IdNode(1, "y")))
                         )
                     )
                     .AddWarning(
-                        new MissingDeclarationWarning(new DeclarationSpecifiersNode(1, "integer"), new VariableDeclaratorNode(1, new IdentifierNode(1, "tmp")))
+                        new MissingDeclarationWarning(new DeclSpecsNode(1, "integer"), new VarDeclNode(1, new IdNode(1, "tmp")))
                     )
                     .AddError(new BlockEndValueMismatchError("x", 1, "y", "x"))
                     .AddError(new BlockEndValueMismatchError("y", 1, "x", "y"))

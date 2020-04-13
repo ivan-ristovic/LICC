@@ -12,124 +12,124 @@ namespace LICC.Tests.Core.Comparer
         public void DeclarationOrderTests()
         {
             this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "double"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "z")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "double"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "z")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "time_t"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "t")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "time_t"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "t")))
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "double"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "z")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "double"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "z")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "time_t"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "t")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "time_t"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "t")))
                     )
                 )
             );
 
             this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "double"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "z")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "double"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "z")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "time_t"),
-                        new DeclaratorListNode(1, 
-                            new ArrayDeclaratorNode(1, 
-                                new IdentifierNode(1, "arr"), 
-                                new LiteralNode(1, 3),
-                                new ArrayInitializerListNode(1, 
-                                    new LiteralNode(1, 1),
-                                    new LiteralNode(1, 2),
-                                    new LiteralNode(1, 3)
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "time_t"),
+                        new DeclListNode(1, 
+                            new ArrDeclNode(1, 
+                                new IdNode(1, "arr"), 
+                                new LitExprNode(1, 3),
+                                new ArrInitListNode(1, 
+                                    new LitExprNode(1, 1),
+                                    new LitExprNode(1, 2),
+                                    new LitExprNode(1, 3)
                                 )
                             )
                         )
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "public time_t"),
-                        new DeclaratorListNode(1, 
-                            new FunctionDeclaratorNode(1, 
-                                new IdentifierNode(1, "t"), 
-                                new FunctionParametersNode(1, 
-                                    new FunctionParameterNode(1, 
-                                        new DeclarationSpecifiersNode(1, "int"), 
-                                        new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "public time_t"),
+                        new DeclListNode(1, 
+                            new FuncDeclNode(1, 
+                                new IdNode(1, "t"), 
+                                new FuncParamsNode(1, 
+                                    new FuncParamNode(1, 
+                                        new DeclSpecsNode(1, "int"), 
+                                        new VarDeclNode(1, new IdNode(1, "x"))
                                     )
                                 )
                             )
                         )
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "double"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "z")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "double"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "z")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "public time_t"),
-                        new DeclaratorListNode(1,
-                            new FunctionDeclaratorNode(1,
-                                new IdentifierNode(1, "t"),
-                                new FunctionParametersNode(1,
-                                    new FunctionParameterNode(1,
-                                        new DeclarationSpecifiersNode(1, "int"),
-                                        new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "public time_t"),
+                        new DeclListNode(1,
+                            new FuncDeclNode(1,
+                                new IdNode(1, "t"),
+                                new FuncParamsNode(1,
+                                    new FuncParamNode(1,
+                                        new DeclSpecsNode(1, "int"),
+                                        new VarDeclNode(1, new IdNode(1, "x"))
                                     )
                                 )
                             )
                         )
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "time_t"),
-                        new DeclaratorListNode(1,
-                            new ArrayDeclaratorNode(1,
-                                new IdentifierNode(1, "arr"),
-                                new LiteralNode(1, 3),
-                                new ArrayInitializerListNode(1,
-                                    new LiteralNode(1, 1),
-                                    new LiteralNode(1, 2),
-                                    new LiteralNode(1, 3)
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "time_t"),
+                        new DeclListNode(1,
+                            new ArrDeclNode(1,
+                                new IdNode(1, "arr"),
+                                new LitExprNode(1, 3),
+                                new ArrInitListNode(1,
+                                    new LitExprNode(1, 1),
+                                    new LitExprNode(1, 2),
+                                    new LitExprNode(1, 3)
                                 )
                             )
                         )
@@ -142,131 +142,131 @@ namespace LICC.Tests.Core.Comparer
         public void MissingDeclarationTests()
         {
             this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "double"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "z")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "double"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "z")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "time_t"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "t")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "time_t"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "t")))
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "double"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "z")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "double"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "z")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "time_t"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "t")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "time_t"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "t")))
                     )
                 ),
                 new MatchIssues()
                     .AddWarning(
                         new MissingDeclarationWarning(
-                            new DeclarationSpecifiersNode(1, "int"), 
-                            new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
+                            new DeclSpecsNode(1, "int"), 
+                            new VarDeclNode(1, new IdNode(1, "x"))
                         )
                     )
             );
 
             this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "double"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "z")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "double"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "z")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "public time_t"),
-                        new DeclaratorListNode(1,
-                            new FunctionDeclaratorNode(1,
-                                new IdentifierNode(1, "t"),
-                                new FunctionParametersNode(1,
-                                    new FunctionParameterNode(1,
-                                        new DeclarationSpecifiersNode(1, "int"),
-                                        new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "public time_t"),
+                        new DeclListNode(1,
+                            new FuncDeclNode(1,
+                                new IdNode(1, "t"),
+                                new FuncParamsNode(1,
+                                    new FuncParamNode(1,
+                                        new DeclSpecsNode(1, "int"),
+                                        new VarDeclNode(1, new IdNode(1, "x"))
                                     )
                                 )
                             )
                         )
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "time_t"),
-                        new DeclaratorListNode(1,
-                            new ArrayDeclaratorNode(1,
-                                new IdentifierNode(1, "arr"),
-                                new LiteralNode(1, 3),
-                                new ArrayInitializerListNode(1,
-                                    new LiteralNode(1, 1),
-                                    new LiteralNode(1, 2),
-                                    new LiteralNode(1, 3)
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "time_t"),
+                        new DeclListNode(1,
+                            new ArrDeclNode(1,
+                                new IdNode(1, "arr"),
+                                new LitExprNode(1, 3),
+                                new ArrInitListNode(1,
+                                    new LitExprNode(1, 1),
+                                    new LitExprNode(1, 2),
+                                    new LitExprNode(1, 3)
                                 )
                             )
                         )
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "double"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "z")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "double"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "z")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "public time_t"),
-                        new DeclaratorListNode(1,
-                            new FunctionDeclaratorNode(1,
-                                new IdentifierNode(1, "t"),
-                                new FunctionParametersNode(1,
-                                    new FunctionParameterNode(1,
-                                        new DeclarationSpecifiersNode(1, "int"),
-                                        new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "public time_t"),
+                        new DeclListNode(1,
+                            new FuncDeclNode(1,
+                                new IdNode(1, "t"),
+                                new FuncParamsNode(1,
+                                    new FuncParamNode(1,
+                                        new DeclSpecsNode(1, "int"),
+                                        new VarDeclNode(1, new IdNode(1, "x"))
                                     )
                                 )
                             )
                         )
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y")))
                     )
                 ),
                 new MatchIssues()
                     .AddWarning(
                         new MissingDeclarationWarning(
-                            new DeclarationSpecifiersNode(1, "int"),
-                            new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
+                            new DeclSpecsNode(1, "int"),
+                            new VarDeclNode(1, new IdNode(1, "x"))
                         )
                     )
                     .AddWarning(
                         new MissingDeclarationWarning(
-                            new DeclarationSpecifiersNode(1, "time_t"),
-                            new ArrayDeclaratorNode(1,
-                                new IdentifierNode(1, "arr"),
-                                new LiteralNode(1, 3),
-                                new ArrayInitializerListNode(1,
-                                    new LiteralNode(1, 1),
-                                    new LiteralNode(1, 2),
-                                    new LiteralNode(1, 3)
+                            new DeclSpecsNode(1, "time_t"),
+                            new ArrDeclNode(1,
+                                new IdNode(1, "arr"),
+                                new LitExprNode(1, 3),
+                                new ArrInitListNode(1,
+                                    new LitExprNode(1, 1),
+                                    new LitExprNode(1, 2),
+                                    new LitExprNode(1, 3)
                                 )
                             )
                         )
@@ -278,109 +278,109 @@ namespace LICC.Tests.Core.Comparer
         public void ExtraDeclarationTests()
         {
             this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "double"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "z")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "double"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "z")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "time_t"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "t")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "time_t"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "t")))
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "double"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "z")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "double"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "z")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "time_t"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "t")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "time_t"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "t")))
                     )
                 ),
                 new MatchIssues()
                     .AddWarning(
                         new ExtraDeclarationWarning(
-                            new DeclarationSpecifiersNode(1, "int"),
-                            new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
+                            new DeclSpecsNode(1, "int"),
+                            new VarDeclNode(1, new IdNode(1, "x"))
                         )
                     )
             );
 
             this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "double"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "z")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "double"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "z")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "public time_t"),
-                        new DeclaratorListNode(1,
-                            new FunctionDeclaratorNode(1,
-                                new IdentifierNode(1, "t"),
-                                new FunctionParametersNode(1,
-                                    new FunctionParameterNode(1,
-                                        new DeclarationSpecifiersNode(1, "int"),
-                                        new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "public time_t"),
+                        new DeclListNode(1,
+                            new FuncDeclNode(1,
+                                new IdNode(1, "t"),
+                                new FuncParamsNode(1,
+                                    new FuncParamNode(1,
+                                        new DeclSpecsNode(1, "int"),
+                                        new VarDeclNode(1, new IdNode(1, "x"))
                                     )
                                 )
                             )
                         )
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y")))
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "double"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "z")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "double"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "z")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "public time_t"),
-                        new DeclaratorListNode(1,
-                            new FunctionDeclaratorNode(1,
-                                new IdentifierNode(1, "t"),
-                                new FunctionParametersNode(1,
-                                    new FunctionParameterNode(1,
-                                        new DeclarationSpecifiersNode(1, "int"),
-                                        new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "public time_t"),
+                        new DeclListNode(1,
+                            new FuncDeclNode(1,
+                                new IdNode(1, "t"),
+                                new FuncParamsNode(1,
+                                    new FuncParamNode(1,
+                                        new DeclSpecsNode(1, "int"),
+                                        new VarDeclNode(1, new IdNode(1, "x"))
                                     )
                                 )
                             )
                         )
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "time_t"),
-                        new DeclaratorListNode(1,
-                            new ArrayDeclaratorNode(1,
-                                new IdentifierNode(1, "arr"),
-                                new LiteralNode(1, 3),
-                                new ArrayInitializerListNode(1,
-                                    new LiteralNode(1, 1),
-                                    new LiteralNode(1, 2),
-                                    new LiteralNode(1, 3)
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "time_t"),
+                        new DeclListNode(1,
+                            new ArrDeclNode(1,
+                                new IdNode(1, "arr"),
+                                new LitExprNode(1, 3),
+                                new ArrInitListNode(1,
+                                    new LitExprNode(1, 1),
+                                    new LitExprNode(1, 2),
+                                    new LitExprNode(1, 3)
                                 )
                             )
                         )
@@ -389,20 +389,20 @@ namespace LICC.Tests.Core.Comparer
                 new MatchIssues()
                     .AddWarning(
                         new ExtraDeclarationWarning(
-                            new DeclarationSpecifiersNode(1, "int"),
-                            new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
+                            new DeclSpecsNode(1, "int"),
+                            new VarDeclNode(1, new IdNode(1, "x"))
                         )
                     )
                     .AddWarning(
                         new ExtraDeclarationWarning(
-                            new DeclarationSpecifiersNode(1, "time_t"),
-                            new ArrayDeclaratorNode(1,
-                                new IdentifierNode(1, "arr"),
-                                new LiteralNode(1, 3),
-                                new ArrayInitializerListNode(1,
-                                    new LiteralNode(1, 1),
-                                    new LiteralNode(1, 2),
-                                    new LiteralNode(1, 3)
+                            new DeclSpecsNode(1, "time_t"),
+                            new ArrDeclNode(1,
+                                new IdNode(1, "arr"),
+                                new LitExprNode(1, 3),
+                                new ArrInitListNode(1,
+                                    new LitExprNode(1, 1),
+                                    new LitExprNode(1, 2),
+                                    new LitExprNode(1, 3)
                                 )
                             )
                         )
@@ -414,102 +414,102 @@ namespace LICC.Tests.Core.Comparer
         public void DeclSpecsMismatchTests()
         {
             this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "double"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "z")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "double"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "z")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "time_t"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "t")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "time_t"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "t")))
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "double"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "z")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "double"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "z")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "public", "float"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "public", "float"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "time_t"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "t")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "time_t"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "t")))
                     )
                 ),
                 new MatchIssues()
                     .AddWarning(
                         new DeclSpecsMismatchWarning(
-                            new VariableDeclaratorNode(1, new IdentifierNode(1, "y")),
-                            new DeclarationSpecifiersNode(1, "float"),
-                            new DeclarationSpecifiersNode(1, "public", "float")
+                            new VarDeclNode(1, new IdNode(1, "y")),
+                            new DeclSpecsNode(1, "float"),
+                            new DeclSpecsNode(1, "public", "float")
                         )
                     )
             );
 
             this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "double"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "z")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "double"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "z")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "time_t"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "t")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "time_t"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "t")))
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "double"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "z")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "double"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "z")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "public", "float"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "public", "float"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "unsigned int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "unsigned int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "time_t"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "t")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "time_t"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "t")))
                     )
                 ),
                 new MatchIssues()
                     .AddWarning(
                         new DeclSpecsMismatchWarning(
-                            new VariableDeclaratorNode(1, new IdentifierNode(1, "x")),
-                            new DeclarationSpecifiersNode(1, "int"),
-                            new DeclarationSpecifiersNode(1, "unsigned int")
+                            new VarDeclNode(1, new IdNode(1, "x")),
+                            new DeclSpecsNode(1, "int"),
+                            new DeclSpecsNode(1, "unsigned int")
                         )
                     )
                     .AddWarning(
                         new DeclSpecsMismatchWarning(
-                            new VariableDeclaratorNode(1, new IdentifierNode(1, "y")),
-                            new DeclarationSpecifiersNode(1, "float"),
-                            new DeclarationSpecifiersNode(1, "public", "float")
+                            new VarDeclNode(1, new IdNode(1, "y")),
+                            new DeclSpecsNode(1, "float"),
+                            new DeclSpecsNode(1, "public", "float")
                         )
                     )
             );
@@ -519,83 +519,83 @@ namespace LICC.Tests.Core.Comparer
         public void DeclaratorMismatchTests()
         {
             this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y")))
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "y")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "y")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x")))
                     )
                 ),
                 new MatchIssues()
                     .AddWarning(
                         new DeclaratorMismatchWarning(
-                            new VariableDeclaratorNode(1, new IdentifierNode(1, "y")),
-                            new ArrayDeclaratorNode(1, new IdentifierNode(1, "y"))
+                            new VarDeclNode(1, new IdNode(1, "y")),
+                            new ArrDeclNode(1, new IdNode(1, "y"))
                         )
                     )
             );
 
             this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 3)))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "x"), new LitExprNode(1, 3)))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "double"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "z")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "double"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "z")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "time_t"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "f")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "time_t"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "f")))
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "double"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "z")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "double"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "z")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "time_t"),
-                        new DeclaratorListNode(1, new FunctionDeclaratorNode(1, new IdentifierNode(1, "f")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "time_t"),
+                        new DeclListNode(1, new FuncDeclNode(1, new IdNode(1, "f")))
                     )
                 ),
                 new MatchIssues()
                     .AddWarning(
                         new DeclaratorMismatchWarning(
-                            new ArrayDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 3)),
-                            new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
+                            new ArrDeclNode(1, new IdNode(1, "x"), new LitExprNode(1, 3)),
+                            new VarDeclNode(1, new IdNode(1, "x"))
                         )
                     )
                     .AddWarning(
                         new DeclaratorMismatchWarning(
-                            new VariableDeclaratorNode(1, new IdentifierNode(1, "f")),
-                            new FunctionDeclaratorNode(1, new IdentifierNode(1, "f"))
+                            new VarDeclNode(1, new IdNode(1, "f")),
+                            new FuncDeclNode(1, new IdNode(1, "f"))
                         )
                     )
             );
@@ -605,24 +605,24 @@ namespace LICC.Tests.Core.Comparer
         public void ArraySizeMismatchTests()
         {
             this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 3)))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "x"), new LitExprNode(1, 3)))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "y")))
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "y"), new LiteralNode(1, 100)))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "y"), new LitExprNode(1, 100)))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "x"), new IdentifierNode(1, "z")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "x"), new IdNode(1, "z")))
                     )
                 ),
                 new MatchIssues()
@@ -631,33 +631,33 @@ namespace LICC.Tests.Core.Comparer
             );
 
             this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, 
-                            new ArrayDeclaratorNode(1, 
-                                new IdentifierNode(1, "x"),
-                                new ArithmeticExpressionNode(1,
-                                    new IdentifierNode(1, "z"),
-                                    ArithmeticOperatorNode.FromSymbol(1, "+"),
-                                    new LiteralNode(1, 1)
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, 
+                            new ArrDeclNode(1, 
+                                new IdNode(1, "x"),
+                                new ArithmExprNode(1,
+                                    new IdNode(1, "z"),
+                                    ArithmOpNode.FromSymbol(1, "+"),
+                                    new LitExprNode(1, 1)
                                 )
                             )
                         )
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "y")))
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "y"), new IdentifierNode(1, "n")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "y"), new IdNode(1, "n")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "x"), new IdentifierNode(1, "z")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "x"), new IdNode(1, "z")))
                     )
                 ),
                 new MatchIssues()
@@ -670,24 +670,24 @@ namespace LICC.Tests.Core.Comparer
         public void InitializerMismatchTests()
         {
             this.PartialCompare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 3)))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new LitExprNode(1, 3)))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y")))
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y"), new LiteralNode(1, 100)))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y"), new LitExprNode(1, 100)))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new IdentifierNode(1, "z")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new IdNode(1, "z")))
                     )
                 ),
                 new MatchIssues()
@@ -696,39 +696,39 @@ namespace LICC.Tests.Core.Comparer
             );
 
             this.PartialCompare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, 
-                            new ArrayDeclaratorNode(1, 
-                                new IdentifierNode(1, "x"), 
-                                new ArrayInitializerListNode(1, 
-                                    new LiteralNode(1, 3),
-                                    new IdentifierNode(1, "x"),
-                                    new LiteralNode(1, 3)
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, 
+                            new ArrDeclNode(1, 
+                                new IdNode(1, "x"), 
+                                new ArrInitListNode(1, 
+                                    new LitExprNode(1, 3),
+                                    new IdNode(1, "x"),
+                                    new LitExprNode(1, 3)
                                 )
                             )
                         )
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "y")))
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "y"), new ArrayInitializerListNode(1)))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "y"), new ArrInitListNode(1)))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1,
-                            new ArrayDeclaratorNode(1,
-                                new IdentifierNode(1, "x"),
-                                new ArrayInitializerListNode(1,
-                                    new LiteralNode(1, 2),
-                                    new IdentifierNode(1, "x"),
-                                    new LiteralNode(1, 2)
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1,
+                            new ArrDeclNode(1,
+                                new IdNode(1, "x"),
+                                new ArrInitListNode(1,
+                                    new LitExprNode(1, 2),
+                                    new IdNode(1, "x"),
+                                    new LitExprNode(1, 2)
                                 )
                             )
                         )
@@ -741,43 +741,43 @@ namespace LICC.Tests.Core.Comparer
             );
 
             this.PartialCompare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1,
-                            new ArrayDeclaratorNode(1,
-                                new IdentifierNode(1, "x"),
-                                new ArrayInitializerListNode(1,
-                                    new LiteralNode(1, 2),
-                                    new IdentifierNode(1, "x"),
-                                    new LiteralNode(1, 3)
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1,
+                            new ArrDeclNode(1,
+                                new IdNode(1, "x"),
+                                new ArrInitListNode(1,
+                                    new LitExprNode(1, 2),
+                                    new IdNode(1, "x"),
+                                    new LitExprNode(1, 3)
                                 )
                             )
                         )
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "y"), new ArrayInitializerListNode(1, new LiteralNode(1, 3))))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "y"), new ArrInitListNode(1, new LitExprNode(1, 3))))
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "y"), new ArrayInitializerListNode(1)))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "y"), new ArrInitListNode(1)))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1,
-                            new ArrayDeclaratorNode(1,
-                                new IdentifierNode(1, "x"),
-                                new ArrayInitializerListNode(1,
-                                    new LiteralNode(1, 2),
-                                    new ArithmeticExpressionNode(1, 
-                                        new LiteralNode(1, 3), 
-                                        ArithmeticOperatorNode.FromSymbol(1, "+"),
-                                        new IdentifierNode(1, "x")
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1,
+                            new ArrDeclNode(1,
+                                new IdNode(1, "x"),
+                                new ArrInitListNode(1,
+                                    new LitExprNode(1, 2),
+                                    new ArithmExprNode(1, 
+                                        new LitExprNode(1, 3), 
+                                        ArithmOpNode.FromSymbol(1, "+"),
+                                        new IdNode(1, "x")
                                     ),
-                                    new LiteralNode(1, 2)
+                                    new LitExprNode(1, 2)
                                 )
                             )
                         )
@@ -790,54 +790,54 @@ namespace LICC.Tests.Core.Comparer
             );
 
             this.PartialCompare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1,
-                            new ArrayDeclaratorNode(1,
-                                new IdentifierNode(1, "x"),
-                                new ArrayInitializerListNode(1,
-                                    new LiteralNode(1, 2),
-                                    new ArithmeticExpressionNode(1,
-                                        new ArithmeticExpressionNode(1,
-                                            new LiteralNode(1, 4),
-                                            ArithmeticOperatorNode.FromSymbol(1, "-"),
-                                            new LiteralNode(1, 1)
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1,
+                            new ArrDeclNode(1,
+                                new IdNode(1, "x"),
+                                new ArrInitListNode(1,
+                                    new LitExprNode(1, 2),
+                                    new ArithmExprNode(1,
+                                        new ArithmExprNode(1,
+                                            new LitExprNode(1, 4),
+                                            ArithmOpNode.FromSymbol(1, "-"),
+                                            new LitExprNode(1, 1)
                                         ),
-                                        ArithmeticOperatorNode.FromSymbol(1, "+"),
-                                        new IdentifierNode(1, "x")
+                                        ArithmOpNode.FromSymbol(1, "+"),
+                                        new IdNode(1, "x")
                                     ),
-                                    new LiteralNode(1, 3)
+                                    new LitExprNode(1, 3)
                                 )
                             )
                         )
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, 
-                            new IdentifierNode(1, "y"), 
-                            new ArrayInitializerListNode(1, new LiteralNode(1, 3), new LiteralNode(1, 4)))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new ArrDeclNode(1, 
+                            new IdNode(1, "y"), 
+                            new ArrInitListNode(1, new LitExprNode(1, 3), new LitExprNode(1, 4)))
                         )
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "y"), new ArrayInitializerListNode(1)))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "y"), new ArrInitListNode(1)))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1,
-                            new ArrayDeclaratorNode(1,
-                                new IdentifierNode(1, "x"),
-                                new ArrayInitializerListNode(1,
-                                    new LiteralNode(1, 2),
-                                    new ArithmeticExpressionNode(1,
-                                        new LiteralNode(1, 3),
-                                        ArithmeticOperatorNode.FromSymbol(1, "+"),
-                                        new IdentifierNode(1, "x")
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1,
+                            new ArrDeclNode(1,
+                                new IdNode(1, "x"),
+                                new ArrInitListNode(1,
+                                    new LitExprNode(1, 2),
+                                    new ArithmExprNode(1,
+                                        new LitExprNode(1, 3),
+                                        ArithmOpNode.FromSymbol(1, "+"),
+                                        new IdNode(1, "x")
                                     ),
-                                    new LiteralNode(1, 2)
+                                    new LitExprNode(1, 2)
                                 )
                             )
                         )
@@ -853,56 +853,56 @@ namespace LICC.Tests.Core.Comparer
         public void FunctionDeclarationTests()
         {
             this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new FunctionDeclaratorNode(1, new IdentifierNode(1, "f")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new FuncDeclNode(1, new IdNode(1, "f")))
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "double"),
-                        new DeclaratorListNode(1, new FunctionDeclaratorNode(1, new IdentifierNode(1, "f")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "double"),
+                        new DeclListNode(1, new FuncDeclNode(1, new IdNode(1, "f")))
                     )
                 ),
                 new MatchIssues()
                     .AddWarning(
                         new DeclSpecsMismatchWarning(
-                            new FunctionDeclaratorNode(1, new IdentifierNode(1, "f")),
-                            new DeclarationSpecifiersNode(1, "int"),
-                            new DeclarationSpecifiersNode(1, "double")
+                            new FuncDeclNode(1, new IdNode(1, "f")),
+                            new DeclSpecsNode(1, "int"),
+                            new DeclSpecsNode(1, "double")
                         )
                     )
             );
 
             this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, 
-                            new FunctionDeclaratorNode(1, 
-                                new IdentifierNode(1, "f"),
-                                new FunctionParametersNode(1, 
-                                    new FunctionParameterNode(1, 
-                                        new DeclarationSpecifiersNode(1, "int"), new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, 
+                            new FuncDeclNode(1, 
+                                new IdNode(1, "f"),
+                                new FuncParamsNode(1, 
+                                    new FuncParamNode(1, 
+                                        new DeclSpecsNode(1, "int"), new VarDeclNode(1, new IdNode(1, "x"))
                                     ), 
-                                    new FunctionParameterNode(1,
-                                        new DeclarationSpecifiersNode(1, "int"), new VariableDeclaratorNode(1, new IdentifierNode(1, "y"))
+                                    new FuncParamNode(1,
+                                        new DeclSpecsNode(1, "int"), new VarDeclNode(1, new IdNode(1, "y"))
                                     )
                                 )
                             )
                         )
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1,
-                            new FunctionDeclaratorNode(1,
-                                new IdentifierNode(1, "f"),
-                                new FunctionParametersNode(1,
-                                    new FunctionParameterNode(1,
-                                        new DeclarationSpecifiersNode(1, "float"), new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1,
+                            new FuncDeclNode(1,
+                                new IdNode(1, "f"),
+                                new FuncParamsNode(1,
+                                    new FuncParamNode(1,
+                                        new DeclSpecsNode(1, "float"), new VarDeclNode(1, new IdNode(1, "x"))
                                     )
                                 )
                             )
@@ -913,11 +913,11 @@ namespace LICC.Tests.Core.Comparer
                     .AddWarning(new ParameterMismatchWarning("f", 1))
                     .AddWarning(
                         new ParameterMismatchWarning("f", 1, 1,
-                            new FunctionParameterNode(1,
-                                new DeclarationSpecifiersNode(1, "int"), new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
+                            new FuncParamNode(1,
+                                new DeclSpecsNode(1, "int"), new VarDeclNode(1, new IdNode(1, "x"))
                             ),
-                            new FunctionParameterNode(1,
-                                new DeclarationSpecifiersNode(1, "float"), new VariableDeclaratorNode(1, new IdentifierNode(1, "x"))
+                            new FuncParamNode(1,
+                                new DeclSpecsNode(1, "float"), new VarDeclNode(1, new IdNode(1, "x"))
                             )
                         )
                     )
@@ -928,50 +928,50 @@ namespace LICC.Tests.Core.Comparer
         public void MixedTests()
         {
             this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1,
-                            new ArrayDeclaratorNode(1,
-                                new IdentifierNode(1, "x"),
-                                new ArrayInitializerListNode(1,
-                                    new LiteralNode(1, 3),
-                                    new IdentifierNode(1, "x"),
-                                    new LiteralNode(1, 3)
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1,
+                            new ArrDeclNode(1,
+                                new IdNode(1, "x"),
+                                new ArrInitListNode(1,
+                                    new LitExprNode(1, 3),
+                                    new IdNode(1, "x"),
+                                    new LitExprNode(1, 3)
                                 )
                             )
                         )
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "float"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "y"), new LiteralNode(1, 3)))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "float"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "y"), new LitExprNode(1, 3)))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "time_t"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "t")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "time_t"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "t")))
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new ArrayDeclaratorNode(1, new IdentifierNode(1, "y"), new LiteralNode(1, 4), new ArrayInitializerListNode(1)))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "y"), new LitExprNode(1, 4), new ArrInitListNode(1)))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1,
-                            new ArrayDeclaratorNode(1,
-                                new IdentifierNode(1, "x"),
-                                new ArrayInitializerListNode(1,
-                                    new LiteralNode(1, 2),
-                                    new IdentifierNode(1, "x"),
-                                    new LiteralNode(1, 2)
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1,
+                            new ArrDeclNode(1,
+                                new IdNode(1, "x"),
+                                new ArrInitListNode(1,
+                                    new LitExprNode(1, 2),
+                                    new IdNode(1, "x"),
+                                    new LitExprNode(1, 2)
                                 )
                             )
                         )
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "ex")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "ex")))
                     )
                 ),
                 new MatchIssues()
@@ -979,23 +979,23 @@ namespace LICC.Tests.Core.Comparer
                     .AddError(new InitializerMismatchError("x", 1, "3", "2", 2))
                     .AddWarning(
                         new DeclSpecsMismatchWarning(
-                            new ArrayDeclaratorNode(1, new IdentifierNode(1, "y"), new LiteralNode(1, 4), new ArrayInitializerListNode(1)),
-                            new DeclarationSpecifiersNode(1, "float"),
-                            new DeclarationSpecifiersNode(1, "int")
+                            new ArrDeclNode(1, new IdNode(1, "y"), new LitExprNode(1, 4), new ArrInitListNode(1)),
+                            new DeclSpecsNode(1, "float"),
+                            new DeclSpecsNode(1, "int")
                         )
                     )
                     .AddWarning(new SizeMismatchWarning("y", 1, "3", "4"))
                     .AddError(new InitializerMismatchError("y", 1, null, "[]"))
                     .AddWarning(
                         new MissingDeclarationWarning(
-                            new DeclarationSpecifiersNode(1, "time_t"),
-                            new VariableDeclaratorNode(1, new IdentifierNode(1, "t"))
+                            new DeclSpecsNode(1, "time_t"),
+                            new VarDeclNode(1, new IdNode(1, "t"))
                         )
                     )
                     .AddWarning(
                         new ExtraDeclarationWarning(
-                            new DeclarationSpecifiersNode(1, "int"),
-                            new VariableDeclaratorNode(1, new IdentifierNode(1, "ex"))
+                            new DeclSpecsNode(1, "int"),
+                            new VarDeclNode(1, new IdNode(1, "ex"))
                         )
                     )
             );

@@ -12,32 +12,32 @@ namespace LICC.Tests.Core.Comparer
         public void BasicVariableAssignmentTests()
         {
             this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 1)))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new LitExprNode(1, 1)))
                     ),
-                    new ExpressionStatementNode(1,
-                        new AssignmentExpressionNode(1,
-                            new IdentifierNode(1, "x"),
-                            AssignmentOperatorNode.FromSymbol(1, "="),
-                            new LiteralNode(1, 2)
+                    new ExprStatNode(1,
+                        new AssignExprNode(1,
+                            new IdNode(1, "x"),
+                            AssignOpNode.FromSymbol(1, "="),
+                            new LitExprNode(1, 2)
                         )
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 1)))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new LitExprNode(1, 1)))
                     ),
-                    new ExpressionStatementNode(1,
-                        new AssignmentExpressionNode(1,
-                            new IdentifierNode(1, "x"),
-                            AssignmentOperatorNode.FromSymbol(1, "="),
-                            new ArithmeticExpressionNode(1,
-                                new IdentifierNode(1, "x"),
-                                ArithmeticOperatorNode.FromSymbol(1, "+"),
-                                new LiteralNode(1, 1)
+                    new ExprStatNode(1,
+                        new AssignExprNode(1,
+                            new IdNode(1, "x"),
+                            AssignOpNode.FromSymbol(1, "="),
+                            new ArithmExprNode(1,
+                                new IdNode(1, "x"),
+                                ArithmOpNode.FromSymbol(1, "+"),
+                                new LitExprNode(1, 1)
                             )
                         )
                     )
@@ -45,32 +45,32 @@ namespace LICC.Tests.Core.Comparer
             );
 
             this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 1)))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new LitExprNode(1, 1)))
                     ),
-                    new ExpressionStatementNode(1,
-                        new AssignmentExpressionNode(1,
-                            new IdentifierNode(1, "x"),
-                            AssignmentOperatorNode.FromSymbol(1, "="),
-                            new LiteralNode(1, 3)
+                    new ExprStatNode(1,
+                        new AssignExprNode(1,
+                            new IdNode(1, "x"),
+                            AssignOpNode.FromSymbol(1, "="),
+                            new LitExprNode(1, 3)
                         )
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 1)))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new LitExprNode(1, 1)))
                     ),
-                    new ExpressionStatementNode(1,
-                        new AssignmentExpressionNode(1,
-                            new IdentifierNode(1, "x"),
-                            AssignmentOperatorNode.FromSymbol(1, "="),
-                            new ArithmeticExpressionNode(1,
-                                new IdentifierNode(1, "x"),
-                                ArithmeticOperatorNode.FromSymbol(1, "+"),
-                                new LiteralNode(1, 1)
+                    new ExprStatNode(1,
+                        new AssignExprNode(1,
+                            new IdNode(1, "x"),
+                            AssignOpNode.FromSymbol(1, "="),
+                            new ArithmExprNode(1,
+                                new IdNode(1, "x"),
+                                ArithmOpNode.FromSymbol(1, "+"),
+                                new LitExprNode(1, 1)
                             )
                         )
                     )
@@ -80,66 +80,66 @@ namespace LICC.Tests.Core.Comparer
             );
 
             this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new IdentifierNode(1, "p")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new IdNode(1, "p")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y"), new IdentifierNode(1, "x")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y"), new IdNode(1, "x")))
                     ),
-                    new ExpressionStatementNode(1,
-                        new AssignmentExpressionNode(1,
-                            new IdentifierNode(1, "y"),
-                            AssignmentOperatorNode.FromSymbol(1, "="),
-                            new ArithmeticExpressionNode(1,
-                                new IdentifierNode(1, "x"),
-                                ArithmeticOperatorNode.FromSymbol(1, "+"),
-                                new LiteralNode(1, 1)
+                    new ExprStatNode(1,
+                        new AssignExprNode(1,
+                            new IdNode(1, "y"),
+                            AssignOpNode.FromSymbol(1, "="),
+                            new ArithmExprNode(1,
+                                new IdNode(1, "x"),
+                                ArithmOpNode.FromSymbol(1, "+"),
+                                new LitExprNode(1, 1)
                             )
                         )
                     ),
-                    new ExpressionStatementNode(1,
-                        new AssignmentExpressionNode(1,
-                            new IdentifierNode(1, "x"),
-                            AssignmentOperatorNode.FromSymbol(1, "="),
-                            new ArithmeticExpressionNode(1,
-                                new IdentifierNode(1, "y"),
-                                ArithmeticOperatorNode.FromSymbol(1, "+"),
-                                new IdentifierNode(1, "y")
+                    new ExprStatNode(1,
+                        new AssignExprNode(1,
+                            new IdNode(1, "x"),
+                            AssignOpNode.FromSymbol(1, "="),
+                            new ArithmExprNode(1,
+                                new IdNode(1, "y"),
+                                ArithmOpNode.FromSymbol(1, "+"),
+                                new IdNode(1, "y")
                             )
                         )
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new IdentifierNode(1, "p")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new IdNode(1, "p")))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y"), new IdentifierNode(1, "x")))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y"), new IdNode(1, "x")))
                     ),
-                    new ExpressionStatementNode(1,
-                        new AssignmentExpressionNode(1,
-                            new IdentifierNode(1, "y"),
-                            AssignmentOperatorNode.FromSymbol(1, "="),
-                            new ArithmeticExpressionNode(1,
-                                new IdentifierNode(1, "x"),
-                                ArithmeticOperatorNode.FromSymbol(1, "+"),
-                                new LiteralNode(1, 2)
+                    new ExprStatNode(1,
+                        new AssignExprNode(1,
+                            new IdNode(1, "y"),
+                            AssignOpNode.FromSymbol(1, "="),
+                            new ArithmExprNode(1,
+                                new IdNode(1, "x"),
+                                ArithmOpNode.FromSymbol(1, "+"),
+                                new LitExprNode(1, 2)
                             )
                         )
                     ),
-                    new ExpressionStatementNode(1,
-                        new AssignmentExpressionNode(1,
-                            new IdentifierNode(1, "x"),
-                            AssignmentOperatorNode.FromSymbol(1, "="),
-                            new ArithmeticExpressionNode(1,
-                                new LiteralNode(1, 3),
-                                ArithmeticOperatorNode.FromSymbol(1, "*"),
-                                new IdentifierNode(1, "y")
+                    new ExprStatNode(1,
+                        new AssignExprNode(1,
+                            new IdNode(1, "x"),
+                            AssignOpNode.FromSymbol(1, "="),
+                            new ArithmExprNode(1,
+                                new LitExprNode(1, 3),
+                                ArithmOpNode.FromSymbol(1, "*"),
+                                new IdNode(1, "y")
                             )
                         )
                     )
@@ -154,39 +154,39 @@ namespace LICC.Tests.Core.Comparer
         public void MultipleVariableAssignmentTests()
         {
             this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 1)))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new LitExprNode(1, 1)))
                     ),
-                    new ExpressionStatementNode(1,
-                        new ExpressionListNode(1,
-                            new AssignmentExpressionNode(1,
-                                new IdentifierNode(1, "x"),
-                                AssignmentOperatorNode.FromSymbol(1, "="),
-                                new LiteralNode(1, 2)
+                    new ExprStatNode(1,
+                        new ExprListNode(1,
+                            new AssignExprNode(1,
+                                new IdNode(1, "x"),
+                                AssignOpNode.FromSymbol(1, "="),
+                                new LitExprNode(1, 2)
                             ),
-                            new AssignmentExpressionNode(1,
-                                new IdentifierNode(1, "x"),
-                                AssignmentOperatorNode.FromSymbol(1, "="),
-                                new LiteralNode(1, 3)
+                            new AssignExprNode(1,
+                                new IdNode(1, "x"),
+                                AssignOpNode.FromSymbol(1, "="),
+                                new LitExprNode(1, 3)
                             )
                         )
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 1)))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new LitExprNode(1, 1)))
                     ),
-                    new ExpressionStatementNode(1,
-                        new AssignmentExpressionNode(1,
-                            new IdentifierNode(1, "x"),
-                            AssignmentOperatorNode.FromSymbol(1, "="),
-                            new ArithmeticExpressionNode(1,
-                                new IdentifierNode(1, "x"),
-                                ArithmeticOperatorNode.FromSymbol(1, "+"),
-                                new LiteralNode(1, 2)
+                    new ExprStatNode(1,
+                        new AssignExprNode(1,
+                            new IdNode(1, "x"),
+                            AssignOpNode.FromSymbol(1, "="),
+                            new ArithmExprNode(1,
+                                new IdNode(1, "x"),
+                                ArithmOpNode.FromSymbol(1, "+"),
+                                new LitExprNode(1, 2)
                             )
                         )
                     )
@@ -194,39 +194,39 @@ namespace LICC.Tests.Core.Comparer
             );
 
             this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 1)))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new LitExprNode(1, 1)))
                     ),
-                    new ExpressionStatementNode(1,
-                        new ExpressionListNode(1,
-                            new AssignmentExpressionNode(1,
-                                new IdentifierNode(1, "x"),
-                                AssignmentOperatorNode.FromSymbol(1, "="),
-                                new LiteralNode(1, 2)
+                    new ExprStatNode(1,
+                        new ExprListNode(1,
+                            new AssignExprNode(1,
+                                new IdNode(1, "x"),
+                                AssignOpNode.FromSymbol(1, "="),
+                                new LitExprNode(1, 2)
                             ),
-                            new AssignmentExpressionNode(1,
-                                new IdentifierNode(1, "x"),
-                                AssignmentOperatorNode.FromSymbol(1, "="),
-                                new LiteralNode(1, 3)
+                            new AssignExprNode(1,
+                                new IdNode(1, "x"),
+                                AssignOpNode.FromSymbol(1, "="),
+                                new LitExprNode(1, 3)
                             )
                         )
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 1)))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new LitExprNode(1, 1)))
                     ),
-                    new ExpressionStatementNode(1,
-                        new AssignmentExpressionNode(1,
-                            new IdentifierNode(1, "x"),
-                            AssignmentOperatorNode.FromSymbol(1, "="),
-                            new ArithmeticExpressionNode(1,
-                                new IdentifierNode(1, "x"),
-                                ArithmeticOperatorNode.FromSymbol(1, "+"),
-                                new LiteralNode(1, 1)
+                    new ExprStatNode(1,
+                        new AssignExprNode(1,
+                            new IdNode(1, "x"),
+                            AssignOpNode.FromSymbol(1, "="),
+                            new ArithmExprNode(1,
+                                new IdNode(1, "x"),
+                                ArithmOpNode.FromSymbol(1, "+"),
+                                new LitExprNode(1, 1)
                             )
                         )
                     )
@@ -236,46 +236,46 @@ namespace LICC.Tests.Core.Comparer
             );
 
             this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 1)))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new LitExprNode(1, 1)))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y"), new LiteralNode(1, 2)))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y"), new LitExprNode(1, 2)))
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 1)))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new LitExprNode(1, 1)))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y"), new LiteralNode(1, 2)))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y"), new LitExprNode(1, 2)))
                     ),
-                    new ExpressionStatementNode(1,
-                        new ExpressionListNode(1,
-                            new AssignmentExpressionNode(1,
-                                new IdentifierNode(1, "x"),
-                                AssignmentOperatorNode.FromSymbol(1, "="),
-                                new LiteralNode(1, 2)
+                    new ExprStatNode(1,
+                        new ExprListNode(1,
+                            new AssignExprNode(1,
+                                new IdNode(1, "x"),
+                                AssignOpNode.FromSymbol(1, "="),
+                                new LitExprNode(1, 2)
                             ),
-                            new AssignmentExpressionNode(1,
-                                new IdentifierNode(1, "x"),
-                                AssignmentOperatorNode.FromSymbol(1, "="),
-                                new LiteralNode(1, 1)
+                            new AssignExprNode(1,
+                                new IdNode(1, "x"),
+                                AssignOpNode.FromSymbol(1, "="),
+                                new LitExprNode(1, 1)
                             ),
-                            new AssignmentExpressionNode(1,
-                                new IdentifierNode(1, "y"),
-                                AssignmentOperatorNode.FromSymbol(1, "="),
-                                new LiteralNode(1, 1)
+                            new AssignExprNode(1,
+                                new IdNode(1, "y"),
+                                AssignOpNode.FromSymbol(1, "="),
+                                new LitExprNode(1, 1)
                             ),
-                            new AssignmentExpressionNode(1,
-                                new IdentifierNode(1, "y"),
-                                AssignmentOperatorNode.FromSymbol(1, "="),
-                                new LiteralNode(1, 2)
+                            new AssignExprNode(1,
+                                new IdNode(1, "y"),
+                                AssignOpNode.FromSymbol(1, "="),
+                                new LitExprNode(1, 2)
                             )
                         )
                     )
@@ -287,79 +287,39 @@ namespace LICC.Tests.Core.Comparer
         public void ComplexAssignmentTests()
         {
             this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 1)))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new LitExprNode(1, 1)))
                     ),
-                    new ExpressionStatementNode(1,
-                        new ExpressionListNode(1,
-                            new AssignmentExpressionNode(1,
-                                new IdentifierNode(1, "x"),
-                                AssignmentOperatorNode.FromSymbol(1, "+="),
-                                new LiteralNode(1, 2)
+                    new ExprStatNode(1,
+                        new ExprListNode(1,
+                            new AssignExprNode(1,
+                                new IdNode(1, "x"),
+                                AssignOpNode.FromSymbol(1, "+="),
+                                new LitExprNode(1, 2)
                             ),
-                            new AssignmentExpressionNode(1,
-                                new IdentifierNode(1, "x"),
-                                AssignmentOperatorNode.FromSymbol(1, "+="),
-                                new LiteralNode(1, 3)
+                            new AssignExprNode(1,
+                                new IdNode(1, "x"),
+                                AssignOpNode.FromSymbol(1, "+="),
+                                new LitExprNode(1, 3)
                             )
                         )
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 1)))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new LitExprNode(1, 1)))
                     ),
-                    new ExpressionStatementNode(1,
-                        new AssignmentExpressionNode(1,
-                            new IdentifierNode(1, "x"),
-                            AssignmentOperatorNode.FromSymbol(1, "+="),
-                            new ArithmeticExpressionNode(1,
-                                new IdentifierNode(1, "x"),
-                                ArithmeticOperatorNode.FromSymbol(1, "+"),
-                                new LiteralNode(1, 4)
-                            )
-                        )
-                    )
-                )
-            );
-
-            this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 1)))
-                    ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y"), new LiteralNode(1, 1)))
-                    ),
-                    new ExpressionStatementNode(1,
-                        new AssignmentExpressionNode(1,
-                            new IdentifierNode(1, "x"),
-                            AssignmentOperatorNode.FromSymbol(1, "+="),
-                            new IdentifierNode(1, "y")
-                        )
-                    )
-                ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 1)))
-                    ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y"), new LiteralNode(1, 1)))
-                    ),
-                    new ExpressionStatementNode(1,
-                        new AssignmentExpressionNode(1,
-                            new IdentifierNode(1, "x"),
-                            AssignmentOperatorNode.FromSymbol(1, "-="),
-                            new UnaryExpressionNode(1,
-                                UnaryOperatorNode.FromSymbol(1, "-"),
-                                new IdentifierNode(1, "y")
+                    new ExprStatNode(1,
+                        new AssignExprNode(1,
+                            new IdNode(1, "x"),
+                            AssignOpNode.FromSymbol(1, "+="),
+                            new ArithmExprNode(1,
+                                new IdNode(1, "x"),
+                                ArithmOpNode.FromSymbol(1, "+"),
+                                new LitExprNode(1, 4)
                             )
                         )
                     )
@@ -367,46 +327,86 @@ namespace LICC.Tests.Core.Comparer
             );
 
             this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 1)))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new LitExprNode(1, 1)))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y"), new LiteralNode(1, 1)))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y"), new LitExprNode(1, 1)))
                     ),
-                    new ExpressionStatementNode(1,
-                        new AssignmentExpressionNode(1,
-                            new IdentifierNode(1, "x"),
-                            AssignmentOperatorNode.FromSymbol(1, "+="),
-                            new IdentifierNode(1, "y")
+                    new ExprStatNode(1,
+                        new AssignExprNode(1,
+                            new IdNode(1, "x"),
+                            AssignOpNode.FromSymbol(1, "+="),
+                            new IdNode(1, "y")
                         )
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 1)))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new LitExprNode(1, 1)))
                     ),
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y"), new LiteralNode(1, 1)))
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y"), new LitExprNode(1, 1)))
                     ),
-                    new ExpressionStatementNode(1,
-                        new ExpressionListNode(1,
-                            new AssignmentExpressionNode(1,
-                                new IdentifierNode(1, "x"),
-                                AssignmentOperatorNode.FromSymbol(1, "+="),
-                                new UnaryExpressionNode(1,
-                                    UnaryOperatorNode.FromSymbol(1, "-"),
-                                    new IdentifierNode(1, "y")
+                    new ExprStatNode(1,
+                        new AssignExprNode(1,
+                            new IdNode(1, "x"),
+                            AssignOpNode.FromSymbol(1, "-="),
+                            new UnaryExprNode(1,
+                                UnaryOpNode.FromSymbol(1, "-"),
+                                new IdNode(1, "y")
+                            )
+                        )
+                    )
+                )
+            );
+
+            this.Compare(
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new LitExprNode(1, 1)))
+                    ),
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y"), new LitExprNode(1, 1)))
+                    ),
+                    new ExprStatNode(1,
+                        new AssignExprNode(1,
+                            new IdNode(1, "x"),
+                            AssignOpNode.FromSymbol(1, "+="),
+                            new IdNode(1, "y")
+                        )
+                    )
+                ),
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new LitExprNode(1, 1)))
+                    ),
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y"), new LitExprNode(1, 1)))
+                    ),
+                    new ExprStatNode(1,
+                        new ExprListNode(1,
+                            new AssignExprNode(1,
+                                new IdNode(1, "x"),
+                                AssignOpNode.FromSymbol(1, "+="),
+                                new UnaryExprNode(1,
+                                    UnaryOpNode.FromSymbol(1, "-"),
+                                    new IdNode(1, "y")
                                 )
                             ),
-                            new AssignmentExpressionNode(1,
-                                new IdentifierNode(1, "y"),
-                                AssignmentOperatorNode.FromSymbol(1, "+="),
-                                new LiteralNode(1, 1)
+                            new AssignExprNode(1,
+                                new IdNode(1, "y"),
+                                AssignOpNode.FromSymbol(1, "+="),
+                                new LitExprNode(1, 1)
                             )
                         )
                     )
@@ -421,53 +421,53 @@ namespace LICC.Tests.Core.Comparer
         public void NestedBlockTests()
         {
             this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 1)))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new LitExprNode(1, 1)))
                     ),
-                    new BlockStatementNode(1,
-                        new DeclarationStatementNode(1,
-                            new DeclarationSpecifiersNode(1, "int"),
-                            new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y"), new LiteralNode(1, 1)))
+                    new BlockStatNode(1,
+                        new DeclStatNode(1,
+                            new DeclSpecsNode(1, "int"),
+                            new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y"), new LitExprNode(1, 1)))
                         ),
-                        new ExpressionStatementNode(1,
-                            new AssignmentExpressionNode(1,
-                                new IdentifierNode(1, "y"),
-                                AssignmentOperatorNode.FromSymbol(1, "="),
-                                new LiteralNode(1, 2)
+                        new ExprStatNode(1,
+                            new AssignExprNode(1,
+                                new IdNode(1, "y"),
+                                AssignOpNode.FromSymbol(1, "="),
+                                new LitExprNode(1, 2)
                             )
                         ),
-                        new ExpressionStatementNode(1,
-                            new AssignmentExpressionNode(1,
-                                new IdentifierNode(1, "x"),
-                                AssignmentOperatorNode.FromSymbol(1, "="),
-                                new IdentifierNode(1, "y")
+                        new ExprStatNode(1,
+                            new AssignExprNode(1,
+                                new IdNode(1, "x"),
+                                AssignOpNode.FromSymbol(1, "="),
+                                new IdNode(1, "y")
                             )
                         )
                     ),
-                    new ExpressionStatementNode(1, new IncrementExpressionNode(1, new IdentifierNode(1, "x"))),
-                    new ExpressionStatementNode(1, new IncrementExpressionNode(1, new IdentifierNode(1, "x")))
+                    new ExprStatNode(1, new IncExprNode(1, new IdNode(1, "x"))),
+                    new ExprStatNode(1, new IncExprNode(1, new IdNode(1, "x")))
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new LiteralNode(1, 1)))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new LitExprNode(1, 1)))
                     ),
-                    new BlockStatementNode(1,
-                        new DeclarationStatementNode(1,
-                            new DeclarationSpecifiersNode(1, "int"),
-                            new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y"), new LiteralNode(1, 1)))
+                    new BlockStatNode(1,
+                        new DeclStatNode(1,
+                            new DeclSpecsNode(1, "int"),
+                            new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y"), new LitExprNode(1, 1)))
                         ),
-                        new ExpressionStatementNode(1,
-                            new AssignmentExpressionNode(1,
-                                new IdentifierNode(1, "x"),
-                                AssignmentOperatorNode.FromSymbol(1, "="),
-                                new IdentifierNode(1, "y")
+                        new ExprStatNode(1,
+                            new AssignExprNode(1,
+                                new IdNode(1, "x"),
+                                AssignOpNode.FromSymbol(1, "="),
+                                new IdNode(1, "y")
                             )
                         )
                     ),
-                    new ExpressionStatementNode(1, new IncrementExpressionNode(1, new IdentifierNode(1, "x")))
+                    new ExprStatNode(1, new IncExprNode(1, new IdNode(1, "x")))
                 ),
                 new MatchIssues()
                     .AddError(new BlockEndValueMismatchError("y", 1, "2", "1"))
@@ -475,76 +475,76 @@ namespace LICC.Tests.Core.Comparer
             );
 
             this.Compare(
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new IdentifierNode(1, "p")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new IdNode(1, "p")))
                     ),
-                    new BlockStatementNode(1,
-                        new DeclarationStatementNode(1,
-                            new DeclarationSpecifiersNode(1, "int"),
-                            new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    new BlockStatNode(1,
+                        new DeclStatNode(1,
+                            new DeclSpecsNode(1, "int"),
+                            new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y")))
                         ), 
-                        new DeclarationStatementNode(1,
-                            new DeclarationSpecifiersNode(1, "int"),
-                            new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "z")))
+                        new DeclStatNode(1,
+                            new DeclSpecsNode(1, "int"),
+                            new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "z")))
                         ),
-                        new ExpressionStatementNode(1,
-                            new AssignmentExpressionNode(1,
-                                new IdentifierNode(1, "z"),
-                                AssignmentOperatorNode.FromSymbol(1, "="),
-                                new IdentifierNode(1, "q")
+                        new ExprStatNode(1,
+                            new AssignExprNode(1,
+                                new IdNode(1, "z"),
+                                AssignOpNode.FromSymbol(1, "="),
+                                new IdNode(1, "q")
                             )
                         ),
-                        new ExpressionStatementNode(1,
-                            new AssignmentExpressionNode(1,
-                                new IdentifierNode(1, "y"),
-                                AssignmentOperatorNode.FromSymbol(1, "="),
-                                new IdentifierNode(1, "z")
+                        new ExprStatNode(1,
+                            new AssignExprNode(1,
+                                new IdNode(1, "y"),
+                                AssignOpNode.FromSymbol(1, "="),
+                                new IdNode(1, "z")
                             )
                         ),
-                        new ExpressionStatementNode(1,
-                            new AssignmentExpressionNode(1,
-                                new IdentifierNode(1, "x"),
-                                AssignmentOperatorNode.FromSymbol(1, "="),
-                                new IdentifierNode(1, "y")
+                        new ExprStatNode(1,
+                            new AssignExprNode(1,
+                                new IdNode(1, "x"),
+                                AssignOpNode.FromSymbol(1, "="),
+                                new IdNode(1, "y")
                             )
                         )
                     )
                 ),
-                new SourceComponentNode(
-                    new DeclarationStatementNode(1,
-                        new DeclarationSpecifiersNode(1, "int"),
-                        new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "x"), new IdentifierNode(1, "p")))
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new IdNode(1, "p")))
                     ),
-                    new BlockStatementNode(1,
-                        new DeclarationStatementNode(1,
-                            new DeclarationSpecifiersNode(1, "int"),
-                            new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "y")))
+                    new BlockStatNode(1,
+                        new DeclStatNode(1,
+                            new DeclSpecsNode(1, "int"),
+                            new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y")))
                         ),
-                        new DeclarationStatementNode(1,
-                            new DeclarationSpecifiersNode(1, "int"),
-                            new DeclaratorListNode(1, new VariableDeclaratorNode(1, new IdentifierNode(1, "z")))
+                        new DeclStatNode(1,
+                            new DeclSpecsNode(1, "int"),
+                            new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "z")))
                         ),
-                        new ExpressionStatementNode(1,
-                            new AssignmentExpressionNode(1,
-                                new IdentifierNode(1, "z"),
-                                AssignmentOperatorNode.FromSymbol(1, "="),
-                                new IdentifierNode(1, "w")
+                        new ExprStatNode(1,
+                            new AssignExprNode(1,
+                                new IdNode(1, "z"),
+                                AssignOpNode.FromSymbol(1, "="),
+                                new IdNode(1, "w")
                             )
                         ),
-                        new ExpressionStatementNode(1,
-                            new AssignmentExpressionNode(1,
-                                new IdentifierNode(1, "y"),
-                                AssignmentOperatorNode.FromSymbol(1, "="),
-                                new IdentifierNode(1, "z")
+                        new ExprStatNode(1,
+                            new AssignExprNode(1,
+                                new IdNode(1, "y"),
+                                AssignOpNode.FromSymbol(1, "="),
+                                new IdNode(1, "z")
                             )
                         ),
-                        new ExpressionStatementNode(1,
-                            new AssignmentExpressionNode(1,
-                                new IdentifierNode(1, "x"),
-                                AssignmentOperatorNode.FromSymbol(1, "="),
-                                new IdentifierNode(1, "y")
+                        new ExprStatNode(1,
+                            new AssignExprNode(1,
+                                new IdNode(1, "x"),
+                                AssignOpNode.FromSymbol(1, "="),
+                                new IdNode(1, "y")
                             )
                         )
                     )

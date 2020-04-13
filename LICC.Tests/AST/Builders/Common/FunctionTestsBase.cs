@@ -8,7 +8,7 @@ namespace LICC.Tests.AST.Builders.Common
 {
     internal abstract class FunctionTestsBase : ASTBuilderTestBase
     {
-        protected FunctionDefinitionNode AssertFunctionSignature(string src,
+        protected FuncDefNode AssertFunctionSignature(string src,
                                                                  int line,
                                                                  string fname,
                                                                  string returnType = "void",
@@ -17,7 +17,7 @@ namespace LICC.Tests.AST.Builders.Common
                                                                  QualifierFlags qualifiers = QualifierFlags.None,
                                                                  params (string Type, string Identifier)[] @params)
         {
-            FunctionDefinitionNode f = this.GenerateAST(src).As<FunctionDefinitionNode>();
+            FuncDefNode f = this.GenerateAST(src).As<FuncDefNode>();
             this.AssertChildrenParentProperties(f);
             this.AssertChildrenParentProperties(f.Definition);
             Assert.That(f, Is.Not.Null);
@@ -40,8 +40,8 @@ namespace LICC.Tests.AST.Builders.Common
 
         protected void AssertReturnValue(string code, object? expected)
         {
-            FunctionDefinitionNode fnode = this.GenerateAST(code).As<FunctionDefinitionNode>();
-            JumpStatementNode node = fnode.Definition.Children.Last().As<JumpStatementNode>();
+            FuncDefNode fnode = this.GenerateAST(code).As<FuncDefNode>();
+            JumpStatNode node = fnode.Definition.Children.Last().As<JumpStatNode>();
 
             Assert.That(node.GotoLabel, Is.Null);
             if (expected is null) {

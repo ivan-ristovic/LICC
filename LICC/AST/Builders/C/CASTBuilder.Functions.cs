@@ -9,18 +9,18 @@ namespace LICC.AST.Builders.C
     {
         public override ASTNode VisitFunctionDefinition([NotNull] FunctionDefinitionContext ctx)
         {
-            DeclarationSpecifiersNode declSpecs = this.Visit(ctx.declarationSpecifiers()).As<DeclarationSpecifiersNode>();
+            DeclSpecsNode declSpecs = this.Visit(ctx.declarationSpecifiers()).As<DeclSpecsNode>();
             ASTNode decl = this.Visit(ctx.declarator());
-            if (decl is IdentifierNode fname)
-                decl = new FunctionDeclaratorNode(fname.Line, fname);
-            FunctionDeclaratorNode fdecl = decl.As<FunctionDeclaratorNode>();
-            BlockStatementNode body = this.Visit(ctx.compoundStatement()).As<BlockStatementNode>();
-            return new FunctionDefinitionNode(ctx.Start.Line, declSpecs, fdecl, body);
+            if (decl is IdNode fname)
+                decl = new FuncDeclNode(fname.Line, fname);
+            FuncDeclNode fdecl = decl.As<FuncDeclNode>();
+            BlockStatNode body = this.Visit(ctx.compoundStatement()).As<BlockStatNode>();
+            return new FuncDefNode(ctx.Start.Line, declSpecs, fdecl, body);
         }
 
         public override ASTNode VisitParameterTypeList([NotNull] ParameterTypeListContext ctx)
         {
-            FunctionParametersNode @params = this.Visit(ctx.parameterList()).As<FunctionParametersNode>();
+            FuncParamsNode @params = this.Visit(ctx.parameterList()).As<FuncParamsNode>();
             if (ctx.ChildCount > 1)
                 @params.IsVariadic = true;
             return @params;
@@ -28,21 +28,21 @@ namespace LICC.AST.Builders.C
 
         public override ASTNode VisitParameterList([NotNull] ParameterListContext ctx)
         {
-            FunctionParametersNode @params;
-            FunctionParameterNode param = this.Visit(ctx.parameterDeclaration()).As<FunctionParameterNode>();
+            FuncParamsNode @params;
+            FuncParamNode param = this.Visit(ctx.parameterDeclaration()).As<FuncParamNode>();
 
             if (ctx.parameterList() is null)
-                return new FunctionParametersNode(ctx.Start.Line, param);
+                return new FuncParamsNode(ctx.Start.Line, param);
 
-            @params = this.Visit(ctx.parameterList()).As<FunctionParametersNode>();
-            return new FunctionParametersNode(ctx.Start.Line, @params.Parameters.Concat(new[] { param }));
+            @params = this.Visit(ctx.parameterList()).As<FuncParamsNode>();
+            return new FuncParamsNode(ctx.Start.Line, @params.Parameters.Concat(new[] { param }));
         }
 
         public override ASTNode VisitParameterDeclaration([NotNull] ParameterDeclarationContext ctx)
         {
-            DeclarationSpecifiersNode declSpecs = this.Visit(ctx.declarationSpecifiers()).As<DeclarationSpecifiersNode>();
-            DeclaratorNode decl = this.Visit(ctx.declarator()).As<DeclaratorNode>();
-            return new FunctionParameterNode(ctx.Start.Line, declSpecs, decl);
+            DeclSpecsNode declSpecs = this.Visit(ctx.declarationSpecifiers()).As<DeclSpecsNode>();
+            DeclNode decl = this.Visit(ctx.declarator()).As<DeclNode>();
+            return new FuncParamNode(ctx.Start.Line, declSpecs, decl);
         }
     }
 }

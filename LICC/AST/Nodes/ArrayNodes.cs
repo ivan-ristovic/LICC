@@ -5,30 +5,30 @@ using Newtonsoft.Json;
 
 namespace LICC.AST.Nodes
 {
-    public sealed class ArrayDeclaratorNode : DeclaratorNode
+    public sealed class ArrDeclNode : DeclNode
     {
         [JsonIgnore]
-        public ExpressionNode? SizeExpression => this.Children.ElementAtOrDefault(1) as ExpressionNode;
+        public ExprNode? SizeExpression => this.Children.ElementAtOrDefault(1) as ExprNode;
 
         [JsonIgnore]
-        public ArrayInitializerListNode? Initializer
-            => this.Children.Count > 2 ? this.Children[2].As<ArrayInitializerListNode>()
-                                       : this.Children.ElementAtOrDefault(1) as ArrayInitializerListNode;
+        public ArrInitListNode? Initializer
+            => this.Children.Count > 2 ? this.Children[2].As<ArrInitListNode>()
+                                       : this.Children.ElementAtOrDefault(1) as ArrInitListNode;
 
 
-        public ArrayDeclaratorNode(int line, IdentifierNode identifier)
+        public ArrDeclNode(int line, IdNode identifier)
             : base(line, identifier) { }
 
-        public ArrayDeclaratorNode(int line, IdentifierNode identifier, ExpressionNode sizeExpr)
+        public ArrDeclNode(int line, IdNode identifier, ExprNode sizeExpr)
             : base(line, identifier, sizeExpr) { }
 
-        public ArrayDeclaratorNode(int line, IdentifierNode identifier, ArrayInitializerListNode init)
+        public ArrDeclNode(int line, IdNode identifier, ArrInitListNode init)
             : base(line, identifier, init)
         {
 
         }
 
-        public ArrayDeclaratorNode(int line, IdentifierNode identifier, ExpressionNode sizeExpr, ArrayInitializerListNode init)
+        public ArrDeclNode(int line, IdNode identifier, ExprNode sizeExpr, ArrInitListNode init)
             : base(line, identifier, sizeExpr, init)
         {
 
@@ -45,16 +45,16 @@ namespace LICC.AST.Nodes
         }
     }
 
-    public sealed class ArrayInitializerListNode : ASTNode
+    public sealed class ArrInitListNode : ASTNode
     {
         [JsonIgnore]
-        public IEnumerable<ExpressionNode> Initializers => this.Children.Cast<ExpressionNode>();
+        public IEnumerable<ExprNode> Initializers => this.Children.Cast<ExprNode>();
 
 
-        public ArrayInitializerListNode(int line, IEnumerable<ExpressionNode> exprs)
+        public ArrInitListNode(int line, IEnumerable<ExprNode> exprs)
             : base(line, exprs) { }
 
-        public ArrayInitializerListNode(int line, params ExpressionNode[] exprs)
+        public ArrInitListNode(int line, params ExprNode[] exprs)
             : base(line, exprs) { }
 
 

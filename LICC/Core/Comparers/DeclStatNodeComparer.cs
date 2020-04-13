@@ -6,9 +6,9 @@ using Serilog;
 
 namespace LICC.Core.Comparers
 {
-    internal sealed class DeclarationStatementNodeComparer : ASTNodeComparerBase<DeclarationStatementNode>
+    internal sealed class DeclStatNodeComparer : ASTNodeComparerBase<DeclStatNode>
     {
-        public override MatchIssues Compare(DeclarationStatementNode n1, DeclarationStatementNode n2)
+        public override MatchIssues Compare(DeclStatNode n1, DeclStatNode n2)
         {
             Log.Debug("Comparing declarations: `{SrcDecl}` with block: `{DstDecl}", n1, n2);
             Dictionary<string, DeclaredSymbol> srcSymbols = this.GetDeclaredSymbols(n1);
@@ -18,11 +18,11 @@ namespace LICC.Core.Comparers
         }
 
 
-        private Dictionary<string, DeclaredSymbol> GetDeclaredSymbols(DeclarationStatementNode node)
+        private Dictionary<string, DeclaredSymbol> GetDeclaredSymbols(DeclStatNode node)
         {
             var symbols = new Dictionary<string, DeclaredSymbol>();
 
-            foreach (DeclaratorNode decl in node.DeclaratorList.Declarations) {
+            foreach (DeclNode decl in node.DeclaratorList.Declarations) {
                 var symbol = DeclaredSymbol.From(node.Specifiers, decl);
                 if (symbol is DeclaredFunctionSymbol df && symbols.ContainsKey(df.Identifier)) {
                     if (!df.AddOverload(df.FunctionDeclarator))

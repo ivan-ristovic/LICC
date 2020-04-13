@@ -7,11 +7,11 @@ namespace LICC.Core.Common
 {
     public sealed class DeclaratorMismatchWarning : BaseWarning
     {
-        public DeclaratorNode Expected { get; set; }
-        public DeclaratorNode Actual { get; set; }
+        public DeclNode Expected { get; set; }
+        public DeclNode Actual { get; set; }
 
 
-        public DeclaratorMismatchWarning(DeclaratorNode expected, DeclaratorNode actual)
+        public DeclaratorMismatchWarning(DeclNode expected, DeclNode actual)
         {
             if (expected.Equals(actual))
                 throw new ArgumentException("Expected different objects");

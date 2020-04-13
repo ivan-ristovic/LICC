@@ -11,13 +11,13 @@ namespace LICC.Tests.AST.Builders.Common
     {
         protected void AssertEvaluationException(string code)
         {
-            ExpressionNode expr = this.AssertExpression(code);
+            ExprNode expr = this.AssertExpression(code);
             Assert.That(() => ConstantExpressionEvaluator.TryEvaluateAs(expr, out object result), Throws.InstanceOf<EvaluationException>());
         }
 
         protected void AssertExpressionValue<T>(string code, T expected)
         {
-            ExpressionNode expr = this.AssertExpression(code);
+            ExprNode expr = this.AssertExpression(code);
             Assert.That(ConstantExpressionEvaluator.TryEvaluateAs(expr, out T result));
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Is.EqualTo(expected).Within(1e-10));
@@ -25,8 +25,8 @@ namespace LICC.Tests.AST.Builders.Common
 
         protected void AssertNullExpression(string code)
         {
-            ExpressionNode expr = this.AssertExpression(code);
-            if (expr is NullLiteralNode @null) {
+            ExprNode expr = this.AssertExpression(code);
+            if (expr is NullLitExprNode @null) {
                 Assert.That(@null.Value, Is.Null);
                 Assert.That(@null.TypeCode, Is.EqualTo(TypeCode.Empty));
             } else {
@@ -34,16 +34,16 @@ namespace LICC.Tests.AST.Builders.Common
             }
         }
 
-        protected ExpressionNode AssertExpression(string code)
+        protected ExprNode AssertExpression(string code)
         {
-            ExpressionNode expr = this.GenerateAST(code).As<ExpressionNode>();
+            ExprNode expr = this.GenerateAST(code).As<ExprNode>();
             Assert.That(expr, Is.Not.Null);
             return expr;
         }
 
         protected void AssertLiteralSuffix(string code, string suffix, object value, Type type)
         {
-            LiteralNode literal = this.GenerateAST(code).As<LiteralNode>();
+            LitExprNode literal = this.GenerateAST(code).As<LitExprNode>();
             Assert.That(literal, Is.Not.Null);
             Assert.That(literal.Value?.GetType(), Is.EqualTo(type));
             Assert.That(literal.Suffix, Is.EqualTo(suffix));
@@ -52,7 +52,7 @@ namespace LICC.Tests.AST.Builders.Common
 
         protected void AssertFunctionCallExpression(string code, string fname, params object[] args)
         {
-            FunctionCallExpressionNode fcall = this.GenerateAST(code).As<FunctionCallExpressionNode>();
+            FuncCallExprNode fcall = this.GenerateAST(code).As<FuncCallExprNode>();
             this.AssertChildrenParentProperties(fcall);
             Assert.That(fcall.Identifier, Is.EqualTo(fname));
 
@@ -61,7 +61,7 @@ namespace LICC.Tests.AST.Builders.Common
             } else {
                 Assert.That(fcall.Arguments, Is.Not.Null);
                 Assert.That(fcall.Arguments!.Expressions.Count, Is.EqualTo(args.Length));
-                foreach ((ExpressionNode arg, object? expected) in fcall.Arguments!.Expressions.Zip(args))
+                foreach ((ExprNode arg, object? expected) in fcall.Arguments!.Expressions.Zip(args))
                     Assert.That(ConstantExpressionEvaluator.Evaluate(arg), Is.EqualTo(expected).Within(1e-10));
             }
         }

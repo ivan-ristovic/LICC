@@ -10,8 +10,8 @@ namespace LICC.Core.Common
         public string FunctionName { get; set; } = "<anon>";
         public int Line { get; set; }
         public int Order { get; set; }
-        public FunctionParameterNode? Expected { get; set; }
-        public FunctionParameterNode? Actual { get; set; }
+        public FuncParamNode? Expected { get; set; }
+        public FuncParamNode? Actual { get; set; }
         public bool VariadicMismatch { get; set; }
 
 
@@ -22,7 +22,7 @@ namespace LICC.Core.Common
             this.VariadicMismatch = variadicMismatch;
         }
 
-        public ParameterMismatchWarning(string fname, int line, int order, FunctionParameterNode expected, FunctionParameterNode actual)
+        public ParameterMismatchWarning(string fname, int line, int order, FuncParamNode expected, FuncParamNode actual)
             : this(fname, line, variadicMismatch: false)
         {
             if (Equals(expected, actual))

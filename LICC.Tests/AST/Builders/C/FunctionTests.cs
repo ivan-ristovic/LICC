@@ -53,19 +53,19 @@ namespace LICC.Tests.AST.Builders.C
         [Test]
         public void SimpleDefinitionTest()
         {
-            FunctionDefinitionNode f = this.AssertFunctionSignature(@"
+            FuncDefNode f = this.AssertFunctionSignature(@"
                 unsigned int f(int x) { 
                     return x;
                 }", 
                 2, "f", "unsigned int", @params: ("int", "x")
             );
-            Assert.That(f.Definition.Children.Single(), Is.InstanceOf<JumpStatementNode>());
+            Assert.That(f.Definition.Children.Single(), Is.InstanceOf<JumpStatNode>());
         }
 
         [Test]
         public void ComplexDefinitionTest()
         {
-            FunctionDefinitionNode f = this.AssertFunctionSignature(@"
+            FuncDefNode f = this.AssertFunctionSignature(@"
                 float f(const unsigned int x, ...) {
                     int z = 4;
                     return 3.0;

@@ -12,7 +12,7 @@ namespace LICC.AST.Builders.Lua
     public sealed partial class LuaASTBuilder : LuaBaseVisitor<ASTNode>, IASTBuilder<LuaParser>
     {
         public override ASTNode VisitExplist([NotNull] ExplistContext ctx) 
-            => new ExpressionListNode(ctx.Start.Line, ctx.exp().Select(v => this.Visit(v).As<ExpressionNode>()));
+            => new ExprListNode(ctx.Start.Line, ctx.exp().Select(v => this.Visit(v).As<ExprNode>()));
 
         public override ASTNode VisitExp([NotNull] ExpContext ctx)
         {
@@ -20,20 +20,20 @@ namespace LICC.AST.Builders.Lua
                 string firstToken = ctx.children.First().GetText();
                 switch (firstToken) {
                     case "nil":
-                        return new NullLiteralNode(ctx.Start.Line);
+                        return new NullLitExprNode(ctx.Start.Line);
                     case "true":
                     case "false":
-                        return LiteralNode.FromString(ctx.Start.Line, firstToken);
+                        return LitExprNode.FromString(ctx.Start.Line, firstToken);
                     case "...":
                         throw new NotImplementedException("...");
                 }
 
                 if (ctx.number() is { })
-                    return LiteralNode.FromString(ctx.Start.Line, ctx.number().GetText());
+                    return LitExprNode.FromString(ctx.Start.Line, ctx.number().GetText());
 
                 if (ctx.@string() is { }) {
                     string str = ctx.@string().GetText()[1..^1];
-                    return new LiteralNode(ctx.Start.Line, str);
+                    return new LitExprNode(ctx.Start.Line, str);
                 }
 
                 if (ctx.prefixexp() is { })
@@ -44,35 +44,35 @@ namespace LICC.AST.Builders.Lua
             }
 
             if (ctx.operatorComparison() is { }) {
-                (ExpressionNode left, string symbol, ExpressionNode right) = ParseBinaryExpression();
-                var op = RelationalOperatorNode.FromSymbol(ctx.Start.Line, symbol);
-                return new RelationalExpressionNode(ctx.Start.Line, left, op, right);
+                (ExprNode left, string symbol, ExprNode right) = ParseBinaryExpression();
+                var op = RelOpNode.FromSymbol(ctx.Start.Line, symbol);
+                return new RelExprNode(ctx.Start.Line, left, op, right);
             }
 
             if (IsArithmeticExpressionContext(ctx)) {
-                (ExpressionNode left, string symbol, ExpressionNode right) = ParseBinaryExpression();
-                ArithmeticOperatorNode op = ctx.operatorBitwise() is { }
-                    ? ArithmeticOperatorNode.FromBitwiseSymbol(ctx.Start.Line, symbol)
-                    : ArithmeticOperatorNode.FromSymbol(ctx.Start.Line, symbol);
-                return new ArithmeticExpressionNode(ctx.Start.Line, left, op, right);
+                (ExprNode left, string symbol, ExprNode right) = ParseBinaryExpression();
+                ArithmOpNode op = ctx.operatorBitwise() is { }
+                    ? ArithmOpNode.FromBitwiseSymbol(ctx.Start.Line, symbol)
+                    : ArithmOpNode.FromSymbol(ctx.Start.Line, symbol);
+                return new ArithmExprNode(ctx.Start.Line, left, op, right);
             }
 
             if (IsLogicExpressionContext(ctx, out string? logicOp)) {
                 if (ctx.operatorUnary() is { }) {
-                    ExpressionNode notOperand = this.Visit(ctx.exp().First()).As<ExpressionNode>();
-                    var notOp = UnaryOperatorNode.FromSymbol(ctx.Start.Line, "not");
-                    return new UnaryExpressionNode(ctx.Start.Line, notOp, notOperand);
+                    ExprNode notOperand = this.Visit(ctx.exp().First()).As<ExprNode>();
+                    var notOp = UnaryOpNode.FromSymbol(ctx.Start.Line, "not");
+                    return new UnaryExprNode(ctx.Start.Line, notOp, notOperand);
                 }
 
-                (ExpressionNode left, string symbol, ExpressionNode right) = ParseBinaryExpression();
-                var op = BinaryLogicOperatorNode.FromSymbol(ctx.Start.Line, symbol);
-                return new LogicExpressionNode(ctx.Start.Line, left, op, right);
+                (ExprNode left, string symbol, ExprNode right) = ParseBinaryExpression();
+                var op = BinaryLogicOpNode.FromSymbol(ctx.Start.Line, symbol);
+                return new LogicExprNode(ctx.Start.Line, left, op, right);
             }
 
             if (ctx.operatorUnary() is { }) {
-                ExpressionNode unaryOperand = this.Visit(ctx.exp().First()).As<ExpressionNode>();
-                var unaryOp = UnaryOperatorNode.FromSymbol(ctx.Start.Line, ctx.children[0].GetText());
-                return new UnaryExpressionNode(ctx.Start.Line, unaryOp, unaryOperand);
+                ExprNode unaryOperand = this.Visit(ctx.exp().First()).As<ExprNode>();
+                var unaryOp = UnaryOpNode.FromSymbol(ctx.Start.Line, ctx.children[0].GetText());
+                return new UnaryExprNode(ctx.Start.Line, unaryOp, unaryOperand);
             }
 
             if (ctx.tableconstructor() is { })
@@ -82,15 +82,15 @@ namespace LICC.AST.Builders.Lua
             throw new NotImplementedException("Unsupported expression type");
 
 
-            (ExpressionNode left, string symbol, ExpressionNode right) ParseBinaryExpression()
+            (ExprNode left, string symbol, ExprNode right) ParseBinaryExpression()
             {
-                ExpressionNode left = this.Visit(ctx.exp()[0]).As<ExpressionNode>();
+                ExprNode left = this.Visit(ctx.exp()[0]).As<ExprNode>();
                 string op = ctx.children[1].GetText();
                 if (op == "..")
                     op = "+";
                 if (op == "~")
                     op = "^";
-                ExpressionNode right = this.Visit(ctx.exp()[1]).As<ExpressionNode>();
+                ExprNode right = this.Visit(ctx.exp()[1]).As<ExprNode>();
                 return (left, op, right);
             }
 
@@ -127,9 +127,9 @@ namespace LICC.AST.Builders.Lua
             if (ctx.nameAndArgs().Length > 1)
                 throw new NotSupportedException("Multiple nameAndArgs");
 
-            if (varOrExp is IdentifierNode fname) {
-                ExpressionListNode args = this.Visit(ctx.nameAndArgs().Single()).As<ExpressionListNode>();
-                return new FunctionCallExpressionNode(ctx.Start.Line, fname, args);
+            if (varOrExp is IdNode fname) {
+                ExprListNode args = this.Visit(ctx.nameAndArgs().Single()).As<ExprListNode>();
+                return new FuncCallExprNode(ctx.Start.Line, fname, args);
             } else {
                 throw new NotSupportedException("Callable expressions");
             }
@@ -155,7 +155,7 @@ namespace LICC.AST.Builders.Lua
                 throw new NotImplementedException("tableconstructor or string");
             if (ctx.explist() is { })
                 return this.Visit(ctx.explist());
-            return new ExpressionListNode(ctx.Start.Line);
+            return new ExprListNode(ctx.Start.Line);
         }
 
         public override ASTNode VisitFunctiondef([NotNull] FunctiondefContext ctx)
@@ -163,13 +163,13 @@ namespace LICC.AST.Builders.Lua
 
         public override ASTNode VisitFuncbody([NotNull] FuncbodyContext ctx)
         {
-            FunctionParametersNode? @params = null;
+            FuncParamsNode? @params = null;
             if (ctx.parlist() is { })
-                @params = this.Visit(ctx.parlist()).As<FunctionParametersNode>();
-            BlockStatementNode def = this.Visit(ctx.block()).As<BlockStatementNode>();
+                @params = this.Visit(ctx.parlist()).As<FuncParamsNode>();
+            BlockStatNode def = this.Visit(ctx.block()).As<BlockStatNode>();
             return @params is null 
-                ? new LambdaFunctionNode(ctx.Start.Line, def) 
-                : new LambdaFunctionNode(ctx.Start.Line, @params, def);
+                ? new LambdaFuncExprNode(ctx.Start.Line, def) 
+                : new LambdaFuncExprNode(ctx.Start.Line, @params, def);
         }
 
         public override ASTNode VisitParlist([NotNull] ParlistContext ctx)
@@ -177,26 +177,26 @@ namespace LICC.AST.Builders.Lua
             // TODO variadic?
 
             if (ctx.namelist() is null)
-                return new FunctionParametersNode(ctx.Start.Line);
+                return new FuncParamsNode(ctx.Start.Line);
 
-            IdentifierListNode nameList = this.Visit(ctx.namelist()).As<IdentifierListNode>();
-            IEnumerable<FunctionParameterNode> @params = nameList.Identifiers.Select(i => {
-                var declSpecs = new DeclarationSpecifiersNode(i.Line);
-                var decl = new VariableDeclaratorNode(i.Line, i);
-                return new FunctionParameterNode(ctx.Start.Line, declSpecs, decl);
+            IdListNode nameList = this.Visit(ctx.namelist()).As<IdListNode>();
+            IEnumerable<FuncParamNode> @params = nameList.Identifiers.Select(i => {
+                var declSpecs = new DeclSpecsNode(i.Line);
+                var decl = new VarDeclNode(i.Line, i);
+                return new FuncParamNode(ctx.Start.Line, declSpecs, decl);
             });
-            return new FunctionParametersNode(ctx.Start.Line, @params);
+            return new FuncParamsNode(ctx.Start.Line, @params);
         }
 
         public override ASTNode VisitTableconstructor([NotNull] TableconstructorContext ctx)
-            => ctx.fieldlist() is { } ? this.Visit(ctx.fieldlist()) : new DictionaryInitializerNode(ctx.Start.Line);
+            => ctx.fieldlist() is { } ? this.Visit(ctx.fieldlist()) : new DictInitNode(ctx.Start.Line);
 
         public override ASTNode VisitFieldlist([NotNull] FieldlistContext ctx)
         {
             if (IsExpressionList(ctx))
-                return new ExpressionListNode(ctx.Start.Line, ctx.field().Select(c => this.Visit(c).As<ExpressionNode>()));
+                return new ExprListNode(ctx.Start.Line, ctx.field().Select(c => this.Visit(c).As<ExprNode>()));
             else if (IsAssignmentList(ctx))
-                return new DictionaryInitializerNode(ctx.Start.Line, ctx.field().Select(c => this.Visit(c).As<DictionaryEntryNode>()));
+                return new DictInitNode(ctx.Start.Line, ctx.field().Select(c => this.Visit(c).As<DictEntryNode>()));
             else
                 throw new NotSupportedException("Mixed assignment and expressions in table constructor");
 
@@ -216,9 +216,9 @@ namespace LICC.AST.Builders.Lua
             if (ctx.exp().Length > 1)
                 throw new NotImplementedException("Table assignment expression field");
 
-            var key = new IdentifierNode(ctx.Start.Line, ctx.NAME().GetText());
-            ExpressionNode value = this.Visit(ctx.exp().Single()).As<ExpressionNode>();
-            return new DictionaryEntryNode(ctx.Start.Line, key, value);
+            var key = new IdNode(ctx.Start.Line, ctx.NAME().GetText());
+            ExprNode value = this.Visit(ctx.exp().Single()).As<ExprNode>();
+            return new DictEntryNode(ctx.Start.Line, key, value);
         }
     }
 }

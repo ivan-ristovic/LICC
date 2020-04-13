@@ -43,9 +43,9 @@ namespace LICC.AST.Builders.Pseudo
         }
 
         public override ASTNode VisitUnit([NotNull] UnitContext ctx)
-            => new SourceComponentNode(ctx.NAME().GetText(), this.Visit(ctx.block()));
+            => new SourceNode(ctx.NAME().GetText(), this.Visit(ctx.block()));
 
         public override ASTNode VisitBlock([NotNull] BlockContext ctx)
-            => new BlockStatementNode(ctx.Start.Line, ctx.statement().Select(s => this.Visit(s)));
+            => new BlockStatNode(ctx.Start.Line, ctx.statement().Select(s => this.Visit(s)));
     }
 }

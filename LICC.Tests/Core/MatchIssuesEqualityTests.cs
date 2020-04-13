@@ -28,8 +28,8 @@ namespace LICC.Tests.Core
             Assert.That(new MatchIssues().AddError(e1).AddError(e2), Is.EqualTo(new MatchIssues().AddError(e1).AddError(e2)));
             Assert.That(new MatchIssues().AddError(e1).AddError(e2), Is.Not.EqualTo(new MatchIssues().AddError(e2).AddError(e1)));
 
-            var w1 = new MissingDeclarationWarning(new DeclarationSpecifiersNode(1), new VariableDeclaratorNode(1, new IdentifierNode(1, "x")));
-            var w2 = new MissingDeclarationWarning(new DeclarationSpecifiersNode(1), new VariableDeclaratorNode(1, new IdentifierNode(1, "y")));
+            var w1 = new MissingDeclarationWarning(new DeclSpecsNode(1), new VarDeclNode(1, new IdNode(1, "x")));
+            var w2 = new MissingDeclarationWarning(new DeclSpecsNode(1), new VarDeclNode(1, new IdNode(1, "y")));
             Assert.That(new MatchIssues().AddWarning(w1), Is.Not.EqualTo(new MatchIssues()));
             Assert.That(new MatchIssues().AddWarning(w1), Is.Not.EqualTo(new MatchIssues().AddWarning(w2)));
             Assert.That(new MatchIssues().AddWarning(w1), Is.EqualTo(new MatchIssues().AddWarning(w1)));

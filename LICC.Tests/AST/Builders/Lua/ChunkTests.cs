@@ -11,15 +11,15 @@ namespace LICC.Tests.AST.Builders.Lua
         [Test]
         public void BasicTest()
         {
-            SourceComponentNode tu = this.AssertTranslationUnit(@"x = 2");
-            Assert.That(tu.Children.Single(), Is.InstanceOf<DeclarationStatementNode>());
+            SourceNode tu = this.AssertTranslationUnit(@"x = 2");
+            Assert.That(tu.Children.Single(), Is.InstanceOf<DeclStatNode>());
         }
 
         [Test]
         public void FunctionTest()
         {
-            SourceComponentNode tu = this.AssertTranslationUnit(@"function two() return 2 end");
-            Assert.That(tu.Children.Single(), Is.InstanceOf<FunctionDefinitionNode>());
+            SourceNode tu = this.AssertTranslationUnit(@"function two() return 2 end");
+            Assert.That(tu.Children.Single(), Is.InstanceOf<FuncDefNode>());
         }
 
 
