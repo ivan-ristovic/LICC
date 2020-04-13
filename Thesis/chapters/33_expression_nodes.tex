@@ -18,3 +18,11 @@ Unutar izraza se mogu naći i pozivi funkcija. Naravno, pretpostavljamo da funkc
 
 Operatori opisani u \ref{sec:MyASTOperatorNodes} mogu vezati sve tipove iznad i formirati složenije izraze. U zavisnosti od broja izraza koje operator vezuje, izraze možemo podeliti na unarne i binarne. Unarne izraze nadograđuju unarni operatori dok su binarni izrazi dobijeni primenom binarnog operatora na dva izraza. U zavisnosti od tipa binarnog operatora (videti sliku \ref{fig:OperatorNodes}), binarne izraze delimo na sličan način. Naravno, svaki od tipova binarnog izraza zahteva odgovarajući tip binarnog operatora. Slično se može uraditi i za unarne izraze, ali takođe i napraviti podela na prefiksne i postfiksne, ali to nije rađeno u ovom radu zarad pojednostavljenja - u nekim jezicima su određeni operatori prefiksni dok su u nekim ti isti operatori postfiksni pa stoga nije pravljena ova podela.
 
+Na slici \ref{fig:MyASTExampleExpressions} se mogu videti kreirani AST za izraz \texttt{(3 + 5) << f(4)}. Ovaj izraz poprima isti oblik bez obzira na to koji je programski jezik u pitanju, ali iako se sintaksa bude razlikovala ili operatori budu imali drugi simbol, logika operatora opisana putem funkcije će biti ista.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.6]{images/ast_expr.png}
+\caption{AST generisan od izraza \texttt{(3 + 5) << f(4)}.}
+\label{fig:MyASTExampleExpressions}
+\end{figure}
