@@ -10,6 +10,7 @@ namespace LICC.Visualizer
     {
         private readonly NodeControlCreator cc;
         private readonly ASTNode ast;
+        private readonly TrackBar tb;
 
 
         public VisualizeForm(ASTNode ast)
@@ -21,7 +22,19 @@ namespace LICC.Visualizer
             this.Text = "AST Visualizer";
             this.Size = new Size(1200, 800);
             this.AutoScroll = true;
-            this.AutoScrollMinSize = new Size(25000, 20000);
+            this.AutoScrollMinSize = new Size(6000, 20000);
+
+            this.tb = new TrackBar() {
+                Minimum = 100,
+                Maximum = 100000,
+                Value = 1200,
+                LargeChange = 1000,
+                SmallChange = 100,
+                Parent = this,
+                Location = new Point(10, 10),
+                Size = new Size(300, 20)
+            };
+            this.tb.ValueChanged += this.ResizeScroll;
         }
 
 
@@ -33,6 +46,12 @@ namespace LICC.Visualizer
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             e.Graphics.TranslateTransform(this.AutoScrollPosition.X, this.AutoScrollPosition.Y);
             this.Draw(e.Graphics, this.ast, 0, this.AutoScrollMinSize.Width, 10);
+        }
+
+        protected override void OnScroll(ScrollEventArgs se)
+        {
+            base.OnScroll(se);
+            this.tb.Location = new Point(10, 10);
         }
 
 
@@ -49,6 +68,13 @@ namespace LICC.Visualizer
             }
 
             return loc;
+        }
+
+        private void ResizeScroll(object? sender, EventArgs e)
+        {
+            if (sender is TrackBar sb)
+                this.AutoScrollMinSize = new Size(sb.Value, this.AutoScrollMinSize.Height);
+            this.Invalidate();
         }
     }
 }
