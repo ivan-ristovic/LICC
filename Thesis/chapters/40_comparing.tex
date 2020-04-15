@@ -1,25 +1,110 @@
-\section{Čvorovi naredbi}
-\label{sec:MyASTStatementNodes}
+\chapter{Poređenje opštih AST-ova}
+\label{chp:ASTComparing}
 
+Jedna od motivacija svođenja AST-ova imperativnih jezika na isti nivo apstrakcije (opisane u poglavlju \ref{chp:MyAST}) može biti poređenje istih. Pritom, s obzirom da su u pitanju stabla, moguće je koristiti razne algoritme za poređenje stabala (ali i grafova uopšte) nad ovakvim apstrakcijama. Pritom, potrebno je i definisati kriterijum poređenja - moguće je porediti kodove po njihovoj \emph{strukturnoj ekvivalentnosti}, \emph{semantičkoj ekvivalentnosti} itd. U ovom radu je od značaja semantička ekvivalentnost, koja je u opštem slučaju neodlučiv problem. Međutim, ukoliko se ograničimo samo na strukturno slične kodove, moguće je dobiti smislene rezultate, nalik na one dobijene u ovom radu. Precizna definicija strukturne ekvivalentnosti se obično definiše u terminima sličnosti strukture njihovih AST-ova. Naravno, postoje kodovi koji nisu strukturno ekvivalentni ali su semantički ekvivalentni - takvi slučajevi se onda neće razmatrati zbog neispunjenosti pretpostavke o strukturnoj ekvivalentnosti. 
 
-\iffalse
-Bez obzira na to koje koncepte izdvojimo iz stabla parsiranja kao relevantne, potrebno ih je sve unifikovati. Slično kao što svi čvorovi stabla parsiranja moraju biti derivati određene klase (pošto svi elementi stabla moraju biti istog tipa), isto treba da važi i za apstraktno sintaksno stablo. Stoga, postojaće apstraktna bazna klasa sa informacijama koje svaki čvor AST-a poseduje. Ova bazna klasa će u nastavku rada biti referisana kao \texttt{ASTNode}. Pošto je AST stablo u kome svaki čvor može imati proizvoljno mnogo potomaka, očekivano je da svaki čvor ima pokazivače na potomke gde svaki pokazivač pokazuje na objekat tipa \texttt{ASTNode} (jasno, ne možemo napraviti objekat klase \texttt{ASTNode} jer je klasa apstraktna ali konkretizacije klase \texttt{ASTNode} su takođe tipa \texttt{ASTNode}). Radi jednostavnosti implementacije nekih operacija biće dodatno dostupna informacija o roditelju svakog čvora putem pokazivača na roditelja, tipa \texttt{ASTNode} - koreni čvor neće imati postavljenu vrednost ovog polja. Dodatne informacije recimo mogu biti linija u izvornom fajlu gde se nalazi kod koji odgovara čvoru. Dodatno, možemo definisati i metode koje treba svaki čvor da poseduje - recimo metode za serijalizaciju \footnote{Serijalizacija predstavlja proces konvertovanja stanja objekta u niz bajtova da bi se isti sačuvao u bazu podataka, fajl, ili pak prosledio nekom drugom programu.}. 
+Pretpostavka strukturne ekvivalentnosti je velika i značajno smanjuje prostor stabala koja se mogu porediti. Međutim, danas je od velikog značaja verifikacija programa dobijenih sitnim refaktorisanjem već postojećh i verifikovanih programa. Slično, prepisivanja programa sa jednog programskog jezika na drugi su jako uobičajena, pa je i u takvim situacijama implicitno prisutna strukturna ekvivalentnost (naravno, ovo zavisi od konkretnih programskih jezika ali se u praksi često smanjuje napor tako što se održava struktura koda, barem u inicijalnim verzijama). 
 
-\begin{figure}[h!]
-    \centering
-        \includegraphics[scale=0.9]{images/c_code_decomposition.png}
-    \caption{Vizualni prikaz delova C koda na osnovu pravila iz C11 gramatike.}
-    \label{fig:CDecomposition}
+U ovom radu je poređenje vršeno pomoću algoritma pisanog specifično za rad sa opštim AST-ovima. Grubi opis algoritma za poređenje, u daljem tekstu \emph{upoređivač}, će biti opisan u nastavku.
+Upoređivač se sastoji od više upoređivača koje porede specifične tipove čvorova. Za početak, potreban je jedan adapter koji će dobiti pokazivače na korene stabala koje je potrebno uporediti. S obzirom da tipovi čvorova mogu biti različiti, potrebno je proveriti da li su tipovi isti. Ukoliko to nije slučaj, prijavljuje se greška i rad se prekida. U protivnom, potrebno je odrediti tip čvorova i pozvati konkretni algoritam za poređenje. Ovaj početni postupak je opisan na slici \ref{fig:ComparisonAlgorithmPseudo}.
+
+\begin{figure}[!h]
+\begin{algorithmic}[1]
+\Procedure{Uporedi}{$n_1$, $n_2$}
+\If{\emph{$n_1$ i $n_2$ su istog tipa}}
+    \State $t \gets$ \emph{tip čvora $n_1$}
+    \If{\emph{postoji definisan upoređivač za čvorove tipa} $t$}
+        \State $U \gets$ \emph{upoređivač čvorova tipa $t$}
+        \State \textbf{return} U$(n_1, n_2)$
+    \Else
+        \If{$\text{BrojDece}(n_1) \neq \text{BrojDece}(n_2)$}d
+            \State \textbf{return} \texttt{False}
+        \Else        
+            \If{$\text{Atributi}(n_1) \neq \text{Atributi}(n_2)$}
+                \State \textbf{return} \texttt{False}
+            \EndIf
+            \For{$i \gets 0$ \textbf{to} $\text{BrojDece}(n_1)$}
+                \State $d_1 \gets $ \emph{dete $i$ čvora $n_1$}
+                \State $d_2 \gets $ \emph{dete $i$ čvora $n_2$}
+                \If{\textbf{not} $\text{Uporedi}(d_1, d_2)$}
+                    \State \textbf{return} \texttt{False}
+                \EndIf
+            \EndFor
+            \State \textbf{return} \texttt{True}
+        \EndIf
+    \EndIf
+\Else
+    \State \textbf{return} \texttt{False}
+\EndIf
+\EndProcedure
+\end{algorithmic}
+\caption{Osnovni upoređivač AST-ova.}
+\label{fig:ComparisonAlgorithmPseudo}
 \end{figure}
 
-Krenućemo od gramatika strogo tipiziranih proceduralnih programskih jezika, a zatim ćemo koncepte proširiti i na skript jezie. U strogo tipiziranim proceduralnim jezicima se mogu identifikovati koncepti koji se pojavljuju u većini od njih. Na primeru C koda sa slike \ref{fig:CDecomposition} moguće je videti neke od njih. Koncepti naredbe i izraza su očigledni i nisu prikazani. Nije očigledno, doduše, kako bi se deklaracija promenljive dekomponovala na delove. Po C11 gramatici, svaka deklaracija se sastoji od \emph{specifikatora deklaracije} i od jednog ili više \emph{deklaratora}. Specifikatori deklaracije su ključne reči koje bliže određuju deklaraciju - modifikatori vidljivosti ili specifikatori pristupa. Deklaratori uvode simbol (\emph{identifikator}) u kontekst kao promenljivu, niz ili funkciju. Deklaratori, u zavisnosti od toga šta se deklariše, mogu imati razne delove. Ukoliko je u pitanju deklarator promenljive, sastoje se i od opcionog izraza za inicijalizaciju, u daljem tekstu \emph{inicijalizator}. Ukoliko je u pitanju deklarator funkcije, nakon identifikatora se nalazi lista parametara funkcije - svaki od njih se sastoji od specifikatora deklaracije i deklaratora.
+Podrazumevana implementacija poređenja može biti takva da se uporede atributi svih čvorova a zatim za svako dete prvog čvora uporedi sa odgovarajućim detetom drugog čvora (ukoliko imaju isti broj dece). Ako neki par dece nije jednak, onda ni njihovi roditelji nisu jednaki. Za većinu tipova čvorova ovakvo poređenje je dovoljno. Međutim, poređenje blokova naredbi je fundamentalno drugačije i za njega će biti definisane posebne procedure poređenja opisane u nastavku.
 
-\begin{figure}[h!]
-    \centering
-        \includegraphics[scale=0.7]{images/uml/ASTNode.jpg}
-    \caption{UML klasni dijagram direktnih derivata klase \texttt{ASTNode}.}
-    \label{fig:UMLASTNode}
+
+\section{Upoređivač blokova naredbi}
+\label{sec:ASTComparingBlocks}
+
+Podrazumevani način poređenja dece svakog čvora nije dobar u opštem slučaju za blokove naredbi jer je osetljiv na izmene redosleda naredbi - na primer promena redosleda deklaracija. Stoga je upoređivač blokova potrebno napisati tako da može da uoči semantičku ekvivalentnost iako naredbe nisu nužno jednake.
+
+Ideja se zasniva na poređenju vrednosti promenljivih na kraju svakog bloka naredbi. AST-ovi će se porediti paralelno - \emph{blok-po-blok}. Naredbe svakog bloka će se izvršavati i pratiće se izmene vrednosti promenljivih deklarisanih do sada (bilo u trenutnom bloku, ili u roditeljskim blokovima). Na kraju svakog bloka će se izvršiti provera vrednosti promenljivih - svaka razlika će se prijaviti kao potencijalna greška a finalnu presudu o jednakosti će dati analiza jednakosti promenljivih. Ceo algoritam je prikazan na slici \ref{fig:ComparisonAlgorithmBlocksPseudo}.
+
+\begin{figure}[!h]
+\begin{algorithmic}[1]
+\Procedure{UporediBlokove}{$b_1$, $b_2$}
+\State $gds_1 \gets $ \emph{deklarisani simboli svim roditeljskom blokovima bloka $b_1$}
+\State $gds_2 \gets $ \emph{deklarisani simboli svim roditeljskom blokovima bloka $b_2$}
+\State $lds_1 \gets $ \emph{lokalni deklarisani simboli u bloku $b_1$}
+\State $lds_2 \gets $ \emph{lokalni deklarisani simboli u bloku $b_2$}
+\State $\text{UporediSimbole}(lds_1, lds_2)$
+\State $\text{IzvrsiNaredbe}(b_1, b_2, lds_1, lds_2, gds_1, gds_2)$
+\State \textbf{return} $\text{UporediSimbole}(lds_1, lds_2) \wedge \text{UporediSimbole}(gds_1, gds_2)$
+\EndProcedure
+\end{algorithmic}
+\caption{Upoređivač blokova naredbi.}
+\label{fig:ComparisonAlgorithmBlocksPseudo}
 \end{figure}
 
-Ovakvi koncepti će biti inspiracija za definisanje AST čvorova, pri čemu će detaljno biti opisana motivacija i razlozi za odabir nekih specifičnosti. Na slici \ref{fig:UMLASTNode} se mogu videti osnovni apstraktni derivate klase \texttt{ASTNode}. Jedini direktna konkretizacija klase \texttt{ASTNode} koja nije apstraktna je klasa \texttt{SourceComponentNode}. Svrha ove klase je da označi granice izvornih fajlova u slučaju da se pravi AST od više različitih izvornih fajlova - stoga će koren svakog AST-a kreiranog od izvornog fajla biti tipa \texttt{SourceComponentNode} \footnote{Navedeno važi pod pretpostavkom da se stablo parsiranja čitavog izvornog fajla prevodi u AST. Biće dozvoljeno i prevođenje delova izvornog fajla, u kom slučaju koren AST-a neće biti tipa \texttt{SourceComponentNode}.}. U nastavku će biti detaljno opisane apstraktne konkretizacije klase \texttt{ASTNode} sa slike \ref{fig:UMLASTNode} zajedno sa svojim derivatima. 
-\endif
+U opisu algoritma se koristi termin \emph{simbol} koji se sastoji od identifikatora i simboličke vrednosti promenljive. Lokalni simboli su deklarisani unutar bloka a globalni su svi simboli koji su deklarisani van trenutnog bloka a koji se mogu referisati iz njega. Pronalaženje deklarisanih simbola u bloku podrazumeva prolaz kroz naredbe bloka i registrovanje svih naredbi deklaracije, uzimanje deklaratora iz tih naredbi i, uzimajući u obzir opcione inicijalizatore, kreiranje simboličke vrednosti za upravo deklarisani identifikator. Identifikator i opcioni simbolički inicijalizator čine \emph{simbol}. Ovo se radi za sve naredbe u bloku i rezultat je skup deklarisanih simbola.
+
+Nakon uzimanja svih lokalnih simbola, proverava se njihova ekvivalentnost putem funkcije \texttt{UporediSimbole}. Ova funkcija proverava da li se svi simboli iz prvog bloka nalaze u drugom i prijavljuje ukoliko neki simboli fale ili ukoliko postoje simboli koji su "višak". Zatim, za simbole koji se nalaze u oba skupa, proverava njihove simboličke vrednosti. Ukoliko su te vrednosti različite, prijavljuje se potencijalna greška i na osnovu toga da li je bilo konflikata vraća se istinitosna vrednost. Razlog zašto se ta vrednost ne koristi dalje nakon prvog poziva ove funkcije je ta što različiti inicijalizatori ne znače nužno da postoji problem. Problem postoji ukoliko se nakon izvršavanja svih naredbi i dalje dešavaju konflikti u simboličkim vrednostima za neke promenljive. 
+
+Procedura \texttt{IzvrsiNaredbe} izvršava paralelno naredbe iz oba bloka i na osnovu toga koje su naredbe u pitanju može i da ažurira simboličke vrednosti unutar skupova deklarisanih simbola. Pseudokod ove procedure je dat na slici \ref{fig:ComparisonAlgorithmBlocksPseudo1}. Naredbe se za svaki blok izvršavaju dok se ne naiđe do naredbe iz koje se može izvući novi blok - to mogu biti naredbe grananja, iteracije, definicije funkcija i slično. Sve naredbe do pronađene naredbe koja sadrži blok se izvršavaju. Procedura \texttt{IzvrsiNaredbu} će proveriti tip naredbe i, u zavisnosti od toga da li je to naredba dodele, eventualno promeniti vrednosti u skupovima prosleđenih simbola. Nakon izvršavanja svih naredbi do pronađene naredbe koja sadrži blok, izvlači se blok iz nje (to isto se radi i za drugi blok). Kad se blokovi izvuku, rekurzivno se poziva upoređivač blokova za izvučene blokove. Po povratku iz rekurzivnog poziva nastavlja se isti postupak sve dok se ne izvrše sve naredbe. Pritom, algoritam se oslanja na strukturnu sličnost - ukoliko jedan AST ima više blokova na istoj dubini u odnosu na drugi, poređenje možda neće uočiti neke greške.
+
+\begin{figure}[!h]
+\begin{algorithmic}[1]
+\Procedure{IzvrsiNaredbe}{$b_1$, $b_2, lds_1, lds_2, gds_1, gds_2$}
+\State $n_1 \gets $ \emph{niz naredbi bloka $b_1$} 
+\State $n_2 \gets $ \emph{niz naredbi bloka $b_2$}
+\State $i \gets j \gets 0$
+\State $ni \gets nj \gets 0$
+\State $eq \gets $ \texttt{True}
+\While{\texttt{True}}
+    \State $ni \gets $ \emph{indeks prve naredbe koja sadrži blok u nizu $n_1$ počev od indeksa $ni$}
+    \State $nj \gets $ \emph{indeks prve naredbe koja sadrži blok u nizu $n_2$ počev od indeksa $nj$}
+    \For{$naredba \in \{n_1[x] \mid x \in [i..ni]\}$}
+        \State $\text{IzvrsiNaredbu}(naredba, lds_1, gds_1)$
+    \EndFor
+    \State $i \gets i + ni$
+    \For{$naredba \in \{n_2[x] \mid x \in [j..nj]\}$}
+        \State $\text{IzvrsiNaredbu}(naredba, lds_2, gds_2)$
+    \EndFor
+    \State $j \gets j + nj$
+    \If{$i > \text{Duzina}(n_1) \vee j > \text{Duzina}(n_2)$}
+        \State \textbf{prekini petlju}
+    \EndIf
+    \State $nb_1 \gets $ \emph{izvuci blok iz naredbe $n_1[i]$}
+    \State $nb_2 \gets $ \emph{izvuci blok iz naredbe $n_2[j]$}
+    \State $eq \gets eq \wedge \text{UporediBlokove}(nb_1, nb_2)$
+    \State $i \gets i + 1$
+    \State $j \gets j + 1$
+\EndWhile
+\State \textbf{return} $eq$
+\EndProcedure
+\end{algorithmic}
+\caption{Upoređivač blokova naredbi.}
+\label{fig:ComparisonAlgorithmBlocksPseudo1}
+\end{figure}

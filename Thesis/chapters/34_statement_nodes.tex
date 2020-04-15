@@ -24,8 +24,6 @@ Složene naredbe se sastoje od više drugih naredbi (ne nužno samo od jednostav
 
 Naredbe uslovnog grananja se sastoje od \emph{uslova}, koji može biti relacioni ili logički izraz, naredbe koja se vrši ukoliko je uslov ispunjen, i opciono naredbe koja se izvršava ako uslov nije ispunjen. Rezultat uslovnog izraza, iako mora biti istinitosna vrednost, je dozvoljeno da bude bilo kog tipa (dakle nema ograničenja samo na relacione i logičke izraze) iz razloga što određeni programski jezici dozvoljavaju automatsku konverziju brojevnih tipova u logički (C). Štaviše, nekada je moguća i implicitna konverzija određenih tipova u logički tip definisanjem implicitnih operatora konverzije (C\#). Zato će u apstrakciji uslov biti bilo koji izraz. Što se \emph{then} i \emph{else} grana tiče, one mogu biti bilo koje naredbe, ali zarad konzistentnosti će obe biti blokovi naredbi. 
 
-Naredbe iteracije imaju raznovrsni oblik u programskim jezicima. Najčešće podržane naredbe iteracije su \emph{for}, \emph{while} i \emph{foreach} petlje. U opštem slučaju, dovoljno je koristiti samo jedan tip petlji, ali zarad jednostavnosti i prisutnosti ovih tipova u velikoj većini programskih jezika oba će biti podržana. Ostali tipovi petlji, kao što su \emph{do-while} ili \emph{repeat-until} petlje, će se svoditi na njih. \emph{do-while} petlja se može svesti na \emph{while} petlju jednostavnim ponavljanjem tela petlje pre same petlje i kreiranjem obične \emph{while} petlje sa istim uslovom i telom. Slično se može uraditi i za \emph{repeat-until} petlju, s tim što je potrebno samo negirati uslov u dobijenoj \emph{while} petlji. Ovaj proces je ilustrovan na slici \ref{fig:ASTIterationStatements}.
-
 \begin{figure}[h!]
 \begin{lstlisting}
 do                               something()
@@ -39,4 +37,13 @@ until (condition)                    something()
 \end{lstlisting}
 \caption{Procedura svođenja ređih tipova petlji (levo) na \emph{while} petlju (desno) prikazana u pseudo-jeziku.}
 \label{fig:ASTIterationStatements}
+\end{figure}
+
+Naredbe iteracije imaju raznovrsni oblik u programskim jezicima. Najčešće podržane naredbe iteracije su \emph{for}, \emph{while} i \emph{foreach} petlje. U opštem slučaju, dovoljno je koristiti samo jedan tip petlji, ali zarad jednostavnosti i prisutnosti ovih tipova u velikoj većini programskih jezika oba će biti podržana. Ostali tipovi petlji, kao što su \emph{do-while} ili \emph{repeat-until} petlje, će se svoditi na njih. \emph{do-while} petlja se može svesti na \emph{while} petlju jednostavnim ponavljanjem tela petlje pre same petlje i kreiranjem obične \emph{while} petlje sa istim uslovom i telom. Slično se može uraditi i za \emph{repeat-until} petlju, s tim što je potrebno samo negirati uslov u dobijenoj \emph{while} petlji. Ovaj proces je ilustrovan na slici \ref{fig:ASTIterationStatements}.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.7]{images/ast_stat.png}
+\caption{AST naredbe grananja.}
+\label{fig:MyASTExampleStatement}
 \end{figure}
