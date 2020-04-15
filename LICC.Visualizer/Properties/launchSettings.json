@@ -2,7 +2,7 @@
   "profiles": {
     "LICC.Visualizer": {
       "commandName": "Project",
-      "commandLineArgs": "-v Samples/2.lua"
+      "commandLineArgs": "-v Samples/4.c"
     }
   }
 }

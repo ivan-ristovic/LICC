@@ -33,7 +33,7 @@ namespace LICC.Core.Comparers
 
         public override MatchIssues Compare(BlockStatNode n1, BlockStatNode n2)
         {
-            Log.Debug("Comparing block: `{SrcBlock}` with block: `{DstBlock}", n1, n2);
+            Log.Debug("Comparing block: `{SrcBlock}` with block: `{DstBlock}`", n1, n2);
 
             this.localSrcSymbols = this.GetDeclaredSymbols(n1, src: true);
             this.localDstSymbols = this.GetDeclaredSymbols(n2, src: false);
