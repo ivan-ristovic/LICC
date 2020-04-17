@@ -1,21 +1,27 @@
-\iffalse
-Bez obzira na to koje koncepte izdvojimo iz stabla parsiranja kao relevantne, potrebno ih je sve unifikovati. Slično kao što svi čvorovi stabla parsiranja moraju biti derivati određene klase (pošto svi elementi stabla moraju biti istog tipa), isto treba da važi i za apstraktno sintaksno stablo. Stoga, postojaće apstraktna bazna klasa sa informacijama koje svaki čvor AST-a poseduje. Ova bazna klasa će u nastavku rada biti referisana kao \texttt{ASTNode}. Pošto je AST stablo u kome svaki čvor može imati proizvoljno mnogo potomaka, očekivano je da svaki čvor ima pokazivače na potomke gde svaki pokazivač pokazuje na objekat tipa \texttt{ASTNode} (jasno, ne možemo napraviti objekat klase \texttt{ASTNode} jer je klasa apstraktna ali konkretizacije klase \texttt{ASTNode} su takođe tipa \texttt{ASTNode}). Radi jednostavnosti implementacije nekih operacija biće dodatno dostupna informacija o roditelju svakog čvora putem pokazivača na roditelja, tipa \texttt{ASTNode} - koreni čvor neće imati postavljenu vrednost ovog polja. Dodatne informacije recimo mogu biti linija u izvornom fajlu gde se nalazi kod koji odgovara čvoru. Dodatno, možemo definisati i metode koje treba svaki čvor da poseduje - recimo metode za serijalizaciju \footnote{Serijalizacija predstavlja proces konvertovanja stanja objekta u niz bajtova da bi se isti sačuvao u bazu podataka, fajl, ili pak prosledio nekom drugom programu.}. 
+\chapter{Implementacija}
+\label{chp:Implementation}
+
+U ovom poglavlju će biti opisana implementacija pratećeg projekta pisanog u programskom jeziku C\# 8.0, koristeći \emph{.NET Core 3.1} radni okvir. C\# je izabran zbog lakoće implementacije velikih projekata i velike podrške paketa koji se mogu preuzeti, od kojih su korišćeni \emph{ANTLR Runtime} paket koji daje potrebne biblioteke za rad sa ANTLR generisanim parserima i \emph{Math.NET Symbolics} paket za rad sa simboličkim vrednostima. Rezultat je konzolna aplikacija koja može da generiše, serijalizuje ili prikaže opšti AST za dati izvorni kod, ali i da ga poredi sa drugim AST-om. Čitav projekat je dostupan u potpunosti na servisu GitHub.
+
+Jedan od glavnih ciljeva aplikacije je modularnost i jednostavna proširivost. U tom duhu se, pored implementacije klasa potrebnih za predstavljanje opšte AST apstrakcije, pruža i interfejs za kreiranje adaptera koji će od proizvoljnog stabla parsiranja kreirati opšti AST. Kao primer, adapteri su kreirani za programske jezike C i Lua, a za primer potpune slobode u izboru gramatike je kreirana gramatika za pseudo-jezik i adapter za istu, što dozvoljava poređenje kodova sa specifikacijom datom u obliku pseudo-koda. Čitav projekat se sastoji od više komponenti, od kojih su značajnije:
+\begin{itemize}
+    \item Biblioteka koja pruža klase za rad sa opštom AST apstrakcijom
+    \item Komponenta za kreiranje AST od proizvoljne gramatike putem adaptera - moguća serijalizacija u JSON
+    \item Komponenta za semantičko poređenje AST-ova - konzolni izlaz
+    \item Komponenta za vizualizaciju AST-ova - GUI prikaz AST-a
+    \item Korisnički interfejs - komandna linija
+\end{itemize}
+
+Čitava arhitektura data putem UML dijagrama komponenti se može videti na slici \ref{fig:ImplementationComponents}. Osim implementacije same aplikacije, svaki funkcionalni deo projekta prate i testovi jedinica koda, koji su povezani sa GitHub alatom za neprekidnu integraciju.
 
 \begin{figure}[h!]
-    \centering
-        \includegraphics[scale=0.9]{images/c_code_decomposition.png}
-    \caption{Vizualni prikaz delova C koda na osnovu pravila iz C11 gramatike.}
-    \label{fig:CDecomposition}
+\centering
+\includegraphics[scale=0.7]{images/uml/ComponentDiagram.png}
+\caption{UML dijagram komponenti implementacije.}
+\label{fig:ImplementationComponents}
 \end{figure}
 
-Krenućemo od gramatika strogo tipiziranih proceduralnih programskih jezika, a zatim ćemo koncepte proširiti i na skript jezie. U strogo tipiziranim proceduralnim jezicima se mogu identifikovati koncepti koji se pojavljuju u većini od njih. Na primeru C koda sa slike \ref{fig:CDecomposition} moguće je videti neke od njih. Koncepti naredbe i izraza su očigledni i nisu prikazani. Nije očigledno, doduše, kako bi se deklaracija promenljive dekomponovala na delove. Po C11 gramatici, svaka deklaracija se sastoji od \emph{specifikatora deklaracije} i od jednog ili više \emph{deklaratora}. Specifikatori deklaracije su ključne reči koje bliže određuju deklaraciju - modifikatori vidljivosti ili specifikatori pristupa. Deklaratori uvode simbol (\emph{identifikator}) u kontekst kao promenljivu, niz ili funkciju. Deklaratori, u zavisnosti od toga šta se deklariše, mogu imati razne delove. Ukoliko je u pitanju deklarator promenljive, sastoje se i od opcionog izraza za inicijalizaciju, u daljem tekstu \emph{inicijalizator}. Ukoliko je u pitanju deklarator funkcije, nakon identifikatora se nalazi lista parametara funkcije - svaki od njih se sastoji od specifikatora deklaracije i deklaratora.
+Biblioteka za kreiranje AST kao i komponenta za kreiranje AST-a od proizvoljne gramatike će biti opisane u odeljku \ref{sec:ImplementationMyAST}, dok će komponenta za semantičko poređenje biti opisana u odeljku \ref{sec:ImplementationComparer}.
 
-\begin{figure}[h!]
-    \centering
-        \includegraphics[scale=0.7]{images/uml/ASTNode.jpg}
-    \caption{UML klasni dijagram direktnih derivata klase \texttt{ASTNode}.}
-    \label{fig:UMLASTNode}
-\end{figure}
-
-Ovakvi koncepti će biti inspiracija za definisanje AST čvorova, pri čemu će detaljno biti opisana motivacija i razlozi za odabir nekih specifičnosti. Na slici \ref{fig:UMLASTNode} se mogu videti osnovni apstraktni derivate klase \texttt{ASTNode}. Jedini direktna konkretizacija klase \texttt{ASTNode} koja nije apstraktna je klasa \texttt{SourceComponentNode}. Svrha ove klase je da označi granice izvornih fajlova u slučaju da se pravi AST od više različitih izvornih fajlova - stoga će koren svakog AST-a kreiranog od izvornog fajla biti tipa \texttt{SourceComponentNode} \footnote{Navedeno važi pod pretpostavkom da se stablo parsiranja čitavog izvornog fajla prevodi u AST. Biće dozvoljeno i prevođenje delova izvornog fajla, u kom slučaju koren AST-a neće biti tipa \texttt{SourceComponentNode}.}. U nastavku će biti detaljno opisane apstraktne konkretizacije klase \texttt{ASTNode} sa slike \ref{fig:UMLASTNode} zajedno sa svojim derivatima. 
-\endif
+\input{chapters/51_impl_myast.tex}
+\input{chapters/52_impl_comparer.tex}
