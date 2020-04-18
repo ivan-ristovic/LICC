@@ -21,7 +21,7 @@ namespace LICC.AST.Nodes
         public override string GetText() => $"{this.Identifier} = {this.Initializer?.GetText() ?? "{}"}";
     }
 
-    public sealed class DictEntryNode : ASTNode
+    public sealed class DictEntryNode : ExprNode
     {
         [JsonIgnore]
         public IdNode Key => this.Children[0].As<IdNode>();
@@ -37,7 +37,7 @@ namespace LICC.AST.Nodes
         public override string GetText() => $"'{this.Key}' : {this.Value}";
     }
 
-    public sealed class DictInitNode : ExprNode
+    public sealed class DictInitNode : ExprListNode
     {
         [JsonIgnore]
         public IEnumerable<DictEntryNode> Entries => this.Children.Cast<DictEntryNode>();

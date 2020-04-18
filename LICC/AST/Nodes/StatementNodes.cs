@@ -232,7 +232,7 @@ namespace LICC.AST.Nodes
         }
     }
 
-    public sealed class ThrowStatNode : StatNode
+    public sealed class ThrowStatNode : SimpleStatNode
     {
         [JsonIgnore]
         ExprNode Expression => this.Children.Single().As<ExprNode>();

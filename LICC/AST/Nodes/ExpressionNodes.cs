@@ -16,7 +16,7 @@ namespace LICC.AST.Nodes
             : base(line, children) { }
     }
 
-    public sealed class ExprListNode : ExprNode
+    public class ExprListNode : ExprNode
     {
         [JsonIgnore]
         public IEnumerable<ExprNode> Expressions => this.Children.Cast<ExprNode>();

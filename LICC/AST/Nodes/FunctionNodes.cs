@@ -83,7 +83,7 @@ namespace LICC.AST.Nodes
         public bool IsVariadic => this.Declarator.IsVariadic;
 
         [JsonIgnore]
-        public DeclKeywords Keywords => this.Specifiers.Keywords;
+        public Modifiers Keywords => this.Specifiers.Modifiers;
 
         [JsonIgnore]
         public FuncParamsNode? ParametersNode => this.Declarator.ParametersNode;

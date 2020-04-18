@@ -173,24 +173,24 @@ namespace LICC.AST.Builders.Lua
                 if (ignoreInitializer) {
                     return initializer switch
                     {
+                        DictInitNode dict => new DictDeclNode(identifier.Line, identifier),
                         ExprListNode expList => new ArrDeclNode(
                             identifier.Line,
                             identifier,
                             LitExprNode.FromString(expList.Line, expList.Expressions.Count().ToString())
                         ),
-                        DictInitNode dict => new DictDeclNode(identifier.Line, identifier),
                         ExprNode varInit => new VarDeclNode(identifier.Line, identifier),
                         _ => throw new SyntaxException("Unexpected variable initializer"),
                     };
                 } else {
                     return initializer switch
                     {
+                        DictInitNode dict => new DictDeclNode(identifier.Line, identifier, dict),
                         ExprListNode expList => new ArrDeclNode(
                             identifier.Line,
                             identifier,
-                            new ArrInitListNode(expList.Line, expList.Expressions)
+                            new ArrInitExprNode(expList.Line, expList.Expressions)
                         ),
-                        DictInitNode dict => new DictDeclNode(identifier.Line, identifier, dict),
                         ExprNode varInit => new VarDeclNode(identifier.Line, identifier, varInit),
                         _ => throw new SyntaxException("Unexpected variable initializer"),
                     };

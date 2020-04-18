@@ -76,7 +76,7 @@ namespace LICC.Tests.AST.Builders.C
             Assert.That(f.Definition.Children, Has.Exactly(2).Items);
             Assert.That(f.ParametersNode, Is.Not.Null);
             Assert.That(f.IsVariadic);
-            Assert.That(f.Parameters?.First().Specifiers.Keywords.QualifierFlags, Is.EqualTo(QualifierFlags.Const));
+            Assert.That(f.Parameters?.First().Specifiers.Modifiers.QualifierFlags, Is.EqualTo(QualifierFlags.Const));
         }
 
         [Test]
