@@ -8,7 +8,7 @@ Jedan od glavnih ciljeva aplikacije je modularnost i jednostavna proširivost. U
     \item Biblioteka koja pruža klase za rad sa opštom AST apstrakcijom
     \item Komponenta za kreiranje AST od proizvoljne gramatike putem adaptera - moguća serijalizacija u JSON
     \item Komponenta za semantičko poređenje AST-ova - konzolni izlaz
-    \item Komponenta za vizualizaciju AST-ova - GUI prikaz AST-a
+    \item Komponenta za vizualizaciju AST-ova - grafički prikaz AST-a u obliku stabla
     \item Korisnički interfejs - komandna linija
 \end{itemize}
 
@@ -16,12 +16,13 @@ Jedan od glavnih ciljeva aplikacije je modularnost i jednostavna proširivost. U
 
 \begin{figure}[h!]
 \centering
-\includegraphics[scale=0.7]{images/uml/ComponentDiagram.png}
+\includegraphics[scale=0.8]{images/uml/ComponentDiagram.png}
 \caption{UML dijagram komponenti implementacije.}
 \label{fig:ImplementationComponents}
 \end{figure}
 
 Biblioteka za kreiranje AST kao i komponenta za kreiranje AST-a od proizvoljne gramatike će biti opisane u odeljku \ref{sec:ImplementationMyAST}, dok će komponenta za semantičko poređenje biti opisana u odeljku \ref{sec:ImplementationComparer}.
+
 
 \input{chapters/51_impl_myast.tex}
 \input{chapters/52_impl_comparer.tex}
