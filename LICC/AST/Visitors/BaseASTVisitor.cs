@@ -21,7 +21,7 @@ namespace LICC.AST.Visitors
         public virtual TResult Visit(ArithmOpNode node) => this.VisitChildren(node);
         public virtual TResult Visit(ArrAccessExprNode node) => this.VisitChildren(node);
         public virtual TResult Visit(ArrDeclNode node) => this.VisitChildren(node);
-        public virtual TResult Visit(ArrInitListNode node) => this.VisitChildren(node);
+        public virtual TResult Visit(ArrInitExprNode node) => this.VisitChildren(node);
         public virtual TResult Visit(AssignExprNode node) => this.VisitChildren(node);
         public virtual TResult Visit(AssignOpNode node) => this.VisitChildren(node);
         public virtual TResult Visit(BinaryLogicOpNode node) => this.VisitChildren(node);

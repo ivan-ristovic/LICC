@@ -80,7 +80,7 @@ namespace LICC.Core.Comparers.Common
         public List<Expr?>? SymbolicInitializers { get; set; }
 
 
-        public DeclaredArraySymbol(string name, DeclSpecsNode specs, ArrDeclNode decl, ExprNode? size = null, ArrInitListNode? init = null)
+        public DeclaredArraySymbol(string name, DeclSpecsNode specs, ArrDeclNode decl, ExprNode? size = null, ArrInitExprNode? init = null)
             : base(name, specs, decl)
         {
             this.ArrayDeclarator = decl;

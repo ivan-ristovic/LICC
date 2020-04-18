@@ -112,12 +112,12 @@ namespace LICC.AST.Builders.C
                     if (init is null)
                         return new ArrDeclNode(ctx.Start.Line, arr.IdentifierNode);
                     else
-                        return new ArrDeclNode(ctx.Start.Line, arr.IdentifierNode, init.As<ArrInitListNode>());
+                        return new ArrDeclNode(ctx.Start.Line, arr.IdentifierNode, init.As<ArrInitExprNode>());
                 } else {
                     if (init is null)
                         return new ArrDeclNode(ctx.Start.Line, arr.IdentifierNode, arr.SizeExpression);
                     else
-                        return new ArrDeclNode(ctx.Start.Line, arr.IdentifierNode, arr.SizeExpression, init.As<ArrInitListNode>());
+                        return new ArrDeclNode(ctx.Start.Line, arr.IdentifierNode, arr.SizeExpression, init.As<ArrInitExprNode>());
                 }
             }
 
@@ -127,22 +127,18 @@ namespace LICC.AST.Builders.C
         public override ASTNode VisitInitializerList([NotNull] InitializerListContext ctx)
         {
             if (ctx.designation() is { })
-                throw new NotImplementedException();
+                throw new NotImplementedException("designation");
 
             ExprNode init = this.Visit(ctx.initializer()).As<ExprNode>();
 
             if (ctx.initializerList() is null)
-                return new ArrInitListNode(ctx.Start.Line, init);
+                return new ArrInitExprNode(ctx.Start.Line, init);
 
-            ArrInitListNode list = this.Visit(ctx.initializerList()).As<ArrInitListNode>();
-            return new ArrInitListNode(ctx.Start.Line, list.Initializers.Concat(new[] { init }));
+            ArrInitExprNode list = this.Visit(ctx.initializerList()).As<ArrInitExprNode>();
+            return new ArrInitExprNode(ctx.Start.Line, list.Initializers.Concat(new[] { init }));
         }
 
-        public override ASTNode VisitInitializer([NotNull] InitializerContext ctx)
-        {
-            if (ctx.assignmentExpression() is { })
-                return this.Visit(ctx.assignmentExpression());
-            return this.Visit(ctx.initializerList());
-        }
+        public override ASTNode VisitInitializer([NotNull] InitializerContext ctx) 
+            => ctx.assignmentExpression() is { } ? this.Visit(ctx.assignmentExpression()) : this.Visit(ctx.initializerList());
     }
 }

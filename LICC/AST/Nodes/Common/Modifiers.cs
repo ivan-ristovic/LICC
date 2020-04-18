@@ -7,9 +7,9 @@ using System.Text;
 namespace LICC.AST.Nodes.Common
 {
     [DebuggerDisplay("{AccessModifiers} | {QualifierFlags}")]
-    public sealed class DeclKeywords : IEquatable<DeclKeywords>
+    public sealed class Modifiers : IEquatable<Modifiers>
     {
-        public static DeclKeywords Parse(string specs)
+        public static Modifiers Parse(string specs)
         {
             AccessModifiers access = AccessModifiers.Unspecified;
 
@@ -35,7 +35,7 @@ namespace LICC.AST.Nodes.Common
             if (split.Contains("volatile"))
                 qualifiers |= QualifierFlags.Volatile;
 
-            return new DeclKeywords(access, qualifiers);
+            return new Modifiers(access, qualifiers);
         }
 
 
@@ -43,7 +43,7 @@ namespace LICC.AST.Nodes.Common
         public QualifierFlags QualifierFlags { get; }
 
 
-        private DeclKeywords(AccessModifiers accessModifiers, QualifierFlags qualifiers)
+        private Modifiers(AccessModifiers accessModifiers, QualifierFlags qualifiers)
         {
             this.AccessModifiers = accessModifiers;
             this.QualifierFlags = qualifiers;
@@ -69,9 +69,9 @@ namespace LICC.AST.Nodes.Common
         }
 
         public override bool Equals(object? obj) 
-            => this.Equals(obj as DeclKeywords);
+            => this.Equals(obj as Modifiers);
 
-        public bool Equals([AllowNull] DeclKeywords other)
+        public bool Equals([AllowNull] Modifiers other)
         {
             if (other is null)
                 return false;

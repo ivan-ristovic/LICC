@@ -18,9 +18,9 @@ namespace LICC.AST.Nodes
             : base(line, children) { }
     }
 
-    public class DeclSpecsNode : ASTNode
+    public class DeclSpecsNode : DeclarationNode
     {
-        public DeclKeywords Keywords { get; }
+        public Modifiers Modifiers { get; }
         public string TypeName { get; }
 
         [JsonIgnore]
@@ -42,7 +42,7 @@ namespace LICC.AST.Nodes
         public DeclSpecsNode(int line, string specs, string type)
             : base(line)
         {
-            this.Keywords = DeclKeywords.Parse(specs);
+            this.Modifiers = Modifiers.Parse(specs);
             this.TypeName = type.Trim();
             TypeCode? typeCode = Types.TypeCodeFor(this.TypeName);
             if (typeCode is null)
@@ -55,7 +55,7 @@ namespace LICC.AST.Nodes
         public override string GetText()
         {
             var sb = new StringBuilder();
-            string declSpecs = this.Keywords.ToString();
+            string declSpecs = this.Modifiers.ToString();
             if (!string.IsNullOrWhiteSpace(declSpecs))
                 sb.Append(declSpecs).Append(' ');
             sb.Append(this.TypeName);
@@ -71,7 +71,7 @@ namespace LICC.AST.Nodes
                 return false;
 
             var decl = other as DeclSpecsNode;
-            if (!this.Keywords.Equals(decl?.Keywords))
+            if (!this.Modifiers.Equals(decl?.Modifiers))
                 return false;
             return this.Type is { } ? this.Type.Equals(decl?.Type) : this.TypeName.Equals(decl?.TypeName);
         }

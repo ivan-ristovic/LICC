@@ -21,8 +21,8 @@ namespace LICC.Tests.AST.Builders.Common
                 : ast.As<DeclStatNode>();
             Assert.That(decl.Children, Has.Exactly(2).Items);
             Assert.That(decl.Specifiers.Parent, Is.EqualTo(decl));
-            Assert.That(decl.Specifiers.Keywords.AccessModifiers, Is.EqualTo(access));
-            Assert.That(decl.Specifiers.Keywords.QualifierFlags, Is.EqualTo(qualifiers));
+            Assert.That(decl.Specifiers.Modifiers.AccessModifiers, Is.EqualTo(access));
+            Assert.That(decl.Specifiers.Modifiers.QualifierFlags, Is.EqualTo(qualifiers));
             Assert.That(decl.Specifiers.TypeName, Is.EqualTo(type));
             Assert.That(decl.Specifiers.Children, Is.Empty);
             return decl;
@@ -93,8 +93,8 @@ namespace LICC.Tests.AST.Builders.Common
 
             static (QualifierFlags, string, string) ExtractParamInfo(FuncParamNode param)
             {
-                Assert.That(param.Specifiers.Keywords.AccessModifiers, Is.EqualTo(AccessModifiers.Unspecified));
-                QualifierFlags qf = param.Specifiers.Keywords.QualifierFlags;
+                Assert.That(param.Specifiers.Modifiers.AccessModifiers, Is.EqualTo(AccessModifiers.Unspecified));
+                QualifierFlags qf = param.Specifiers.Modifiers.QualifierFlags;
                 string type = param.Specifiers.TypeName;
                 return (qf, type, param.Declarator.Identifier);
             }

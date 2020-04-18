@@ -70,7 +70,7 @@ namespace LICC.Tests.Core.Comparer
                             new ArrDeclNode(1, 
                                 new IdNode(1, "arr"), 
                                 new LitExprNode(1, 3),
-                                new ArrInitListNode(1, 
+                                new ArrInitExprNode(1, 
                                     new LitExprNode(1, 1),
                                     new LitExprNode(1, 2),
                                     new LitExprNode(1, 3)
@@ -126,7 +126,7 @@ namespace LICC.Tests.Core.Comparer
                             new ArrDeclNode(1,
                                 new IdNode(1, "arr"),
                                 new LitExprNode(1, 3),
-                                new ArrInitListNode(1,
+                                new ArrInitExprNode(1,
                                     new LitExprNode(1, 1),
                                     new LitExprNode(1, 2),
                                     new LitExprNode(1, 3)
@@ -217,7 +217,7 @@ namespace LICC.Tests.Core.Comparer
                             new ArrDeclNode(1,
                                 new IdNode(1, "arr"),
                                 new LitExprNode(1, 3),
-                                new ArrInitListNode(1,
+                                new ArrInitExprNode(1,
                                     new LitExprNode(1, 1),
                                     new LitExprNode(1, 2),
                                     new LitExprNode(1, 3)
@@ -263,7 +263,7 @@ namespace LICC.Tests.Core.Comparer
                             new ArrDeclNode(1,
                                 new IdNode(1, "arr"),
                                 new LitExprNode(1, 3),
-                                new ArrInitListNode(1,
+                                new ArrInitExprNode(1,
                                     new LitExprNode(1, 1),
                                     new LitExprNode(1, 2),
                                     new LitExprNode(1, 3)
@@ -377,7 +377,7 @@ namespace LICC.Tests.Core.Comparer
                             new ArrDeclNode(1,
                                 new IdNode(1, "arr"),
                                 new LitExprNode(1, 3),
-                                new ArrInitListNode(1,
+                                new ArrInitExprNode(1,
                                     new LitExprNode(1, 1),
                                     new LitExprNode(1, 2),
                                     new LitExprNode(1, 3)
@@ -399,7 +399,7 @@ namespace LICC.Tests.Core.Comparer
                             new ArrDeclNode(1,
                                 new IdNode(1, "arr"),
                                 new LitExprNode(1, 3),
-                                new ArrInitListNode(1,
+                                new ArrInitExprNode(1,
                                     new LitExprNode(1, 1),
                                     new LitExprNode(1, 2),
                                     new LitExprNode(1, 3)
@@ -702,7 +702,7 @@ namespace LICC.Tests.Core.Comparer
                         new DeclListNode(1, 
                             new ArrDeclNode(1, 
                                 new IdNode(1, "x"), 
-                                new ArrInitListNode(1, 
+                                new ArrInitExprNode(1, 
                                     new LitExprNode(1, 3),
                                     new IdNode(1, "x"),
                                     new LitExprNode(1, 3)
@@ -718,14 +718,14 @@ namespace LICC.Tests.Core.Comparer
                 new SourceNode(
                     new DeclStatNode(1,
                         new DeclSpecsNode(1, "float"),
-                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "y"), new ArrInitListNode(1)))
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "y"), new ArrInitExprNode(1)))
                     ),
                     new DeclStatNode(1,
                         new DeclSpecsNode(1, "int"),
                         new DeclListNode(1,
                             new ArrDeclNode(1,
                                 new IdNode(1, "x"),
-                                new ArrInitListNode(1,
+                                new ArrInitExprNode(1,
                                     new LitExprNode(1, 2),
                                     new IdNode(1, "x"),
                                     new LitExprNode(1, 2)
@@ -747,7 +747,7 @@ namespace LICC.Tests.Core.Comparer
                         new DeclListNode(1,
                             new ArrDeclNode(1,
                                 new IdNode(1, "x"),
-                                new ArrInitListNode(1,
+                                new ArrInitExprNode(1,
                                     new LitExprNode(1, 2),
                                     new IdNode(1, "x"),
                                     new LitExprNode(1, 3)
@@ -757,20 +757,20 @@ namespace LICC.Tests.Core.Comparer
                     ),
                     new DeclStatNode(1,
                         new DeclSpecsNode(1, "float"),
-                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "y"), new ArrInitListNode(1, new LitExprNode(1, 3))))
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "y"), new ArrInitExprNode(1, new LitExprNode(1, 3))))
                     )
                 ),
                 new SourceNode(
                     new DeclStatNode(1,
                         new DeclSpecsNode(1, "float"),
-                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "y"), new ArrInitListNode(1)))
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "y"), new ArrInitExprNode(1)))
                     ),
                     new DeclStatNode(1,
                         new DeclSpecsNode(1, "int"),
                         new DeclListNode(1,
                             new ArrDeclNode(1,
                                 new IdNode(1, "x"),
-                                new ArrInitListNode(1,
+                                new ArrInitExprNode(1,
                                     new LitExprNode(1, 2),
                                     new ArithmExprNode(1, 
                                         new LitExprNode(1, 3), 
@@ -796,7 +796,7 @@ namespace LICC.Tests.Core.Comparer
                         new DeclListNode(1,
                             new ArrDeclNode(1,
                                 new IdNode(1, "x"),
-                                new ArrInitListNode(1,
+                                new ArrInitExprNode(1,
                                     new LitExprNode(1, 2),
                                     new ArithmExprNode(1,
                                         new ArithmExprNode(1,
@@ -816,21 +816,21 @@ namespace LICC.Tests.Core.Comparer
                         new DeclSpecsNode(1, "float"),
                         new DeclListNode(1, new ArrDeclNode(1, 
                             new IdNode(1, "y"), 
-                            new ArrInitListNode(1, new LitExprNode(1, 3), new LitExprNode(1, 4)))
+                            new ArrInitExprNode(1, new LitExprNode(1, 3), new LitExprNode(1, 4)))
                         )
                     )
                 ),
                 new SourceNode(
                     new DeclStatNode(1,
                         new DeclSpecsNode(1, "float"),
-                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "y"), new ArrInitListNode(1)))
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "y"), new ArrInitExprNode(1)))
                     ),
                     new DeclStatNode(1,
                         new DeclSpecsNode(1, "int"),
                         new DeclListNode(1,
                             new ArrDeclNode(1,
                                 new IdNode(1, "x"),
-                                new ArrInitListNode(1,
+                                new ArrInitExprNode(1,
                                     new LitExprNode(1, 2),
                                     new ArithmExprNode(1,
                                         new LitExprNode(1, 3),
@@ -934,7 +934,7 @@ namespace LICC.Tests.Core.Comparer
                         new DeclListNode(1,
                             new ArrDeclNode(1,
                                 new IdNode(1, "x"),
-                                new ArrInitListNode(1,
+                                new ArrInitExprNode(1,
                                     new LitExprNode(1, 3),
                                     new IdNode(1, "x"),
                                     new LitExprNode(1, 3)
@@ -954,14 +954,14 @@ namespace LICC.Tests.Core.Comparer
                 new SourceNode(
                     new DeclStatNode(1,
                         new DeclSpecsNode(1, "int"),
-                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "y"), new LitExprNode(1, 4), new ArrInitListNode(1)))
+                        new DeclListNode(1, new ArrDeclNode(1, new IdNode(1, "y"), new LitExprNode(1, 4), new ArrInitExprNode(1)))
                     ),
                     new DeclStatNode(1,
                         new DeclSpecsNode(1, "int"),
                         new DeclListNode(1,
                             new ArrDeclNode(1,
                                 new IdNode(1, "x"),
-                                new ArrInitListNode(1,
+                                new ArrInitExprNode(1,
                                     new LitExprNode(1, 2),
                                     new IdNode(1, "x"),
                                     new LitExprNode(1, 2)
@@ -979,7 +979,7 @@ namespace LICC.Tests.Core.Comparer
                     .AddError(new InitializerMismatchError("x", 1, "3", "2", 2))
                     .AddWarning(
                         new DeclSpecsMismatchWarning(
-                            new ArrDeclNode(1, new IdNode(1, "y"), new LitExprNode(1, 4), new ArrInitListNode(1)),
+                            new ArrDeclNode(1, new IdNode(1, "y"), new LitExprNode(1, 4), new ArrInitExprNode(1)),
                             new DeclSpecsNode(1, "float"),
                             new DeclSpecsNode(1, "int")
                         )
