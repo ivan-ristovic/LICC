@@ -2,7 +2,7 @@
   "profiles": {
     "LICC": {
       "commandName": "Project",
-      "commandLineArgs": "cmp Samples/eqtest1.c Samples/eqtest2.c -v"
+      "commandLineArgs": "ast Samples/sample.c -v"
     }
   }
 }

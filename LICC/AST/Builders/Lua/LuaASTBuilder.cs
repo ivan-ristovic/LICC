@@ -112,7 +112,7 @@ namespace LICC.AST.Builders.Lua
                         var tmpDeclSpecs = new DeclSpecsNode(block.Line);
                         var tmpDecl = new DeclStatNode(block.Line, tmpDeclSpecs, tmpDeclList);
                         nodes.Add(tmpDecl);
-                        foreach (string v in tmpDeclList.Declarations.Select(d => d.Identifier))
+                        foreach (string v in tmpDeclList.Declarators.Select(d => d.Identifier))
                             declaredVars.Add(v);
 
                         // Add tmp assignments

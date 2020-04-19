@@ -12,15 +12,29 @@ namespace LICC.AST.Builders.C
         public override ASTNode VisitDeclaration([NotNull] DeclarationContext ctx)
         {
             if (ctx.staticAssertDeclaration() is { } || ctx.initDeclaratorList() is null)
-                throw new NotImplementedException();
+                throw new NotImplementedException("static assert");
 
             DeclSpecsNode declSpecs = this.Visit(ctx.declarationSpecifiers()).As<DeclSpecsNode>();
-            DeclListNode var = this.Visit(ctx.initDeclaratorList()).As<DeclListNode>();
-            return new DeclStatNode(ctx.Start.Line, declSpecs, var);
+            DeclListNode declList = this.Visit(ctx.initDeclaratorList()).As<DeclListNode>();
+            if (declSpecs.TypeName.EndsWith("*")) {
+                string pointerFreeType = declSpecs.TypeName.Substring(0, declSpecs.TypeName.IndexOf("*"));
+                declSpecs = new DeclSpecsNode(declSpecs.Line, declSpecs.Modifiers.ToString(), pointerFreeType);
+                foreach (DeclNode decl in declList.Declarators)
+                    decl.Pointer = true;
+            }
+            return new DeclStatNode(ctx.Start.Line, declSpecs, declList);
         }
 
         public override ASTNode VisitDeclarator([NotNull] DeclaratorContext ctx)
-            => this.Visit(ctx.directDeclarator());
+        {
+            DeclNode decl = this.Visit(ctx.directDeclarator()).As<DeclNode>();
+            if (ctx.pointer() is { }) {
+                if (ctx.pointer().pointer() is { })
+                    throw new NotImplementedException("pointer+");
+                decl.Pointer = true;
+            }
+            return decl;
+        }
 
         public override ASTNode VisitDirectDeclarator([NotNull] DirectDeclaratorContext ctx)
         {
@@ -94,7 +108,7 @@ namespace LICC.AST.Builders.C
                 return new DeclListNode(ctx.Start.Line, decl);
 
             DeclListNode list = this.Visit(ctx.initDeclaratorList()).As<DeclListNode>();
-            return new DeclListNode(ctx.Start.Line, list.Declarations.Concat(new[] { decl }));
+            return new DeclListNode(ctx.Start.Line, list.Declarators.Concat(new[] { decl }));
         }
 
         public override ASTNode VisitInitDeclarator([NotNull] InitDeclaratorContext ctx)
@@ -138,7 +152,7 @@ namespace LICC.AST.Builders.C
             return new ArrInitExprNode(ctx.Start.Line, list.Initializers.Concat(new[] { init }));
         }
 
-        public override ASTNode VisitInitializer([NotNull] InitializerContext ctx) 
+        public override ASTNode VisitInitializer([NotNull] InitializerContext ctx)
             => ctx.assignmentExpression() is { } ? this.Visit(ctx.assignmentExpression()) : this.Visit(ctx.initializerList());
     }
 }

@@ -8,6 +8,7 @@ static void f(int a, const int b)
 	char* s = "abcd";
 	double w = 3.4 * 7.11 / 2.33;
 	float x = -1.3e-10f;
+	int p1 = 3, *p2 = &x;
 	unsigned int bitwise = ((1 << 10) | (1 << 5)) & (x ^ ~0);
 
 label:
