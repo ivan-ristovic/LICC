@@ -18,6 +18,8 @@ namespace LICC.AST.Nodes.Common
                 "~" => BitwiseNotPrimitive,
                 "++" => IncrementPrimitive,
                 "--" => DecrementPrimitive,
+                "*" => x => x,  // TODO
+                "&" => x => x,  // TODO
                 _ => throw new UnknownOperatorException(symbol)
             };
         }

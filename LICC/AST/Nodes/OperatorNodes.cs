@@ -23,19 +23,6 @@ namespace LICC.AST.Nodes
             => base.Equals(other) && this.Symbol.Equals((other as OpNode)?.Symbol);
     }
 
-    public abstract class BinaryOpNode : OpNode
-    {
-        [JsonIgnore]
-        public Func<object, object, object> ApplyTo { get; set; }
-
-
-        protected BinaryOpNode(int line, string symbol, Func<object, object, object> logic)
-            : base(line, symbol)
-        {
-            this.ApplyTo = logic;
-        }
-    }
-
     public sealed class UnaryOpNode : OpNode
     {
         public static UnaryOpNode FromSymbol(int line, string symbol)
@@ -47,6 +34,19 @@ namespace LICC.AST.Nodes
 
 
         public UnaryOpNode(int line, string symbol, Func<object, object> logic)
+            : base(line, symbol)
+        {
+            this.ApplyTo = logic;
+        }
+    }
+
+    public abstract class BinaryOpNode : OpNode
+    {
+        [JsonIgnore]
+        public Func<object, object, object> ApplyTo { get; set; }
+
+
+        protected BinaryOpNode(int line, string symbol, Func<object, object, object> logic)
             : base(line, symbol)
         {
             this.ApplyTo = logic;

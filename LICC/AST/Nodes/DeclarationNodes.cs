@@ -18,7 +18,7 @@ namespace LICC.AST.Nodes
             : base(line, children) { }
     }
 
-    public class DeclSpecsNode : DeclarationNode
+    public sealed class DeclSpecsNode : DeclarationNode
     {
         public Modifiers Modifiers { get; }
         public string TypeName { get; }
@@ -79,6 +79,8 @@ namespace LICC.AST.Nodes
 
     public abstract class DeclNode : DeclarationNode
     {
+        public bool Pointer { get; set; }
+
         [JsonIgnore]
         public IdNode IdentifierNode => this.Children.First().As<IdNode>();
 
@@ -91,12 +93,15 @@ namespace LICC.AST.Nodes
 
         public DeclNode(int line, IdNode identifier, IEnumerable<ASTNode> children)
             : base(line, new[] { identifier }.Concat(children)) { }
+
+
+        public override string GetText() => $"{(this.Pointer ? "*" : "")}{this.IdentifierNode.GetText()}";
     }
 
     public sealed class DeclListNode : DeclarationNode
     {
         [JsonIgnore]
-        public IEnumerable<DeclNode> Declarations => this.Children.Cast<DeclNode>();
+        public IEnumerable<DeclNode> Declarators => this.Children.Cast<DeclNode>();
 
 
         public DeclListNode(int line, IEnumerable<DeclNode> decls)
@@ -121,7 +126,7 @@ namespace LICC.AST.Nodes
             : base(line, identifier, initializer) { }
 
 
-        public override string GetText()
-            => this.Initializer is null ? this.Identifier : $"{this.Identifier} = {this.Initializer.GetText()}";
+        public override string GetText() 
+            => this.Initializer is { } ? $"{base.GetText()} = {this.Initializer.GetText()}" : base.GetText();
     }
 }

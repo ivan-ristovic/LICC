@@ -27,7 +27,7 @@ namespace LICC.AST.Nodes
 
 
         public override string GetText()
-            => $"{this.Identifier}({this.ParametersNode?.GetText() ?? ""})";
+            => $"{base.GetText()}({this.ParametersNode?.GetText() ?? ""})";
     }
 
     public sealed class LambdaFuncExprNode : ExprNode

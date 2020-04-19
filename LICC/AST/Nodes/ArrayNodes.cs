@@ -34,7 +34,7 @@ namespace LICC.AST.Nodes
 
         public override string GetText()
         {
-            var sb = new StringBuilder(this.Identifier);
+            var sb = new StringBuilder(base.GetText());
             sb.Append('[').Append(this.SizeExpression?.ToString() ?? "").Append(']');
             if (this.Initializer is { })
                 sb.Append(" = ").Append(this.Initializer.ToString());

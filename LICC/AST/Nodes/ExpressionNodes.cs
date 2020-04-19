@@ -48,7 +48,7 @@ namespace LICC.AST.Nodes
         public override string GetText() => string.Join(", ", this.Children.Select(c => c.GetText()));
     }
 
-    public class UnaryExprNode : ExprNode
+    public sealed class UnaryExprNode : ExprNode
     {
         [JsonIgnore]
         public UnaryOpNode Operator => this.Children[0].As<UnaryOpNode>();
@@ -59,6 +59,7 @@ namespace LICC.AST.Nodes
 
         public UnaryExprNode(int line, UnaryOpNode @operator, ExprNode operand)
             : base(line, @operator, operand) { }
+
 
         public override string GetText() => $"{this.Operator}({this.Operand})";
     }
