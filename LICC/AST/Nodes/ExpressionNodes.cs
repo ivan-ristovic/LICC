@@ -32,7 +32,7 @@ namespace LICC.AST.Nodes
         public override string GetText() => string.Join(", ", this.Children.Select(c => c.GetText()));
     }
 
-    public sealed class IdListNode : ExprNode
+    public sealed class IdListNode : ExprListNode
     {
         [JsonIgnore]
         public IEnumerable<IdNode> Identifiers => this.Children.Cast<IdNode>();
@@ -43,9 +43,6 @@ namespace LICC.AST.Nodes
 
         public IdListNode(int line, IEnumerable<IdNode> expressions)
             : base(line, expressions) { }
-
-
-        public override string GetText() => string.Join(", ", this.Children.Select(c => c.GetText()));
     }
 
     public sealed class UnaryExprNode : ExprNode
