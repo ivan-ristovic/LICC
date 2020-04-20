@@ -45,11 +45,11 @@ namespace LICC.Tests.AST.Builders.Common
 
             Assert.That(node.GotoLabel, Is.Null);
             if (expected is null) {
-                Assert.That(node.ReturnExpression, Is.Null);
+                Assert.That(node.ReturnExpr, Is.Null);
             } else {
-                Assert.That(node.ReturnExpression, Is.Not.Null);
-                if (node.ReturnExpression is { })
-                    Assert.That(ConstantExpressionEvaluator.Evaluate(node.ReturnExpression), Is.EqualTo(expected).Within(1e-10));
+                Assert.That(node.ReturnExpr, Is.Not.Null);
+                if (node.ReturnExpr is { })
+                    Assert.That(ConstantExpressionEvaluator.Evaluate(node.ReturnExpr), Is.EqualTo(expected).Within(1e-10));
             }
         }
     }
