@@ -72,13 +72,13 @@ Bilo koji rezultat dedukcije rešenja upita predstavlja rezultat izvršavanja. D
 domains
     being = symbol 
 predicates
-    animal(being)       % sve životinje su bića
-    dog(being)          % svi psi su bića
-    die(being)          % svi bića umiru 
+    animal(being)        % sve životinje su ziva bica
+    dog(being)           % svi psi su ziva bica
+    die(being)           % svi ziva bica umiru 
 clauses
-    animal(X) :- dog(X) % svi psi su životinje
-    dog(fido).          % fido je pas
-    die(X) :- animal(X) % sve životinje umiru 
+    animal(X) :- dog(X)  % svi psi su zivotinje
+    dog(fido).           % fido je pas
+    die(X) :- animal(X)  % sve životinje umiru 
 \end{lstlisting}
 \caption{Primer koda pisanog po logičkoj paradigmi.}
 \label{fig:ParadigmLogical}
@@ -88,7 +88,7 @@ clauses
 \subsection{Funkcionalna paradigma}
 \label{subsec:ParadigmFunctional}
 
-\emph{Funkcionalna paradigma} posmatra sve potprograme kao funkcije u matematičkom smislu - uzimaju argumente i vraćaju jedinstven rezultat. Povratna vrednost zavisi isključivo od argumenata, što znači da je nebitan trenutak u kom je funkcija pozvana. Izračunvanja se vrše primenom aplikacije funkcija, kompozicijom funkcija i redukcijom. Primer koda pisanog po logičkoj paradigmi se može videti na slici \ref{fig:ParadigmFunctional}.
+\emph{Funkcionalna paradigma} posmatra sve potprograme kao funkcije u matematičkom smislu - uzimaju argumente i vraćaju jedinstven rezultat. Povratna vrednost zavisi isključivo od argumenata, što znači da je nebitan trenutak u kom je funkcija pozvana. Izračunvanja se vrše primenom aplikacije funkcija, kompozicijom funkcija i redukcijom. Primer koda pisanog po funkcionalnoj paradigmi se može videti na slici \ref{fig:ParadigmFunctional}.
 
 \begin{figure}[h!]
 \begin{lstlisting}
