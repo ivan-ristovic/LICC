@@ -33,7 +33,7 @@ namespace LICC.Core.Common
         }
 
 
-        public override string ToString() => $"{base.ToString()}| {this.FunctionName}({this.Order}) | exp: {this.Expected} | got: {this.Actual}";
+        public override string ToString() => $"{base.ToString()} | {this.FunctionName}({this.Order}) | exp: {this.Expected} | got: {this.Actual}";
 
         public override void LogIssue()
         {

@@ -16,7 +16,7 @@ namespace LICC.Core.Common
             this.Declarator = fdecl;
         }
 
-        public override string ToString() => $"{base.ToString()}| missing definition for function: {this.Declarator}";
+        public override string ToString() => $"{base.ToString()} | missing definition for function: {this.Declarator}";
 
         public override void LogIssue()
         {

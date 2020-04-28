@@ -17,7 +17,7 @@ namespace LICC.Core.Common
         }
 
 
-        public override string ToString() => $"{base.ToString()}| missing: {this.Declarator}";
+        public override string ToString() => $"{base.ToString()} | missing: {this.Declarator}";
 
         public override void LogIssue()
         {

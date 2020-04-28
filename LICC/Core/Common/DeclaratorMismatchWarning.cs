@@ -20,7 +20,7 @@ namespace LICC.Core.Common
         }
 
 
-        public override string ToString() => $"{base.ToString()}| exp: {this.Expected} | got: {this.Actual}";
+        public override string ToString() => $"{base.ToString()} | exp: {this.Expected} | got: {this.Actual}";
 
         public override void LogIssue()
         {

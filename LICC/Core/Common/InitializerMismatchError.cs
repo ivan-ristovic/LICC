@@ -24,7 +24,8 @@ namespace LICC.Core.Common
             this.Order = order;
         }
 
-        public override string ToString() => $"{base.ToString()}| {this.Identifier}[{this.Order}] | exp: {this.Expected} | got: {this.Actual}";
+        public override string ToString() 
+            => $"{base.ToString()}| {this.Identifier}{(this.Order is null ? "" : $"[{this.Order}]")} | exp: {this.Expected} | got: {this.Actual}";
 
         public override void LogIssue()
         {

@@ -17,7 +17,7 @@ namespace LICC.Core.Common
         }
 
 
-        public override string ToString() => $"{base.ToString()}| {this.Declarator.Identifier}";
+        public override string ToString() => $"{base.ToString()} | {this.Declarator.Identifier}";
 
         public override void LogIssue()
         {
