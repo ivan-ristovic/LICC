@@ -112,7 +112,7 @@ namespace LICC.AST.Builders.Lua
                         var tmpDeclSpecs = new DeclSpecsNode(block.Line);
                         var tmpDecl = new DeclStatNode(block.Line, tmpDeclSpecs, tmpDeclList);
                         nodes.Add(tmpDecl);
-                        foreach (string v in tmpDeclList.Declarations.Select(d => d.Identifier))
+                        foreach (string v in tmpDeclList.Declarators.Select(d => d.Identifier))
                             declaredVars.Add(v);
 
                         // Add tmp assignments
@@ -148,9 +148,9 @@ namespace LICC.AST.Builders.Lua
                         declaredVars.Remove(p);
                 } else if (stat is IfStatNode @if) {
                     IfStatNode alteredIf;
-                    var alteredThen = new BlockStatNode(@if.ThenStatement.Line, this.AddDeclarations(@if.ThenStatement.Children, declaredVars));
-                    if (@if.ElseStatement is { }) {
-                        var alteredElse = new BlockStatNode(@if.ElseStatement.Line, this.AddDeclarations(@if.ElseStatement.Children, declaredVars));
+                    var alteredThen = new BlockStatNode(@if.ThenStat.Line, this.AddDeclarations(@if.ThenStat.Children, declaredVars));
+                    if (@if.ElseStat is { }) {
+                        var alteredElse = new BlockStatNode(@if.ElseStat.Line, this.AddDeclarations(@if.ElseStat.Children, declaredVars));
                         alteredIf = new IfStatNode(@if.Line, @if.Condition, alteredThen, alteredElse);
                     } else {
                         alteredIf = new IfStatNode(@if.Line, @if.Condition, alteredThen);

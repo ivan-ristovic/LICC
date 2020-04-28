@@ -174,7 +174,7 @@ namespace LICC.Tests.AST.Builders.C
         {
             this.AssertVariableDeclarationList(
                 @"char* w1, w2 = ""abc"", w3 = ""aa"" + ""bb"";",
-                "char*",
+                "char",
                 AccessModifiers.Unspecified, QualifierFlags.None,
                 ("w1", null), ("w2", "abc"), ("w3", "aabb")
             );

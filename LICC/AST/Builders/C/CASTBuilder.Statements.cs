@@ -133,12 +133,12 @@ namespace LICC.AST.Builders.C
 
         public override ASTNode VisitJumpStatement([NotNull] JumpStatementContext ctx)
         {
-            JumpStatementType type = JumpStatementTypeConverter.FromString(ctx.children.First().GetText());
+            JumpStatType type = JumpStatementTypeConverter.FromString(ctx.children.First().GetText());
             switch (type) {
-                case JumpStatementType.Return:
+                case JumpStatType.Return:
                     ExprNode? expr = ctx.expression() is { } ? this.Visit(ctx.expression()).As<ExprNode>() : null;
                     return new JumpStatNode(ctx.Start.Line, expr);
-                case JumpStatementType.Goto:
+                case JumpStatType.Goto:
                     var label = new IdNode(ctx.Start.Line, ctx.Identifier().GetText());
                     return new JumpStatNode(ctx.Start.Line, label);
                 default:

@@ -38,7 +38,7 @@ namespace LICC.Tests.AST.Builders.Common
             DeclStatNode decl = this.AssertDeclarationNode(src, type, access, qualifiers);
 
             Assert.That(decl.DeclaratorList.Parent, Is.EqualTo(decl));
-            VarDeclNode var = decl.DeclaratorList.Declarations.Single().As<VarDeclNode>();
+            VarDeclNode var = decl.DeclaratorList.Declarators.Single().As<VarDeclNode>();
             Assert.That(var.Parent, Is.EqualTo(decl.DeclaratorList));
             Assert.That(var.Identifier, Is.EqualTo(identifier));
             Assert.That(var.Children.First().As<IdNode>().Identifier, Is.EqualTo(identifier));
@@ -59,7 +59,7 @@ namespace LICC.Tests.AST.Builders.Common
         {
             DeclStatNode decl = this.AssertDeclarationNode(src, type, access, qualifiers);
             Assert.That(decl.DeclaratorList.Parent, Is.EqualTo(decl));
-            Assert.That(decl.DeclaratorList.Declarations.Select(var => ExtractIdentifierAndValue(var)), Is.EqualTo(vars).Within(1e-6));
+            Assert.That(decl.DeclaratorList.Declarators.Select(var => ExtractIdentifierAndValue(var)), Is.EqualTo(vars).Within(1e-6));
 
 
             static (string, object?) ExtractIdentifierAndValue(DeclarationNode declNode)
@@ -80,7 +80,7 @@ namespace LICC.Tests.AST.Builders.Common
         {
             DeclStatNode decl = this.AssertDeclarationNode(src, returnType, access, qualifiers);
 
-            FuncDeclNode fdecl = decl.DeclaratorList.Declarations.Single().As<FuncDeclNode>();
+            FuncDeclNode fdecl = decl.DeclaratorList.Declarators.Single().As<FuncDeclNode>();
             Assert.That(fdecl.Identifier, Is.EqualTo(fname));
             Assert.That(fdecl.IsVariadic, Is.EqualTo(isVariadic));
             if (@params.Any()) {
@@ -111,7 +111,7 @@ namespace LICC.Tests.AST.Builders.Common
             DeclStatNode decl = this.AssertDeclarationNode(src, type, access, qualifiers);
 
             Assert.That(decl.DeclaratorList.Parent, Is.EqualTo(decl));
-            ArrDeclNode arr = decl.DeclaratorList.Declarations.First().As<ArrDeclNode>();
+            ArrDeclNode arr = decl.DeclaratorList.Declarators.First().As<ArrDeclNode>();
             Assert.That(arr.Parent, Is.EqualTo(decl.DeclaratorList));
             Assert.That(arr.Identifier, Is.EqualTo(arrName));
             Assert.That(arr.Children.First().As<IdNode>().Identifier, Is.EqualTo(arrName));
@@ -142,8 +142,8 @@ namespace LICC.Tests.AST.Builders.Common
                 .Cast<DeclStatNode>()
                 .ToList()
                 ;
-            IEnumerable<DeclNode> declarators = decls[0].DeclaratorList.Declarations
-                .Zip(decls[1].DeclaratorList.Declarations)
+            IEnumerable<DeclNode> declarators = decls[0].DeclaratorList.Declarators
+                .Zip(decls[1].DeclaratorList.Declarators)
                 .Select(FormDeclarator)
                 ;
             var declList = new DeclListNode(decls[0].DeclaratorList.Line, declarators);

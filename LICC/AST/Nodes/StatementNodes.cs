@@ -68,7 +68,7 @@ namespace LICC.AST.Nodes
         public override string GetText() => $"{{ {string.Join(" ", this.Children.Select(c => c.GetText()))} }}";
     }
 
-    public sealed class ExprStatNode : SimpleStatNode
+    public class ExprStatNode : SimpleStatNode
     {
         [JsonIgnore]
         public ExprNode Expression => this.Children.First().As<ExprNode>();
@@ -84,35 +84,35 @@ namespace LICC.AST.Nodes
         public ExprNode Condition => this.Children[0].As<ExprNode>();
 
         [JsonIgnore]
-        public StatNode ThenStatement => this.Children[1].As<StatNode>();
+        public StatNode ThenStat => this.Children[1].As<StatNode>();
 
         [JsonIgnore]
-        public StatNode? ElseStatement => this.Children.ElementAtOrDefault(2)?.As<StatNode>() ?? null;
+        public StatNode? ElseStat => this.Children.ElementAtOrDefault(2)?.As<StatNode>() ?? null;
 
 
-        public IfStatNode(int line, ExprNode condition, StatNode thenBlock)
-            : base(line, condition, thenBlock) { }
+        public IfStatNode(int line, ExprNode cond, StatNode @then)
+            : base(line, cond, @then) { }
 
-        public IfStatNode(int line, ExprNode condition, StatNode thenBlock, StatNode elseBlock)
-            : base(line, condition, thenBlock, elseBlock) { }
+        public IfStatNode(int line, ExprNode cond, StatNode @then, StatNode @else)
+            : base(line, cond, @then, @else) { }
 
 
         public override string GetText()
-            => $"if {this.Condition.GetText()} {this.ThenStatement.GetText()} {(this.ElseStatement is null ? "" : $"else {this.ElseStatement.GetText()}")}";
+            => $"if {this.Condition.GetText()} {this.ThenStat.GetText()} {(this.ElseStat is null ? "" : $"else {this.ElseStat.GetText()}")}";
     }
 
     public sealed class JumpStatNode : SimpleStatNode
     {
-        public JumpStatementType Type { get; set; }
+        public JumpStatType Type { get; set; }
 
         [JsonIgnore]
-        public ExprNode? ReturnExpression => this.Children.FirstOrDefault() as ExprNode ?? null;
+        public ExprNode? ReturnExpr => this.Children.FirstOrDefault() as ExprNode ?? null;
 
         [JsonIgnore]
         public IdNode? GotoLabel => this.Children.First() as IdNode ?? null;
 
 
-        public JumpStatNode(int line, JumpStatementType type)
+        public JumpStatNode(int line, JumpStatType type)
             : base(line)
         {
             this.Type = type;
@@ -121,22 +121,22 @@ namespace LICC.AST.Nodes
         public JumpStatNode(int line, ExprNode? returnExpr)
             : base(line, returnExpr is null ? Enumerable.Empty<ASTNode>() : new[] { returnExpr })
         {
-            this.Type = JumpStatementType.Return;
+            this.Type = JumpStatType.Return;
         }
 
         public JumpStatNode(int line, IdNode label)
             : base(line, label)
         {
-            this.Type = JumpStatementType.Goto;
+            this.Type = JumpStatType.Goto;
         }
 
 
         public override string GetText()
         {
             var sb = new StringBuilder(this.Type.ToStringToken());
-            if (this.Type == JumpStatementType.Return && this.ReturnExpression is { })
-                sb.Append(' ').Append(this.ReturnExpression.GetText());
-            else if (this.Type == JumpStatementType.Goto && this.GotoLabel is { })
+            if (this.Type == JumpStatType.Return && this.ReturnExpr is { })
+                sb.Append(' ').Append(this.ReturnExpr.GetText());
+            else if (this.Type == JumpStatType.Goto && this.GotoLabel is { })
                 sb.Append(' ').Append(this.GotoLabel.GetText());
             sb.Append(';');
             return sb.ToString();
@@ -173,8 +173,8 @@ namespace LICC.AST.Nodes
         public StatNode Statement => this.Children[1].As<StatNode>();
 
 
-        protected IterStatNode(int line, ExprNode condition, StatNode statement)
-            : base(line, condition, statement) { }
+        protected IterStatNode(int line, ExprNode cond, StatNode stat)
+            : base(line, cond, stat) { }
 
         protected IterStatNode(int line, IEnumerable<ASTNode> children)
             : base(line, children) { }
@@ -182,8 +182,8 @@ namespace LICC.AST.Nodes
 
     public sealed class WhileStatNode : IterStatNode
     {
-        public WhileStatNode(int line, ExprNode condition, StatNode statement)
-            : base(line, condition, statement) { }
+        public WhileStatNode(int line, ExprNode cond, StatNode stat)
+            : base(line, cond, stat) { }
 
 
         public override string GetText() => $"while {this.Condition.GetText()} {{ {this.Statement.GetText()} }}";
@@ -192,24 +192,24 @@ namespace LICC.AST.Nodes
     public sealed class ForStatNode : IterStatNode
     {
         public DeclarationNode? ForDeclaration { get; }
-        public ExprNode? InitExpression { get; }
-        public ExprNode? IncrementExpression { get; }
+        public ExprNode? InitExpr { get; }
+        public ExprNode? IncrExpr { get; }
 
 
-        public ForStatNode(int line, DeclarationNode decl, ExprNode? condition, ExprNode? expr, StatNode statement)
-            : base(line, new ASTNode[] { condition ?? new LitExprNode(line, true), statement })
+        public ForStatNode(int line, DeclarationNode decl, ExprNode? cond, ExprNode? expr, StatNode stat)
+            : base(line, new ASTNode[] { cond ?? new LitExprNode(line, true), stat })
         {
             this.ForDeclaration = decl;
-            this.InitExpression = null;
-            this.IncrementExpression = expr;
+            this.InitExpr = null;
+            this.IncrExpr = expr;
         }
 
-        public ForStatNode(int line, ExprNode? initExpr, ExprNode? condition, ExprNode? incExpr, StatNode statement)
-            : base(line, new ASTNode[] { condition ?? new LitExprNode(line, true), statement })
+        public ForStatNode(int line, ExprNode? initExpr, ExprNode? cond, ExprNode? incExpr, StatNode stat)
+            : base(line, new ASTNode[] { cond ?? new LitExprNode(line, true), stat })
         {
             this.ForDeclaration = null;
-            this.InitExpression = initExpr;
-            this.IncrementExpression = incExpr;
+            this.InitExpr = initExpr;
+            this.IncrExpr = incExpr;
         }
 
 
@@ -218,13 +218,13 @@ namespace LICC.AST.Nodes
             var sb = new StringBuilder("for (");
             if (this.ForDeclaration is { })
                 sb.Append(this.ForDeclaration.GetText());
-            else if (this.InitExpression is { })
-                sb.Append(this.InitExpression.GetText());
+            else if (this.InitExpr is { })
+                sb.Append(this.InitExpr.GetText());
             sb.Append("; ");
             sb.Append(this.Condition.GetText());
             sb.Append("; ");
-            if (this.IncrementExpression is { })
-                sb.Append(this.IncrementExpression.GetText());
+            if (this.IncrExpr is { })
+                sb.Append(this.IncrExpr.GetText());
             sb.Append(") { ");
             sb.Append(this.Statement.GetText());
             sb.Append(" }");
@@ -232,15 +232,10 @@ namespace LICC.AST.Nodes
         }
     }
 
-    public sealed class ThrowStatNode : SimpleStatNode
+    public sealed class ThrowStatNode : ExprStatNode
     {
-        [JsonIgnore]
-        ExprNode Expression => this.Children.Single().As<ExprNode>();
-
-
         public ThrowStatNode(int line, ExprNode exp)
             : base(line, exp) { }
-
 
         public override string GetText() => $"throw {this.Expression.GetText()}";
     }

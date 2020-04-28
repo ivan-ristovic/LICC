@@ -12,12 +12,12 @@ namespace LICC.Tests.AST.Builders.Common
             Assert.That(node, Is.Not.Null);
             this.AssertChildrenParentProperties(node);
             Assert.That(ConstantExpressionEvaluator.Evaluate(node.Condition), Is.EqualTo(condValue));
-            Assert.That(node.ThenStatement.Children, Has.Exactly(thenStatementCount).Items);
+            Assert.That(node.ThenStat.Children, Has.Exactly(thenStatementCount).Items);
             if (elseStatementCount is { }) {
-                Assert.That(node.ElseStatement, Is.Not.Null);
-                Assert.That(node.ElseStatement!.Children, Has.Exactly(elseStatementCount.Value).Items);
+                Assert.That(node.ElseStat, Is.Not.Null);
+                Assert.That(node.ElseStat!.Children, Has.Exactly(elseStatementCount.Value).Items);
             } else {
-                Assert.That(node.ElseStatement, Is.Null);
+                Assert.That(node.ElseStat, Is.Null);
             }
             return node;
         }

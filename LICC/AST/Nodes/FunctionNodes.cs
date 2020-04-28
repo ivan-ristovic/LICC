@@ -27,7 +27,7 @@ namespace LICC.AST.Nodes
 
 
         public override string GetText()
-            => $"{this.Identifier}({this.ParametersNode?.GetText() ?? ""})";
+            => $"{base.GetText()}({this.ParametersNode?.GetText() ?? ""})";
     }
 
     public sealed class LambdaFuncExprNode : ExprNode
@@ -103,7 +103,7 @@ namespace LICC.AST.Nodes
             => $"{this.Keywords} {this.ReturnTypeName} {this.Declarator.GetText()} {this.Definition.GetText()}";
     }
 
-    public sealed class FuncParamsNode : ASTNode
+    public sealed class FuncParamsNode : DeclarationNode
     {
         public bool IsVariadic { get; set; }
 
@@ -130,7 +130,7 @@ namespace LICC.AST.Nodes
             => base.Equals(other) && this.IsVariadic.Equals((other as FuncParamsNode)?.IsVariadic);
     }
 
-    public class FuncParamNode : ASTNode
+    public class FuncParamNode : DeclarationNode
     {
         [JsonIgnore]
         public DeclSpecsNode Specifiers => this.Children[0].As<DeclSpecsNode>();

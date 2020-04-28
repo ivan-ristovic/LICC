@@ -29,7 +29,7 @@ namespace LICC.AST.Builders.Lua
                 case ";":
                     return new EmptyStatNode(ctx.Start.Line);
                 case "break":
-                    return new JumpStatNode(ctx.Start.Line, JumpStatementType.Break);
+                    return new JumpStatNode(ctx.Start.Line, JumpStatType.Break);
                 case "goto":
                     var label = new IdNode(ctx.Start.Line, ctx.NAME().GetText());
                     return new JumpStatNode(ctx.Start.Line, label);

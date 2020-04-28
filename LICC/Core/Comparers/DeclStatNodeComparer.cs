@@ -22,7 +22,7 @@ namespace LICC.Core.Comparers
         {
             var symbols = new Dictionary<string, DeclaredSymbol>();
 
-            foreach (DeclNode decl in node.DeclaratorList.Declarations) {
+            foreach (DeclNode decl in node.DeclaratorList.Declarators) {
                 var symbol = DeclaredSymbol.From(node.Specifiers, decl);
                 if (symbol is DeclaredFunctionSymbol df && symbols.ContainsKey(df.Identifier)) {
                     if (!df.AddOverload(df.FunctionDeclarator))

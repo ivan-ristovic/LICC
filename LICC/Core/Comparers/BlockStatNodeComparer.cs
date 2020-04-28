@@ -151,7 +151,7 @@ namespace LICC.Core.Comparers
             Dictionary<string, DeclaredSymbol> symbols = src ? this.localSrcSymbols : this.localDstSymbols;
 
             foreach (DeclStatNode declStat in node.ChildrenOfType<DeclStatNode>()) {
-                foreach (DeclNode decl in declStat.DeclaratorList.Declarations) {
+                foreach (DeclNode decl in declStat.DeclaratorList.Declarators) {
                     var symbol = DeclaredSymbol.From(declStat.Specifiers, decl);
                     if (symbols.TryGetValue(decl.Identifier, out DeclaredSymbol? conf) || this.TryFindSymbol(decl.Identifier, src, out conf)) {
                         if (symbol is DeclaredFunctionSymbol overload && conf is DeclaredFunctionSymbol df) {

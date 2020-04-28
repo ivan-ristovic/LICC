@@ -83,8 +83,8 @@ Procedura \texttt{IzvrsiNaredbe} izvršava paralelno naredbe iz oba bloka i na o
 \State $ni \gets nj \gets 0$
 \State $eq \gets $ \texttt{True}
 \While{\texttt{True}}
-    \State $ni \gets $ \emph{indeks prve naredbe koja sadrži blok u nizu $n_1$ počev od indeksa $ni$}
-    \State $nj \gets $ \emph{indeks prve naredbe koja sadrži blok u nizu $n_2$ počev od indeksa $nj$}
+    \State $ni \gets $ \emph{indeks prve naredbe koja sadrži blok u $n_1$ počev od indeksa $ni$}
+    \State $nj \gets $ \emph{indeks prve naredbe koja sadrži blok u $n_2$ počev od indeksa $nj$}
     \For{$naredba \in \{n_1[x] \mid x \in [i..ni]\}$}
         \State $\text{IzvrsiNaredbu}(naredba, lds_1, gds_1)$
     \EndFor
