@@ -194,8 +194,31 @@ namespace LICC.Tests.Core.Integration
                     .AddWarning(
                         new MissingDeclarationWarning(new DeclSpecsNode(1, "integer"), new VarDeclNode(1, new IdNode(1, "tmp")))
                     )
-                    .AddError(new BlockEndValueMismatchError("x", 1, "y", "x"))
-                    .AddError(new BlockEndValueMismatchError("y", 1, "x", "y"))
+                    .AddError(new BlockEndValueMismatchError("x", 1, "param_y", "param_x"))
+                    .AddError(new BlockEndValueMismatchError("y", 1, "param_x", "param_y"))
+            );
+
+            this.Compare(
+                this.FromPseudoSource(@"
+                    algorithm Swap 
+                    begin
+                        procedure swap(x : integer, y : integer)
+                        begin
+                            declare integer tmp = x
+                            x = y  
+                            y = tmp
+                        end
+                    end
+                "),
+                this.FromCSource(@"
+                    void swap(int x, int y) {
+                        int tmp = x;
+                        y = tmp;
+                        x = y;
+                    }
+                "),
+                new MatchIssues()
+                    .AddError(new BlockEndValueMismatchError("x", 1, "param_y", "param_x"))
             );
         }
     }

@@ -4,6 +4,7 @@ using System.Linq;
 using LICC.AST.Nodes;
 using LICC.Core.Common;
 using LICC.Core.Comparers.Common;
+using Expr = MathNet.Symbolics.SymbolicExpression;
 
 namespace LICC.Core.Comparers
 {
@@ -49,8 +50,17 @@ namespace LICC.Core.Comparers
             var allSymbols = new Dictionary<string, DeclaredSymbol>(srcGlobals);
 
             IEnumerable<DeclaredSymbol> symbols = n1.Parameters.Select(p => DeclaredSymbol.From(p.Specifiers, p.Declarator));
-            foreach (DeclaredSymbol symbol in symbols)
-                allSymbols.Add(symbol.Identifier, symbol); // TODO same as global?
+            foreach (DeclaredSymbol symbol in symbols) {
+                string init = $"param_{symbol.Identifier}";
+                if (symbol is DeclaredVariableSymbol varSymbol) {
+                    varSymbol.SymbolicInitializer = Expr.Variable(init);
+                    varSymbol.Initializer = new IdNode(varSymbol.VariableDeclarator.Line, init);
+                    allSymbols.Add(varSymbol.Identifier, varSymbol); // TODO same as global?
+                } else {
+                    allSymbols.Add(symbol.Identifier, symbol); // TODO same as global?
+                }
+                // TODO array
+            }
 
             return allSymbols;
         }

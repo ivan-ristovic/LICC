@@ -145,8 +145,8 @@ namespace LICC.Tests.Core.Comparer
                     )
                 ),
                 new MatchIssues()
-                    .AddError(new BlockEndValueMismatchError("x", 1, "2*y", "3*y"))
-                    .AddError(new BlockEndValueMismatchError("y", 1, "1 + x", "2 + x"))
+                    .AddError(new BlockEndValueMismatchError("x", 1, "2*(1 + p)", "3*(2 + p)"))
+                    .AddError(new BlockEndValueMismatchError("y", 1, "1 + p", "2 + p"))
             );
         }
 
@@ -412,7 +412,7 @@ namespace LICC.Tests.Core.Comparer
                     )
                 ),
                 new MatchIssues()
-                    .AddError(new BlockEndValueMismatchError("x", 1, "1 + y", "1 - y"))
+                    .AddError(new BlockEndValueMismatchError("x", 1, "2", "0"))
                     .AddError(new BlockEndValueMismatchError("y", 1, "1", "2"))
             );
         }
@@ -467,11 +467,13 @@ namespace LICC.Tests.Core.Comparer
                             )
                         )
                     ),
+                    new ExprStatNode(1, new IncExprNode(1, new IdNode(1, "x"))),
                     new ExprStatNode(1, new IncExprNode(1, new IdNode(1, "x")))
                 ),
                 new MatchIssues()
                     .AddError(new BlockEndValueMismatchError("y", 1, "2", "1"))
-                    .AddError(new BlockEndValueMismatchError("x", 1, "4", "2"))
+                    .AddError(new BlockEndValueMismatchError("x", 1, "2", "1"))
+                    .AddError(new BlockEndValueMismatchError("x", 1, "4", "3"))
             );
 
             this.Compare(
@@ -484,7 +486,7 @@ namespace LICC.Tests.Core.Comparer
                         new DeclStatNode(1,
                             new DeclSpecsNode(1, "int"),
                             new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y")))
-                        ), 
+                        ),
                         new DeclStatNode(1,
                             new DeclSpecsNode(1, "int"),
                             new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "z")))
@@ -549,8 +551,75 @@ namespace LICC.Tests.Core.Comparer
                         )
                     )
                 ), new MatchIssues()
+                    .AddError(new BlockEndValueMismatchError("y", 1, "q", "w"))
                     .AddError(new BlockEndValueMismatchError("z", 1, "q", "w"))
                     .AddError(new BlockEndValueMismatchError("x", 1, "q", "w"))
+                    .AddError(new BlockEndValueMismatchError("x", 1, "q", "w"))
+            );
+        }
+
+        [Test]
+        public void SwapValueTests()
+        {
+            this.Compare(
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new IdNode(1, "k")))
+                    ),
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y"), new IdNode(1, "t")))
+                    ),
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "tmp"), new IdNode(1, "x")))
+                    ),
+                    new ExprStatNode(1,
+                        new AssignExprNode(1,
+                            new IdNode(1, "x"),
+                            AssignOpNode.FromSymbol(1, "="),
+                            new IdNode(1, "y")
+                        )
+                    ),
+                    new ExprStatNode(1,
+                        new AssignExprNode(1,
+                            new IdNode(1, "y"),
+                            AssignOpNode.FromSymbol(1, "="),
+                            new IdNode(1, "tmp")
+                        )
+                    )
+                ),
+                new SourceNode(
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "x"), new IdNode(1, "k")))
+                    ),
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "y"), new IdNode(1, "t")))
+                    ),
+                    new DeclStatNode(1,
+                        new DeclSpecsNode(1, "int"),
+                        new DeclListNode(1, new VarDeclNode(1, new IdNode(1, "tmp"), new IdNode(1, "x")))
+                    ),
+                    new ExprStatNode(1,
+                        new AssignExprNode(1,
+                            new IdNode(1, "y"),
+                            AssignOpNode.FromSymbol(1, "="),
+                            new IdNode(1, "tmp")
+                        )
+                    ),
+                    new ExprStatNode(1,
+                        new AssignExprNode(1,
+                            new IdNode(1, "x"),
+                            AssignOpNode.FromSymbol(1, "="),
+                            new IdNode(1, "y")
+                        )
+                    )
+                ),
+                new MatchIssues()
+                    .AddError(new BlockEndValueMismatchError("x", 1, "t", "k"))
             );
         }
     }

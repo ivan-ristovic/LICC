@@ -35,8 +35,8 @@ namespace LICC.Core.Comparers
         {
             Log.Debug("Comparing block: `{SrcBlock}` with block: `{DstBlock}`", n1, n2);
 
-            this.localSrcSymbols = this.GetDeclaredSymbols(n1, src: true);
-            this.localDstSymbols = this.GetDeclaredSymbols(n2, src: false);
+            this.GetDeclaredSymbols(n1, src: true);
+            this.GetDeclaredSymbols(n2, src: false);
             this.CompareSymbols(this.localSrcSymbols, this.localDstSymbols);
 
             this.PerformStatements(n1, n2);
@@ -115,6 +115,8 @@ namespace LICC.Core.Comparers
             var exprs = new Dictionary<string, Expr>();
             foreach ((string identifier, DeclaredSymbol symbol) in src ? this.localSrcSymbols : this.localDstSymbols)
                 ExtractExprsFromSymbol(identifier, symbol);
+            foreach ((string identifier, DeclaredSymbol symbol) in src ? this.srcSymbols : this.dstSymbols)
+                ExtractExprsFromSymbol(identifier, symbol);
             return exprs;
 
 
@@ -144,9 +146,9 @@ namespace LICC.Core.Comparers
             }
         }
 
-        private Dictionary<string, DeclaredSymbol> GetDeclaredSymbols(BlockStatNode node, bool src)
+        private void GetDeclaredSymbols(BlockStatNode node, bool src)
         {
-            var symbols = new Dictionary<string, DeclaredSymbol>();
+            Dictionary<string, DeclaredSymbol> symbols = src ? this.localSrcSymbols : this.localDstSymbols;
 
             foreach (DeclStatNode declStat in node.ChildrenOfType<DeclStatNode>()) {
                 foreach (DeclNode decl in declStat.DeclaratorList.Declarations) {
@@ -159,11 +161,16 @@ namespace LICC.Core.Comparers
                             throw new SemanticErrorException($"Same identifier found in multiple declarations: {decl.Identifier}", decl.Line);
                         }
                     }
-                    symbols.Add(decl.Identifier, symbol);
+                    if (symbol is DeclaredVariableSymbol varSymbol && varSymbol.SymbolicInitializer is { } && varSymbol.Initializer is { }) {
+                        Dictionary<string, Expr> exprs = this.ExtractSymbolExprs(src);
+                        varSymbol.SymbolicInitializer = ExpressionEvaluator.TryEvaluate(varSymbol.SymbolicInitializer, exprs);
+                        // varSymbol.Initializer = varSymbol.Initializer.Substitute<ExprNode>(, varSymbol.Initializer); // TODO
+                        symbols.Add(decl.Identifier, varSymbol);
+                    } else {
+                        symbols.Add(decl.Identifier, symbol);
+                    }
                 }
             }
-
-            return symbols;
         }
 
         private bool TryFindSymbol(string key, bool src, out DeclaredSymbol? symbol)
@@ -234,8 +241,9 @@ namespace LICC.Core.Comparers
                         Expr rvalueExpr = new SymbolicExpressionBuilder(rvalue).Parse();
                         if (varSymbol.SymbolicInitializer is { })
                             rvalueExpr = rvalueExpr.Substitute(varSymbol.Identifier, varSymbol.SymbolicInitializer);
-                        varSymbol.SymbolicInitializer = rvalueExpr;
-                        varSymbol.Initializer = rvalue.Substitute<ExprNode>(var, varSymbol.Initializer);
+                        Dictionary<string, Expr> exprs = this.ExtractSymbolExprs(src);
+                        varSymbol.SymbolicInitializer = ExpressionEvaluator.TryEvaluate(rvalueExpr, exprs);
+                        varSymbol.Initializer = rvalue.Substitute<ExprNode>(var, varSymbol.Initializer); // TODO
                     } else if (lvalue is ArrAccessExprNode arr) {
                         // TODO
                         throw new NotImplementedException("Array assignment handling.");
