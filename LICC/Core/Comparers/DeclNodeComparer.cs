@@ -34,8 +34,8 @@ namespace LICC.Core.Comparers
 
             if (n1 is VarDeclNode vn1 && n2 is VarDeclNode vn2) {
                 if (this.Symbol1 is DeclaredVariableSymbol v1 && this.Symbol2 is DeclaredVariableSymbol v2) {
-                    string? v1init = v1.SymbolicInitializer?.ToString() ?? v1.Initializer?.GetText();
-                    string? v2init = v2.SymbolicInitializer?.ToString() ?? v2.Initializer?.GetText();
+                    string? v1init = v1.SymbolicInitializer?.ToString() ?? "<unknown>";
+                    string? v2init = v2.SymbolicInitializer?.ToString() ?? "<unknown>";
                     if (!Equals(v1init, v2init))
                         this.Issues.AddError(new InitializerMismatchError(v1.Identifier, v2.Declarator.Line, v1init, v2init));
                 } else {
@@ -44,12 +44,12 @@ namespace LICC.Core.Comparers
                 }
             } else if (n1 is ArrDeclNode arrn1 && n2 is ArrDeclNode arrn2) {
                 if (this.Symbol1 is DeclaredArraySymbol arr1 && this.Symbol2 is DeclaredArraySymbol arr2) {
-                    string? arr1size = arr1.SymbolicSize?.ToString() ?? arr1.SizeExpression?.GetText();
-                    string? arr2size = arr2.SymbolicSize?.ToString() ?? arr2.SizeExpression?.GetText();
+                    string? arr1size = arr1.SymbolicSize?.ToString() ?? "<unknown>";
+                    string? arr2size = arr2.SymbolicSize?.ToString() ?? "<unknown>";
                     if (!Equals(arr1size, arr2size))
                         this.Issues.AddWarning(new SizeMismatchWarning(arr1.Identifier, arr2.Declarator.Line, arr1size, arr2size));
-                    IEnumerable<string?>? v1init = arr1.SymbolicInitializers?.Select(e => e?.ToString() ?? "null") ?? arr1.Initializer?.Select(e => e.GetText());
-                    IEnumerable<string?>? v2init = arr2.SymbolicInitializers?.Select(e => e?.ToString() ?? "null") ?? arr2.Initializer?.Select(e => e.GetText());
+                    IEnumerable<string?>? v1init = arr1.SymbolicInitializers?.Select(e => e?.ToString() ?? "null");
+                    IEnumerable<string?>? v2init = arr2.SymbolicInitializers?.Select(e => e?.ToString() ?? "null");
                     if (v1init is { } && v2init is { } && v1init.Any() && v2init.Any()) {
                         int i = 0;
                         foreach ((string? i1, string? i2) in v1init.Zip(v2init)) {

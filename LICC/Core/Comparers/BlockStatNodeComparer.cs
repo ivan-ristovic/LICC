@@ -98,7 +98,6 @@ namespace LICC.Core.Comparers
                 switch (symbol) {
                     case DeclaredVariableSymbol var:
                         var.SymbolicInitializer = var.SymbolicInitializer?.Substitute(localSymbol.Identifier, replacement);
-                        var.Initializer = var.Initializer?.Substitute<ExprNode>(new IdNode(1, localVarSymbol.Identifier), localVarSymbol.Initializer);
                         break;
                     case DeclaredArraySymbol arr:
                         // TODO
@@ -126,8 +125,6 @@ namespace LICC.Core.Comparers
                     case DeclaredVariableSymbol var:
                         if (var.SymbolicInitializer is { })
                             exprs.Add(identifier, var.SymbolicInitializer);
-                        else if (var.Initializer is { })
-                            exprs.Add(identifier, new SymbolicExpressionBuilder(var.Initializer).Parse());
                         else
                             exprs.Add(identifier, Expr.Undefined);
                         break;
@@ -135,9 +132,6 @@ namespace LICC.Core.Comparers
                         if (arr.SymbolicInitializers is { }) {
                             for (int i = 0; i < arr.SymbolicInitializers.Count; i++)
                                 exprs.Add($"{identifier}[{i}]", arr.SymbolicInitializers[i] ?? Expr.Undefined);
-                        } else if (arr.Initializer is { }) {
-                            for (int i = 0; i < arr.Initializer.Count; i++)
-                                exprs.Add($"{identifier}[{i}]", new SymbolicExpressionBuilder(arr.Initializer[i]).Parse());
                         } else {
                             exprs.Add(identifier, Expr.Undefined);
                         }
@@ -161,10 +155,9 @@ namespace LICC.Core.Comparers
                             throw new SemanticErrorException($"Same identifier found in multiple declarations: {decl.Identifier}", decl.Line);
                         }
                     }
-                    if (symbol is DeclaredVariableSymbol varSymbol && varSymbol.SymbolicInitializer is { } && varSymbol.Initializer is { }) {
+                    if (symbol is DeclaredVariableSymbol varSymbol && varSymbol.SymbolicInitializer is { }) {
                         Dictionary<string, Expr> exprs = this.ExtractSymbolExprs(src);
                         varSymbol.SymbolicInitializer = ExpressionEvaluator.TryEvaluate(varSymbol.SymbolicInitializer, exprs);
-                        // varSymbol.Initializer = varSymbol.Initializer.Substitute<ExprNode>(, varSymbol.Initializer); // TODO
                         symbols.Add(decl.Identifier, varSymbol);
                     } else {
                         symbols.Add(decl.Identifier, symbol);
@@ -243,7 +236,6 @@ namespace LICC.Core.Comparers
                             rvalueExpr = rvalueExpr.Substitute(varSymbol.Identifier, varSymbol.SymbolicInitializer);
                         Dictionary<string, Expr> exprs = this.ExtractSymbolExprs(src);
                         varSymbol.SymbolicInitializer = ExpressionEvaluator.TryEvaluate(rvalueExpr, exprs);
-                        varSymbol.Initializer = rvalue.Substitute<ExprNode>(var, varSymbol.Initializer); // TODO
                     } else if (lvalue is ArrAccessExprNode arr) {
                         // TODO
                         throw new NotImplementedException("Array assignment handling.");
@@ -344,12 +336,7 @@ namespace LICC.Core.Comparers
             {
                 switch (symbol) {
                     case DeclaredVariableSymbol var:
-                        if (var.SymbolicInitializer is { })
-                            return var.SymbolicInitializer;
-                        if (var.Initializer is { })
-                            return new SymbolicExpressionBuilder(var.Initializer).Parse();
-                        else
-                            return Expr.Undefined;
+                        return var.SymbolicInitializer is { } ? var.SymbolicInitializer : Expr.Undefined;
                     case DeclaredArraySymbol arr:
                         // TODO
                         break;

@@ -54,7 +54,6 @@ namespace LICC.Core.Comparers
                 string init = $"param_{symbol.Identifier}";
                 if (symbol is DeclaredVariableSymbol varSymbol) {
                     varSymbol.SymbolicInitializer = Expr.Variable(init);
-                    varSymbol.Initializer = new IdNode(varSymbol.VariableDeclarator.Line, init);
                     allSymbols.Add(varSymbol.Identifier, varSymbol); // TODO same as global?
                 } else {
                     allSymbols.Add(symbol.Identifier, symbol); // TODO same as global?

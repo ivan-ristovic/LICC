@@ -627,7 +627,7 @@ namespace LICC.Tests.Core.Comparer
                 ),
                 new MatchIssues()
                     .AddWarning(new SizeMismatchWarning("x", 1, "3", "z"))
-                    .AddWarning(new SizeMismatchWarning("y", 1, null, "100"))
+                    .AddWarning(new SizeMismatchWarning("y", 1, "<unknown>", "100"))
             );
 
             this.Compare(
@@ -662,7 +662,7 @@ namespace LICC.Tests.Core.Comparer
                 ),
                 new MatchIssues()
                     .AddWarning(new SizeMismatchWarning("x", 1, "1 + z", "z"))
-                    .AddWarning(new SizeMismatchWarning("y", 1, null, "n"))
+                    .AddWarning(new SizeMismatchWarning("y", 1, "<unknown>", "n"))
             );
         }
 
@@ -692,7 +692,7 @@ namespace LICC.Tests.Core.Comparer
                 ),
                 new MatchIssues()
                     .AddError(new InitializerMismatchError("x", 1, "3", "z"))
-                    .AddError(new InitializerMismatchError("y", 1, null, "100"))
+                    .AddError(new InitializerMismatchError("y", 1, "<unknown>", "100"))
             );
 
             this.PartialCompare(

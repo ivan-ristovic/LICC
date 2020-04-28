@@ -41,7 +41,6 @@ namespace LICC.Core.Comparers.Common
     internal sealed class DeclaredVariableSymbol : DeclaredSymbol
     {
         public VarDeclNode VariableDeclarator { get; set; }
-        public ExprNode? Initializer { get; set; }
         public Expr? SymbolicInitializer { get; set; }
 
 
@@ -49,7 +48,6 @@ namespace LICC.Core.Comparers.Common
             : base(name, specs, decl)
         {
             this.VariableDeclarator = decl;
-            this.Initializer = init;
             if (init is { }) {
                 try {
                     this.SymbolicInitializer = Expr.Parse(init.GetText());
@@ -60,22 +58,13 @@ namespace LICC.Core.Comparers.Common
         }
 
 
-        public override Expr GetInitSymbolValue(Dictionary<string, Expr> symbolExprs)
-        {
-            if (this.SymbolicInitializer is { })
-                return ExpressionEvaluator.TryEvaluate(this.SymbolicInitializer, symbolExprs);
-            if (this.Initializer is { })
-                return ExpressionEvaluator.TryEvaluate(this.Initializer, symbolExprs);
-            else
-                return Expr.Undefined;
-        }
+        public override Expr GetInitSymbolValue(Dictionary<string, Expr> symbolExprs) 
+            => this.SymbolicInitializer is { } ? ExpressionEvaluator.TryEvaluate(this.SymbolicInitializer, symbolExprs) : Expr.Undefined;
     }
 
     internal sealed class DeclaredArraySymbol : DeclaredSymbol
     {
         public ArrDeclNode ArrayDeclarator { get; set; }
-        public ExprNode? SizeExpression { get; set; }
-        public List<ExprNode>? Initializer { get; set; }
         public Expr? SymbolicSize { get; set; }
         public List<Expr?>? SymbolicInitializers { get; set; }
 
@@ -84,8 +73,6 @@ namespace LICC.Core.Comparers.Common
             : base(name, specs, decl)
         {
             this.ArrayDeclarator = decl;
-            this.SizeExpression = size;
-            this.Initializer = init?.Initializers.ToList();
             if (size is { }) {
                 try {
                     this.SymbolicSize = Expr.Parse(size.GetText());
