@@ -6,7 +6,7 @@ Iako se u suštini svode na mašinski jezik ili asembler, viši programski jezic
 \subsection{Imperativna paradigma}
 \label{subsec:ParadigmImperative}
 
-\emph{Imperativna paradigma} pretpostavlja da se promene u trenutnom stanju izvršavanja mogu sačuvati kroz promenljive. Izračunvanja se vrše kroz niz koraka, u svakom koraku se te promenljive referišu ili se menjaju njihove trenutne vrednosti. Raspored koraka je bitan, jer svaki korak može imati različite posledice s obzirom na trenutne vrednosti promenljivih na početku tog koraka. Primer koda pisanog po imperativnoj paradigmi se može videti na slici \ref{fig:ParadigmImperative}.
+\emph{Imperativna paradigma} pretpostavlja da se promene u trenutnom stanju izvršavanja mogu sačuvati kroz promenljive. Izračunavanja se vrše putem niza koraka, u svakom koraku se te promenljive referišu ili se menjaju njihove trenutne vrednosti. Raspored koraka je bitan, jer svaki korak može imati različite posledice s obzirom na trenutne vrednosti promenljivih na početku tog koraka. Primer koda pisanog po imperativnoj paradigmi se može videti na slici \ref{fig:ParadigmImperative}.
 
 \begin{figure}[h!]
 \begin{lstlisting}
@@ -30,7 +30,7 @@ finished:
 \label{fig:ParadigmImperative}
 \end{figure}
 
-Imperativni programski jezici najčešće prate ovu paradigmu više nego bilo koju drugu iz par razloga. Prvi je taj što imperativna paradigma najbliže oslikava samu mašinu na kojoj se program izvršava, pa je programer mnogo "bliži" istoj. Posledica ovog pristupa, a to je i drugi razlog za popularnost imperativne paradigme, je omogućila da je ova paradigma bila najefikasnija zbog ograničenja u hardveru. Danas, zbog mnogo bržeg razvoja i mnogo jačih računara, efikasnost se sve manje i manje uzima u obzir.
+Stariji programski jezici najčešće prate ovu paradigmu više nego bilo koju drugu iz par razloga. Prvi je taj što imperativna paradigma najbliže oslikava samu mašinu na kojoj se program izvršava, pa je programer mnogo "bliži" istoj. Posledica ovog pristupa, a to je i drugi razlog za popularnost imperativne paradigme, je omogućila da je ova paradigma bila najefikasnija zbog ograničenja u hardveru. Danas, zbog mnogo bržeg razvoja i mnogo jačih računara, efikasnost se sve manje i manje uzima u obzir.
 
 Naravno, imperativna paradigma ima i svoje nedostatke. Naime, najveći problem je razumevanje i verifikovanje semantike programa zbog postojanja sporednih efekata \footnote{Sporedni efekti (promena stanja mašine) ne poštuju \emph{referencijalnu transparentnost} koja se definiše na sledeći način: \emph{Ako važi $P(x)$ i $x = y$ u nekom trenutku, onda $P(x) = P(y)$ važi tokom čitavog vremena izvršavanja programa}.}. Stoga je i pronalaženje grešaka u kodovima koji prate imperativnu paradigmu znatno komplikovanije. Apstrakcija je takođe više ograničena u imperativnoj nego u ostalim paradigmama. Na kraju, redosled izvršavanja je vrlo bitan, što neke probleme čini težim ukoliko se pokušaju rešiti pomoću imperativne paradigme.
 
@@ -58,7 +58,7 @@ return sort(result);
 \subsection{Logička paradigma}
 \label{subsec:ParadigmLogical}
 
-\emph{Logička paradigma} koristi deklarativni pristup rešavanju problema. Umesto zadavanja instrukcije koje treba da dovedu do rezultata, opisuje se sam rezultat kroz činjenice - skup logičkih pretpostavki. Taj opis se zatim prevodi u upit koji se dalje koristi. Uloga računara je održvanje i logička dedukcija. Logička paradigma se deli u tri sekcije:
+\emph{Logička paradigma} koristi deklarativni pristup rešavanju problema. Umesto zadavanja instrukcija koje treba da dovedu do rezultata, opisuje se sam rezultat kroz činjenice - skup logičkih pretpostavki. Taj opis se zatim prevodi u upit koji se dalje koristi. Uloga računara je održavanje i logička dedukcija. Logička paradigma se deli u tri sekcije:
 \begin{itemize}
     \item niz deklaracija i definicija koje opisuju problem iz nekog domena,
     \item relevantne činjenice i
@@ -147,7 +147,7 @@ bill.work();
 \label{fig:ParadigmOOP}
 \end{figure}
 
-Nova klasa ($A$) može \emph{naslediti} ili \emph{konkretizovati} drugu klasu ($B$). $B$ se zove \emph{bazna klasa} ili \emph{natklasa}, dok se $A$ naziva \emph{izvedena klasa} ili \emph{potklasa}. Izvedenna klasa nasleđuje sve odlike bazne klase - strukturu i ponašanje - postaje specijalizacija bazne klase dok bazna klasa postaje generalizacija svoje potklase. Osim nasleđenih osobina, potklasa može imati dodatna stanja (instancne promenljive) ili dodatna ponašanja (metode). Dozvoljeno je i predefinisanje ponašanja bazne klase. Mehanizam nasleđivanja je dozvoljen i ukoliko nije dozvoljen pristup izvornom kodu bazne klase.
+Nova klasa ($A$) može \emph{naslediti} ili \emph{konkretizovati} drugu klasu ($B$). $B$ se zove \emph{bazna klasa} ili \emph{natklasa}, dok se $A$ naziva \emph{izvedena klasa} ili \emph{potklasa}. Izvedena klasa nasleđuje sve odlike bazne klase - strukturu i ponašanje - postaje specijalizacija bazne klase dok bazna klasa postaje generalizacija svoje potklase. Osim nasleđenih osobina, potklasa može imati dodatna stanja (instancne promenljive) ili dodatna ponašanja (metode). Dozvoljeno je i predefinisanje ponašanja bazne klase. Mehanizam nasleđivanja je dozvoljen i ukoliko nije dozvoljen pristup izvornom kodu bazne klase.
 
 Idealno, stanju objekta može da pristupi i modifikuje samo pomoću metoda tog objekta. Većina OO jezika dozvoljava direktnu manipulaciju stanja ali taj pristup nije preporučen. Kako bi se enkapsulacija i skrivanje informacija kao najveće prednosti OO paradigme mogle iskoristiti, interfejs klase (kako se pristupa objektima) bi trebalo da bude odvojen od implementacije klase (izvornog koda metoda klasa).
 
@@ -155,7 +155,7 @@ Idealno, stanju objekta može da pristupi i modifikuje samo pomoću metoda tog o
 \subsection{Skript paradigma i njen odnos sa proceduralnom paradigmom}
 \label{subsec:Languages}
 
-Čak i unutar jedne paradigme kao što je proceduralna paradigma, mogu se naći veoma velike varijacije u izgledu koda pisanog u različitim programskim jezicima koji prate proceduralnu paradigmu. Kako hardver postaje moćniji, više se ceni vreme koje programer provede u procesu pisanja koda nego koliko je taj kod efikasan. Štaviše, u nekim slučajevima je dobitak u efikasnosti veoma mali u poređenju sa vremenom koje je potrebno utrošiti da bi se ta efikasnost postigla. Ukoliko se program pokreće veoma retko, možda nije ni bitno da li se on izvršava sekundu sporije od efikasnog programa, ako je za njegovo pisanje utrošeno znatno manje vremena. Ovo je pristup koji prate \emph{skript} jezici kao što su \texttt{Python, Perl, bash} itd. Iako proceduralni, oni se razlikuju od klasičnih predstavnika proceduralne paradigme i njihove razlike su vremenom postale tolike da nije neuobičajeno da se skript jezici svrstaju u zasebnu, \emph{skript paradigmu}. Stoga će se u nastavku, pod terminom \emph{proceduralni jezik} smatrati tradicionalni proceduralni jezik, ukoliko nije naznačeno drugačije. Na slici \ref{fig:LanguagesDiff} se mogu uočiti navedene razlike.
+Čak i unutar jedne paradigme kao što je proceduralna, mogu se naći veoma velike varijacije u izgledu koda pisanog u različitim programskim jezicima koji prate proceduralnu paradigmu. Kako hardver postaje moćniji, više se ceni vreme koje programer provede u procesu pisanja koda nego koliko je taj kod efikasan. Štaviše, u nekim slučajevima je dobitak u efikasnosti veoma mali u poređenju sa vremenom koje je potrebno utrošiti da bi se ta efikasnost postigla. Ukoliko se program pokreće veoma retko, možda nije ni bitno da li se on izvršava sekundu sporije od efikasnog programa, ako je za njegovo pisanje utrošeno znatno manje vremena. Ovo je pristup koji prate \emph{skript} jezici kao što su \texttt{Python, Perl, bash} itd. Iako proceduralni, oni se razlikuju od klasičnih predstavnika proceduralne paradigme i njihove razlike su vremenom postale tolike da nije neuobičajeno da se skript jezici svrstaju u zasebnu, \emph{skript paradigmu}. Stoga će se u nastavku, pod terminom \emph{proceduralni jezik} smatrati tradicionalni proceduralni jezik, ukoliko nije naznačeno drugačije. Na slici \ref{fig:LanguagesDiff} se mogu uočiti navedene razlike.
 
 \begin{figure}[h!]
 \begin{lstlisting}
