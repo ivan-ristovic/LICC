@@ -1,7 +1,7 @@
 \section{Implementacija apstrakcije}
 \label{sec:ImplementationMyAST}
 
-Implementacija prati hijerarhije opisane u poglavlju \ref{chp:MyAST} kroz mehanizam nasleđivanja. Svaki tip čvora će biti zasebna klasa koja nasleđuje apstraktnu klasu \texttt{ASTNode}. Dijagram klasa koje nasleđuju klasu \texttt{ASTNode} se može videti na slikama \ref{fig:UMLASTNode1} i \ref{fig:UMLASTNode2}. Pored implementacije klasa koje predstavljaju AST čvorove, kreiran je i interfejs za obilazak AST-a putem obrazca posetilac.
+Implementacija prati hijerarhije opisane u poglavlju \ref{chp:MyAST} kroz mehanizam nasleđivanja. Svaki tip čvora je implementiran kao zasebna klasa koja nasleđuje apstraktnu klasu \texttt{ASTNode}. Dijagram klasa koje nasleđuju klasu \texttt{ASTNode} se može videti na slikama \ref{fig:UMLASTNode1} i \ref{fig:UMLASTNode2}. Pored implementacije klasa koje predstavljaju AST čvorove, kreiran je i javno dostupni interfejs za obilazak AST-a putem obrazca posetilac, u implementaciji korišćen za kreiranja graditelja simboličkog izraza AST-a koji predstavlja izraz kao i evaluatora takvog AST-a.
 
 \begin{figure}[h!]
 \centering
@@ -21,5 +21,4 @@ Implementacija prati hijerarhije opisane u poglavlju \ref{chp:MyAST} kroz mehani
 \label{fig:UMLASTNode2}
 \end{figure}
 
-Ovako kreirana AST struktura je \emph{imutabilna} - ne mogu se dinamički dodavati ili uklanjati deca čvorovima. Moguće je klonirati AST čvorove ili vršiti zamenu određenog podstabla drugim podstablom unutar AST-a, ne menjajući original već kopiju originala. Svaki AST čvor se može porediti po jednakosti sa drugim AST čvorom sa intuitivnom logikom poređenja pruženom kroz predefinisane operatore poređenja po jednakosti.
-
+AST struktura je \emph{imutabilna} - ne mogu se dodavati ili uklanjati deca čvorovima. Moguće je klonirati AST čvorove ili vršiti zamenu određenog podstabla drugim podstablom unutar AST-a ne menjajući original već kopiju originala. Svaki AST čvor se može porediti po jednakosti sa drugim AST čvorom po intuitivnoj logici poređenja pruženom kroz predefinisane operatore poređenja.
