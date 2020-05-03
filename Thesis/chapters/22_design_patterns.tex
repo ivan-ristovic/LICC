@@ -1,12 +1,12 @@
 \section{Obrasci za projektovanje}
 \label{sec:DesignPatterns}
 
-\emph{Obrasci za projektovanje} (engl. \emph{design patterns} \cite{DesignPatterns}, drugačije nazvani i \emph{projektni šabloni, uzorci}) predstavljaju opšte i ponovno upotrebljivo rešenje čestog problema, obi;no implementirani kroz koncepte objektno-orijentisanog programiranja. Svaki obrazac za projektovanje ima četiri osnovna elementa:
+\emph{Obrasci za projektovanje} (engl. \emph{design patterns} \cite{DesignPatterns}, drugačije nazvani i \emph{projektni šabloni, uzorci}) predstavljaju opšte i ponovno upotrebljivo rešenje čestog problema, obično implementirani kroz koncepte objektno-orijentisanog programiranja. Svaki obrazac za projektovanje ima četiri osnovna elementa:
 \begin{itemize}
-    \item ime - ukratko opisuje problem, rešenje i posledice
-    \item problem - opisuje slučaj u kome se obrazac koristi
-    \item rešenje - opisuje elemente dizajna i odnos tih elemenata
-    \item posledice - obuhvataju rezultate i ocene primena obrasca
+    \item ime --- ukratko opisuje problem, rešenje i posledice
+    \item problem --- opisuje slučaj u kome se obrazac koristi
+    \item rešenje --- opisuje elemente dizajna i odnos tih elemenata
+    \item posledice --- obuhvataju rezultate i ocene primena obrasca
 \end{itemize}
 
 Obrasce za projektovanje je moguće grupisati po situaciji u kojoj se mogu iskoristiti ili načinu na koji rešavaju zadati problem. Stoga je opšte prihvaćena podela na tri grupe:
@@ -18,7 +18,7 @@ Obrasce za projektovanje je moguće grupisati po situaciji u kojoj se mogu iskor
 
 Gradivni obrasci apstrahuju proces pravljenja objekata i važni su kada sistemi više zavise od sastavljanja objekata nego od nasleđivanja. Neki od najvažnijih gradivnih obrazaca su \emph{apstraktna fabrika} (engl. \emph{abstract factory}), \emph{graditelj} (engl. \emph{builder}), \emph{proizvodni metod} (engl. \emph{factory method}), \emph{prototip} (engl. \emph{prototype}) i \emph{unikat} (engl. \emph{singleton}). Strukturni obrasci se bave načinom na koji se klase i objekti sastavljaju u veće strukture. Neki od najvažnijih strukturnih obrazaca su \emph{adapter} (engl. \emph{adapter}), \emph{most} (engl. \emph{bridge}), \emph{sastav} (engl. \emph{composite}), \emph{dekorater} (engl. \emph{decorator}), \emph{fasada} (engl. \emph{facade}), \emph{muva} (engl. \emph{flyweight}) i \emph{proksi} (engl. \emph{proxy}). Obrasci ponašanja se bave načinom na koji se klase i objekti sastavljaju u veće strukture. Neki od najvažnijih strukturnih obrazaca su \emph{lanac odgovornosti} (engl. \emph{chain of responsibility}), \emph{komanda} (engl. \emph{command}), \emph{interpretator} (engl. \emph{interpreter}), \emph{iterator} (engl. \emph{iterator}), \emph{posmatrač} (engl. \emph{observer}), \emph{strategija} (engl. \emph{strategy}) i \emph{posetilac} (engl. \emph{visitor}).
 
-Za potrebe ovog rada, obrasci za projektovanje će se koristiti kao opšte prihvaćeno i programerski intuitivno rešenje određenih problema. Takođe, u kontekstu stabala parsiranja i AST-ova opisanih u poglavlju \ref{sec:AST}, obrasci \emph{Posmatrač} i \emph{Posetilac} su od velikog značaja jer pružaju interfejs za obilazak takvih stabala. Ovi obrasci se koriste od strane alata korišćenih u ovom radu kao što je ANTLR, opisan u poglavlju \ref{subsec:ANTLR}. Takođe, s obzirom da su ovi obrasci opšte-prihvaćeno rešenje za pružanje interfejsa obilaska stabala, biće korišćeni i u implementaciji opšte apstrakcije. U nastavku će zbog opisanih razloga biti opisani samo obrasci posmatrač i posetilac, dok zainteresovani čitalac može pročitati više u \cite{DesignPatternsBook}.
+Za potrebe ovog rada, obrasci za projektovanje će se koristiti kao opšte prihvaćeno i programerski intuitivno rešenje određenih problema. Takođe, u kontekstu stabala parsiranja i apstraktnih sintaksičkih stabala opisanih u poglavlju \ref{sec:AST}, obrasci \emph{Posmatrač} i \emph{Posetilac} su od velikog značaja jer pružaju interfejs za obilazak takvih stabala. Ovi obrasci, opisani u narednim odeljcima, se koriste od strane alata korišćenih u ovom radu kao što je ANTLR koji je opisan u odeljku \ref{subsec:ANTLR}. Takođe, s obzirom da su ovi obrasci opšte-prihvaćeno rešenje za pružanje interfejsa obilaska stabala, biće korišćeni i u implementaciji opšte apstrakcije. U nastavku će zbog opisanih razloga biti opisani samo obrasci posmatrač i posetilac, dok zainteresovani čitalac može pročitati više u \cite{DesignPatternsBook}.
 
 \subsection{Obrazac "Posmatrač"}
 \label{subsec:DesignPatternsObserver}
