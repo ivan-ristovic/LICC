@@ -6,12 +6,14 @@ using LICC.AST.Exceptions;
 using LICC.AST.Extensions;
 using LICC.AST.Nodes;
 using LICC.Core;
+using LICC.Visualizer;
 using Serilog;
 
 namespace LICC
 {
     internal static class Program
     {
+        [STAThread]
         internal static int Main(string[] args)
         {
             return Parser.Default.ParseArguments<CompareOptions, ASTOptions>(args)
@@ -53,6 +55,11 @@ namespace LICC
                 }
             }
 
+            if (o.Tree && ast is { }) {
+                Log.Information("Showing tree...");
+                return new ASTVisualizer().Visualize(ast);
+            }
+
             return 0;
         }
 
@@ -81,7 +88,7 @@ namespace LICC
             return 0;
         }
 
-        public static bool TryBuildFromFile(string path, out ASTNode? ast)
+        private static bool TryBuildFromFile(string path, out ASTNode? ast)
         {
             Log.Information("Creating AST for file: {Path}", path);
 

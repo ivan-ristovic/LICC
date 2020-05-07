@@ -21,6 +21,9 @@ namespace LICC
         [Option('v', "verbose", Default = false, Required = false, HelpText = "Verbose output")]
         public bool Verbose { get; set; }
 
+        [Option('t', "tree", Default = false, Required = false, HelpText = "Show AST tree")]
+        public bool Tree { get; set; }
+
         [Option('o', "output", Required = false, HelpText = "Output path")]
         public string? OutputPath { get; set; }
         
