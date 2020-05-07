@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using NUnit.Framework;
+using LICC.AST.Exceptions;
 using LICC.AST.Nodes;
 using LICC.AST.Visitors;
-using LICC.Exceptions;
+using NUnit.Framework;
 
 namespace LICC.Tests.AST.Builders.Common
 {

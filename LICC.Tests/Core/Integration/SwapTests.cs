@@ -1,6 +1,6 @@
 ﻿using LICC.AST.Nodes;
 using LICC.Core;
-using LICC.Core.Common;
+using LICC.Core.Issues;
 using NUnit.Framework;
 
 namespace LICC.Tests.Core.Integration

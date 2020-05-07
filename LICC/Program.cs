@@ -2,9 +2,10 @@
 using System.IO;
 using CommandLine;
 using LICC.AST;
+using LICC.AST.Exceptions;
+using LICC.AST.Extensions;
 using LICC.AST.Nodes;
 using LICC.Core;
-using LICC.Extensions;
 using Serilog;
 
 namespace LICC
@@ -31,7 +32,7 @@ namespace LICC
                 return 1;
             }
 
-            if (!ASTFactory.TryBuildFromFile(o.Source, out ASTNode? ast))
+            if (!TryBuildFromFile(o.Source, out ASTNode? ast))
                 return 1;
 
             Log.Debug("AST created");
@@ -64,7 +65,7 @@ namespace LICC
                 return 1;
             }
 
-            if (!ASTFactory.TryBuildFromFile(o.Source, out ASTNode? src) || !ASTFactory.TryBuildFromFile(o.Destination, out ASTNode? dst))
+            if (!TryBuildFromFile(o.Source, out ASTNode? src) || !TryBuildFromFile(o.Destination, out ASTNode? dst))
                 return 1;
             if (src is null || dst is null)
                 return 1;
@@ -78,6 +79,27 @@ namespace LICC
             comparer.AttemptMatch();
 
             return 0;
+        }
+
+        public static bool TryBuildFromFile(string path, out ASTNode? ast)
+        {
+            Log.Information("Creating AST for file: {Path}", path);
+
+            ast = null;
+            try {
+                ast = ASTFactory.BuildFromFile(path);
+                return true;
+            } catch (SyntaxErrorException e) {
+                Log.Fatal(e, "[{Path}] Syntax error: {Details}", path, e.Message ?? "unknown");
+            } catch (NotImplementedException e) {
+                Log.Fatal(e, "[{Path}] Not supported: {Details}", path, e.Message ?? "unknown");
+            } catch (UnsupportedLanguageException e) {
+                Log.Fatal(e, "[{Path}] Not supported language", path);
+            } catch (Exception e) {
+                Log.Fatal(e, "[{Path}] Exception occured", path);
+            }
+
+            return false;
         }
 
         private static void SetupLogger(bool verbose)

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using NUnit.Framework;
 using LICC.AST.Builders.Pseudo;
+using LICC.AST.Exceptions;
 using LICC.AST.Nodes;
 using LICC.AST.Visitors;
-using LICC.Exceptions;
+using NUnit.Framework;
 using Expr = MathNet.Symbolics.SymbolicExpression;
 
 namespace LICC.Tests.AST.Visitors

@@ -1,8 +1,8 @@
-﻿using NUnit.Framework;
-using LICC.AST.Builders.Lua;
+﻿using LICC.AST.Builders.Lua;
+using LICC.AST.Exceptions;
 using LICC.AST.Nodes;
-using LICC.Exceptions;
 using LICC.Tests.AST.Builders.Common;
+using NUnit.Framework;
 
 namespace LICC.Tests.AST.Builders.Lua
 {
@@ -11,7 +11,7 @@ namespace LICC.Tests.AST.Builders.Lua
         [Test]
         public void EmptySourceTest()
         {
-            this.AssertThrows<SyntaxException>("");
+            this.AssertThrows<SyntaxErrorException>("");
         }
 
         // TODO

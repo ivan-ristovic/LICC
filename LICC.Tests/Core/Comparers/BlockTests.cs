@@ -2,7 +2,7 @@
 using LICC.AST.Nodes;
 using LICC.AST.Nodes.Common;
 using LICC.Core;
-using LICC.Core.Common;
+using LICC.Core.Issues;
 
 namespace LICC.Tests.Core.Comparer
 {

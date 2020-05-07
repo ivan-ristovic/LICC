@@ -1,6 +1,6 @@
-﻿using NUnit.Framework;
+﻿using LICC.AST.Extensions;
 using LICC.AST.Nodes;
-using LICC.Extensions;
+using NUnit.Framework;
 
 namespace LICC.Tests.AST.Builders.Common
 {

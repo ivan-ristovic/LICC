@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using LICC.AST.Nodes;
 using LICC.Core;
-using LICC.Core.Common;
+using LICC.Core.Issues;
 
 namespace LICC.Tests.Core
 {
