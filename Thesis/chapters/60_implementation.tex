@@ -1,0 +1,28 @@
+\chapter{Implementacija}
+\label{chp:Implementation}
+
+U ovom poglavlju će biti opisana implementacija pratećeg projekta pisanog u programskom jeziku C\# 8.0, koristeći \emph{.NET Core 3.1} radni okvir. C\# je izabran zbog lakoće implementacije velikih projekata i velike podrške paketa koji se mogu preuzeti, od kojih su korišćeni \emph{ANTLR Runtime} paket koji daje potrebne biblioteke za rad sa ANTLR generisanim parserima i \emph{Math.NET Symbolics} paket za rad sa simboličkim vrednostima. Rezultat je konzolna aplikacija koja može da generiše, serijalizuje ili prikaže opšti AST za dati izvorni kod, ali i da poredi takav AST sa drugim. Čitav projekat je dostupan u potpunosti na servisu GitHub na adresi \url{https://github.com/ivan-ristovic/LICC}.
+
+Jedan od glavnih ciljeva aplikacije je modularnost i jednostavna proširivost. U tom duhu se, pored implementacije klasa potrebnih za predstavljanje opšte AST apstrakcije, pruža i interfejs za kreiranje adaptera koji će od proizvoljnog stabla parsiranja kreirati opšti AST. Kao primer, adapteri su kreirani za programske jezike C i Lua, a za primer potpune slobode u izboru gramatike je kreirana gramatika za pseudo-jezik i adapter za istu, što dozvoljava poređenje kodova sa specifikacijom datom u obliku pseudo-koda. Čitav projekat se sastoji od više komponenti, od kojih su značajnije:
+\begin{itemize}
+    \item Biblioteka koja pruža klase za rad sa opštom AST apstrakcijom
+    \item Komponenta za kreiranje AST od proizvoljne gramatike putem adaptera --- moguća serijalizacija u JSON
+    \item Komponenta za semantičko poređenje opštih AST --- konzolni izlaz
+    \item Komponenta za AST vizualizaciju --- grafički prikaz AST
+    \item Korisnički interfejs --- komandna linija
+\end{itemize}
+
+Čitava arhitektura data putem UML dijagrama komponenti se može videti na slici \ref{fig:ImplementationComponents}. Osim implementacije same aplikacije, svaki funkcionalni deo projekta prate i testovi jedinica koda, koji su povezani sa \emph{GitHub Actions} porškom za neprekidnu integraciju.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.8]{images/uml/ComponentDiagram.png}
+\caption{UML dijagram komponenti implementacije.}
+\label{fig:ImplementationComponents}
+\end{figure}
+
+
+\input{chapters/61_impl_myast.tex}
+\input{chapters/62_impl_comparer.tex}
+\input{chapters/63_impl_visualizer.tex}
+\input{chapters/64_impl_ui.tex}

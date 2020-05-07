@@ -1,0 +1,6 @@
+\section{Implementacija vizualnog prikaza AST}
+\label{sec:ImplementationVisualizer}
+
+Osim serijalizovanog AST-a u JSON formatu, kreiran je potprogram za vizualni prikaz AST-a. Primeri izlaza vizualizatora se mogu videti na slikama iz poglavlja \ref{chp:MyAST} --- \ref{fig:MyASTExampleCDeclaration}, \ref{fig:MyASTExampleLuaDeclaration}, \ref{fig:MyASTExampleExpressions} i \ref{fig:MyASTExampleStatement}. Prikaz je izvršen koristeći nativni \texttt{Graphics} paket i, s obzirom da je u pitanju \emph{.NET Core 3.1} radni okvir, moguće je dobiti vizualni prikaz nezavisno od sistema.
+
+Vizualizacija počiva na rekurzivnom algoritmu prikaza u dubinu --- za svaki čvor se prikažu potomci, rasporede jednako po širini, a onda se roditelj centrira u odnosu na ukupnu širinu koju zauzimaju deca. Ovaj pristup nije prostorno optimalan, zbog varijacija u broju dece za čvorove različitih tipova. Što se informacija za svaki čvor tiče, prikazuju se vrednosti svih atributa čvora zajedno sa njegovim tipom u zaglavlju kao i grane do njegovih potomaka.
