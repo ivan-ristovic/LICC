@@ -22,6 +22,9 @@ namespace LICC.Core.Comparers
             Log.Debug("Testing declarations...");
 
             foreach ((string identifier, DeclaredSymbol srcSymbol) in srcSymbols) {
+                if (identifier.StartsWith("tmp__"))
+                    continue;
+
                 if (!dstSymbols.ContainsKey(identifier)) {
                     this.Issues.AddWarning(new MissingDeclarationWarning(srcSymbol.Specifiers, srcSymbol.Declarator));
                     continue;

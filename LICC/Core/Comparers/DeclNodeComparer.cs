@@ -27,7 +27,7 @@ namespace LICC.Core.Comparers
 
         public override MatchIssues Compare(DeclNode n1, DeclNode n2)
         {
-            Log.Debug("Comparing declarators: `{SrcDecl}` with block: `{DstDecl}", n1, n2);
+            Log.Debug("Comparing declarators: `{SrcDecl}` with: `{DstDecl}`", n1, n2);
 
             if (n1.Identifier != n2.Identifier)
                 this.Issues.AddWarning(new DeclaratorMismatchWarning(n1, n2));

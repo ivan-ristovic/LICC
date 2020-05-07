@@ -33,7 +33,7 @@ namespace LICC.Core.Comparers
 
         public override MatchIssues Compare(BlockStatNode n1, BlockStatNode n2)
         {
-            Log.Debug("Comparing block: `{SrcBlock}` with block: `{DstBlock}`", n1, n2);
+            Log.Debug("Comparing blocks: `{SrcBlock}` with: `{DstBlock}`", n1, n2);
 
             this.GetDeclaredSymbols(n1, src: true);
             this.GetDeclaredSymbols(n2, src: false);
@@ -215,7 +215,8 @@ namespace LICC.Core.Comparers
                         }
                         break;
                     case FuncDefNode fdef:
-                        CompareWithMatchingFunctionDefinition(fdef);
+                        if (src)
+                            CompareWithMatchingFunctionDefinition(fdef);
                         break;
                 }
             }
@@ -324,6 +325,8 @@ namespace LICC.Core.Comparers
 
             void CompareSymbolWithMatchingDstSymbol(string identifier, DeclaredSymbol srcSymbol)
             {
+                if (identifier.StartsWith("tmp__"))
+                    return;
                 if (!this.TryFindSymbol(identifier, false, out DeclaredSymbol? dstSymbol) || dstSymbol is null)
                     return;
                 string srcValue = GetSymbolInitializer(srcSymbol).ToString();

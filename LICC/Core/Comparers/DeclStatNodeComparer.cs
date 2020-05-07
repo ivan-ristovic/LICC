@@ -10,7 +10,7 @@ namespace LICC.Core.Comparers
     {
         public override MatchIssues Compare(DeclStatNode n1, DeclStatNode n2)
         {
-            Log.Debug("Comparing declarations: `{SrcDecl}` with block: `{DstDecl}", n1, n2);
+            Log.Debug("Comparing declarations: `{SrcDecl}` with: `{DstDecl}`", n1, n2);
             Dictionary<string, DeclaredSymbol> srcSymbols = this.GetDeclaredSymbols(n1);
             Dictionary<string, DeclaredSymbol> dstSymbols = this.GetDeclaredSymbols(n2);
             this.CompareSymbols(srcSymbols, dstSymbols);

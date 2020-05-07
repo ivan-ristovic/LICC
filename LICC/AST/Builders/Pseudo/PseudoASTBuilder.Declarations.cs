@@ -45,8 +45,10 @@ namespace LICC.AST.Builders.Pseudo
                 case "function":
                     var fdeclSpecs = new DeclSpecsNode(ctx.Start.Line, GetTypeName());
                     var fname = new IdNode(ctx.Start.Line, ctx.NAME().GetText());
-                    FuncParamsNode fparams = this.Visit(ctx.parlist()).As<FuncParamsNode>();
-                    var fdecl = new FuncDeclNode(ctx.Start.Line, fname, fparams);
+                    FuncParamsNode? fparams = ctx.parlist() is null ? null : this.Visit(ctx.parlist()).As<FuncParamsNode>();
+                    FuncDeclNode fdecl = fparams is null 
+                        ? new FuncDeclNode(ctx.Start.Line, fname) 
+                        : new FuncDeclNode(ctx.Start.Line, fname, fparams);
                     BlockStatNode body = this.Visit(ctx.block()).As<BlockStatNode>();
                     return new FuncDefNode(ctx.Start.Line, fdeclSpecs, fdecl, body);
                 default:

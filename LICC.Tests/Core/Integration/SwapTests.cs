@@ -93,7 +93,6 @@ namespace LICC.Tests.Core.Integration
                     )
             );
 
-
             this.Compare(
                 this.FromPseudoSource(@"
                     algorithm Swap 
@@ -131,6 +130,84 @@ namespace LICC.Tests.Core.Integration
                             ),
                             new DeclSpecsNode(1, "void"),
                             new DeclSpecsNode(1, "object")
+                        )
+                    )
+            );
+
+            this.Compare(
+                this.FromPseudoSource(@"
+                    algorithm Swap 
+                    begin
+                        declare integer x = vx
+                        declare integer y = vy
+                        procedure swap()
+                        begin
+                            declare integer tmp = x
+                            x = y  
+                            y = tmp
+                        end
+                    end
+                "),
+                this.FromCSource(@"
+                    int x = vx, y = vy;
+                    void swap() {
+                        int tmp = x;
+                        tmp = y;
+                        y = x;
+                        x = tmp;
+                    }
+                "),
+                new MatchIssues()
+                    .AddError(new BlockEndValueMismatchError("tmp", 1, "vx", "vy"))
+            );
+
+            this.Compare(
+                this.FromPseudoSource(@"
+                    algorithm Swap 
+                    begin
+                        declare integer x = vx
+                        declare integer y = vy
+                        procedure swap()
+                        begin
+                            declare integer tmp = x
+                            x = y  
+                            y = tmp
+                        end
+                    end
+                "),
+                this.FromLuaSource(@"
+                    x = vx
+                    y = vy
+                    function swap()
+                        x, y = y, x
+                    end
+                "),
+                new MatchIssues()
+                    .AddWarning(
+                        new DeclSpecsMismatchWarning(
+                            new VarDeclNode(1, new IdNode(1, "x"), new IdNode(1, "vx")),
+                            new DeclSpecsNode(1, "integer"),
+                            new DeclSpecsNode(1, "object")
+                        )
+                    )
+                    .AddWarning(
+                        new DeclSpecsMismatchWarning(
+                            new VarDeclNode(1, new IdNode(1, "y"), new IdNode(1, "vy")),
+                            new DeclSpecsNode(1, "integer"),
+                            new DeclSpecsNode(1, "object")
+                        )
+                    )
+                    .AddWarning(
+                        new DeclSpecsMismatchWarning(
+                            new FuncDeclNode(1, new IdNode(1, "swap")),
+                            new DeclSpecsNode(1, "void"),
+                            new DeclSpecsNode(1, "object")
+                        )
+                    )
+                    .AddWarning(
+                        new MissingDeclarationWarning(
+                            new DeclSpecsNode(1, "integer"), 
+                            new VarDeclNode(1, new IdNode(1, "tmp"), new IdNode(1, "x"))
                         )
                     )
             );
@@ -219,6 +296,91 @@ namespace LICC.Tests.Core.Integration
                 "),
                 new MatchIssues()
                     .AddError(new BlockEndValueMismatchError("x", 1, "param_y", "param_x"))
+            );
+
+            this.Compare(
+                this.FromPseudoSource(@"
+                    algorithm Swap 
+                    begin
+                        declare integer x = vx
+                        declare integer y = vy
+                        procedure swap()
+                        begin
+                            declare integer tmp
+                            tmp = x
+                            x = y  
+                            y = tmp
+                        end
+                    end
+                "),
+                this.FromCSource(@"
+                    int x = vx, y = vy;
+                    void swap() {
+                        int tmp;
+                        tmp = x;
+                        y = tmp;
+                        x = y;
+                    }
+                "),
+                new MatchIssues()
+                    .AddError(new BlockEndValueMismatchError("x", 1, "vy", "vx"))
+                    .AddError(new BlockEndValueMismatchError("x", 1, "vy", "vx"))
+            );
+
+            this.Compare(
+                this.FromPseudoSource(@"
+                    algorithm Swap 
+                    begin
+                        declare integer x = vx
+                        declare integer y = vy
+                        procedure swap()
+                        begin
+                            declare integer tmp
+                            tmp = x
+                            x = y  
+                            y = tmp
+                        end
+                    end
+                "),
+                this.FromLuaSource(@"
+                    x = vx
+                    y = vy
+                    function swap()
+                        x, y = x, y
+                    end
+                "),
+                new MatchIssues()
+                    .AddWarning(
+                        new DeclSpecsMismatchWarning(
+                            new VarDeclNode(1, new IdNode(1, "x"), new IdNode(1, "vx")),
+                            new DeclSpecsNode(1, "integer"),
+                            new DeclSpecsNode(1, "object")
+                        )
+                    )
+                    .AddWarning(
+                        new DeclSpecsMismatchWarning(
+                            new VarDeclNode(1, new IdNode(1, "y"), new IdNode(1, "vy")),
+                            new DeclSpecsNode(1, "integer"),
+                            new DeclSpecsNode(1, "object")
+                        )
+                    )
+                    .AddWarning(
+                        new DeclSpecsMismatchWarning(
+                            new FuncDeclNode(1, new IdNode(1, "swap")),
+                            new DeclSpecsNode(1, "void"),
+                            new DeclSpecsNode(1, "object")
+                        )
+                    )
+                    .AddWarning(
+                        new MissingDeclarationWarning(
+                            new DeclSpecsNode(1, "integer"),
+                            new VarDeclNode(1, new IdNode(1, "tmp"))
+                        )
+                    )
+                    .AddError(new BlockEndValueMismatchError("x", 1, "vy", "vx"))
+                    .AddError(new BlockEndValueMismatchError("y", 1, "vx", "vy"))
+                    .AddError(new BlockEndValueMismatchError("x", 1, "vy", "vx"))
+                    .AddError(new BlockEndValueMismatchError("y", 1, "vx", "vy"))
             );
         }
     }
