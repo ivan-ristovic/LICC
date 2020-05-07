@@ -5,14 +5,13 @@ U ovom poglavlju će biti opisana implementacija pratećeg projekta pisanog u pr
 
 Jedan od glavnih ciljeva aplikacije je modularnost i jednostavna proširivost. U tom duhu se, pored implementacije klasa potrebnih za predstavljanje opšte AST apstrakcije, pruža i interfejs za kreiranje adaptera koji će od proizvoljnog stabla parsiranja kreirati opšti AST. Kao primer, adapteri su kreirani za programske jezike C i Lua, a za primer potpune slobode u izboru gramatike je kreirana gramatika za pseudo-jezik i adapter za istu, što dozvoljava poređenje kodova sa specifikacijom datom u obliku pseudo-koda. Čitav projekat se sastoji od više komponenti, od kojih su značajnije:
 \begin{itemize}
-    \item Biblioteka koja pruža klase za rad sa opštom AST apstrakcijom
-    \item Komponenta za kreiranje AST od proizvoljne gramatike putem adaptera --- moguća serijalizacija u JSON
+    \item Komponenta koja pruža klase za rad sa opštom AST apstrakcijom
     \item Komponenta za semantičko poređenje opštih AST --- konzolni izlaz
-    \item Komponenta za AST vizualizaciju --- grafički prikaz AST
-    \item Korisnički interfejs --- komandna linija
+    \item Komponenta za vizualizaciju --- grafički prikaz AST
+    \item Korisnički interfejs --- glavni program koji omogućava generisanje, prikaz, serijalizaciju i poređenje AST
 \end{itemize}
 
-Čitava arhitektura data putem UML dijagrama komponenti se može videti na slici \ref{fig:ImplementationComponents}. Osim implementacije same aplikacije, svaki funkcionalni deo projekta prate i testovi jedinica koda, koji su povezani sa \emph{GitHub Actions} porškom za neprekidnu integraciju.
+Čitava arhitektura data putem UML dijagrama komponenti se može videti na slici \ref{fig:ImplementationComponents}. Osim implementacije same aplikacije, svaki funkcionalni deo projekta prate i testovi jedinica koda, koji su povezani sa \emph{GitHub Actions} porškom za neprekidnu integraciju (engl. \emph{continuous integration}, srk. \emph{CI}). CI omogućava prevođenje izvornog koda nakon svake izmene kao i izvršavanje akcija nakon prevođenja kao što su testiranje ili generisanje predmeta za upotrebu (engl. \emph{artifacts}) koji predstavljaju rezultat procesa prevođenja i mogu se isporučiti.
 
 \begin{figure}[h!]
 \centering
@@ -26,3 +25,4 @@ Jedan od glavnih ciljeva aplikacije je modularnost i jednostavna proširivost. U
 \input{chapters/62_impl_comparer.tex}
 \input{chapters/63_impl_visualizer.tex}
 \input{chapters/64_impl_ui.tex}
+\input{chapters/64_impl_tests.tex}

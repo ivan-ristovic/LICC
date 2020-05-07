@@ -1,11 +1,55 @@
 \section{Implementacija korisničkog interfejsa}
 \label{sec:ImplementationUI}
 
-S obzirom da je aplikacija konzolna (osim komponente za vizualizaciju), korisnički interfejs se svodi na argumente komandne linije. Pokretanje programa bez argumenata pruža prikaz za pomoć u kome su nabrojane sve opcije, prikazano na slici \ref{fig:UIImpl}.
+S obzirom da je aplikacija konzolna (osim dela komponente za vizualizaciju), korisnički interfejs se sastoji od argumenata komandne linije. Pokretanje programa bez argumenata pruža prikaz za pomoć u kome su nabrojane sve moguće opcije. Pomoć koja se pruža korisniku se može videti na slici \ref{fig:UIImpl}.
 
 \begin{figure}[h!]
 \centering
-%\includegraphics[scale=0.7]{images/uml/ASTNode.png}
+\begin{lstlisting}[language={}]
+$ ./licc
+ERROR(S):
+No verb selected.
+
+ast        AST generation commands
+cmp        Compare source against the specification source
+help       Display more information on a specific command.
+version    Display version information.
+
+$ ./licc ast
+ERROR(S):
+A required value not bound to option name is missing.
+
+-v, --verbose    (Default: false) Verbose output
+-t, --tree       (Default: false) Visualize AST tree
+-o, --output     Output path
+-c, --compact    (Default: false) Compact AST output
+--help           Display this help screen.
+--version        Display version information.
+
+value pos. 0     Required. Source path
+
+$ ./licc cmp
+ERROR(S):
+A required value not bound to option name is missing.
+
+-v, --verbose    Set output to verbose messages.
+--help           Display this help screen.
+--version        Display version information.
+
+value pos. 0     Required. Specification path.
+value pos. 1     Required. Test source path.
+\end{lstlisting}
 \caption{Korisniči interfejs programa pružen kroz argumente komandne linije.}
 \label{fig:UIImpl}
 \end{figure}
+
+Program zahteva da se kao prvi argument prosledi \emph{glagol} (engl. \emph{verb}) koji će odrediti operaciju koju program treba da izvrši. Od glagola zavisi broj i tip ostalih argumenata u nastavku. Mogući glagoli, sa svojim dodatnim opcijama, su:
+\begin{itemize}
+    \item \texttt{ast [-v -c -t] source-path [-o output-path]} \\
+    Generiše opšti AST za izvorni kod na putanji \texttt{source-path} u JSON formatu i ispisuje isti na standardni izlaz, ili u fajl na putanji \texttt{output-path} ako je prisutna opcija \texttt{-o}. Moguće je generisati kompaktan JSON (bez poravnanja) navođenjem opcije \texttt{-c}. Vizualizacija u obliku stabla se prikazuje u novom prozoru ukoliko je prisutna opcija \texttt{-t}.
+    \item \texttt{cmp [-v] specification-path test-path} \\
+    Generiše opšti AST za izvorne kodove na putanjama \texttt{specification-path} i \texttt{test-path} i poredi generisana stabla. 
+\end{itemize} 
+
+Dodatno, svi glagoli podržavaju opciono detaljno logovanje operacija koje program izvršava navođenjem opcije \texttt{-v}. Takođe, navođenjem opcije \texttt{-help} nakon glagola se ispisuje uputstvo specifično za taj glagol. Verzija programa se može proveriti opcijom \texttt{--version}. Opcije \texttt{-o}, \texttt{-c}, \texttt{-t} i \texttt{-v} imaju svoje duže sinonime --- \texttt{--output}, \texttt{--compact}, \texttt{--tree} i \texttt{--verbose}, redom.
+
