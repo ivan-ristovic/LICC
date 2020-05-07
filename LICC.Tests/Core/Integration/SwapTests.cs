@@ -306,8 +306,7 @@ namespace LICC.Tests.Core.Integration
                         declare integer y = vy
                         procedure swap()
                         begin
-                            declare integer tmp
-                            tmp = x
+                            declare integer tmp = x
                             x = y  
                             y = tmp
                         end
@@ -316,9 +315,8 @@ namespace LICC.Tests.Core.Integration
                 this.FromCSource(@"
                     int x = vx, y = vy;
                     void swap() {
-                        int tmp;
-                        tmp = x;
-                        y = tmp;
+                        int tmp = x;
+                        y = tmp; 
                         x = y;
                     }
                 "),
@@ -335,8 +333,7 @@ namespace LICC.Tests.Core.Integration
                         declare integer y = vy
                         procedure swap()
                         begin
-                            declare integer tmp
-                            tmp = x
+                            declare integer tmp = x
                             x = y  
                             y = tmp
                         end
@@ -374,7 +371,7 @@ namespace LICC.Tests.Core.Integration
                     .AddWarning(
                         new MissingDeclarationWarning(
                             new DeclSpecsNode(1, "integer"),
-                            new VarDeclNode(1, new IdNode(1, "tmp"))
+                            new VarDeclNode(1, new IdNode(1, "tmp"), new IdNode(1, "x"))
                         )
                     )
                     .AddError(new BlockEndValueMismatchError("x", 1, "vy", "vx"))

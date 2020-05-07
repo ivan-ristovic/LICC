@@ -2,7 +2,7 @@
 
 void swap() 
 {
-    int tmp = x;
-    x = y;
-    y = tmp;
+    int tmp = y;
+    y = x;
+    x = tmp;
 }

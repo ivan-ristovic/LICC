@@ -1,7 +1,8 @@
 ﻿int x = vx, y = vy;
 
-void swap() {
+void swap() 
+{
     int tmp = x;
-    y = tmp;
     x = y;
+    y = tmp;
 }
