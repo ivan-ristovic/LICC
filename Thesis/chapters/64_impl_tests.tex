@@ -1,3 +1,116 @@
 \section{Implementacija testova}
 \label{sec:ImplementationTests}
 
+Komponentu za kreiranje AST i komponentu za poređenje AST prate testovi jedinica koda. Testovi su organizovani u zasebnom projektu na sledeći način:
+\begin{itemize}
+    \item \texttt{LICC.Tests.AST} --- Testovi za adaptere i posetioce, kao i testovi funkcionalnosti metoda klase \texttt{ASTNode}.
+    \item \texttt{LICC.Tests.Core} --- Testovi upoređivača.
+\end{itemize}
+
+Radni okvir koji se koristi za testiranje je \texttt{NUnit} \footnote{\url{https://nunit.org/}} koji pruža tzv. \emph{model ograničenja} (engl. \emph{constraint model}) i time omogućava pisanje čitljivog koda. Pisanje testova po modelu ograničenja se sastoji od korišćenja jednog metoda za pisanje svih testova koji kao argumente prima objekat koji se testira i složeni objekat koji predstavlja ograničenje koje objekat koji se testira treba da zadovoljava. Primer testa pisanog u ovom radnom okviru uz model ograničenja u kontekstu implementacije ovog rada se može videti na slici \ref{fig:ImplTestsUnit}.
+
+\begin{figure}[h!]
+\centering
+\begin{lstlisting}
+[Test]
+public void ComplexDefinitionTest()
+{
+    FuncDefNode f = this.AssertFunctionSignature(@"
+        float f(const unsigned int x, ...) {
+            int z = 4;
+            return 3.0;
+        }", 
+        2, "f", "float", isVariadic: true, 
+        @params: ("unsigned int", "x")
+    );
+    Assert.That(f.IsVariadic);
+    Assert.That(f.Definition.Children, Has.Exactly(2).Items);
+}
+
+protected FuncDefNode AssertFunctionSignature(
+    string src, int line, string fname, 
+    string returnType = "void", bool isVariadic = false, 
+    AccessModifiers access = AccessModifiers.Unspecified,
+    QualifierFlags qualifiers = QualifierFlags.None, 
+    params (string Type, string Identifier)[] @params)
+{
+    FuncDefNode f = this.GenerateAST(src).As<FuncDefNode>();
+    this.AssertChildrenParentProperties(f);
+    this.AssertChildrenParentProperties(f.Definition);
+    Assert.That(f, Is.Not.Null);
+    Assert.That(f.Line, Is.EqualTo(line));
+    Assert.That(f.Declarator, Is.Not.Null);
+    Assert.That(f.Declarator.Parent, Is.EqualTo(f));
+    Assert.That(f.Keywords.AccessModifiers, Is.EqualTo(access));
+    Assert.That(f.Keywords.QualifierFlags, Is.EqualTo(qualifiers));
+    Assert.That(f.Identifier, Is.EqualTo(fname));
+    Assert.That(f.ReturnTypeName, Is.EqualTo(returnType));
+    Assert.That(f.IsVariadic, Is.EqualTo(isVariadic));
+    if (@params?.Any() ?? false) {
+        Assert.That(f.Parameters, Is.Not.Null);
+        Assert.That(f.Parameters, Has.Exactly(@params.Length).Items);
+        Assert.That(f.ParametersNode, Is.Not.Null);
+        Assert.That(
+            f.Parameters.Select(
+                p => (p.Specifiers.TypeName, p.Declarator.Identifier)
+            ), 
+            Is.EqualTo(@params)
+        );
+    }
+    return f;
+}
+\end{lstlisting}
+\caption{Primer jediničnog testa za proveru generisanog AST čvora za datu funkciju.}
+\label{fig:ImplTestsUnit}
+\end{figure}
+
+Osim testova jedinica koda, prisutni su i testovi integracije svih komponenti. Kao što je opisano u prethodnim odeljcima, rezultat rada adaptera je AST, dok je rezultat data upoređivača za data dva stabla kolekcija problema. Ta dva odvojena procesa se onda mogu spojiti kako bi se testirala integracija te dve komponente --- dakle, od dva programa očekivati određenu kolekciju problema. Primer za \emph{swap} algoritam se može videti na slici \ref{fig:ImplTestsIntegration}.
+
+\begin{figure}[h!]
+\centering
+\begin{lstlisting}
+[Test]
+public override void DifferenceTests()
+{
+    this.Compare(
+        this.FromPseudoSource(@"
+            algorithm Swap 
+            begin
+                declare integer x = vx
+                declare integer y = vy
+                procedure swap()
+                begin
+                    declare integer tmp = x
+                    x = y  
+                    y = tmp
+                end
+            end
+        "),
+        this.FromCSource(@"
+            int x = vx, y = vy;
+            void swap() {
+                int tmp = x; y = tmp; x = y;
+            }
+        "),
+        new MatchIssues()
+            .AddError(
+                new BlockEndValueMismatchError("x", 1, "vy", "vx")
+            )
+            .AddError(
+                new BlockEndValueMismatchError("x", 3, "vy", "vx")
+            )
+    );
+}
+
+protected void Compare(ASTNode src, ASTNode dst, 
+    MatchIssues? expectedIssues = null)
+{
+    expectedIssues ??= new MatchIssues();
+    MatchIssues issues = new ASTNodeComparer(src, dst)
+        .AttemptMatch();
+    Assert.That(issues, Is.EquivallentTo(expectedIssues));
+}
+\end{lstlisting}
+\caption{Primer kompletnog testa za algoritam \emph{swap}.}
+\label{fig:ImplTestsIntegration}
+\end{figure}
