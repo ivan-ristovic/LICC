@@ -26,7 +26,7 @@ namespace LICC.AST
 
             Type? builderType = builderTypes.SingleOrDefault();
             if (builderType is null)
-                throw new AmbiguousMatchException("Multiple builders are registered to handle that file type.");
+                throw new AmbiguousMatchException("Unique binder not registered to handle that file type.");
 
             if (!(Activator.CreateInstance(builderType) is IAbstractASTBuilder builder))
                 throw new NotImplementedException("The builder for required file extension is found but does not inherit IAbstractASTBuilder class.");

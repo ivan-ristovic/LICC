@@ -11,9 +11,9 @@ namespace LICC.Tests.AST.Builders.Common
     internal abstract class DeclarationTestsBase : ASTBuilderTestBase
     {
         protected DeclStatNode AssertDeclarationNode(string src,
-                                                                 string type,
-                                                                 AccessModifiers access = AccessModifiers.Unspecified,
-                                                                 QualifierFlags qualifiers = QualifierFlags.None)
+                                                     string type,
+                                                     AccessModifiers access = AccessModifiers.Unspecified,
+                                                     QualifierFlags qualifiers = QualifierFlags.None)
         {
             ASTNode ast = this.GenerateAST(src);
             DeclStatNode decl = ast is SourceNode block
