@@ -436,9 +436,9 @@ $ ./LICC cmp Samples/swap/valid.c Samples/swap/wrong.c
 
 Steps:
 - Create (or use ![already made](https://github.com/antlr/grammars-v4/)) ANTLR4 grammar files
-- Create lexer and parser for your grammar via ANTLR4
-- Create a builder namespace in `LICC.AST.Builder.YOUR_GRAMMAR` as per examples already present for C or Lua.
-- Create a Builder type extending `CBaseVisitor<ASTNode>` and implementing `IASTBuilder<YourParserType>`
+- Create lexer and parser for your grammar via ANTLR4 (using `-Dlanguage=CSharp` option)
+- Create a builder namespace in `LICC.AST.Builder.<YOUR_GRAMMAR>` as per examples already present for C or Lua.
+- Create a Builder type extending `ANTLR_GENERATED_BASE_VISITOR<ASTNode>` and implementing `IASTBuilder<ANTLR_GENERATED_PARSER_TYPE>` (change uppercase areas appropriately)
 - Apply `[ASTBuilder(".YOUR_FILE_EXTENSION")]` attribute to the class in order for it to be automatically used when loading sources of that extension
 
 Check out Pseudocode PoC language ![grammar](LICC.AST/Builders/Pseudo/ANTLR/Pseudo.g4) and ![builder](LICC.AST/Builders/Pseudo/) as an example.
