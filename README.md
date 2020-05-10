@@ -1,5 +1,8 @@
 # LICC - Language Invariant Code Comparer
-![Build](https://github.com/ivan-ristovic/MSc/workflows/.NET%20Core/badge.svg)
+[![Build](https://github.com/ivan-ristovic/MSc/workflows/.NET%20Core/badge.svg)
+[![Issues](https://img.shields.io/github/issues/ivan-ristovic/LICC.svg)](https://github.com/ivan-ristovic/LICC/issues)
+[![Stable release](https://img.shields.io/github/release/ivan-ristovic/LICC.svg?label=stable)](https://github.com/ivan-ristovic/LICC/releases)
+[![Latest release](https://img.shields.io/github/tag-pre/ivan-ristovic/LICC.svg?label=latest)](https://github.com/ivan-ristovic/LICC/releases)
 
 LICC is a set of libraries which provide common AST abstraction API. Furthermore, as an example of use, a library for semantic comparison of structurally similar codes has been included in this solution.
 
@@ -35,7 +38,7 @@ Interested readers can read more in my ![thesis](Thesis/IvanRistovic_MasterRad.p
 
 ### Creating common AST
 
-```
+```sh
 $ ./LICC -- ast 
 ERROR(S):
   A required value not bound to option name is missing.
@@ -55,7 +58,7 @@ ERROR(S):
   value pos. 0     Required. Source path
 ```
 
-- AST created for C source:
+#### AST created for C source:
 ```c
 int gl_y = 2;
 void f(int x);
@@ -374,7 +377,7 @@ $ ./LICC ast -v sample.c
 </details>
 
 
-- AST created for Lua source:
+#### AST created for Lua source:
 ```lua
 function fact (n)
   if n == 0 then
@@ -394,18 +397,39 @@ $ ./LICC ast -vc sample.lua --tree
 ```json
 {"Name":null,"NodeType":"SourceNode","Line":1,"Children":[{"NodeType":"FuncDefNode","Line":1,"Children":[{"Modifiers":{"AccessModifiers":"Unspecified","QualifierFlags":"None"},"TypeName":"object","NodeType":"DeclSpecsNode","Line":1,"Children":[]},{"Pointer":false,"NodeType":"FuncDeclNode","Line":1,"Children":[{"Identifier":"fact","NodeType":"IdNode","Line":1,"Children":[]},{"IsVariadic":false,"NodeType":"FuncParamsNode","Line":1,"Children":[{"NodeType":"FuncParamNode","Line":1,"Children":[{"Modifiers":{"AccessModifiers":"Unspecified","QualifierFlags":"None"},"TypeName":"object","NodeType":"DeclSpecsNode","Line":1,"Children":[]},{"Pointer":false,"NodeType":"VarDeclNode","Line":1,"Children":[{"Identifier":"n","NodeType":"IdNode","Line":1,"Children":[]}]}]}]}]},{"NodeType":"BlockStatNode","Line":2,"Children":[{"NodeType":"IfStatNode","Line":2,"Children":[{"NodeType":"RelExprNode","Line":2,"Children":[{"Identifier":"n","NodeType":"IdNode","Line":2,"Children":[]},{"Symbol":"==","NodeType":"RelOpNode","Line":2,"Children":[]},{"Value":0,"Suffix":null,"TypeCode":"Int32","NodeType":"LitExprNode","Line":2,"Children":[]}]},{"NodeType":"BlockStatNode","Line":3,"Children":[{"Type":"Return","NodeType":"JumpStatNode","Line":3,"Children":[{"NodeType":"ExprListNode","Line":3,"Children":[{"Value":1,"Suffix":null,"TypeCode":"Int32","NodeType":"LitExprNode","Line":3,"Children":[]}]}]}]},{"NodeType":"BlockStatNode","Line":5,"Children":[{"Type":"Return","NodeType":"JumpStatNode","Line":5,"Children":[{"NodeType":"ExprListNode","Line":5,"Children":[{"NodeType":"ArithmExprNode","Line":5,"Children":[{"Identifier":"n","NodeType":"IdNode","Line":5,"Children":[]},{"Symbol":"*","NodeType":"ArithmOpNode","Line":5,"Children":[]},{"NodeType":"FuncCallExprNode","Line":5,"Children":[{"Identifier":"fact","NodeType":"IdNode","Line":5,"Children":[]},{"NodeType":"ExprListNode","Line":5,"Children":[{"NodeType":"ArithmExprNode","Line":5,"Children":[{"Identifier":"n","NodeType":"IdNode","Line":5,"Children":[]},{"Symbol":"-","NodeType":"ArithmOpNode","Line":5,"Children":[]},{"Value":1,"Suffix":null,"TypeCode":"Int32","NodeType":"LitExprNode","Line":5,"Children":[]}]}]}]}]}]}]}]}]}]}]}]}
 ```
-</details>
 
 ![tree](images/visualizer.png)
+</details>
+
 
 
 ## Comparing common ASTs
 
-```sh
-$ ./LICC cmp Samples/swap/valid.c Samples/swap/refactor.c
+```sh 
+$ ./LICC cmp
+ERROR(S):
+  A required value not bound to option name is missing.
+
+  -v, --verbose    Set output to verbose messages.
+
+  --help           Display this help screen.
+
+  --version        Display version information.
+
+  value pos. 0     Required. Specification path.
+
+  value pos. 1     Required. Test source path.
 ```
 
-![tree](images/sample1.png)
+### Example for swap sources
+
+Sources: ![valid.c](LICC.Core/Samples/swap/valid.c) ![wrong.c](LICC.Core/Samples/swap/wrong.c)
+
+```sh
+$ ./LICC cmp Samples/swap/valid.c Samples/swap/wrong.c
+```
+
+![swap](images/sample1.png)
 
 
 # Extending AST library with new builders
@@ -417,4 +441,4 @@ Steps:
 - Create a Builder type extending `CBaseVisitor<ASTNode>` and implementing `IASTBuilder<YourParserType>`
 - Apply `[ASTBuilder(".YOUR_FILE_EXTENSION")]` attribute to the class in order for it to be automatically used when loading sources of that extension
 
-Check out Pseudocode PoC language ![grammar](LICC.AST/Builders/Pseudo/ANTLR/Pseudo.g4) and ![builder](LICC.AST/Builders/Pseudo/).
+Check out Pseudocode PoC language ![grammar](LICC.AST/Builders/Pseudo/ANTLR/Pseudo.g4) and ![builder](LICC.AST/Builders/Pseudo/) as an example.
