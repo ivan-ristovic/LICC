@@ -1,5 +1,5 @@
 # LICC - Language Invariant Code Comparer
-[![Build](https://github.com/ivan-ristovic/MSc/workflows/.NET%20Core/badge.svg)
+![Build](https://github.com/ivan-ristovic/MSc/workflows/.NET%20Core/badge.svg)
 [![Issues](https://img.shields.io/github/issues/ivan-ristovic/LICC.svg)](https://github.com/ivan-ristovic/LICC/issues)
 [![Stable release](https://img.shields.io/github/release/ivan-ristovic/LICC.svg?label=stable)](https://github.com/ivan-ristovic/LICC/releases)
 [![Latest release](https://img.shields.io/github/tag-pre/ivan-ristovic/LICC.svg?label=latest)](https://github.com/ivan-ristovic/LICC/releases)
