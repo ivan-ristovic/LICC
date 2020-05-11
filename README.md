@@ -39,7 +39,7 @@ Interested readers can read more in my ![thesis](Thesis/IvanRistovic_MasterRad.p
 ### Creating common AST
 
 ```sh
-$ ./LICC -- ast 
+$ ./LICC ast 
 ERROR(S):
   A required value not bound to option name is missing.
 
