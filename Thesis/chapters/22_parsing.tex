@@ -9,23 +9,24 @@ Odgovor je potvrdan i postoji veliki broj alata koji se mogu koristiti u ove svr
 
 \subsection{Lex i Flex}
 \label{subsec:LexFlex}
-\emph{Lex} \cite{LexYacc} je program koji generiše leksere. Danas se više koristi \emph{flex} \cite{Flex}, kreiran kao alternativa \emph{lex}-u, s obzirom da je i do dva puta brži od lex-a, koristi manje memorije nego lex, i vreme kompilacije leksera koje flex generiše je i do tri puta kraće nego kompilacija leksera koje generiše lex. Pošto flex, isto kao i lex, generiše samo leksere, najčešće se koristi u kombinaciji sa drugim alatima koji mogu da generišu parsere, kao što su npr. \emph{GNU Bison} ili \emph{BYACC}.
+\emph{Lex} \cite{LexYacc} je program koji generiše leksere. Danas se više koristi \emph{flex} \cite{Flex}, kreiran kao alternativa \emph{lex}-u, s obzirom da je i do dva puta brži od \emph{lex}-a, koristi manje memorije nego \emph{lex}, i vreme kompilacije leksera koje \emph{flex} generiše je i do tri puta kraće nego kompilacija leksera koje generiše \emph{lex}. Pošto \emph{flex}, isto kao i \emph{lex}, generiše samo leksere, najčešće se koristi u kombinaciji sa drugim alatima koji mogu da generišu parsere, kao što su npr. \emph{GNU Bison}, \emph{YACC} ili \emph{BYACC}.
 
 \subsection{GNU Bison}
 \label{subsec:GNUBison}
 \emph{GNU Bison} \cite{GNUBison} je generator parsera i deo GNU projekta \cite{GNUProject}, često referisan samo kao \emph{Bison}. Bison generiše parser na osnovu korisnički definisane kontekstno slobodne gramatike \cite{ContextFreeGrammars}, upozoravajući pritom na dvosmislenosti prilikom parsiranja ili nemogućnost primene gramatičkih pravila. Generisani parser je najčešće C a ređe C++ program, mada se u vreme pisanja ovog rada eksperimentiše sa Java podrškom. Generisani kodovi su u potpunosti prenosivi i ne zahtevaju specifične kompajlere. Bison može da, osim podrazumevanih \emph{LALR(1)} \cite{LALR1} parsera, generiše i kanoničke \emph{LR} \cite{LR}, \emph{IELR(1)} \cite{IELR1} i \emph{GLR} \cite{GLR} parsere.
 
-\subsection{BYACC}
+\subsection{YACC i BYACC}
 \label{subsec:BYACC}
+\emph{YACC} \cite{LexYacc} je program koji generiše \emph{LALR} \cite{LALR1} parser na osnovu gramatike date na ulazu zajedno sa akcijama koje će se izvršiti kada se određeno pravilo prepozna u izvornom kodu. \emph{YACC} ne vrši leksičku analizu, stoga se obično koristi zajedno sa popularnim leksičkim analizatorima kao što su \emph{lex} i \emph{flex}. 
+
 \emph{Berkeley YACC}, skraćeno \emph{BYACC} \cite{BYACC}, je generator parsera pisan po ANSI C standardu i otvorenog je koda. Posmatra se od strane mnogih kao \textit{najbolja varijanta YACC-a} \cite{LexYacc}. BYACC dozvoljava tzv. \emph{reentrant} k\^od --- omogućava bezbedno konkurentno izvršavanje koda na način kompatibilan sa Bison-om i to je delom razlog njegove popularnosti.
 
 \subsection{ANTLR}
 \label{subsec:ANTLR}
-\emph{Another Tool for Language Recognition}, ili kraće \emph{ANTLR} \cite{ANTLR}, je generator \emph{LL(*)} \cite{LLStar} leksera i parsera pisan u programskom jeziku Java sa intuitivnim interfejsom za obilazak stabla parsiranja. Verzija $3$ podržava generisanje parsera u jezicima Ada95, ActionScript, C, C\#, Java, JavaScript, Objective-C, Perl, Python, Ruby, i Standard ML, dok verzija $4$ u vreme pisanja ovog rada generiše parsere u narednim jezicima: Java, C\#, C++, JavaScript, Python, Swift i Go.
+\emph{Another Tool for Language Recognition}, ili kraće \emph{ANTLR} \cite{ANTLR}, je generator \emph{LL(*)} \cite{LLStar} leksera i parsera pisan u programskom jeziku Java sa intuitivnim interfejsom za obilazak stabla parsiranja. Verzija $3$ podržava generisanje parsera u jezicima Ada95, ActionScript, C, C\#, Java, JavaScript, Objective-C, Perl, Python, Ruby, i Standard ML, dok verzija $4$\footnote{
+ANTLR verzije $4$ je izabran u ovom radu zbog svoje popularnosti, jednostavnosti, intuitivnosti i podrške za mnoge moderne programske jezike. Verzija $4$ je izabrana umesto verzije $3$ po preporuci autora ANTLR-a, na osnovu eksperimentalne analize brzine i pouzdanosti te verzije u odnosu na prethodnu.}, u daljem tekstu ANTLR4, u vreme pisanja ovog rada generiše parsere u narednim programskim jezicima: Java, C\#, C++, JavaScript, Python, Swift i Go.
 
-ANTLR verzije $4$ je izabran u ovom radu zbog svoje popularnosti, jednostavnosti, intuitivnosti i podrške za mnoge moderne programske jezike. Verzija $4$ je izabrana umesto verzije $3$ po preporuci autora ANTLR-a, na osnovu eksperimentalne analize brzine i pouzdanosti te verzije u odnosu na prethodnu. Lekseri i parseri za ulazne gramatike će u implementaciji biti generisani u programskom jeziku C\#.
-
-Parseri generisani koristeći ANTLR koriste novu tehnologiju koja se naziva \emph{Prilagodljiv LL(*)} (engl. \emph{Adaptive LL(*)}) ili \emph{ALL(*)} \cite{ANTLRReference}, dizajniranu od strane Terensa Para, autora ANTLR-a, i Sema Harvela. \emph{ALL(*)} vrši \emph{dinamičku analizu} gramatike u fazi izvršavanja, dok su starije verzije radile analizu pre pokretanja parsera. Ovaj pristup je takođe efikasniji zbog značajno manjeg prostora ulaznih sekvenci u parser.
+Parseri generisani koristeći ANTLR4 koriste novu tehnologiju koja se naziva \emph{Prilagodljiv LL(*)} (engl. \emph{Adaptive LL(*)}) ili \emph{ALL(*)} \cite{ANTLRReference}, dizajniranu od strane Terensa Para, autora ANTLR-a, i Sema Harvela. \emph{ALL(*)} vrši \emph{dinamičku analizu} gramatike u fazi izvršavanja, dok su starije verzije radile analizu pre pokretanja parsera. Ovaj pristup je takođe efikasniji zbog značajno manjeg prostora ulaznih sekvenci u parser.
 
 Najbolji aspekt ANTLR-a je lakoća definisanja gramatičkih pravila koji opisuju sintaksne konstrukte. Primer jednostavnog pravila za definisanje aritmetičkog izraza je dat na slici \ref{fig:ANTLRExpressions}. Pravilo \texttt{exp} je levo rekurzivno jer barem jedna od njegovih alternativnih definicija referiše baš na pravilo \texttt{exp}. ANTLR4 automatski zamenjuje levo rekurzivna pravila u nerekurzivne ekvivalente. Jedini zahtev koji mora biti ispunjen je da levo rekurzivna pravila moraju biti \emph{direktna} --- da pravila odmah referišu sama sebe. Pravila ne smeju referisati drugo pravilo sa leve strane definicije takvo da se eventualno kroz rekurziju stigne nazad do pravila od kog se krenulo bez poklapanja sa nekim tokenom.
 
@@ -45,7 +46,7 @@ exp : (exp)
 \subsubsection{Preduslovi za pokretanje ANTLR4}
 \label{subsubsec:ANTLRInstallation}
 
-Kako bi se ANTLR koristio, potrebno je instalirati ANTLR i imati \emph{Java Runtime Environment} (skr. \emph{JRE}) instaliran na sistemu i dostupan globalno pokretanjem putem komande \texttt{java}. Instalacija se sastoji od preuzimanja najnovijeg \emph{.jar} fajla\footnote{Takođe je moguće prevesti izvorni k\^od dostupan na servisu GitHub \url{https://github.com/antlr/antlr4}}, sa zvanične stranice \cite{ANTLR} ili recimo korišćenjem \emph{curl} alata: 
+Kako bi se ANTLR4 koristio, potrebno je instalirati ANTLR4 i imati \emph{Java Runtime Environment} (skr. \emph{JRE}) instaliran na sistemu i dostupan globalno pokretanjem putem komande \texttt{java}. Instalacija se sastoji od preuzimanja najnovijeg \emph{.jar} fajla\footnote{Takođe je moguće prevesti izvorni k\^od dostupan na servisu GitHub \url{https://github.com/antlr/antlr4}}, sa zvanične stranice \cite{ANTLR} ili recimo korišćenjem \emph{curl} alata: 
 \begin{lstlisting}[language={}]
 $ curl -O http://www.antlr.org/download/antlr-4-complete.jar
 \end{lstlisting}
@@ -70,7 +71,7 @@ ANTLR Parser Generator Version 4.0
 ...
 \end{lstlisting}
 
-Dodatno, za Unix sisteme\footnote{Za Windows operativni sistem je moguće kreirati \emph{batch} skript po opisu na \url{https://github.com/antlr/antlr4/blob/master/doc/getting-started.md}.}, moguće je kreirati dodatni alias \texttt{grun} (ili alternativno, kreirati \texttt{shell script}) za biblioteku \texttt{TestRig}. Biblioteka \texttt{TestRig} se može koristiti za brzo testiranje parsera --- moguće je pokrenuti parser od bilo kog pravila i dobiti izlaz parsera u raznim formatima. \texttt{TestRig} dolazi uz ANTLR \texttt{.jar} fajl i moguće je napraviti prečicu za brzo pokretanje (nalik na ANTLR alias):
+Dodatno, za Unix sisteme\footnote{Za Windows operativni sistem je moguće kreirati \emph{batch} skript po opisu na \url{https://github.com/antlr/antlr4/blob/master/doc/getting-started.md}.}, moguće je kreirati dodatni alias \texttt{grun} (ili alternativno, kreirati \texttt{shell script}) za biblioteku \texttt{TestRig}. Biblioteka \texttt{TestRig} se može koristiti za brzo testiranje parsera --- moguće je pokrenuti parser od bilo kog pravila i dobiti izlaz parsera u raznim formatima. \texttt{TestRig} dolazi uz ANTLR4 \texttt{.jar} fajl i moguće je napraviti prečicu za brzo pokretanje (nalik na ANTLR4 alias):
 \begin{lstlisting}[language={}]
 $ alias grun='java -cp "/usr/local/lib/antlr-4-complete.jar:$CLASSPATH" org.antlr.v4.gui.TestRig'
 \end{lstlisting}
@@ -79,25 +80,102 @@ $ alias grun='java -cp "/usr/local/lib/antlr-4-complete.jar:$CLASSPATH" org.antl
 \subsection{Generisanje parsera koristeći ANTLR4}
 \label{subsec:ANTLRParserGeneration}
 
-U ovom odeljku će biti opisan proces kreiranja interfejsa za parsiranje programa pisanih u pseudo-programskom jeziku (u nastavku \emph{pseudo-jezik}), nalik na pseudokod. Ovako dobijeni interfejs će moći da se koristi u opšte svrhe, a za potrebe ovog rada će se koristiti za generisanje apstraktnog sintaksičkog stabla za izvorni k\^od pisan u pseudo-jeziku.
+U ovom odeljku će biti opisan proces kreiranja interfejsa za parsiranje programa pisanih u imperativnom, strogo tipiziranom pseudo-programskom jeziku (u nastavku \emph{pseudo-jezik}), sličnom pseudokodu. Dobijeni interfejs za obilazak stabla parsiranja će moći da se koristi u opšte svrhe, a za potrebe ovog rada će se koristiti za generisanje apstraktnog sintaksičkog stabla za izvorni k\^od pisan u pseudo-jeziku. Najpre će biti definisana gramatika pseudo-jezika prateći ANTLR4 pravila za definisanje gramatika. Tek nakon kompletnog opisa gramatike biće iskoriščen ANTLR4 kako bi se generisao parser za pseudo-jezik. Kao i za svaki drugi proceduralni jezik, treba podržati neke osnovne koncepte: \emph{identifikatore}, \emph{izraze}, \emph{naredbe}, \emph{funkcije} i slično.
 
-Definišimo gramatiku pseudo-jezika prateći ANTLR pravila za definisanje gramatika. Kao i za svaki drugi programski jezik, treba podržati neke osnovne koncepte: \emph{identifikatore}, \emph{izraze}, \emph{naredbe}, \emph{funkcije} i slično. Za sada se fokusirajmo na naredbe, kao samostalne izvršive jedinice k\^oda. Stoga program možemo posmatrati kao niz naredbi. U nekim slučajevima će biti potrebno definisanje kompleksnih naredbi koje se sastoje od više drugih naredbi, i ovakve složene naredbe ćemo zvati \emph{blok} ili \emph{blok naredbi}. Stoga, radi konzistentnosti, program će biti blok naredbi. Kako bismo označili da su naredbe deo bloka naredbi, koristićemo reči \texttt{begin} i \texttt{end}, osim ukoliko je reč o samo jednoj naredbi. Ovakve situacije rešavamo definisanjem \emph{alternativa} u definiciji pravila --- više definicija razdvojenih simbolom \texttt{|}. Specijalne reči kao što su \texttt{begin} i \texttt{end} će biti rezervisane reči našeg pseudo-jezika, tzv. \emph{ključne reči}. Na slici \ref{fig:PseudoDef1} se može videti definicija programa\footnote{Drugim rečima, jedan program u pseudo-jeziku je jedinica prevođenja, pa je zato pravilo nazvano \emph{unit}.} i bloka naredbi pseudo-jezika, pri čemu se ključne reči u pravilima navode između apostrofa. ANTLR dozvoljava jednostavne definicije pravila u kojima figuriše promenljiv broj drugih pravila, pri čemu se koriste simboli kao u regularnim izrazima\footnote{U regularnim izrazima, simbol \texttt{a?} označava opciono pojavljivanje simbola \texttt{a}, simbol \texttt{a+} označava jedno ili više pojavljivanja simbola \texttt{a}, a simbol \texttt{a*} označava proizvoljan broj pojavljivanja simbola \texttt{a} --- kombinacija simbola \texttt{?} i \texttt{+}.}, što je iskorišćeno za definiciju pravila bloka naredbi. \texttt{NAME} je identifikator koji predstavlja ime programa. Identifikatore ćemo definisati kasnije, za sada možemo posmatrati identifikator kao nisku karaktera s tim što će postojati restrikcije vezane za to koji karakteri se mogu naći unutar identifikatora.
+Identifikatori su niske karaktera koje predstavljaju oznaku koja odgovara određenoj memorijskoj adresi. Identifikatori se koriste umesto sirovih vrednosti adresa kako bi k\^od bio čitljiviji i lakši za pisanje --- na nivou asemblera se većinom koriste adrese ili automatski generisane oznake. Na slici \ref{fig:PseudoDef4} se može videti definicija identifikatora. Identifikator se sastoji od slova, cifara i simbola \texttt{\_}, s tim što ne sme početi cifrom. Ovo je konvencija koju prati dosta jezika, uključujući programski jezik C. Primetimo da je identifikator nešto što bi lekser trebalo da prepozna tokom tokenizacije. Međutim, kada definišemo gramatiku od koje će ANTLR4 praviti lekser i parser, možemo i tokene definisati na isti način kao i gramatička pravila dajući regularni izraz za njihovo poklapanje. Listovi stabla parsiranja su uvek tokeni, drugim rečima se nazivaju i \emph{terminalni simboli}. Tokeni se, osim u listovima, mogu naći bilo gde u stablu parsiranja. ANTLR4 dozvoljava jednostavne definicije pravila u kojima figuriše promenljiv broj drugih pravila, pri čemu se koriste simboli kao u regularnim izrazima\footnote{U regularnim izrazima, simbol \texttt{a?} označava opciono pojavljivanje simbola \texttt{a}, simbol \texttt{a+} označava jedno ili više pojavljivanja simbola \texttt{a}, a simbol \texttt{a*} označava proizvoljan broj pojavljivanja simbola \texttt{a} --- kombinacija simbola \texttt{?} i \texttt{+}.}, što je iskorišćeno za definiciju pravila za definisanje identifikatora.
 
 \begin{figure}[h!]
 \begin{lstlisting}[language={}]
-unit
-    : 'algorithm' NAME block EOF
-    ;
-block
-    : 'begin' statement+ 'end'
-    | statement
+NAME
+    : [a-zA-Z_][a-zA-Z_0-9]*
     ;
 \end{lstlisting}
-\caption{Definicija jedinice prevođenja i bloka naredbi za pseudo-jezik.}
-\label{fig:PseudoDef1}
+\caption{Definicija identifikatora za pseudo-jezik.}
+\label{fig:PseudoDef4}
 \end{figure}
 
-Sledeći korak je definisanje naredbi pseudo-jezika. Slično kao i u drugim programskim jezicima, potrebno je podržati koncept deklaracije promenljive, dodele vrednosti izraza promenljivoj, naredbe kontrole toka --- grananje i petlje. Na slici \ref{fig:PseudoDef2} je definisano šta se sve smatra jednom naredbom. Naredbe mogu biti i prazne, što je označeno ključnom rečju \texttt{pass}. Iz definicije sa slike se jasno vidi šta sve može biti naredba (prateći redosled alternativa pravila): deklaracija, dodela, poziv funkcije (označen kao \texttt{cexp}, skraćeno od \emph{function call expression})\footnote{Funkcije mogu vratiti vrednosti pa se stoga njihovi pozivi mogu naći u izrazima --- dakle poziv funkcije je validan izraz (stoga \texttt{expression} u imenu \texttt{function call expression}). Naravno, ta vrednost se može ignorisati ili pak sama funkcija može biti takva da nema povratnu vrednost već je samo neophodno izvršiti je zbog sporednih efekata.}, vraćanje vrednosti izraza (ključna vrednost \texttt{return}) iz funkcije, prekidanje izvršavanja davanjem poruke o grešci, naredba grananja, \emph{while} petlja, \emph{repeat-until} petlja i inkrementiranje/dekrementiranje vrednosti promenljive.
+Pošto želimo da pseudo-jezik bude strogo tipiziran, potreban je koncept tipa (videti definiciju deklaracije), čija je definicija data na slici \ref{fig:PseudoDef5}. Tip može biti \emph{primitivan} (drugim rečima \emph{prost}) ili \emph{složen}. Primitivni tipovi su podržani u samoj sintaksi jezika --- u našem slučaju brojevni tipovi i niske. Brojevi mogu biti celi (\texttt{integer}) ili realni (\texttt{real}). U složene tipove spadaju korisnički definisani tipovi (sa imenom \texttt{NAME}, u četvrtoj alternativi pravila \texttt{typename} sa slike \ref{fig:PseudoDef5}) i kolekcije. Od kolekcija su podržani nizovi, liste i skupovi. Prilikom definicije kolekcije mora se navesti tip elemenata kolekcije i taj tip mora biti uniforman --- isti za sve elemente kolekcije. Specijalne reči kao što su \texttt{integer} ili \texttt{array} će biti rezervisane reči našeg pseudo-jezika, tzv. \emph{ključne reči}. Ključne reči se u pravilima navode između apostrofa.
+
+\begin{figure}[h!]
+\begin{lstlisting}[language={}]
+type 
+    : typename 'array'?
+    | typename 'list'?
+    | typename 'set'?
+    ;
+typename 
+    : 'integer' 
+    | 'real' 
+    | 'string' 
+    | NAME 
+    ;
+\end{lstlisting}
+\caption{Definicija tipa podataka za pseudo-jezik.}
+\label{fig:PseudoDef5}
+\end{figure}
+
+Izrazi, iako definisani rekurzivno, se mogu posmatrati kao kombinacija promenljivih, operatora i poziva funkcija sa odlikom da se mogu \emph{evaluirati}, tj. moguće je izračunati njihovu vrednost. Iz definicije pravila \texttt{exp} sa slike \ref{fig:PseudoDef6}, mogu se uočiti tipovi izraza, pri čemu nije vođeno računa o matematičkom prioritetu operatora, radi jednostavnosti. Izraz može biti \emph{literal}, koji predstavlja konstantu, bilo brojevnu, logičku ili nisku karaktera. Promenljive, definisane pravilom \texttt{var} su takođe izrazi, jer se trenutna vrednost promenljive posmatra kao vrednost izraza. Primetimo da promenljiva može biti kolekcijskog tipa, u kom slučaju se navodi redni broj elementa nakon identifikatora promenljive --- taj redni broj može biti rezultat evaluacije drugog izraza, ali ne bilo kakvog, stoga se u pravilu \texttt{iexp} definiše šta sve može biti korišćeno da se indeksira element kolekcije. Izrazima se može dati prioritet pomoću zagrada, što se vidi u trećoj alternativi pravila \texttt{exp}. U naredne tri alternative su opisani tipovi izraza: aritmetički, relacioni i logički. Aritmetički izrazi su vezani aritmetičkim operatorima definisanim preko pravila \texttt{aop}, slično važi i za ostala dva tipa. Svi tipovi izraza navedeni iznad su binarni, što znači da operatori zahtevaju dva argumenta. Postoje i unarni izrazi, od kojih su podržane promena znaka i logička negacija, što se vidi iz pravila \texttt{uop}. Poziv funkcije je takođe validan izraz jer funkcije imaju povratne vrednosti i on je označen imenom \texttt{cexp} (skraćeno od \emph{function call expression})\footnote{Funkcije mogu vratiti vrednosti pa se stoga njihovi pozivi mogu naći u izrazima --- dakle poziv funkcije je validan izraz (stoga \texttt{expression} u imenu \texttt{function call expression}). Naravno, ta vrednost se može ignorisati ili pak sama funkcija može biti takva da nema povratnu vrednost već je samo neophodno izvršiti je zbog sporednih efekata.}.
+
+\begin{figure}[h!]
+\begin{lstlisting}[language={}]
+exp
+    : literal 
+    | var
+    | '(' exp ')'
+    | exp aop exp
+    | exp rop exp
+    | exp lop exp
+    | uop exp
+    | cexp
+    ;
+var 
+    : NAME ('[' iexp ']')?
+    ;
+iexp 
+    : literal
+    | var
+    | aexp
+    ;
+cexp
+    : 'call' NAME '(' explist? ')'
+    ;
+explist
+    : exp (',' exp)*
+    ;
+aop : '+' | '-' | '*' | '/' | 'div' | 'mod' ;
+rop : '>' | '>=' | '<' | '<=' | '==' | '=/=' ;
+lop : 'and' | 'or' ;
+uop : '-' | 'not' ;
+\end{lstlisting}
+\caption{Definicija izraza za pseudo-jezik.}
+\label{fig:PseudoDef6}
+\end{figure}
+
+Definicija literala je prikazana na slici \ref{fig:PseudoDef7}. Literali mogu bili istinitosne konstante \texttt{True} i \texttt{False}, brojevne konstante ili niske karaktera. Brojevne konstante mogu bili celobrojni ili realni dekadni brojevi. Realne konstante je moguće definisati u fiksnom ili pokretnom zarezu. Niske se mogu definisati između navodnika ili apostrofa. Pritom, kao i u modernim programskim jezicima, moguće je navesti sekvence koje predstavljaju specijalne karaktere kao što su novi red, tabulator itd. Oznaka \texttt{fragment} označava optimizaciju, naime nije potrebno da postoji na primer pravilo \texttt{Digit}, već samo dajemo simbol za regularni izraz koji će se koristiti u više drugih pravila i poklapati jednu dekadnu cifru.
+
+\begin{figure}[h!]
+\begin{lstlisting}[language={}]
+literal : 'True' | 'False' | INT | FLOAT | STRING ;
+STRING : '"' ( EscapeSequence | ~('\\'|'"') )* '"'  ;
+INT : Digit+ ;
+FLOAT
+    : Digit+ '.' Digit* ExponentPart?
+    | '.' Digit+ ExponentPart?
+    | Digit+ ExponentPart
+    ;
+
+fragment
+ExponentPart : [eE] [+-]? Digit+ ;
+fragment
+Digit : [0-9] ;
+fragment
+EscapeSequence : '\\' [abfnrtvz"'\\] | '\\' '\r'? '\n' ;
+\end{lstlisting}
+\caption{Definicija konstanti za pseudo-jezik.}
+\label{fig:PseudoDef7}
+\end{figure}
+
+Sledeći korak je definisanje naredbi pseudo-jezika --- samostalnih izvršivih jedinica koda. Slično kao i u drugim programskim jezicima, potrebno je podržati koncept deklaracije promenljive, dodele vrednosti izraza promenljivoj, naredbe kontrole toka --- grananje i petlje. U nekim slučajevima će biti potrebno definisanje kompleksnih naredbi koje se sastoje od više drugih naredbi, i ovakve složene naredbe ćemo zvati \emph{blok} ili \emph{blok naredbi}. Kako bismo označili da su naredbe deo bloka naredbi, koristićemo ključne reči \texttt{begin} i \texttt{end}, osim ukoliko je reč o samo jednoj naredbi. Ovakve situacije rešavamo definisanjem \emph{alternativa} u definiciji pravila --- više definicija razdvojenih simbolom \texttt{|}. Na slici \ref{fig:PseudoDef2} je definisano šta se sve smatra jednom naredbom. Naredbe mogu biti i prazne, što je označeno ključnom rečju \texttt{pass}. Iz definicije sa slike se jasno vidi šta sve može biti naredba (prateći redosled alternativa pravila): deklaracija, dodela, poziv funkcije, vraćanje vrednosti izraza (ključna vrednost \texttt{return}) iz funkcije, prekidanje izvršavanja davanjem poruke o grešci, naredba grananja, \emph{while} petlja, \emph{repeat-until} petlja i inkrementiranje/dekrementiranje vrednosti promenljive.
     
 \begin{figure}[h!]
 \begin{lstlisting}[language={}]
@@ -135,100 +213,23 @@ parlist
 \label{fig:PseudoDef3}
 \end{figure}
 
-Identifikatori su niske karaktera koje predstavljaju oznaku koja odgovara određenoj memorijskoj adresi. Identifikatori se koriste umesto sirovih vrednosti adresa kako bi k\^od bio čitljiviji i lakši za pisanje --- na nivou asemblera se većinom koriste adrese ili automatski generisane oznake. Na slici \ref{fig:PseudoDef4} se može videti definicija identifikatora. Identifikator se sastoji od slova, cifara i simbola \texttt{\_}, s tim što ne sme početi cifrom. Ovo je konvencija koju prati dosta jezika, uključujući programski jezik C. Primetimo da je identifikator nešto što bi lekser trebalo da prepozna tokom tokenizacije. Međutim, kada definišemo gramatiku od koje će ANTLR praviti lekser i parser, možemo i tokene definisati na isti način kao i gramatička pravila dajući regularni izraz za njihovo poklapanje. Listovi stabla parsiranja su uvek tokeni, drugim rečima se nazivaju i \emph{terminalni simboli}. Tokeni se, osim u listovima, mogu naći bilo gde u stablu parsiranja.
+Program možemo posmatrati kao niz naredbi kome je pridružen identifikator koji označava ime programa. Na slici \ref{fig:PseudoDef1} se može videti pravilo koje definiše program\footnote{Drugim rečima, jedan program u pseudo-jeziku je jedinica prevođenja, pa je zato pravilo nazvano \emph{unit}.} i blok naredbi pseudo-jezika. Pritom, \texttt{NAME} je identifikator koji predstavlja ime programa (algoritma).
 
 \begin{figure}[h!]
 \begin{lstlisting}[language={}]
-NAME
-    : [a-zA-Z_][a-zA-Z_0-9]*
+unit
+    : 'algorithm' NAME block EOF
+    ;
+block
+    : 'begin' statement+ 'end'
+    | statement
     ;
 \end{lstlisting}
-\caption{Definicija identifikatora za pseudo-jezik.}
-\label{fig:PseudoDef4}
+\caption{Definicija jedinice prevođenja i bloka naredbi za pseudo-jezik.}
+\label{fig:PseudoDef1}
 \end{figure}
 
-Pošto želimo da pseudo-jezik bude strogo tipiziran, potreban je koncept tipa (videti definiciju deklaracije), čija je definicija data na slici \ref{fig:PseudoDef5}. Tip može biti \emph{primitivan} (drugim rečima \emph{prost}) ili \emph{složen}. Primitivni tipovi su podržani u samoj sintaksi jezika --- u našem slučaju brojevni tipovi i niske. Brojevi mogu biti celi ili realni. U složene tipove spadaju korisnički definisani tipovi (sa imenom \texttt{NAME}, u četvrtoj alternativi pravila \texttt{typename} sa slike \ref{fig:PseudoDef5}) i kolekcije. Od kolekcija su podržani nizovi, liste i skupovi. Prilikom definicije kolekcije mora se navesti tip elemenata kolekcije i taj tip mora biti uniforman --- isti za sve elemente kolekcije. 
-
-\begin{figure}[h!]
-\begin{lstlisting}[language={}]
-type 
-    : typename 'array'?
-    | typename 'list'?
-    | typename 'set'?
-    ;
-typename 
-    : 'integer' 
-    | 'real' 
-    | 'string' 
-    | NAME 
-    ;
-\end{lstlisting}
-\caption{Definicija tipa podataka za pseudo-jezik.}
-\label{fig:PseudoDef5}
-\end{figure}
-
-Izrazi, iako definisani rekurzivno, se mogu posmatrati kao kombinacija promenljivih, operatora i poziva funkcija sa odlikom da se mogu \emph{evaluirati}, tj. moguće je izračunati njihovu vrednost. Iz definicije pravila \texttt{exp} sa slike \ref{fig:PseudoDef6}, mogu se uočiti tipovi izraza, pri čemu nije vođeno računa o matematičkom prioritetu operatora, radi jednostavnosti. Izraz može biti \emph{literal}, koji predstavlja konstantu, bilo brojevnu, logičku ili nisku karaktera. Promenljive, definisane pravilom \texttt{var} su takođe izrazi, jer se trenutna vrednost promenljive posmatra kao vrednost izraza. Primetimo da promenljiva može biti kolekcijskog tipa, u kom slučaju se navodi redni broj elementa nakon identifikatora promenljive --- taj redni broj može biti rezultat evaluacije drugog izraza, ali ne bilo kakvog, stoga se u pravilu \texttt{iexp} definiše šta sve može biti korišćeno da se indeksira element kolekcije. Izrazima se može dati prioritet pomoću zagrada, što se vidi u trećoj alternativi pravila \texttt{exp}. U naredne tri alternative su opisani tipovi izraza: aritmetički, relacioni i logički. Aritmetički izrazi su vezani aritmetičkim operatorima definisanim preko pravila \texttt{aop}, slično važi i za ostala dva tipa. Svi tipovi izraza navedeni iznad su binarni, što znači da operatori zahtevaju dva argumenta. Postoje i unarni izrazi, od kojih su podržane promena znaka i logička negacija, što se vidi iz pravila \texttt{uop}.
-
-\begin{figure}[h!]
-\begin{lstlisting}[language={}]
-exp
-    : literal 
-    | var
-    | '(' exp ')'
-    | exp aop exp
-    | exp rop exp
-    | exp lop exp
-    | uop exp
-    | cexp
-    ;
-var 
-    : NAME ('[' iexp ']')?
-    ;
-iexp 
-    : literal
-    | var
-    | aexp
-    ;
-cexp
-    : 'call' NAME '(' explist? ')'
-    ;
-explist
-    : exp (',' exp)*
-    ;
-aop : '+' | '-' | '*' | '/' | 'div' | 'mod' ;
-rop : '>' | '>=' | '<' | '<=' | '==' | '=/=' ;
-lop : 'and' | 'or' ;
-uop : '-' | 'not' ;
-\end{lstlisting}
-\caption{Definicija izraza za pseudo-jezik.}
-\label{fig:PseudoDef6}
-\end{figure}
-
-Definicija literala je prikazana na slici \ref{fig:PseudoDef7}. Literali mogu bili istinitosne konstante \texttt{True} i \texttt{False}, brojevne konstante ili niske karaktera. Brojevne konstante mogu bili celobrojni ili realni dekadni brojevi. Realne konstatne je moguće definisati u fiksnom ili pokretnom zarezu. Niske se mogu definisati između navodnika ili apostrofa. Pritom, kao i u modernim programskim jezicima, moguće je navesti sekvence koje predstavljaju specijalne karaktere kao što su novi red, tabulator itd. Oznaka \texttt{fragment} označava optimizaciju, naime nije potrebno da postoji na primer pravilo \texttt{Digit}, već samo dajemo simbol za regularni izraz koji će se koristiti u više drugih pravila i poklapati jednu dekadnu cifru.
-
-\begin{figure}[h!]
-\begin{lstlisting}[language={}]
-literal : 'True' | 'False' | INT | FLOAT | STRING ;
-STRING : '"' ( EscapeSequence | ~('\\'|'"') )* '"'  ;
-INT : Digit+ ;
-FLOAT
-    : Digit+ '.' Digit* ExponentPart?
-    | '.' Digit+ ExponentPart?
-    | Digit+ ExponentPart
-    ;
-
-fragment
-ExponentPart : [eE] [+-]? Digit+ ;
-fragment
-Digit : [0-9] ;
-fragment
-EscapeSequence : '\\' [abfnrtvz"'\\] | '\\' '\r'? '\n' ;
-\end{lstlisting}
-\caption{Definicija konstanti za pseudo-jezik.}
-\label{fig:PseudoDef7}
-\end{figure}
-
-Poslednje što treba definisati je sve ono što lekser treba da preskoči tokom prolaska kroz izvorni k\^od programa. To su beline (nevidljivi karakteri kao što su razmaci, tabulatori i novi redovi) i komentari. Definicije ovih pravila se mogu videti na slici \ref{fig:PseudoDef8}. Vidimo da se u njima koristi posebna oznaka \texttt{-> skip}, koja predstavlja instrukcije lekseru da preskoči sve ono što ovo pravilo poklopi. Komentari su u stilu kao u programskom jeziku C (ali naravno, isti stil se koristi i u mnogim jezicima) i mogu biti jednolinijski ili višelinijski. Beline koje treba preskočiti su definisane u pravilu \texttt{WS}, skraćeno od \emph{whitespace}, što u prevodu sa engleskog znači \emph{beli prostor, belina}.
+Na kraju, treba definisati sve ono što lekser treba da preskoči tokom prolaska kroz izvorni k\^od. To su beline (nevidljivi karakteri kao što su razmaci, tabulatori i novi redovi) i komentari. Definicije ovih pravila se mogu videti na slici \ref{fig:PseudoDef8}. Vidimo da se u njima koristi posebna oznaka \texttt{-> skip}, koja predstavlja instrukcije lekseru da preskoči sve ono što ovo pravilo poklopi. Komentari su u stilu kao u programskom jeziku C (ali naravno, isti stil se koristi i u mnogim jezicima) i mogu biti jednolinijski ili višelinijski. Beline koje treba preskočiti su definisane u pravilu \texttt{WS}, skraćeno od \emph{whitespace}, što u prevodu sa engleskog znači \emph{beli prostor, belina}.
 
 \begin{figure}[h!]
 \begin{lstlisting}[language={}]
@@ -246,6 +247,11 @@ WS
 \label{fig:PseudoDef8}
 \end{figure}
 
+Ovako definisanu gramatiku možemo sačuvati u fajl sa imenom \texttt{Pseudo.g4}, potrebno je samo navesti ime gramatike na početku fajla, kao na slici \ref{fig:PseudoDef9}. Naredni korak je kreiranje leksera i parsera koristeći ANTLR4, pretpostavljajući da je instaliran na način opisan u \ref{subsubsec:ANTLRInstallation}. Pokretanjem ANTLR-a generišemo lekser i parser za gramatiku pseudo-jezika:
+\begin{lstlisting}[language={}]
+$ antlr4 Pseudo.g4
+\end{lstlisting}
+
 \begin{figure}[h!]
 \begin{lstlisting}[language={}]
 grammar Pseudo;
@@ -254,12 +260,7 @@ grammar Pseudo;
 \label{fig:PseudoDef9}
 \end{figure}
 
-Ovako definisanu gramatiku možemo sačuvati u fajl sa imenom \texttt{Pseudo.g4}, potrebno je samo navesti ime gramatike na početku fajla, kao na slici \ref{fig:PseudoDef9}. Naredni korak je kreiranje leksera i parsera koristeći ANTLR4, predpostavljajući da je instaliran na način opisan u \ref{subsec:ANTLRInstallation}. Pokretanjem ANTLR-a generišemo lekser i parser za gramatiku pseudo-jezika:
-\begin{lstlisting}[language={}]
-$ antlr4 Pseudo.g4
-\end{lstlisting}
-
-ANTLR4 će generisati lekser i parser podrazumevano napisane u programskom jeziku Java. Ukoliko želimo to da promenimo, možemo koristiti opciju \texttt{-Dlanguage=...}. Kako bismo testirali generisani lekser i parser, možemo koristiti ANTLR \texttt{TestRig} da vizualno prikažemo stablo parsiranja, s tim što moramo prvo kompajlirati generisane Java k\^odove. \texttt{TestRig} pozivamo navođenjem ime gramatike (koje se poklapa sa imenom leksera i parsera) i imenom pravila od koga će parser krenuti. Opcija \texttt{-gui} pokreće vizualni prikaz stabla parsiranja pokazan na slici \ref{fig:PseudoTreeGui} (vizualni prikaz je moguće preskočiti i samo ispisati stablo u LISP formi koristeći opciju \texttt{-tree}), mada je moguće i ispisati samo tokene koristeći opciju \texttt{-tokens}. Ulaz se prosleđuje programu dok se ne naiđe na simbol \texttt{EOF}, ili alternativno se može preneti ulaz putem UNIX pipeline-a (na slici \ref{fig:PseudoTreeGui} se može videti izlaz koji se dobija korišćenjem opcije \texttt{-gui}):
+ANTLR4 će generisati lekser i parser podrazumevano napisane u programskom jeziku Java. Ukoliko želimo to da promenimo, možemo koristiti opciju \texttt{-Dlanguage=...}. Kako bismo testirali generisani lekser i parser, možemo koristiti ANTLR4 \texttt{TestRig} da vizualno prikažemo stablo parsiranja, s tim što moramo prvo kompajlirati generisane Java k\^odove. \texttt{TestRig} pozivamo navođenjem imena gramatike (koje se poklapa sa imenom leksera i parsera) i imenom pravila od koga će parser krenuti. Opcija \texttt{-gui} pokreće vizualni prikaz stabla parsiranja prikazan na slici \ref{fig:PseudoTreeGui} (vizualni prikaz je moguće preskočiti i samo ispisati stablo u LISP formi koristeći opciju \texttt{-tree}), mada je moguće i ispisati samo tokene koristeći opciju \texttt{-tokens}. Ulaz se prosleđuje programu dok se ne naiđe na simbol \texttt{EOF}, ili alternativno se može preneti ulaz putem UNIX pipeline-a (na slici \ref{fig:PseudoTreeGui} se može videti izlaz koji se dobija korišćenjem opcije \texttt{-gui}):
 \begin{lstlisting}[language={}]
 $ javac *.java
 $ echo "declare integer x = 5" | grun Pseudo declaration -tokens
@@ -277,7 +278,7 @@ $ echo "declare integer x = 5" | grun Pseudo declaration -gui
 \begin{figure}[h!]
 \centering
 \includegraphics[scale=0.8]{images/pseudo_parse_tree.png}
-\caption{Grafički prikaz stabla parsiranja koje generiše parser kreiran od strane \texttt{TestRig} biblioteke za k\^od pisan u pseudo-jeziku.}
+\caption{Grafički prikaz stabla parsiranja koje generiše parser kreiran od strane \texttt{TestRig} biblioteke za naredbu deklaracije celobrojne promenljive u pseudo-jeziku.}
 \label{fig:PseudoTreeGui}
 \end{figure}
 
@@ -285,7 +286,7 @@ $ echo "declare integer x = 5" | grun Pseudo declaration -gui
 \subsection{Obilazak stabla parsiranja}
 \label{subsec:ANTLRParserIntegration}
 
-ANTLR, osim leksera i parsera za datu gramatiku, može da kreira interfejse i bazne klase koji prate obrasce za projektovanje \emph{posetilac} (engl. \emph{visitor}) i osluškivač (engl. \emph{listener}\footnote{Osluškivač je varijanta obrasca \emph{posmatrač} (engl. \emph{observer})} opisane u \ref{sec:DesignPatterns}. Tako kreirani interfejsi i klase imaju metode za obilazak stabla parsiranja. ANTLR podrazumevano generiše interfejs osluškivača (slika \ref{fig:ANTLRListener}) kao i baznu klasu koja implementira generisani interfejs tako što su sve implementirane metode prazne. Stoga, ukoliko korisnik želi da definiše operaciju samo u slučaju da se prilikom obilaska stabla parsiranja naiđe na određeni tip čvora, nije potrebno implementirati ceo interfejs osluškivača već je moguće naslediti baznu klasu i predefinisati samo jedan metod. ANTLR može da generiše i posetilac (slika \ref{fig:ANTLRVisitor}), ukoliko se navede odgovarajuća opcija \texttt{-visitor} prilikom pokretanja. Slično, ukoliko nije potrebno generisati osluškivač, može se koristiti opcija \texttt{-no-listener}.
+ANTLR4, osim leksera i parsera za datu gramatiku, može da kreira interfejse i bazne klase koji prate obrasce za projektovanje \emph{posetilac} (engl. \emph{visitor}) i osluškivač (engl. \emph{listener}\footnote{Osluškivač je varijanta obrasca \emph{posmatrač} (engl. \emph{observer})} opisane u \ref{sec:DesignPatterns}. Tako kreirani interfejsi i klase imaju metode za obilazak stabla parsiranja. ANTLR4 podrazumevano generiše interfejs osluškivača (slika \ref{fig:ANTLRListener}) kao i baznu klasu koja implementira generisani interfejs tako što su sve implementirane metode prazne. Stoga, ukoliko korisnik želi da definiše operaciju samo u slučaju da se prilikom obilaska stabla parsiranja naiđe na određeni tip čvora, nije potrebno implementirati ceo interfejs osluškivača već je moguće naslediti baznu klasu i predefinisati samo jedan metod. ANTLR4 može da generiše i posetilac (slika \ref{fig:ANTLRVisitor}), ukoliko se navede odgovarajuća opcija \texttt{-visitor} prilikom pokretanja. Slično, ukoliko nije potrebno generisati osluškivač, može se koristiti opcija \texttt{-no-listener}.
 
 \begin{figure}[h!]
 \begin{lstlisting}
@@ -305,7 +306,7 @@ public interface IPseudoListener : IParseTreeListener
 \label{fig:ANTLRListener}
 \end{figure}
 
-Sa slike \ref{fig:ANTLRListener} se vidi da je moguće definisati metode koje će se pozivati prilikom ulaska ali i prilikom izlaska iz čvora određenog tipa prilikom obilaska stabla parsiranja. Pritom je važno kako se stablo obilazi. U slučaju ANTLR, to je pretraga u dubinu (engl. \emph{depth-first search, DFS})\footnote{DFS je obilazak stabla takav da se obilazak duž grane stabla nastavlja sve dok je moguće ići dublje, a ako to nije moguće vratiti se unazad i obići druge grane.}, stoga će se metod \texttt{Exit} za proizvoljni čvor pozvati tek kad se obiđu sva deca tog čvora --- dakle nakon poziva njihovih \texttt{Enter} i \texttt{Exit} metoda. Pošto se DFS obično implementira putem LIFO strukture\footnote{\emph{Last In, First Out} struktura podataka je apstraktna struktura podataka sa operacijama ubacivanja i izbacivanja elemenata, pri čemu je element koji se izbacuje onaj koji je poslednji ubačen. Primer LIFO strukture je držač za CD-ove --- ne mogu se ukloniti CD-ovi ispod CD-a na vrhu (poslednji ubačen) a da se ne ukloni isti. U slučaju opisanom iznad, implementacija LIFO strukture se naziva stek \emph{stack}.}, može se reći da se \texttt{Enter} metod poziva onog trenutka kad se čvor ubaci u strukturu, a \texttt{Exit} metod onda kada se čvor ukloni iz strukture.
+Sa slike \ref{fig:ANTLRListener} se vidi da je moguće definisati metode koje će se pozivati prilikom ulaska ali i prilikom izlaska iz čvora određenog tipa prilikom obilaska stabla parsiranja. Pritom je važno kako se stablo obilazi. U slučaju ANTLR4, to je pretraga u dubinu (engl. \emph{depth-first search, DFS})\footnote{DFS je obilazak stabla takav da se obilazak duž grane stabla nastavlja sve dok je moguće ići dublje, a ako to nije moguće vratiti se unazad i obići druge grane.}, stoga će se metod \texttt{Exit} za proizvoljni čvor pozvati tek kad se obiđu sva deca tog čvora --- dakle nakon poziva njihovih \texttt{Enter} i \texttt{Exit} metoda. Pošto se DFS obično implementira putem LIFO strukture\footnote{\emph{Last In, First Out} struktura podataka je apstraktna struktura podataka sa operacijama ubacivanja i izbacivanja elemenata, pri čemu je element koji se izbacuje onaj koji je poslednji ubačen. Primer LIFO strukture je držač za CD-ove --- ne mogu se ukloniti CD-ovi ispod CD-a na vrhu (poslednji ubačen) a da se ne ukloni isti. U slučaju opisanom iznad, implementacija LIFO strukture se naziva stek \emph{stack}.}, može se reći da se \texttt{Enter} metod poziva onog trenutka kad se čvor ubaci u strukturu, a \texttt{Exit} metod onda kada se čvor ukloni iz strukture.
 
 \begin{figure}[h!]
 \begin{lstlisting}
