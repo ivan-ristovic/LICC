@@ -2,7 +2,7 @@
   "profiles": {
     "LICC": {
       "commandName": "Project",
-      "commandLineArgs": "cmp"
+      "commandLineArgs": "ast Samples/swap/valid.lua"
     }
   }
 }

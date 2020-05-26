@@ -1,0 +1,126 @@
+\section{Primeri upotrebe LICC}
+\label{sec:ImplementationExample}
+
+U ovom odeljku će biti prikazano par slučajeva upotrebe implementirane aplikacije. Prvo će biti pokazan primer generisanja opšteg AST u JSON formatu a zatim i primer poređenje dve implementacije istog algoritma u dva različita programska jezika. Algoritam koji će biti korišćen u nastavku kao primer je algoritam zamene vrednosti promenljivih implementiran kroz funkciju \texttt{swap} koja menja vrednosti dveju globalnih promenljivih. Na slici \ref{fig:ExampleSwap} se mogu videti implementacije ovog algoritma koje će biti polazne tačke za kreiranje opšteg AST i poređenja istih.
+
+\begin{figure}[h!]
+\begin{lstlisting}
+int x = vx, y = vy;
+
+void swap() 
+{
+    int tmp = y;
+    y = x;
+    x = tmp;
+}
+\end{lstlisting}
+\begin{lstlisting}
+x = vx
+y = vy
+function swap()
+	x, y = y, x
+end
+\end{lstlisting}
+\begin{lstlisting}
+algorithm Swap 
+begin
+    declare integer x = vx
+    declare integer y = vy
+    procedure swap()
+    begin
+        declare integer tmp 
+        tmp = x
+        x = y  
+        y = tmp
+    end
+end
+\end{lstlisting}
+\caption{Izvorni kodovi algoritma \texttt{swap} u programskim jezicima C (gore), Lua (sredina) i u pseudojeziku (dole).}
+\label{fig:ExampleSwap}
+\end{figure}
+
+
+\subsection{Generisanje opšteg AST}
+\label{subsec:ImplementationExampleAST}
+
+AST je moguće generisati od izvornog koda navođenjem glagola \texttt{ast}. Ukoliko su na fajl sistemu dostupni izvorni kodovi sa sadržajima sa slike \ref{fig:ExampleSwap}, moguće je generisati opšti AST u JSON formatu zadavanjem glagola \texttt{ast} kao na slici \ref{fig:ExampleSwapAST}. U gornjem delu slike je prikazan samo deo izlaza zbog veličine generisanog JSON sadržaja), u srednjem delu slike je prikazan kompaktni JSON ispis zadat opcijom \texttt{-c}, dok je u donjem delu slike prikazan ispis zadat opcijom \texttt{-v} pri čemu je prikazan samo dao izlaza koji se generiše prilikom posećivanja stabla parsiranja i generisanja AST čvorova.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.6]{images/eval/ast_c.png}
+\includegraphics[scale=0.6]{images/eval/ast_lua.png}
+\includegraphics[scale=0.6]{images/eval/ast_psc.png}
+\caption{Vizualni prikaz generisanja AST od izvornih kodova sa slike \ref{fig:ExampleSwap} redom.}
+\label{fig:ExampleSwapAST}
+\end{figure}
+
+
+\subsection{Poređenje opštih AST}
+\label{subsec:ImplementationExampleComparer}
+
+Jedan od osnovnih slučajeva upotrebe alata LICC može biti testiranje validnosti implementacije na osnovu date specifikacije. Ukoliko kao specifikaciju za algoritam \texttt{swap} uzmemo izvorni kod u pseudo-jeziku, možemo testirati da li su implementacije u programskim jezicima C ili Lua semantički ekvivalentne specifikaciji. Izlaz rada LICC za verifikaciju implementacije algoritma \texttt{swap} u programskom jeziku Lua u odnosu na specifikaciju u pseudo-jeziku se može videti na slici \ref{fig:ExampleSwapCompareValid}. Primetimo da su prisutna upozorenja o odudaranju tipova --- Lua nije striktno tipiziran jezik, a specifikacija nalaže da su globalne promenljive celi brojevi, dok su u implementaciji one tipa \texttt{object}, što može biti potencijalni problem ali s obzirom na prirodu skript jezika nije prijavljeno kao greška.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.65]{images/eval/cmp_valid.png}
+\caption{Semantičko poređenje implementacija sa slike \ref{fig:ExampleSwap} (Lua u odnosu na pseudo-jezik).}
+\label{fig:ExampleSwapCompareValid}
+\end{figure}
+
+Ukoliko pak izvorni kod ne odgovara specifikaciji, LICC će dati detaljan spisak razlika, koje su često tražene greške. U nekim slučajevima je moguće da je sematnička ekvivalentnost održana iako stabla imaju značajne razlike --- LICC će prijaviti sve te razlike kao greške iako one to možda nisu. Izlaz za poređenje nevalidne implementacije algoritma \texttt{swap} sa slike \ref{fig:ExampleSwapWrong} u odnosu na specifikaciju se može videti na slici \ref{fig:ExampleSwapCompareWrong}. Vidimo da jedna od globalnih promenljivih nije pravilno zamenila vrednost, što se detektuje dvaput --- po jednom za svaki od blokova u izvornom kodu. Dodatno, prijavljena je i greška o odudaranju izraza inicijalizatora za promenljivu \texttt{tmp}.
+
+\begin{figure}[h!]
+\begin{lstlisting}
+int x = vx, y = vy;
+
+void swap() {
+    int tmp = x;
+    y = tmp;
+    x = y;
+}
+\end{lstlisting}
+\caption{Nevalidna implementacija algoritma \texttt{swap} (C).}
+\label{fig:ExampleSwapWrong}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.65]{images/eval/cmp_wrong.png}
+\includegraphics[scale=0.65]{images/eval/cmp_wrong_v.png}
+\caption{Semantičko poređenje nevalidne implementacije sa slike \ref{fig:ExampleSwapWrong} u odnosu na specifikaciju sa slike \ref{fig:ExampleSwap}.}
+\label{fig:ExampleSwapCompareWrong}
+\end{figure}
+
+Ukoliko imamo već verifikovanu implementaciju algoritma u jednom programskom jeziku, može se desiti potreba za prelaskom na novije tehnologije što uključuje i prepisivanje algoritma sa jednog programskog jezika na drugi. LICC se može iskoristiti za poređenje tih implementacija, konkretno za algoritam \texttt{swap} na slici \ref{fig:ExampleSwapCompareValidRewrite} se može videti rezultat poređenja implementacija u programskim jezicima C i Lua, pri čemu je takođe prikazan izlaz koji se dobija ukoliko se navede opcija \texttt{-v}. 
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.7]{images/eval/cmp_rewrite.png}
+\includegraphics[scale=0.7]{images/eval/cmp_rewrite_v.png}
+\caption{Semantičko poređenje implementacija sa slike \ref{fig:ExampleSwap}.}
+\label{fig:ExampleSwapCompareValidRewrite}
+\end{figure}
+
+Još jedan slučaj upotrebe LICC može biti verifikacija međuverzija koda u procesu refaktorisanja. LICC pretpostavlja strukturnu sličnost kodova, što u procesu refaktorisanja često implicitno važi, ili barem važi u malim koracima između polazne i finalne verzije nakon refaktorisanja. Ukoliko refaktorišemo implementaciju algoritma \texttt{swap} u programskom jeziku C i dobijemo izvorni kod sa slike \ref{fig:ExampleSwapRefactor}, možemo uporediti tu implementaciju sa već verifikovanom implementacijom u programskom jeziku C. Rezultat rada upoređivača se može videti na slici \ref{fig:ExampleSwapCompareRefactor} --- primećujemo da je jedino detektovano da nedostaje promenljiva \texttt{tmp}, vrednosti globalnih promenljivih su iste u odnosu na specifikaciju na kraju svakog od blokova.
+
+\begin{figure}[h!]
+\begin{lstlisting}
+int x = vx, y = vy;
+
+void swap() 
+{
+    x = x + y;
+	y = x - y;
+	x = x - y;
+}
+\end{lstlisting}
+\caption{Refaktorisani algoritam \texttt{swap} (C).}
+\label{fig:ExampleSwapRefactor}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.8]{images/eval/cmp_refactor.png}
+\caption{Semantičko poređenje refaktorisane implementacije algoritma \texttt{swap} sa slike \ref{fig:ExampleSwapRefactor} sa implementacijom u programskom jeziku C sa slike \ref{fig:ExampleSwap}.}
+\label{fig:ExampleSwapCompareRefactor}
+\end{figure}
