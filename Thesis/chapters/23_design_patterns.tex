@@ -30,10 +30,11 @@ Obrazac za projektovanje \emph{Posmatrač} je obrazac ponašanja koji se koristi
 \begin{figure}[h!]
 \centering
 \includegraphics[scale=0.8]{images/observer.jpg}
-\caption{UML dijagram obrasca za projektovanje "Posmatrač". Preuzeto sa \url{https://sourcemaking.com/design_patterns/observer}.} 
+\caption{UML dijagram obrasca za projektovanje "Posmatrač".\protect\footfootmark}
 \label{fig:UMLObserver}
 \end{figure}
 
+\footnotetext{Preuzeto sa \url{https://sourcemaking.com/design_patterns/observer}}
 Primer upotrebe ovog obrasca može biti aukcija gde je aukcionar subjekat i započinje aukciju, dok učesnici aukcije (objekti) posmatraju aukcionera i reaguju na podizanje cene. Prihvatanje promene cene menja trenutnu cenu i aukcioner oglašava promenu iste, a svi učesnici aukcije dobijaju informaciju da se izmena izvršila. Za potrebe ovog rada, primer upotrebe može biti obilazak stablolike kolekcije (recimo stabla parsiranja) i obaveštavanje o nailasku na čvorove određenih tipova. Te informacije se dalje mogu iskoristiti za izračunavanja nad pomenutom strukturom ili generisanje novih struktura (recimo AST). 
 
 \subsection{Obrazac "Posetilac"}
@@ -44,8 +45,9 @@ Obrazac za projektovanje \emph{Posetilac} je obrazac ponašanja koji predstavlja
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.8]{images/visitor.jpg}
-    \caption{UML dijagram obrasca za projektovanje "Posetilac". Preuzeto sa \url{https://sourcemaking.com/design_patterns/visitor}} 
+    \caption{UML dijagram obrasca za projektovanje "Posetilac".\protect\footnotemark} 
     \label{fig:UMLVisitor}
 \end{figure}
 
+\footnotetext{Preuzeto sa \url{https://sourcemaking.com/design_patterns/visitor}}
 Primer upotrebe ovog obrasca može biti operisanje taksi kompanija. Kada osoba pozove taksi kompaniju (prihvatanje posetioca), kompanija šalje vozilo osobi koja je pozvala kompaniju. Nakon ulaska u vozilo (posetilac), mušterija ne kontroliše svoj transport već je to u rukama taksiste (posetioca). Za potrebe ovog rada, primer upotrebe može biti prikupljanje informacija o kolekciji stablolike strukture (recimo stablo parsiranja) i korišćenje istih za neko izračunavanje ili generisanje novih struktura (recimo AST). 

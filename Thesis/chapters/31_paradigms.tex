@@ -1,7 +1,7 @@
-\section{Programske paradigme i gramatičke razlike programskih jezika}
+\section{Programske paradigme}
 \label{sec:Paradigms}
 
-Iako se u suštini svode na mašinski jezik ili asembler, viši programski jezici mogu imati velike razlike međusobno --- kako u načinu pisanja koda, tako i u efikasnosti izvršavanja. Način, ili stil programiranja se naziva \emph{programska paradigma} \cite{ProgrammingParadigms}. Može se pokazati da sve što je rešivo putem jedne, može i da se reši i putem ostalih; međutim neki problemi se prirodnije rešavaju koristeći specifične paradigme. Neke poznatije programske paradigme su navedene u nastavku zajedno sa njihovim odlikama i primerima upotrebe.
+Iako se u suštini svode na mašinski jezik ili asembler, viši programski jezici mogu imati velike razlike međusobno --- kako u načinu pisanja koda, tako i u efikasnosti izvršavanja. Način, ili stil programiranja se naziva \emph{programska paradigma} \cite{ProgrammingParadigms}. Može se pokazati da sve što je rešivo putem jedne, može da se reši i putem ostalih; međutim neki problemi se prirodnije rešavaju koristeći specifične paradigme. Neke poznatije programske paradigme su navedene u nastavku zajedno sa njihovim odlikama i primerima upotrebe.
 
 
 \subsection{Imperativna paradigma}
@@ -31,9 +31,9 @@ finished:
 \label{fig:ParadigmImperative}
 \end{figure}
 
-Stariji programski jezici najčešće prate ovu paradigmu iz nekoliko razloga. Prvi je taj što imperativna paradigma najbliže oslikava samu mašinu na kojoj se program izvršava, pa je programer mnogo "bliži" mašini. Ova paradigma je bila veoma popularna zbog ranih ograničenja u hardveru i potrebe za efikasnim programima. Danas, zbog mnogo bržeg razvoja i mnogo jačih računara, efikasnost dobijena pisanjem koda u jezicima veoma bliskim mašini se sve manje uzima u obzir.
+Stariji programski jezici najčešće prate ovu paradigmu iz nekoliko razloga. Prvi je taj što imperativna paradigma najbliže oslikava samu mašinu na kojoj se program izvršava, pa je programer mnogo bliži mašini. Ova paradigma je bila veoma popularna zbog ranih ograničenja u hardveru i potrebe za efikasnim programima. Danas, zbog mnogo bržeg razvoja i mnogo jačih računara, efikasnost dobijena pisanjem koda u jezicima veoma bliskim mašini se sve manje uzima u obzir.
 
-Naravno, imperativna paradigma ima i svoje nedostatke. Naime, najveći problem je razumevanje i verifikovanje semantike programa zbog postojanja sporednih efekata\footnote{Sporedni efekti (promena stanja mašine) ne poštuju \emph{referencijalnu transparentnost} koja se definiše na sledeći način: \emph{Ako važi $P(x)$ i $x = y$ u nekom trenutku, onda $P(x) = P(y)$ važi tokom čitavog vremena izvršavanja programa}.}. Stoga je i pronalaženje grešaka u programima pisanim u imperativnoj paradigmi znatno komplikovanije. Pošto je k\^od veoma niskog nivoa, apstrakcija takvog koda je više ograničena nego u ostalim paradigmama. Na kraju, redosled izvršavanja je vrlo bitan, što neke probleme čini težim ukoliko se pokušaju rešiti pomoću imperativne paradigme.
+Imperativna paradigma ima i svoje nedostatke. Naime, najveći problem je razumevanje i verifikovanje ispravnosti programa zbog postojanja propratnih efekata\footnote{Propratni efekti (promena stanja mašine) ne poštuju \emph{referencijalnu transparentnost} koja se definiše na sledeći način: \emph{Ako važi $P(x)$ i $x = y$ u nekom trenutku, onda $P(x) = P(y)$ važi tokom čitavog vremena izvršavanja programa}.}. Stoga je i pronalaženje grešaka u programima pisanim u imperativnoj paradigmi komplikovano. Pošto je k\^od veoma niskog nivoa, obično je dozvoljen i direktan pristup memorijskim adresama putem \emph{pokazivača}, što takođe otežava verifikaciju koda. Na kraju, redosled izvršavanja je vrlo bitan, što otežava rešavanje nekih problema ukoliko se pokušaju rešiti imperativno.
 
 
 \subsection{Strukturna paradigma}
@@ -52,7 +52,7 @@ for (i = 0; i < length(people); i++) {
 }
 return sort(result);
 \end{lstlisting}
-\caption{Primer koda pisanog po strukturnoj paradigmi.}
+\caption{Primer koda pisanog u strukturnoj paradigmi.}
 \label{fig:ParadigmStructural}
 \end{figure}
 
@@ -60,7 +60,7 @@ return sort(result);
 \subsection{Skript paradigma i njen odnos sa proceduralnom paradigmom}
 \label{subsec:Languages}
 
-Čak i unutar jedne paradigme kao što je proceduralna, mogu se naći veoma velike varijacije u izgledu koda pisanog u različitim programskim jezicima koji prate proceduralnu paradigmu. Kako hardver postaje moćniji, više se ceni vreme koje programer provede u procesu pisanja koda nego koliko je taj k\^od efikasan. Štaviše, u nekim slučajevima je dobitak u efikasnosti veoma mali u poređenju sa vremenom koje je potrebno utrošiti da bi se ta efikasnost postigla. Ukoliko se program pokreće veoma retko, možda nije ni bitno da li se on izvršava sekundu sporije od efikasnog programa, ako je za njegovo pisanje utrošeno znatno manje vremena. Ovo je pristup koji prate \emph{skript} jezici kao što su \texttt{Python, Perl, bash} itd. Iako proceduralni, oni se razlikuju od klasičnih predstavnika proceduralne paradigme i njihove razlike su vremenom postale tolike da nije neuobičajeno da se skript jezici svrstaju u zasebnu, \emph{skript paradigmu}. Stoga će se u nastavku pod terminom \emph{proceduralni jezik} smatrati tradicionalni proceduralni jezik, ukoliko nije naznačeno drugačije. Na slici \ref{fig:LanguagesDiff} se mogu uočiti navedene razlike.
+Čak i unutar jedne paradigme kao što je proceduralna, mogu se naći veoma velike varijacije u izgledu koda pisanog u različitim programskim jezicima koji prate proceduralnu paradigmu. Kako hardver postaje moćniji, više se ceni vreme koje programer provede u procesu pisanja koda nego koliko je taj k\^od efikasan. Štaviše, u nekim slučajevima je dobitak u efikasnosti veoma mali u poređenju sa vremenom koje je potrebno utrošiti da bi se ta efikasnost postigla. Ukoliko se program pokreće veoma retko, možda nije ni bitno da li se on izvršava sekundu sporije od efikasnog programa, ako je za njegovo pisanje utrošeno znatno manje vremena. Ovo je pristup koji prate \emph{skript} jezici kao što su \texttt{Python, Perl, bash} itd. Iako proceduralni, oni se razlikuju od klasičnih predstavnika proceduralne paradigme i njihove razlike su vremenom postale tolike da se skript jezici obično svrstavaju u zasebnu, \emph{skript paradigmu}. Stoga će se u nastavku pod terminom \emph{proceduralni jezik} smatrati tradicionalni proceduralni jezik, ukoliko nije naznačeno drugačije. Na slici \ref{fig:LanguagesDiff} se mogu uočiti navedene razlike.
 
 \begin{figure}[h!]
 \begin{lstlisting}
@@ -82,22 +82,56 @@ for i in range(1000000):
 \begin{lstlisting}[language={}]
 $ time: 0.16s user 0.03s system 93% cpu 0.200 total
 \end{lstlisting}
-\caption{Primer koda pisanog po tradicionalnoj proceduralnoj paradigmi (gore, \texttt{C}) i po modernoj skript paradigmi (dole, \texttt{Python 3}) kao i odgovarajuća vremena izvršavanja dobijena komandom \texttt{time}.}
+\caption{Primer koda pisanog u tradicionalnoj proceduralnoj paradigmi (gore, \texttt{C}) i u modernoj skript paradigmi (dole, \texttt{Python 3}) kao i odgovarajuća vremena izvršavanja dobijena komandom \texttt{time}.}
 \label{fig:LanguagesDiff}
 \end{figure}
 
 Promenljive predstavljaju jedan od osnovnih koncepata na kojem se zasnivaju i proceduralni i skript jezici. Promenljivu odlikuje, između ostalog, i njen \emph{tip} koji određuje količinu memorije potrebnu za njeno skladištenje. Proceduralni programski jezici zahtevaju definisanje tipa promenljive i obično su i \emph{statički}, što znači da promenljive ne mogu menjati svoj tip tokom izvršavanja programa. Proces uvođenja imena za memorijsku lokaciju koja predstavlja mesto skladištenja vrednosti promenljive određenog tipa se naziva \emph{deklaracija promenljive}. Slično kao i za promenljive, potrebno je deklarisati i funkcije pre trenutka njihovog korišćenja kako bi prevodilac znao broj i tipove parametara funkcije kao i njihove povratne vrednosti. Kako bi proces pisanja koda bio brži, u skript jezicima najčešće nisu neophodne deklaracije promenljivih pa se stoga tip promenljive određuje u fazi izvršavanja, stoga promenljive mogu naizgled menjati svoj tip iz naredbe u naredbu. Slično, parametri funkcija i povratne vrednosti takođe ne moraju biti fiksnog tipa. 
 
-Kod proceduralnih jezika, pošto su obično statički tipizirani, mogu se iskoristiti strukture podataka koje omogućavaju brz pristup svojim elementima. To su obično nizovi koji predstavljaju kontinualni blok memorije u kom su elementi niza smešteni jedan do drugog. Pristup se vrši na osnovu indeksa i, pošto su svi elementi istog tipa (zauzimaju jednaku količinu memorije), može se u konstantnom vremenu izračunati memorijska lokacija na kojoj se nalazi element niza sa datim indeksom. Kompleksnije strukture podataka obično nisu podržane u samom jeziku. Neki proceduralni jezici dozvoljavaju veoma niski pristup kroz \emph{pokazivače} ili \emph{reference} na memorijske adrese (\texttt{C} i \texttt{C++}). Većina modernih proceduralnih jezika ne dozvoljava rad sa pokazivačima, ne brinući puno o efikasnosti, dok neki dozvoljavaju korišćenje pokazivača u specijalnim situacijama sa eksplicitnom naznakom (\texttt{C\#}).
+Kod proceduralnih jezika, pošto su obično statički tipizirani, mogu se iskoristiti strukture podataka koje omogućavaju brz pristup svojim elementima. To su obično nizovi koji predstavljaju kontinualni blok memorije u kom su elementi niza smešteni jedan do drugog. Pristup se vrši na osnovu indeksa i, pošto su svi elementi istog tipa (zauzimaju jednaku količinu memorije), može se u konstantnom vremenu izračunati memorijska lokacija na kojoj se nalazi element niza sa datim indeksom. Kompleksnije strukture podataka obično nisu podržane u samom jeziku. Neki proceduralni jezici dozvoljavaju veoma niski pristup kroz \emph{pokazivače} ili \emph{reference} na memorijske adrese (npr. \texttt{C} i \texttt{C++}). Većina modernih proceduralnih jezika (npr. \texttt{Java}) ne dozvoljava rad sa pokazivačima, dok neki dozvoljavaju korišćenje pokazivača u specijalnim situacijama sa eksplicitnom naznakom (\texttt{C\#}).
 
-Pored dinamičnosti kad je u pitanju tip promenljivih, skript jezici često imaju neke specifične strukture podataka ugrađene u sam jezik kao olakšice prilikom programiranja. Primarna struktura podataka je \emph{jednostruko ulančana lista}\footnote{Lista je rekurzivna kolekcija podataka koja se sastoji od glave koja sadrži vrednost određenog tipa, i pokazivača na rep --- drugu listu. Specijalno, praznim pokazivačima se označava kraj liste (prazna lista).}, za razliku od niza kod proceduralnih jezika. Razlog zašto se koriste liste je delimično zbog toga što, kao i ostale promenljive, liste ne moraju da budu statički tipizirane. Moguće je u listu ubacivati elemente različitih tipova --- što onemogućava skladištenje u kontinualnom bloku memorije (osim ukoliko je lista imutabilna, što nije obično slučaj). Skript jezici uglavnom omogućavaju indeksni pristup elementima liste pa programeru izgleda kao da radi nad običnim nizom. Neki skript jezici omogućavaju kreiranje \emph{asocijativnih nizova}, gde indeks niza ne mora biti ceo broj već može uzimati vrednost iz domena bilo kog tipa. Osim listi, obično su podržane i torke, i za njih važe iste slobode kao i za liste. Kompleksnije strukture podataka uključuju skupove i rečnike (drugačije nazivane i \emph{heš mape}, engl. \emph{hash map}) koji su kolekcija ključ-vrednost parova gde je dozvoljen indeksni pristup po vrednosti ključa. Skript programski jezici su skoro uvek interpretirani, iako se neki jezici mogu kompilirati po potrebi za efikasnije ponovno izvršavanje. S obzirom da efikasnost nije u glavnom planu, u skript jezicima nije dozvoljen direktan pristup memoriji putem pokazivača ili referenci. 
+Pored dinamičnosti kad je u pitanju tip promenljivih, skript jezici često imaju neke specifične strukture podataka ugrađene u sam jezik kao olakšice prilikom programiranja. Primarna struktura podataka je \emph{jednostruko ulančana lista}\footnote{Lista je rekurzivna kolekcija podataka koja se sastoji od glave koja sadrži vrednost određenog tipa, i pokazivača na rep --- drugu listu. Specijalno, praznim pokazivačima se označava kraj liste (prazna lista).}, za razliku od niza kod proceduralnih jezika. Razlog zašto se koriste liste je delimično zbog toga što, kao i ostale promenljive, liste ne moraju da budu statički tipizirane. Moguće je u listu ubacivati elemente različitih tipova --- što onemogućava skladištenje u kontinualnom bloku memorije (osim ukoliko je lista nepromenljiva, što obično nije slučaj). Skript jezici uglavnom omogućavaju indeksni pristup elementima liste, pa programeru izgleda kao da radi nad običnim nizom. Neki skript jezici omogućavaju kreiranje \emph{asocijativnih nizova}, gde indeks niza ne mora biti ceo broj već može uzimati vrednost iz domena bilo kog tipa. Osim listi, obično su podržane i torke, i za njih važe iste slobode kao i za liste. Kompleksnije strukture podataka uključuju skupove i rečnike ili \emph{mape} (engl. \emph{dictionaries, maps}) koji su kolekcija ključ-vrednost parova gde je dozvoljen indeksni pristup po vrednosti ključa. Razne implementacije mapa postoje i u proceduralnim jezicima, ali ključna razlika je ta što tipovi u skript jezicima nisu striktni --- ključevi međusobno, ali i vrednosti mogu biti različitog tipa. Vredi naglasiti da se mape mogu porediti sa objektima određenih klasa --- svaki objekat se može serijalizovati u mapu gde su ključevi imena javnih atributa klase a vrednosti su vrednosti javnih atributa objekta koji se serijalizuje. Neki jezici (kao što je Python), imaju funkcije koje od objekta vraćaju baš ovakvu mapu. 
 
+Skript programski jezici su skoro uvek interpretirani, iako se neki jezici mogu kompilirati po potrebi za efikasnije ponovno izvršavanje. S obzirom da efikasnost nije u glavnom planu, u skript jezicima nije dozvoljen direktan pristup memoriji putem pokazivača ili referenci. 
+
+
+\subsection{OO paradigma i njen odnos sa imperativnom paradigmom}
+\label{subsec:ParadigmsOther}
+
+\emph{Objektno-orijentisana paradigma} (kraće \emph{OOP} ili \emph{OO paradigma}) je paradigma u kojoj se objekti stvarnog sveta posmatraju kao zasebni entiteti koji imaju sopstveno stanje koje se modifikuje samo pomoću procedura ugrađenih u same objekte --- tzv. \emph{metode}. Posledica zasebnog operisanja objekata omogućava njihovu enkapsulaciju u module koji sadrže lokalnu sredinu i metode. Komunikacija sa objektom se vrši prosleđivanjem poruka. Objekti su organizovani u klase, od kojih nasleđuju atribute i metode. OO paradigma omogućava ponovnu iskorišćenost koda i proširivost koda. Primer koda pisanog u OO paradigmi se može videti na slici \ref{fig:ParadigmOO}.
+
+\begin{figure}[h!]
+\begin{lstlisting}
+class Person
+{
+    private string name;
+    private int wage;
+    private int income = 0;
+
+    Person(string name, int wage) {
+        this.name = name;
+        this.wage = wage;
+    }
+
+    public void Work(int hours) {
+        this.income += hours * this.wage;
+    }
+}
+
+Person p1 = new Person("John Doe", 30);
+Person p2 = new Person("Dave Doe", 35);
+p1.Work(7);
+p2.Work(8);
+\end{lstlisting}
+\caption{Primer koda pisanog u OO paradigmi.}
+\label{fig:ParadigmOO}
+\end{figure}
+
+Iako se OOP posmatra kao zasebna paradigma, moderni programski jezici često koriste OO koncepte iako nisu nužno predstavnici OO paradigme. Jedan od primera je i \texttt{Python} koji, iako svrstan u skript paradigmu, pruža i OO koncepte kao što su klase, metode i nasleđivanje. Razlog za ovo je najviše prednost koje OO paradigma pruža ukoliko se radi na velikim programima, ali i taj što implementacija metoda OO klasa podseća na proceduralni k\^od. U ovom radu neće biti 
 
 \subsection{Ostale popularne programske paradigme}
 \label{subsec:ParadigmsOther}
 
-\emph{Objektno-orijentisana paradigma} (kraće \emph{OOP}) je paradigma u kojoj se objekti stvarnog sveta posmatraju kao zasebni entiteti koji imaju sopstveno stanje koje se modifikuje samo pomoću procedura ugrađenih u same objekte --- tzv. \emph{metode}. Posledica zasebnog operisanja objekata omogućava njihovu enkapsulaciju u module koji sadrže lokalnu sredinu i metode. Komunikacija sa objektom se vrši prosleđivanjem poruka. Objekti su organizovani u klase, od kojih nasleđuju atribute i metode. OOP omogućava ponovnu iskorišćenost koda i proširivost koda.
+\emph{Logička paradigma} koristi deklarativni pristup rešavanju problema i po tome se razlikuje od ostalih paradigmi opisanih u ovom odeljku. Umesto zadavanja instrukcija koje treba da dovedu do rezultata, opisuje se sam rezultat kroz činjenice --- skup logičkih pretpostavki koji se zatim prevodi u upit koji se dalje koristi. Uloga računara je održavanje skupa poznatih činjenica i logička dedukcija korišćenjem skupa poznatih činjenica iz koje proizilaze nove činjenice koje su od značaja za rešavanje problema. 
 
-\emph{Logička paradigma} koristi deklarativni pristup rešavanju problema. Umesto zadavanja instrukcija koje treba da dovedu do rezultata, opisuje se sam rezultat kroz činjenice --- skup logičkih pretpostavki koji se zatim prevodi u upit koji se dalje koristi. Uloga računara je održavanje i logička dedukcija.
-
-\emph{Funkcionalna paradigma} posmatra sve potprograme kao funkcije u matematičkom smislu --- uzimaju argumente i vraćaju jedinstven rezultat. Povratna vrednost zavisi isključivo od argumenata, što znači da je nebitan trenutak u kom je funkcija pozvana. Izračunavanja se vrše primenom i kompozicijom funkcija. 
+\emph{Funkcionalna paradigma} posmatra sve potprograme kao funkcije u matematičkom smislu --- uzimaju argumente i vraćaju jedinstven rezultat. Povratna vrednost zavisi isključivo od argumenata, što znači da je nebitan trenutak u kom je funkcija pozvana. Izračunavanja se vrše primenom i kompozicijom funkcija. Strukture podataka su nepromenljive i mogu biti beskonačne jer se izračunavanje elemenata kolekcija vrši po potrebi. Poštovanje referencijalne transparentnosti i nepromenljivost struktura podataka ima za posledicu da se k\^od može implicitno paralelizovati ali i lakše verifikovati njegova ispravnost. Takođe, programi pisani u funkcionalnoj paradigmi komponovanjem funkcija višeg reda su često veoma čitljivi i kratki. Zbog svojih prednosti, funkcionalni koncepti se često uključuju u moderne predstavnike proceduralne paradigme (npr. \texttt{C++}, \texttt{Java}, \texttt{C\#}, \texttt{Python}).
