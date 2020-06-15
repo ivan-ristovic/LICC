@@ -60,7 +60,7 @@ return sort(result);
 \subsection{Skript paradigma i njen odnos sa proceduralnom paradigmom}
 \label{subsec:Languages}
 
-Čak i unutar jedne paradigme kao što je proceduralna, mogu se naći veoma velike varijacije u izgledu koda pisanog u različitim programskim jezicima koji prate proceduralnu paradigmu. Kako hardver postaje moćniji, više se ceni vreme koje programer provede u procesu pisanja koda nego koliko je taj k\^od efikasan. Štaviše, u nekim slučajevima je dobitak u efikasnosti veoma mali u poređenju sa vremenom koje je potrebno utrošiti da bi se ta efikasnost postigla. Ukoliko se program pokreće veoma retko, možda nije ni bitno da li se on izvršava sekundu sporije od efikasnog programa, ako je za njegovo pisanje utrošeno znatno manje vremena. Ovo je pristup koji prate \emph{skript} jezici kao što su \texttt{Python, Perl, bash} itd. Iako proceduralni, oni se razlikuju od klasičnih predstavnika proceduralne paradigme i njihove razlike su vremenom postale tolike da se skript jezici obično svrstavaju u zasebnu, \emph{skript paradigmu}. Stoga će se u nastavku pod terminom \emph{proceduralni jezik} smatrati tradicionalni proceduralni jezik, ukoliko nije naznačeno drugačije. Na slici \ref{fig:LanguagesDiff} se mogu uočiti navedene razlike.
+Čak i unutar jedne paradigme kao što je proceduralna, mogu se naći veoma velike varijacije u izgledu koda pisanog u različitim programskim jezicima koji prate proceduralnu paradigmu. Kako hardver postaje moćniji, više se ceni vreme koje programer provede u procesu pisanja koda nego koliko je taj k\^od efikasan. Štaviše, u nekim slučajevima je dobitak u efikasnosti veoma mali u poređenju sa vremenom koje je potrebno utrošiti da bi se ta efikasnost postigla. Ukoliko se program pokreće veoma retko, možda nije ni bitno da li se on izvršava sekundu sporije od efikasnog programa, ako je za njegovo pisanje utrošeno znatno manje vremena. Ovo je pristup koji prate \emph{skript} jezici kao što su \texttt{Python, Lua, Perl, bash} itd. Iako proceduralni, oni se razlikuju od klasičnih predstavnika proceduralne paradigme i njihove razlike su vremenom postale tolike da se skript jezici obično svrstavaju u zasebnu, \emph{skript paradigmu}. Stoga će se u nastavku pod terminom \emph{proceduralni jezik} smatrati tradicionalni proceduralni jezik, ukoliko nije naznačeno drugačije. Na slici \ref{fig:LanguagesDiff} se mogu uočiti navedene razlike.
 
 \begin{figure}[h!]
 \begin{lstlisting}
@@ -76,13 +76,14 @@ $ time: 0.03s user 0.00s system 70% cpu 0.044 total
 \end{lstlisting}
 \begin{lstlisting}
 k = 0
-for i in range(1000000):
-    k += 1
+for i = 0, 1000000 do 
+    k = k + 1 
+end
 \end{lstlisting}
 \begin{lstlisting}[language={}]
-$ time: 0.16s user 0.03s system 93% cpu 0.200 total
+$ time: 0.17s user 0.03s system 92% cpu 0.203 total
 \end{lstlisting}
-\caption{Primer koda pisanog u tradicionalnoj proceduralnoj paradigmi (gore, \texttt{C}) i u modernoj skript paradigmi (dole, \texttt{Python 3}) kao i odgovarajuća vremena izvršavanja dobijena komandom \texttt{time}.}
+\caption{Primer koda pisanog u tradicionalnoj proceduralnoj paradigmi (gore, \texttt{C}) i u modernoj skript paradigmi (dole, \texttt{Lua}) kao i odgovarajuća vremena izvršavanja dobijena komandom \texttt{time}.}
 \label{fig:LanguagesDiff}
 \end{figure}
 
@@ -127,11 +128,11 @@ p2.Work(8);
 \label{fig:ParadigmOO}
 \end{figure}
 
-Iako se OOP posmatra kao zasebna paradigma, moderni programski jezici često koriste OO koncepte iako nisu nužno predstavnici OO paradigme. Jedan od primera je i \texttt{Python} koji, iako svrstan u skript paradigmu, pruža i OO koncepte kao što su klase, metode i nasleđivanje. Razlog za ovo je najviše prednost koje OO paradigma pruža ukoliko se radi na velikim programima, ali i taj što implementacija metoda OO klasa podseća na proceduralni k\^od. U ovom radu neće biti implementirane apstrakcije klasa.
+Iako se OOP posmatra kao zasebna paradigma, moderni programski jezici često koriste OO koncepte iako nisu nužno predstavnici OO paradigme. Jedan od primera je i programski jezik \texttt{Python} koji, iako svrstan u skript paradigmu, pruža i OO koncepte kao što su klase, metode i nasleđivanje. Razlog za ovo je najviše prednost koje OO paradigma pruža ukoliko se radi na velikim programima, ali i taj što implementacija metoda OO klasa podseća na proceduralni k\^od. U ovom radu neće biti implementirane apstrakcije klasa.
 
 \subsection{Ostale popularne programske paradigme}
 \label{subsec:ParadigmsOther}
 
 \emph{Logička paradigma} koristi deklarativni pristup rešavanju problema i po tome se razlikuje od ostalih paradigmi opisanih u ovom odeljku. Umesto zadavanja instrukcija koje treba da dovedu do rezultata, opisuje se sam rezultat kroz činjenice --- skup logičkih pretpostavki koji se zatim prevodi u upit koji se dalje koristi. Uloga računara je održavanje skupa poznatih činjenica i logička dedukcija korišćenjem skupa poznatih činjenica iz koje proizilaze nove činjenice koje su od značaja za rešavanje problema. 
 
-\emph{Funkcionalna paradigma} posmatra sve potprograme kao funkcije u matematičkom smislu --- uzimaju argumente i vraćaju jedinstven rezultat. Povratna vrednost zavisi isključivo od argumenata, što znači da je nebitan trenutak u kom je funkcija pozvana. Izračunavanja se vrše primenom i kompozicijom funkcija. Strukture podataka su nepromenljive i mogu biti beskonačne jer se izračunavanje elemenata kolekcija može vršiti po potrebi (npr. u programskom jeziku Haskell). Poštovanje referencijalne transparentnosti i nepromenljivost struktura podataka ima za posledicu da se k\^od može implicitno paralelizovati ali i lakše verifikovati njegova ispravnost. Takođe, programi pisani u funkcionalnoj paradigmi komponovanjem funkcija višeg reda su često veoma čitljivi i kratki. Zbog svojih prednosti, funkcionalni koncepti se često uključuju u moderne predstavnike proceduralne paradigme (npr. \texttt{C++}, \texttt{Java}, \texttt{C\#}, \texttt{Python}). Iako je u ovom radu akcenat na imperativnoj paradigmi, neki funkcionalni koncepti su podržani zbog načina na koji je implementiran opšti AST - operatori kompozicije funkcija, funkcije višeg reda i anonimne funkcije. Sa druge strane, poređenje funkcionalnog koda sa imperativnim kodom nije razmatrano. 
+\emph{Funkcionalna paradigma} posmatra sve potprograme kao funkcije u matematičkom smislu --- uzimaju argumente i vraćaju jedinstven rezultat. Povratna vrednost zavisi isključivo od argumenata, što znači da je nebitan trenutak u kom je funkcija pozvana. Izračunavanja se vrše primenom i kompozicijom funkcija. Strukture podataka su nepromenljive i mogu biti beskonačne jer se izračunavanje elemenata kolekcija može vršiti po potrebi (npr. u programskom jeziku Haskell). Poštovanje referencijalne transparentnosti i nepromenljivost struktura podataka ima za posledicu da se k\^od može implicitno paralelizovati ali i lakše verifikovati njegova ispravnost. Takođe, programi pisani u funkcionalnoj paradigmi komponovanjem funkcija višeg reda su često veoma čitljivi i kratki. Zbog svojih prednosti, funkcionalni koncepti se često uključuju u moderne predstavnike proceduralne paradigme (npr. \texttt{C++}, \texttt{Java}, \texttt{C\#}, \texttt{Python}, \texttt{Lua}. Iako je u ovom radu akcenat na imperativnoj paradigmi, neki funkcionalni koncepti su implicitno podržani zbog načina na koji je implementiran opšti AST --- operatori kompozicije funkcija, funkcije višeg reda i anonimne funkcije. Sa druge strane, poređenje funkcionalnog koda sa imperativnim kodom nije razmatrano. 

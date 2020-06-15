@@ -1,7 +1,7 @@
 \section{Generisanje parsera uz pomoć ANTLR4}
 \label{sec:ANTLRParserCreation}
 
-U ovom odeljku će biti opisan proces generisanja leksera parsera za programske jezike C i Lua korišćenjem alata ANTLR4. Ovi programski jezici već imaju definisane ANTLR4 gramatike, tako da će se  krenuti od procesa kreiranja gramatike za programski jezik, a zatim preći na korišćenje alata ANTLR4. Nakon generisanja parsera, biće opisan i interfejs za obilazak stabla parsiranja koje generiše parser, i taj interfejs će se koristiti u procesu kreiranja opšteg AST ali i kao inspiracija za kreiranje interfejsa za obilazak opšteg AST. 
+U ovom odeljku će biti opisan proces generisanja leksera parsera za programske jezike C i Lua korišćenjem alata ANTLR4. Ovi programski jezici već imaju definisane ANTLR4 gramatike, tako da će se krenuti od procesa kreiranja gramatike za proizvoljni programski jezik kako bi se pokazalo da je moguće dobiti AST polazeći i od proizvoljne gramatike, a zatim će se koristiti ANTLR4 za generisanje leksera i parsera za tu gramatiku. Nakon toga, biće opisan i interfejs za obilazak stabla parsiranja koje generiše parser, i taj interfejs će se koristiti u procesu kreiranja opšteg AST ali i kao inspiracija za kreiranje interfejsa za obilazak opšteg AST.
 
 
 \subsection{Preduslovi za pokretanje ANTLR4}
@@ -221,7 +221,8 @@ grammar Pseudo;
 \label{fig:PseudoDef9}
 \end{figure}
 
-ANTLR4 će generisati lekser i parser podrazumevano napisane u programskom jeziku Java u odvojenim izvornim fajlovima kao zasebne klase. Ukoliko želimo to da promenimo, možemo koristiti opciju \texttt{-Dlanguage=...}. 
+
+Za veliki broj već postojećih programskih jezika, uključujući jezike C i Lua, dovoljno je preuzeti već standardizovane gramatike i generisati leksere i parsere za njih koristeći ANTLR4. ANTLR4 će generisati lekser i parser podrazumevano napisane u programskom jeziku Java u odvojenim izvornim fajlovima kao zasebne klase. Ukoliko želimo to da promenimo, možemo koristiti opciju \texttt{-Dlanguage=...}.
 
 Kako bismo testirali generisani lekser i parser, možemo koristiti ANTLR4 \texttt{TestRig} da vizualno prikažemo stablo parsiranja, s tim što moramo prvo kompilirati generisane Java klase. \texttt{TestRig} pozivamo navođenjem imena gramatike (koje se poklapa sa imenom leksera i parsera) i imenom pravila od koga će parser krenuti. Opcija \texttt{-gui} pokreće vizualni prikaz stabla parsiranja prikazan na slici \ref{fig:PseudoTreeGui} (vizualni prikaz je moguće preskočiti i samo ispisati stablo u LISP formi koristeći opciju \texttt{-tree}), mada je moguće i ispisati samo tokene koristeći opciju \texttt{-tokens}. Ulaz se prosleđuje programu dok se ne naiđe na simbol \texttt{EOF}, ili alternativno se može preneti ulaz putem UNIX pipeline-a (na slici \ref{fig:PseudoTreeGui} se može videti izlaz koji se dobija korišćenjem opcije \texttt{-gui}):
 \begin{lstlisting}[language={}]
