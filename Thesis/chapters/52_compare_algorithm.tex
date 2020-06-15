@@ -37,7 +37,9 @@ U ovom radu je poređenje vršeno pomoću algoritma pisanog specifično za rad s
 \label{fig:ComparisonAlgorithmPseudo}
 \end{figure}
 
-Podrazumevana implementacija poređenja može biti takva da se uporede atributi svih čvorova a zatim se svako dete prvog čvora rekurzivno uporedi sa odgovarajućim detetom drugog čvora (ukoliko imaju isti broj dece). Ako neki par dece nije ekvivalentan, onda to ne važi ni za njihove roditelje. Za većinu tipova čvorova ovakvo poređenje je dovoljno. Međutim, poređenje blokova naredbi je fundamentalno drugačije i za njega će biti definisane posebna procedura poređenja opisana u nastavku.
+Podrazumevana implementacija poređenja može biti takva da se uporede atributi svih čvorova a zatim se svako dete prvog čvora rekurzivno uporedi sa odgovarajućim detetom drugog čvora (ukoliko imaju isti broj dece). Ako neki par dece nije ekvivalentan, onda to ne važi ni za njihove roditelje. Za većinu tipova čvorova ovakvo poređenje je dovoljno. 
+
+Naredbe koje se sastoje od više drugih naredbi, kao što su npr.~definicije funkcija ili petlje, se moraju porediti drugačije jer složena naredba može sadržati lokalne promenljive. Niz naredbi koji predstavlja jednu služenu naredbu će u nastavku biti referisan pod terminom \emph{blok} ili \emph{blok naredbi}. Za poređenje blokova naredbi je stoga definisana posebna procedura poređenja opisana u nastavku.
 
 
 \section{Upoređivač blokova naredbi}

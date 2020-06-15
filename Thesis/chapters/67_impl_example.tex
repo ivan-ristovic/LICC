@@ -67,7 +67,7 @@ Jedan od osnovnih slučajeva upotrebe alata LICC može biti testiranje validnost
 \label{fig:ExampleSwapCompareValid}
 \end{figure}
 
-Ukoliko pak izvorni kod ne odgovara specifikaciji, LICC će dati detaljan spisak razlika, koje su često tražene greške. U nekim slučajevima je moguće da je sematnička ekvivalentnost održana iako stabla imaju značajne razlike --- LICC će prijaviti sve te razlike kao greške iako one to možda nisu. Izlaz za poređenje nevalidne implementacije algoritma \texttt{swap} sa slike \ref{fig:ExampleSwapWrong} u odnosu na specifikaciju se može videti na slici \ref{fig:ExampleSwapCompareWrong}. Vidimo da jedna od globalnih promenljivih nije pravilno zamenila vrednost, što se detektuje dvaput --- po jednom za svaki od blokova u izvornom kodu. Dodatno, prijavljena je i greška o odudaranju izraza inicijalizatora za promenljivu \texttt{tmp}.
+Ukoliko pak izvorni k\^od ne odgovara specifikaciji, LICC će dati detaljan spisak razlika, koje su često tražene greške. U nekim slučajevima je moguće da je sematnička ekvivalentnost održana iako stabla imaju značajne razlike --- LICC će prijaviti sve te razlike kao greške iako one to možda nisu. Izlaz za poređenje nevalidne implementacije algoritma \texttt{swap} sa slike \ref{fig:ExampleSwapWrong} u odnosu na specifikaciju se može videti na slici \ref{fig:ExampleSwapCompareWrong}. Vidimo da jedna od globalnih promenljivih nije pravilno zamenila vrednost, što se detektuje dvaput --- po jednom za svaki od blokova u izvornom kodu. Dodatno, prijavljena je i greška o odudaranju izraza inicijalizatora za promenljivu \texttt{tmp}.
 
 \begin{figure}[h!]
 \begin{lstlisting}
