@@ -7,6 +7,7 @@ namespace LICC.Tests.Core.Integration
 {
     internal sealed class FibonacciTests : CompleteTestsBase
     {
+        /*
         [Test]
         public override void DifferenceTests()
         {
@@ -16,7 +17,7 @@ namespace LICC.Tests.Core.Integration
                     begin
                         function fib(n : integer) returning integer
                         begin
-                            if n <= 1 then 
+                            if n < 2 then 
                                 return 1
                             else
                                 return call fib(n-1) + call fib(n-2)
@@ -25,10 +26,11 @@ namespace LICC.Tests.Core.Integration
                 "),
                 this.FromCSource(@"
                     int fib(int n) {
-                        if (n <= 2)
-                            return n;
-                        else
+                        if (n < 2) {
+                            return n; 
+                        } else {
                             return fib(n-1) + fib(n-2);
+                        }
                     }
                 ")
                 // TODO
@@ -107,5 +109,8 @@ namespace LICC.Tests.Core.Integration
                     )
             );
         }
+        */
+        public override void DifferenceTests() => throw new System.NotImplementedException();
+        public override void SemanticEquivallenceTests() => throw new System.NotImplementedException();
     }
 }
