@@ -20,13 +20,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Samples\eqtest1.c">
+    <None Update="Samples\declarations\valid.c">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Samples\eqtest2.c">
+    <None Update="Samples\declarations\refactor.c">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Samples\eqtest3.c">
+    <None Update="Samples\declarations\wrong.c">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Samples\sample.c">
