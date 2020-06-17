@@ -15,8 +15,8 @@ namespace LICC.Core.Comparers
     {
         private readonly Dictionary<string, DeclaredSymbol> srcSymbols = new Dictionary<string, DeclaredSymbol>();
         private readonly Dictionary<string, DeclaredSymbol> dstSymbols = new Dictionary<string, DeclaredSymbol>();
-        private Dictionary<string, DeclaredSymbol> localSrcSymbols = new Dictionary<string, DeclaredSymbol>();
-        private Dictionary<string, DeclaredSymbol> localDstSymbols = new Dictionary<string, DeclaredSymbol>();
+        private readonly Dictionary<string, DeclaredSymbol> localSrcSymbols = new Dictionary<string, DeclaredSymbol>();
+        private readonly Dictionary<string, DeclaredSymbol> localDstSymbols = new Dictionary<string, DeclaredSymbol>();
 
 
         public BlockStatNodeComparer()
@@ -197,9 +197,11 @@ namespace LICC.Core.Comparers
 
                 var allSrcSymbols = new Dictionary<string, DeclaredSymbol>(this.localSrcSymbols.Concat(this.srcSymbols));
                 var allDstSymbols = new Dictionary<string, DeclaredSymbol>(this.localDstSymbols.Concat(this.dstSymbols));
-                // TODO it can be any compound statement, not just a block...
-                var comparer = new BlockStatNodeComparer(allSrcSymbols, allDstSymbols);
-                this.Issues.Add(comparer.Compare(n1statements[i], n2statements[j]));
+
+                if (n1statements[i].NodeType != n2statements[i].NodeType)
+                    throw new ArgumentException("Cannot compare instances of different ASTNode type. This error happened due to structure mismatch.");
+
+                this.Issues.Add(new StatNodeComparer(allSrcSymbols, allDstSymbols).Compare(n1statements[i], n2statements[j]));
             }
 
 
@@ -309,7 +311,7 @@ namespace LICC.Core.Comparers
             {
                 return statements
                     .Skip(start)
-                    .TakeWhile(s => !(s is BlockStatNode))
+                    .TakeWhile(s => !(s is CompStatNode))
                     .Count()
                     ;
             }
