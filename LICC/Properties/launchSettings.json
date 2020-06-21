@@ -2,7 +2,7 @@
   "profiles": {
     "LICC": {
       "commandName": "Project",
-      "commandLineArgs": "cmp Samples/swap/valid.c Samples/swap/refactor.c"
+      "commandLineArgs": "cmp Samples/declarations/valid.c Samples/declarations/refactor.c"
     }
   }
 }

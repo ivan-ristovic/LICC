@@ -7,23 +7,23 @@ U ovom odeljku će biti opisan proces generisanja leksera parsera za programske 
 \subsection{Preduslovi za pokretanje ANTLR4}
 \label{subsec:ANTLRInstallation}
 
-Kako bi se ANTLR4 koristio, potrebno je instalirati ANTLR4 i imati \emph{Java Runtime Environment} (skr. \emph{JRE}) instaliran na sistemu i dostupan globalno pokretanjem putem komande \texttt{java}. Instalacija se sastoji od preuzimanja najnovijeg \emph{.jar} fajla\footnote{Takođe je moguće prevesti izvorni k\^od dostupan na servisu GitHub \url{https://github.com/antlr/antlr4}}, sa zvanične stranice \cite{ANTLR} ili recimo korišćenjem \emph{curl} alata\footnote{\url{https://curl.haxx.se/}}: 
+Kako bi se ANTLR4 koristio, potrebno je instalirati ANTLR4 i imati \emph{Java Runtime Environment} (skr. \emph{JRE}) instaliran na sistemu i dostupan globalno pokretanjem putem komande \texttt{java}. Instalacija se sastoji od preuzimanja najnovije \emph{.jar} datoteke\footnote{Takođe je moguće prevesti izvorni k\^od dostupan na servisu GitHub \url{https://github.com/antlr/antlr4}}, sa zvanične stranice \cite{ANTLR} ili recimo korišćenjem \emph{curl} alata\footnote{\url{https://curl.haxx.se/}}: 
 \begin{lstlisting}[language={}]
 $ curl -O http://www.antlr.org/download/antlr-4-complete.jar
 \end{lstlisting}
 
-Na UNIX sistemima moguće je kreirati alias \texttt{antlr4} ili \emph{shell} skript unutar direktorijuma \texttt{/usr/local/bin} sa imenom \texttt{antlr4} koji će pokrenuti \emph{.jar} fajl na sledeći način (pretpostavljajući da se \emph{.jar} fajl nalazi u direktorijumu \texttt{/usr/local/lib}):
+Na UNIX sistemima moguće je kreirati alias \texttt{antlr4} ili \emph{shell} skript unutar direktorijuma \texttt{/usr/local/bin} sa imenom \texttt{antlr4} koji će pokrenuti \emph{.jar} datoteku na sledeći način (pretpostavljajući da se \emph{.jar} datoteka nalazi u direktorijumu \texttt{/usr/local/lib}):
 \begin{lstlisting}[language={}]
 #!/bin/sh
 java -cp "/usr/local/lib/antlr4-complete.jar:$CLASSPATH" org.antlr.v4.Tool $*
 \end{lstlisting}
 
-Na Windows sistemima moguće je kreirati \emph{batch} skript sa imenom \texttt{antlr4.bat} koji će pokrenuti ANTLR4, na sledeći način (pretpostavljajući da se \emph{.jar} fajl nalazi u direktorijumu \texttt{C:\textbackslash{}lib}):
+Na Windows sistemima moguće je kreirati \emph{batch} skript sa imenom \texttt{antlr4.bat} koji će pokrenuti ANTLR4, na sledeći način (pretpostavljajući da se \emph{.jar} datoteka nalazi u direktorijumu \texttt{C:\textbackslash{}lib}):
 \begin{lstlisting}[language={}]
 java -cp C:\lib\antlr-4-complete.jar;%CLASSPATH% org.antlr.v4.Tool %*
 \end{lstlisting}
 
-Ukoliko su aliasi ili skript fajlovi imenovani kao iznad, moguće je iz komandne linije pojednostavljeno pokretati ANTLR4:  
+Ukoliko su aliasi ili skriptovi imenovani kao iznad, moguće je iz komandne linije pojednostavljeno pokretati ANTLR4:  
 \begin{lstlisting}[language={}]
 $ antlr4
 ANTLR Parser Generator Version 4.0
@@ -32,7 +32,7 @@ ANTLR Parser Generator Version 4.0
 ...
 \end{lstlisting}
 
-Dodatno, za Unix sisteme\footnote{Za Windows operativni sistem je moguće kreirati \emph{batch} skript po opisu na \url{https://github.com/antlr/antlr4/blob/master/doc/getting-started.md}.}, moguće je kreirati dodatni alias \texttt{grun} (ili alternativno, kreirati \texttt{shell script}) za biblioteku \texttt{TestRig}. Biblioteka \texttt{TestRig} se može koristiti za brzo testiranje parsera --- moguće je pokrenuti parser od bilo kog pravila i dobiti izlaz parsera u raznim formatima. \texttt{TestRig} dolazi uz ANTLR4 \texttt{.jar} fajl i moguće je napraviti prečicu za brzo pokretanje (nalik na ANTLR4 alias):
+Dodatno, za Unix sisteme\footnote{Za Windows operativni sistem je moguće kreirati \emph{batch} skript po opisu na \url{https://github.com/antlr/antlr4/blob/master/doc/getting-started.md}.}, moguće je kreirati dodatni alias \texttt{grun} (ili alternativno, kreirati \texttt{shell script}) za biblioteku \texttt{TestRig}. Biblioteka \texttt{TestRig} se može koristiti za brzo testiranje parsera --- moguće je pokrenuti parser od bilo kog pravila i dobiti izlaz parsera u raznim formatima. \texttt{TestRig} dolazi uz ANTLR4 \texttt{.jar} datoteku i moguće je napraviti prečicu za brzo pokretanje (nalik na ANTLR4 alias):
 \begin{lstlisting}[language={}]
 $ alias grun='java -cp "/usr/local/lib/antlr-4-complete.jar:$CLASSPATH" org.antlr.v4.gui.TestRig'
 \end{lstlisting}
@@ -208,7 +208,7 @@ WS
 \label{fig:PseudoDef8}
 \end{figure}
 
-Ovako definisanu gramatiku možemo sačuvati u fajl sa imenom \texttt{Pseudo.g4}, potrebno je navesti ime gramatike na početku fajla, kao na slici \ref{fig:PseudoDef9}. Naredni korak je kreiranje leksera i parsera koristeći ANTLR4, pretpostavljajući da je instaliran na način opisan u \ref{subsec:ANTLRInstallation}. Pokretanjem ANTLR-a generišemo lekser i parser za gramatiku pseudo-jezika:
+Ovako definisanu gramatiku možemo sačuvati u datoteku sa imenom \texttt{Pseudo.g4}, potrebno je navesti ime gramatike na početku datoteke, kao na slici \ref{fig:PseudoDef9}. Naredni korak je kreiranje leksera i parsera koristeći ANTLR4, pretpostavljajući da je instaliran na način opisan u \ref{subsec:ANTLRInstallation}. Pokretanjem ANTLR-a generišemo lekser i parser za gramatiku pseudo-jezika:
 \begin{lstlisting}[language={}]
 $ antlr4 Pseudo.g4
 \end{lstlisting}
@@ -222,7 +222,7 @@ grammar Pseudo;
 \end{figure}
 
 
-Za veliki broj već postojećih programskih jezika, uključujući jezike C i Lua, dovoljno je preuzeti već standardizovane gramatike i generisati leksere i parsere za njih koristeći ANTLR4. ANTLR4 će generisati lekser i parser podrazumevano napisane u programskom jeziku Java u odvojenim izvornim fajlovima kao zasebne klase. Ukoliko želimo to da promenimo, možemo koristiti opciju \texttt{-Dlanguage=...}.
+Za veliki broj već postojećih programskih jezika, uključujući jezike C i Lua, dovoljno je preuzeti već standardizovane gramatike i generisati leksere i parsere za njih koristeći ANTLR4. ANTLR4 će generisati lekser i parser podrazumevano napisane u programskom jeziku Java u odvojenim izvornim datotekama kao zasebne klase. Ukoliko želimo to da promenimo, možemo koristiti opciju \texttt{-Dlanguage=...}.
 
 Kako bismo testirali generisani lekser i parser, možemo koristiti ANTLR4 \texttt{TestRig} da vizualno prikažemo stablo parsiranja, s tim što moramo prvo kompilirati generisane Java klase. \texttt{TestRig} pozivamo navođenjem imena gramatike (koje se poklapa sa imenom leksera i parsera) i imenom pravila od koga će parser krenuti. Opcija \texttt{-gui} pokreće vizualni prikaz stabla parsiranja prikazan na slici \ref{fig:PseudoTreeGui} (vizualni prikaz je moguće preskočiti i samo ispisati stablo u LISP formi koristeći opciju \texttt{-tree}), mada je moguće i ispisati samo tokene koristeći opciju \texttt{-tokens}. Ulaz se prosleđuje programu dok se ne naiđe na simbol \texttt{EOF}, ili alternativno se može preneti ulaz putem UNIX pipeline-a (na slici \ref{fig:PseudoTreeGui} se može videti izlaz koji se dobija korišćenjem opcije \texttt{-gui}):
 \begin{lstlisting}[language={}]
