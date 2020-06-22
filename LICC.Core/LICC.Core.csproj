@@ -29,15 +29,6 @@
     <None Update="Samples\declarations\wrong.c">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Samples\sample.c">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Samples\sample.lua">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Samples\sample.psc">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="Samples\swap\refactor.c">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
