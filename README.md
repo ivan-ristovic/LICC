@@ -19,9 +19,9 @@ LICC solution is organized in several namespaces:
 - `LICC.Tests` - Unit and integration tests
 
 ## Motivation and project description
-There are many programming languages out there and, even though their syntax might be different, they often derive from or use certain universal programming concepts. We also call that a _way of writing code_ or, more commonly, a _programming paradigm_. The motivation for LICC came from the inability to find a shared API for every programming language that is a part of a procedural paradigm. LICC aims to create a common abstraction for imperative programming paradigm so that it is possible to view many different imperative programming languages on the same level of abstraction.
+There are many programming languages out there and, even though their syntax might be different, they often derive from or use certain universal programming concepts. We also call that a _way of writing code_ or, more commonly, a _programming paradigm_. The motivation for LICC came from the inability to find a shared API for every programming language that is a part of a procedural paradigm. LICC aims to create a common abstraction for imperative (but also procedural, OO, script and, through a few concepts, functional) programming paradigm so that it is possible to view many different programming languages on the same level of abstraction.
 
-LICC was made as a proof of concept for my MSc thesis (_Semantic comparison of structurally similar imperative code segments_) but has grown with aim to become fully operational and manageable long-term. LICC can be used as a tool to generate ASTs for given source code, serialize (JSON) or visualize generated ASTs, or compare abstractions of source codes. Since LICC does not rely on any language-specific AST nodes, it can compare codes written in different programming languages. LICC provides intuitive API for traversing generated AST and provides visitors for common AST operations. AST comparer is also provided via intuitive API and, although limited, the comparer module can be extended and upgraded with ease.
+LICC was made as a proof of concept for my MSc thesis (_Semantic comparison of structurally similar imperative code segments_) but has grown with aim to become fully operational and manageable long-term. LICC can be used as a tool to generate serialized AST in JSON, visualize generated AST, or compare generated ASTs. Since LICC does not rely on any language-specific AST node types, it can compare codes written in different programming languages (hence, _Language Invariant_). LICC provides intuitive API for traversing generated AST and provides visitors for common AST operations. AST comparer is also provided via intuitive API and, although limited, the comparer module can be extended and upgraded with ease.
 
 LICC can theoretically work with any programming language as long as the adapter for that language is written. Adapters (or, in further text, _Builders_) serve as an intermediary between parse trees and common ASTs. Builders are used to generate AST from a parse tree and they are implemented differently for every programming language due to native differences in parse trees. For now, builders are written for the following languages:
 - C
@@ -37,6 +37,8 @@ Interested readers can read more in my ![thesis](Thesis/IvanRistovic_MasterRad.p
 ## Examples
 
 ### Creating common AST
+
+Source codes which show supported syntax constructs in one place for various programming languages can be found in the ![samples](LICC.AST/Samples/) directory. Several examples will be shown below.
 
 ```sh
 $ ./LICC ast 
@@ -402,9 +404,6 @@ $ ./LICC ast -vc sample.lua --tree
 </details>
 
 
-Source codes which show supported syntax constructs in one place for various programming languages can be found in the ![samples](LICC.AST/Samples/) directory.
-
-
 ## Comparing common ASTs
 
 ```sh 
@@ -472,4 +471,4 @@ Steps:
 
 Comparers created in this way will be automatically picked up by `ASTNodeComparer` class via reflection.
 
-Comparers can (and it is encouraged for them to) use already existing comparers in their logic. Check out already existing ![comparers](LICC.Core/Comparers/) as an example.
+Comparers can (and it is encouraged for them to) use already existing comparers in their logic. Check out some of the already written ![comparers](LICC.Core/Comparers/) as an example.
