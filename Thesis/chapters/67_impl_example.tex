@@ -6,13 +6,7 @@ U ovom odeljku će biti prikazano par slučajeva upotrebe implementirane aplikac
 \begin{figure}[h!]
 \begin{lstlisting}
 int x = vx, y = vy;
-
-void swap() 
-{
-    int tmp = y;
-    y = x;
-    x = tmp;
-}
+void swap() { int tmp = y; y = x; x = tmp; }
 \end{lstlisting}
 \begin{lstlisting}
 x = vx
@@ -47,9 +41,9 @@ AST je moguće generisati od izvornog koda navođenjem glagola \texttt{ast}. Uko
 
 \begin{figure}[h!]
 \centering
-\includegraphics[scale=0.6]{images/eval/ast_c.png}
-\includegraphics[scale=0.6]{images/eval/ast_lua.png}
-\includegraphics[scale=0.6]{images/eval/ast_psc.png}
+\includegraphics[scale=0.56]{images/eval/ast_c.png}
+\includegraphics[scale=0.56]{images/eval/ast_lua.png}
+\includegraphics[scale=0.56]{images/eval/ast_psc.png}
 \caption{Vizualni prikaz generisanja AST od izvornih kodova sa slike \ref{fig:ExampleSwap} redom.}
 \label{fig:ExampleSwapAST}
 \end{figure}
@@ -72,12 +66,7 @@ Ukoliko pak izvorni k\^od ne odgovara specifikaciji, LICC će dati detaljan spis
 \begin{figure}[h!]
 \begin{lstlisting}
 int x = vx, y = vy;
-
-void swap() {
-    int tmp = x;
-    y = tmp;
-    x = y;
-}
+void swap() { int tmp = x; y = tmp; x = y; }
 \end{lstlisting}
 \caption{Nevalidna implementacija algoritma \texttt{swap} (C).}
 \label{fig:ExampleSwapWrong}
@@ -87,7 +76,7 @@ void swap() {
 \centering
 \includegraphics[scale=0.65]{images/eval/cmp_wrong.png}
 \includegraphics[scale=0.65]{images/eval/cmp_wrong_v.png}
-\caption{Semantičko poređenje nevalidne implementacije sa slike \ref{fig:ExampleSwapWrong} u odnosu na specifikaciju sa slike \ref{fig:ExampleSwap}.}
+\caption{Semantičko poređenje nevalidne implementacije sa slike \ref{fig:ExampleSwapWrong} u odnosu na specifikacije sa slike \ref{fig:ExampleSwap} -- C (gore) i pseudojezik (dole).}
 \label{fig:ExampleSwapCompareWrong}
 \end{figure}
 
@@ -97,7 +86,7 @@ Ukoliko imamo već verifikovanu implementaciju algoritma u jednom programskom je
 \centering
 \includegraphics[scale=0.7]{images/eval/cmp_rewrite.png}
 \includegraphics[scale=0.7]{images/eval/cmp_rewrite_v.png}
-\caption{Semantičko poređenje implementacija sa slike \ref{fig:ExampleSwap}.}
+\caption{Semantičko poređenje implementacija sa slike \ref{fig:ExampleSwap} --- Lua u odnosu na C (gore), Lua u odnosu na pseudojezik (dole).}
 \label{fig:ExampleSwapCompareValidRewrite}
 \end{figure}
 
@@ -106,13 +95,7 @@ Još jedan slučaj upotrebe LICC može biti verifikacija međuverzija koda u pro
 \begin{figure}[h!]
 \begin{lstlisting}
 int x = vx, y = vy;
-
-void swap() 
-{
-    x = x + y;
-	y = x - y;
-	x = x - y;
-}
+void swap() { x = x + y; y = x - y; x = x - y; }
 \end{lstlisting}
 \caption{Refaktorisani algoritam \texttt{swap} (C).}
 \label{fig:ExampleSwapRefactor}
