@@ -21,7 +21,7 @@ Projektne obrasce je moguće grupisati po situaciji u kojoj se mogu iskoristiti 
 Za potrebe ovog rada, projektni obrasci će se koristiti kao opšte prihvaćeno i programerski intuitivno rešenje određenih problema. Apstraktno sintaksičko stablo je primer upotrebe projektnog obrasca \emph{sastav}. Takođe, u kontekstu stabala parsiranja i apstraktnih sintaksičkih stabala, obrasci \emph{posmatrač} i \emph{posetilac} su od velikog značaja jer pružaju interfejs za obilazak takvih stabala. Ovi obrasci, opisani u narednim odeljcima, se koriste od strane ANTLR alata. Takođe, s obzirom da su ovi obrasci opšte-prihvaćeno rešenje za pružanje interfejsa obilaska stabala, biće korišćeni i u implementaciji opšte apstrakcije. U nastavku će zbog opisanih razloga biti opisani samo obrasci posmatrač i posetilac, dok zainteresovani čitalac može pročitati više u \cite{DesignPatternsBook}.
 
 \subsection{Projektni obrazac "Sastav"}
-\label{subsec:DesignPatternsListener}
+\label{subsec:DesignPatternsComposite}
 
 Projektni obrazac \emph{Sastav} je strukturni obrazac koji opisuje grupu objekata koji se tretiraju na isti način kao i individualna instanca istog tipa. Uloga sastava je da objekte organizuje u stablolike strukture kako bi se reprezentovale hijerarhije u kojima su neki elementi delovi a neki su celine. Sastav omogućava uniformno posmatranje individualnih objekata i čitavog sastava. Na slici \ref{fig:UMLComposite} se može videti UML dijagram \cite{UML} ovog obrasca. Za potrebe ovog rada, sastav će biti korišćen u implementaciji opšteg AST, s obzirom da je AST primer sastava.  
 

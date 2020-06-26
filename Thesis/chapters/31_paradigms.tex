@@ -31,14 +31,14 @@ finished:
 \label{fig:ParadigmImperative}
 \end{figure}
 
-Stariji programski jezici najčešće prate ovu paradigmu iz nekoliko razloga. Prvi je taj što imperativna paradigma najbliže oslikava samu mašinu na kojoj se program izvršava, pa je programer mnogo bliži mašini. Ova paradigma je bila veoma popularna zbog ranih ograničenja u hardveru i potrebe za efikasnim programima. Danas, zbog mnogo bržeg razvoja i mnogo jačih računara, efikasnost dobijena pisanjem koda u jezicima veoma bliskim mašini se sve manje uzima u obzir.
+Stariji programski jezici najčešće prate ovu paradigmu iz nekoliko razloga. Prvi je taj što imperativna paradigma najbliže oslikava samu mašinu na kojoj se program izvršava, pa je programer mnogo bliži mašini. Ova paradigma je bila veoma popularna zbog ranih ograničenja u hardveru i potrebe za efikasnim programima. Danas, zbog mnogo bržeg razvoja računara mnogo boljih performansi, efikasnost dobijena pisanjem koda u jezicima veoma bliskim mašini se sve manje uzima u obzir.
 
 Imperativna paradigma svoje nedostatke. Naime, najveći problem je razumevanje i verifikovanje ispravnosti programa zbog postojanja propratnih efekata\footnote{Propratni efekti (promene stanja mašine, drugačije nazvani i \emph{bočni efekti}, engl.~\emph{side effects}) ne poštuju \emph{referencijalnu transparentnost} koja se definiše na sledeći način: \emph{Ako važi $P(x)$ i $x = y$ u nekom trenutku, onda $P(x) = P(y)$ važi tokom čitavog vremena izvršavanja programa}.}. Stoga je zahtevno i pronalaženje grešaka u programima pisanim u imperativnoj paradigmi. Pošto je k\^od veoma niskog nivoa, obično je dozvoljen i direktan pristup memorijskim adresama putem \emph{pokazivača}, što takođe otežava verifikaciju koda.
 
 Danas se veliki broj drugih paradigmi svrstava pod imperativnu paradigmu i treba napomenuti da se u ovom odeljku pod terminom imperativna paradigma smatra striktno imperativni pristup bez naredbi kontrole toka i procedura odnosno funkcija. Van ovog odeljka, u ostatku ovog rada, pod terminom imperativna paradigma se podrazumeva tradicionalna imperativna paradigma ali i njeni derivati kao što su strukturna ili skript paradigma.
 
 
-\subsection{Strukturna paradigma}
+\subsection{Strukturna i proceduralna paradigma}
 \label{subsec:ParadigmImperativeStructural}
 
 \emph{Strukturna paradigma} je vrsta imperativne paradigme gde se kontrola toka vrši putem niza naredbi, uslovnih grananja i petlji. Promenljive su obično lokalne za blok u kome su definisane, što određuje i njihov životni vek i vidljivost. Primer koda pisanog u strukturnoj paradigmi se može videti na slici \ref{fig:ParadigmStructural}. Danas je najpopularnija kombinacija strukturne paradigme sa \emph{proceduralnom paradigmom}, baziranom na konceptu poziva \emph{procedure} --- podrutine ili funkcije koja sadrži seriju koraka koje je potrebno izvršiti redom.
