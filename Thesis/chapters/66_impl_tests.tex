@@ -12,17 +12,6 @@ Radni okvir koji se koristi za testiranje je \texttt{NUnit}\footnote{\url{https:
 \begin{figure}[h!]
 \centering
 \begin{lstlisting}
-[Test]
-public void ComplexDefinitionTest() 
-{
-  FuncDefNode f = this.AssertFunctionSignature(@"
-    float f(const unsigned int x, ...) { return 3.0; }", 
-    2, "f", "float", isVariadic: true, 
-    @params: ("unsigned int", "x")
-  );
-  Assert.That(f.Definition.Children, Has.Exactly(1).Items);
-}
-
 protected FuncDefNode AssertFunctionSignature(
   string src, int line, string fname, 
   string returnType = "void", bool isVariadic = false, 
@@ -54,6 +43,17 @@ protected FuncDefNode AssertFunctionSignature(
     }
   return f;
 }
+
+[Test]
+public void ComplexDefinitionTest() 
+{
+  FuncDefNode f = this.AssertFunctionSignature(@"
+    float f(const unsigned int x, ...) { return 3.0; }", 
+    2, "f", "float", isVariadic: true, 
+    @params: ("unsigned int", "x")
+  );
+  Assert.That(f.Definition.Children, Has.Exactly(1).Items);
+}
 \end{lstlisting}
 \caption{Primer jediničnog testa za proveru generisanog AST čvora za datu funkciju.}
 \label{fig:ImplTestsUnit}
@@ -64,6 +64,14 @@ Osim testova jedinica koda, prisutni su i testovi integracije svih komponenti. K
 \begin{figure}[h!]
 \centering
 \begin{lstlisting}
+protected void Compare(ASTNode src, ASTNode dst, 
+  MatchIssues? expectedIssues = null) 
+{
+  expectedIssues ??= new MatchIssues();
+  var issues = new ASTNodeComparer(src, dst).AttemptMatch();
+  Assert.That(issues, Is.EquivallentTo(expectedIssues));
+}
+
 [Test]
 public override void DifferenceTests()
 {
@@ -89,14 +97,6 @@ public override void DifferenceTests()
       .AddError(new BlockEndValueMismatchError("x", 1, "vy", "vx"))
       .AddError(new BlockEndValueMismatchError("x", 3, "vy", "vx"))
   );
-}
-
-protected void Compare(ASTNode src, ASTNode dst, 
-  MatchIssues? expectedIssues = null) 
-{
-  expectedIssues ??= new MatchIssues();
-  var issues = new ASTNodeComparer(src, dst).AttemptMatch();
-  Assert.That(issues, Is.EquivallentTo(expectedIssues));
 }
 \end{lstlisting}
 \caption{Primer kompletnog testa za algoritam \emph{swap}.}

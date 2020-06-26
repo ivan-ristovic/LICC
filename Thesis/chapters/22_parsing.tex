@@ -9,11 +9,7 @@ Odgovor je potvrdan i postoji veliki broj alata koji se mogu koristiti u ove svr
 
 \subsection{Lex i Flex}
 \label{subsec:LexFlex}
-\emph{Lex} \cite{LexYacc} je program koji generiše leksere. Danas se više koristi \emph{flex} \cite{Flex}, kreiran kao alternativa \emph{lex}-u, s obzirom da je i do dva puta brži od \emph{lex}-a, koristi manje memorije nego \emph{lex}, i vreme kompilacije leksera koje \emph{flex} generiše je i do tri puta kraće nego kompilacija leksera koje generiše \emph{lex}. Pošto \emph{flex}, isto kao i \emph{lex}, generiše samo leksere, najčešće se koristi u kombinaciji sa drugim alatima koji mogu da generišu parsere, kao što su npr. \emph{GNU Bison}, \emph{YACC} ili \emph{BYACC}.
-
-\subsection{GNU Bison}
-\label{subsec:GNUBison}
-\emph{GNU Bison} \cite{GNUBison} je generator parsera i deo GNU projekta \cite{GNUProject}, često referisan samo kao \emph{Bison}. \emph{Bison} generiše parser na osnovu korisnički definisane kontekstno slobodne gramatike \cite{AutomataTheory}, upozoravajući pritom na dvosmislenosti prilikom parsiranja ili nemogućnost primene gramatičkih pravila. Generisani parser je najčešće C a ređe C++ program, mada se u vreme pisanja ovog rada eksperimentiše sa Java podrškom. Generisani k\^od je u potpunosti prenosiv i ne zahteva specifične kompajlere. Bison može da, osim podrazumevanih \emph{LALR(1)} \cite{DragonBook} parsera, generiše i kanoničke \emph{LR} \cite{LR}, \emph{IELR(1)} \cite{IELR1} i \emph{GLR} \cite{GLR} parsere.
+\emph{Lex} \cite{LexYacc} je program koji generiše leksere. Danas se više koristi \emph{flex} \cite{Flex}, kreiran kao alternativa \emph{lex}-u, s obzirom da je i do dva puta brži od \emph{lex}-a, koristi manje memorije nego \emph{lex}, i vreme kompilacije leksera koje \emph{flex} generiše je i do tri puta kraće nego kompilacija leksera koje generiše \emph{lex}. Pošto \emph{flex}, isto kao i \emph{lex}, generiše samo leksere, najčešće se koristi u kombinaciji sa drugim alatkama koje mogu da generišu parsere, kao što su npr. \emph{GNU Bison}, \emph{YACC} ili \emph{BYACC}.
 
 \subsection{YACC i BYACC}
 \label{subsec:BYACC}
@@ -21,13 +17,17 @@ Odgovor je potvrdan i postoji veliki broj alata koji se mogu koristiti u ove svr
 
 \emph{Berkeley YACC}, skraćeno \emph{BYACC} \cite{BYACC}, je generator parsera pisan po ANSI C standardu i otvorenog je koda. Posmatra se od strane mnogih kao \textit{najbolja varijanta YACC-a} \cite{LexYacc}. \emph{BYACC} dozvoljava tzv.~\emph{reentrant} k\^od --- omogućava bezbedno konkurentno izvršavanje koda na način kompatibilan sa Bison-om i to je delom razlog njegove popularnosti.
 
+\subsection{GNU Bison}
+\label{subsec:GNUBison}
+\emph{GNU Bison} \cite{GNUBison} je generator parsera i deo GNU projekta \cite{GNUProject}, često referisan samo kao \emph{Bison}. \emph{Bison} generiše parser na osnovu korisnički definisane kontekstno slobodne gramatike \cite{AutomataTheory}, upozoravajući pritom na dvosmislenosti prilikom parsiranja ili nemogućnost primene gramatičkih pravila. Generisani parser je najčešće C a ređe C++ program, mada se u vreme pisanja ovog rada eksperimentiše sa Java podrškom. Generisani k\^od je u potpunosti prenosiv i ne zahteva specifične kompajlere. Bison može da, osim podrazumevanih \emph{LALR(1)} \cite{DragonBook} parsera, generiše i kanoničke \emph{LR} \cite{LR}, \emph{IELR(1)} \cite{IELR1} i \emph{GLR} \cite{GLR} parsere.
+
 \subsection{ANTLR}
 \label{subsec:ANTLR}
 \emph{Another Tool for Language Recognition}, ili kraće \emph{ANTLR} \cite{ANTLR}, je generator \emph{LL(*)} \cite{LLStar} leksera i parsera pisan u programskom jeziku Java sa intuitivnim interfejsom za obilazak stabla parsiranja. Verzija $3$ podržava generisanje parsera u jezicima Ada95, ActionScript, C, C\#, Java, JavaScript, Objective-C, Perl, Python, Ruby, i Standard ML, dok verzija $4$, u daljem tekstu ANTLR4, u vreme pisanja ovog rada generiše parsere u narednim programskim jezicima: Java, C\#, C++, JavaScript, Python, Swift i Go.\footnote{ANTLR verzije $4$ je izabran u ovom radu zbog svoje popularnosti, jednostavnosti, intuitivnosti i podrške za mnoge moderne programske jezike. Verzija $4$ je izabrana po preporuci autora ANTLR-a, na osnovu eksperimentalne analize brzine i pouzdanosti te verzije u odnosu na prethodnu.}
 
 Parseri generisani koristeći ANTLR4 koriste novu tehnologiju koja se naziva \emph{Prilagodljiv LL(*)} (engl. \emph{Adaptive LL(*)}) ili \emph{ALL(*)} \cite{ANTLRReference}, dizajniranu od strane Terensa Para, autora ANTLR-a, i Sema Harvela. \emph{ALL(*)} vrši \emph{dinamičku analizu} gramatike u fazi izvršavanja, dok su starije verzije radile analizu pre pokretanja parsera. Ovaj pristup je takođe efikasniji zbog značajno manjeg prostora ulaznih sekvenci u parser.
 
-Najbolji aspekt ANTLR-a je lakoća definisanja gramatičkih pravila koji opisuju sintaksne konstrukte. Primer jednostavnog pravila za definisanje aritmetičkog izraza je dat na slici \ref{fig:ANTLRExpressions}. Pošto izraz možemo definisati na više načina, pišemo \emph{alternative} u definiciji pravila --- više različitih definicija razdvojenih simbolom \texttt{|}. Pravilo \texttt{exp} je levo rekurzivno jer barem jedna od njegovih alternativnih definicija referiše baš na pravilo \texttt{exp}. ANTLR4 automatski zamenjuje levo rekurzivna pravila u nerekurzivne ekvivalente. Jedini zahtev koji mora biti ispunjen je da levo rekurzivna pravila moraju biti \emph{direktna} --- da pravila odmah referišu sama sebe. Pravila ne smeju referisati drugo pravilo sa leve strane definicije takvo da se eventualno kroz rekurziju stigne nazad do pravila od kog se krenulo bez poklapanja sa nekim tokenom.
+Najbolji aspekt ANTLR-a je lakoća definisanja gramatičkih pravila koji opisuju sintaksičke konstrukte. Primer jednostavnog pravila za definisanje aritmetičkog izraza je dat na slici \ref{fig:ANTLRExpressions}. Pošto izraz možemo definisati na više načina, pišemo alternative u definiciji pravila. Pravilo \texttt{exp} je levo rekurzivno jer barem jedna od njegovih alternativnih definicija referiše baš na pravilo \texttt{exp}. ANTLR4 automatski zamenjuje levo rekurzivna pravila u nerekurzivne ekvivalente. Jedini zahtev koji mora biti ispunjen je da leva rekurzija mora biti \emph{neposredna} --- pravila odmah moraju referisati na svoje ime u definiciji. \emph{Posredna} leva rekurzija nije dozvoljena --- pravila ne smeju referisati drugo pravilo takvo da se eventualno kroz rekurziju stigne nazad do pravila od kog se krenulo bez poklapanja sa nekim tokenom.
 
 \begin{figure}[h!]
 \begin{lstlisting}[language={}]
@@ -37,6 +37,6 @@ exp : (exp)
     | INT
     ;
 \end{lstlisting}
-\caption{Definicija uprošćenog aritmetičkog izraza po ANTLR4 gramatici.}
+\caption{Definicija uprošćenog aritmetičkog izraza po ANTLR4 gramatici koristeći neposrednu levu rekurziju.}
 \label{fig:ANTLRExpressions}
 \end{figure}

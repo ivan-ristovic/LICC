@@ -5,7 +5,7 @@ Kako bi se k\^od pisan u nekom programskom jeziku (\emph{izvorna datoteka}) prev
 
 Za potrebe ovog rada, što se procesa prevođenja tiče, dovoljno je poznavanje pomenutih procesa koje izvodi prednji deo, stoga neće biti reči o ostalim koracima u fazi prevođenja (generisanje IR, optimizovanje). Zainteresovani čitalac može više detalja pronaći u \cite{DragonBook}, \cite{EngineeringCompilers} i \cite{CompilerConstruction}. 
 
-Pretpostavimo da želimo da prevedemo izvorni k\^od pisan u programskom jeziku C sa slike \ref{fig:CompilationProcessInit}. Primetimo da postoji greška u datom kodu --- simbol \texttt{c} koji se koristi u dodeli u liniji $7$ će biti prepoznat kao identifikator koji ne odgovara nijednoj deklarisanoj promenljivoj --- stoga ne možemo prevesti ovaj k\^od. Ovo nije greška u sintaksi --- izraz \texttt{a+c} je validan u programskom jeziku C. Problem će postati vidljiv tek nakon parsiranja izvornog koda i provere ispunjenosti sintaksih pravila, tačnije u fazi semantičke provere. Stoga se ovakve greške nazivaju \emph{semantičke greške}, dok se greške u sintaksi nazivaju \emph{sintaksne greške}.
+Pretpostavimo da želimo da prevedemo izvorni k\^od pisan u programskom jeziku C sa slike \ref{fig:CompilationProcessInit}. Primetimo da postoji greška u datom kodu --- simbol \texttt{c} koji se koristi u dodeli u liniji $7$ će biti prepoznat kao identifikator koji ne odgovara nijednoj deklarisanoj promenljivoj --- stoga ne možemo prevesti ovaj k\^od. Ovo nije greška u sintaksi --- izraz \texttt{a+c} je validan u programskom jeziku C. Problem će postati vidljiv tek nakon parsiranja izvornog koda i provere ispunjenosti sintaksih pravila, tačnije u fazi semantičke provere. Stoga se ovakve greške nazivaju \emph{semantičke greške}, dok se greške u sintaksi nazivaju \emph{sintaksičke greške}.
 
 \begin{figure}[h!]
 \begin{lstlisting}
@@ -24,10 +24,10 @@ int main()
 \label{fig:CompilationProcessInit}
 \end{figure}
 
-Pre nego što prednji kraj prevodioca dobije k\^od koji treba da prevede u međureprezentaciju, vrši se \emph{pretprocesiranje} od strane programa koji se naziva \emph{pretprocesor}. U fazi pretprocesiranja se izvode samo tekstualne operacije kao što su brisanje komentara ili zamena makroa u jezicima kao što je C. Rezultat rada pretprocesora za izvorni k\^od sa slike \ref{fig:CompilationProcessInit} se može videti na slici \ref{fig:CompilationProcessPrep}\footnote{U nekim implementacijama C standardne biblioteke, moguće je da se poziv funckije \texttt{printf} zameni pozivom funkcije \texttt{fprintf} sa ispisom na \texttt{stdout}. U standardu se propisuje da funkcije kao što je \texttt{printf} mogu biti implementirane kao makroi. Izlaz na slici \ref{fig:CompilationProcessPrep} je generisan od strane \texttt{GCC 7.4.0} po C11 standardu i ovo nije slučaj u datom okruženju.}.
+Pre nego što prednji kraj prevodioca dobije k\^od koji treba da prevede u međureprezentaciju, vrši se \emph{pretprocesiranje} od strane programa koji se naziva \emph{pretprocesor}. U fazi pretprocesiranja se izvode operacije kao što su brisanje komentara ili zamena makroa u okviru konteksta u jezicima kao što je C\footnote{U okviru konteksta --- dakle, makroi se, na primer, neće zameniti unutar niski.}. Rezultat rada pretprocesora za izvorni k\^od sa slike \ref{fig:CompilationProcessInit} se može videti na slici \ref{fig:CompilationProcessPrep}\footnote{U nekim implementacijama C standardne biblioteke, moguće je da se poziv funckije \texttt{printf} zameni pozivom funkcije \texttt{fprintf} sa ispisom na \texttt{stdout}. U standardu se propisuje da funkcije kao što je \texttt{printf} mogu biti implementirane kao makroi. Izlaz na slici \ref{fig:CompilationProcessPrep} je generisan od strane \texttt{GCC 7.4.0} po C11 standardu i ovo nije slučaj u datom okruženju.}.
 
 \begin{figure}[h!]
-\begin{lstlisting}
+\begin{lstlisting}[numbers=none]
 # 1 "<stdin>"
 # 1 "<built-in>"
 # 1 "<command-line>"
@@ -36,11 +36,12 @@ Pre nego što prednji kraj prevodioca dobije k\^od koji treba da prevede u među
 
 ...
 
-extern char *ctermid (char *__s) __attribute__ ((__nothrow__ , __leaf__));
-# 840 "/usr/include/stdio.h" 3 4
-extern void flockfile (FILE *__stream) __attribute__ ((__nothrow__ , __leaf__));
-extern int ftrylockfile (FILE *__stream) __attribute__ ((__nothrow__ , __leaf__)) ;
-extern void funlockfile (FILE *__stream) __attribute__ ((__nothrow__ , __leaf__));
+extern int fprintf (FILE *__restrict __stream, 
+                    const char *__restrict __format, ...);
+extern int printf (const char *__restrict __format, ...);
+
+...
+
 # 868 "/usr/include/stdio.h" 3 4
 # 2 "<stdin>" 2
 # 2 "<stdin>"
@@ -57,7 +58,7 @@ int main()
 \label{fig:CompilationProcessPrep}
 \end{figure}
 
-U toku faze leksičke analize, kako prevodilac ne bi radio nad sirovim karakterima izvornog koda, potrebno je izvršiti transformaciju karaktera izvornog koda. Prevodilac ima u vidu elemente programskog jezika i šablone za njihovo prepoznavanje. Lekseme su one sekvence karaktera izvornog koda koje zadovoljavaju ove šablone. Lekseme se dalje razvrstavaju u kategorije, tzv. \emph{tokene} --- ključne reči, operatore, promenljive itd. Proces dobijanja tokena od izvornog koda se naziva \emph{tokenizacija}. Komponenta prednjeg dela koja vrši tokenizaciju se naziva \emph{skener} ili \emph{lekser}. Pojednostavljen primer šablona koje lekser pokušava da prepozna se mogu videti na slici \ref{fig:CLexerExample}. Primer izlaza leksera za izlaz pretprocesora sa slike \ref{fig:CompilationProcessPrep} se može videti na slici \ref{fig:CompilationProcessLex}.
+U toku faze leksičke analize, kako prevodilac ne bi radio nad sirovim karakterima izvornog koda, potrebno je izvršiti transformaciju karaktera izvornog koda. Prevodilac ima u vidu elemente programskog jezika i šablone za njihovo prepoznavanje. Lekseme su one sekvence karaktera izvornog koda koje zadovoljavaju ove šablone. Lekseme se dalje razvrstavaju u kategorije, tzv. \emph{tokene} --- ključne reči, operatore, promenljive itd. Proces dobijanja tokena od izvornog koda se naziva \emph{tokenizacija}. Komponenta prednjeg dela koja vrši tokenizaciju se naziva \emph{skener} ili \emph{lekser}. Pojednostavljen primer šablona koje lekser pokušava da prepozna se mogu videti na slici \ref{fig:CLexerExample}. Primer izlaza leksera za izlaz pretprocesora sa slike \ref{fig:CompilationProcessPrep} se može videti na slici \ref{fig:CompilationProcessLex}. Svako pravilo se sastoji od imena pravila nakon čega posle simbola \texttt{:} dolaze definicije pravila razdovene simbolom \texttt{|} ukoliko ih ima više od jedne\footnote{Ukoliko se simbol \texttt{|} nalazi unutar definicije pravila kao specijalan simbol, mora se pojaviti unutar zagrada i u tom slučaju ne predstavlja kraj trenutne definicije.}. Simbol \texttt{;} označava kraj pravila. Definicija simbola u sebi može referisati na druga pravila ili koristiti \emph{regularne izraze}\footnote{Regularni izraz je sekvenca karaktera koja se često koristi da definiše šablon pretrage ili poklapanja. Formalno, regularni izraz definiše čitav regularni jezik.} ili njihove specijalne simbole zadržavajući njihovu semantiku\footnote{U regularnom izrazu \texttt{a?b+c*|d}, simbol \texttt{?} označava opciono pojavljivanje simbola \texttt{a}, simbol \texttt{+} označava jedno ili više pojavljivanja simbola \texttt{b}, a simbol \texttt{*} označava proizvoljan broj pojavljivanja simbola \texttt{c} --- kombinacija simbola \texttt{?} i \texttt{+}, dok simbol \texttt{|} označava izbor --- ili će se poklopiti izraz sa leve strane ili izraz sa desne strane. Dodatno, unutar para srednjih zagrada \texttt{([ ])} možemo navesti spisak karaktera koji ulaza u obzir prilikom poklapanja --- skraćena verzija ulančavanja simbola \texttt{|}.}. Ovaj format definisanja pravila koristi alat ANTLR4 za definisanje gramatika koje su čitljive i lake za pisanje.
 
 \begin{figure}[h!]
 \begin{lstlisting}[language={}]
@@ -113,7 +114,7 @@ eof ''		Loc=<sample.c:9:2>
 \label{fig:CompilationProcessLex}
 \end{figure}
 
-Nakon faze skeniranja potrebno je proveriti da li niz pročitanih tokena zadovoljava sintaksu programskog jezika. Pevodilac stoga mora da uporedi strukturu koda sa unapred definisanom strukturom za određeni programski jezik što zahteva formalnu definiciju sintakse jezika. Programski jezik možemo posmatrati kao skup \emph{pravila} pod imenom \emph{gramatika} \cite{AutomataTheory}. Na slici \ref{fig:CompilationProcessGram} se može videti deo gramatike programskog jezika C. Proces provere zadovoljenosti sintaksnih pravila se naziva \emph{parsiranje}, a komponenta prednjeg dela koja vrši parsiranje se naziva \emph{parser}.\footnote{Moderni kompajleri često nemaju odvojene faze skeniranja i parsiranja, već se skeniranje odvija paralelno sa fazom parsiranja. Međutim, to nas ne sprečava da ispišemo tokene onda kada se oni prepoznaju, što to je demonstrirano na slici \ref{fig:CompilationProcessLex}.}
+Nakon faze skeniranja potrebno je proveriti da li niz pročitanih tokena zadovoljava sintaksu programskog jezika. Prevodilac stoga mora da uporedi strukturu koda sa unapred definisanom strukturom za određeni programski jezik što zahteva formalnu definiciju sintakse jezika. Programski jezik možemo posmatrati kao skup \emph{pravila} pod imenom \emph{gramatika} \cite{AutomataTheory}. Na slici \ref{fig:CompilationProcessGram} se može videti deo gramatike programskog jezika C. Proces provere zadovoljenosti sintaksnih pravila se naziva \emph{parsiranje}, a komponenta prednjeg dela koja vrši parsiranje se naziva \emph{parser}.\footnote{Moderni kompilatori u toku svog izvršavanja nemaju odvojene faze skeniranja i parsiranja, već se skeniranje odvija paralelno sa fazom parsiranja iako su skener i parser zasebne komponente prednjeg dela kompilatora. Međutim, to nas ne sprečava da ispišemo tokene onda kada se oni prepoznaju, što to je demonstrirano na slici \ref{fig:CompilationProcessLex}.}
 
 \begin{figure}[h!]
 \begin{lstlisting}[language={}]
@@ -131,7 +132,7 @@ declaration
 \label{fig:CompilationProcessGram}
 \end{figure}
 
-Parser, imajući u vidu gramatiku jezika, kreira \emph{stablo parsiranja} (eng. \emph{parse tree} ili \emph{derivation tree}) \cite{AutomataTheory}. Takvo stablo i dalje sadrži sve relevantne informacije o izvornom kodu. Vizuelni prikaz rada parsera za C11 gramatiku i izvorni kod sa slike \ref{fig:CompilationProcessInit} je dat na slici \ref{fig:CompilationProcessPars}. Stablo parsiranja se koristi u narednim fazama prevođenja.
+Parser, imajući u vidu gramatiku jezika, kreira \emph{stablo parsiranja} (eng. \emph{parse tree} ili \emph{derivation tree}) \cite{AutomataTheory}. Takvo stablo i dalje sadrži sve relevantne informacije o izvornom kodu. Vizuelni prikaz rada parsera za C11 gramatiku i izvorni kod sa slike \ref{fig:CompilationProcessInit} je dat na slici \ref{fig:CompilationProcessPars}. Stablo parsiranja se koristi u narednim fazama prevođenja. Važno je napomenuti da, iako je rečeno da je stablo parsiranja rezultat rada parsera, takvo stablo u memoriji tokom rada parsera nikada neće biti kreirano (osim ukoliko modifikujemo svrhu parsera da eksplicitno kreira takvo stablo, kao što je slučaj sa parserima koji će biti generisani kasnije u implementaciji), već služi samo kao formalizam za razumevanje rada parsera.
 
 \begin{figure}[h!]
 \centering
@@ -159,5 +160,5 @@ Stablo parsiranja sadrži sve informacije potrebne u fazi parsiranja uključuju�
 \label{fig:ASTVariants}
 \end{figure}
 
-Uloga apstraktnog sintaksičkog stabla \cite{FormalSyntaxAndSemantics} je da pokaže semantiku strukture koda preko stabla. Kao što se vidi na slici \ref{fig:ASTVariants}, postoji određeni nivo slobode prilikom njegovog kreiranja. Generalno, \emph{terminalni simboli} --- simboli koji predstavljaju listove stabla parsera --- koji odgovaraju operatorima i naredbama se podižu naviše i postaju koreni podstabala, dok se njihovi operandi ostavljaju kao njihovi potomci u stablu. Desna stabla sa slike ne prate u potpunosti ovaj princip, ali se takođe koriste zbog regularnosti izraza --- ukoliko binarni izraz posmatramo kao apstrakciju, za implementaciju je lakše koristiti ovakav tip apstraktnih sintaksičkih stabala i stoga će biti korišćen kasnije u implementaciji opšte apstrakcije. Primetimo takođe da se u stablima za izraz \texttt{a+(3-c)} (dole) implicitno sačuvala informacija o prioritetu operacije oduzimanja u izrazu. Jasno je, dakle, da se računanje vrednosti aritmetičkih izraza onda vrši kretanjem od listova stabla ka korenu. Takođe, pošto je apstraktno sintaksičko stablo apstrakcija stabla parsiranja, više semantički ekvivalentnih izraza može imati isto apstraktno sintaksičko stablo ali različito stablo parsiranja; na primer, ako razmatramo izraz \texttt{(a+5)-x/2} i izraz \texttt{a+5-(x/2)}.
+Uloga apstraktnog sintaksičkog stabla \cite{FormalSyntaxAndSemantics} je da pokaže semantiku strukture koda preko stabla. Kao što se vidi na slici \ref{fig:ASTVariants}, postoji određeni nivo slobode prilikom njegovog kreiranja. Generalno, \emph{terminalni simboli} --- simboli koji predstavljaju listove stabla parsera --- koji odgovaraju operatorima i naredbama se podižu naviše i postaju koreni podstabala, dok se njihovi operandi ostavljaju kao njihovi potomci u stablu. Desna stabla sa slike ne prate u potpunosti ovaj princip, ali se takođe koriste za jednostavniju implementaciju čvorova izraza --- ukoliko binarni izraz posmatramo kao apstrakciju, za implementaciju je lakše koristiti ovakav tip apstraktnih sintaksičkih stabala i stoga će biti korišćen kasnije u implementaciji opšte apstrakcije. Primetimo takođe da se u stablima za izraz \texttt{a+(3-c)} (dole) implicitno sačuvala informacija o prioritetu operacije oduzimanja u izrazu. Jasno je, dakle, da se računanje vrednosti aritmetičkih izraza onda vrši kretanjem od listova stabla ka korenu. Takođe, pošto je apstraktno sintaksičko stablo apstrakcija stabla parsiranja, više semantički ekvivalentnih izraza može imati isto apstraktno sintaksičko stablo ali različito stablo parsiranja; na primer, ako razmatramo izraz \texttt{(a+5)-x/2} i izraz \texttt{a+5-(x/2)}.
 
