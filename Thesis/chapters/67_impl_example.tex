@@ -103,7 +103,13 @@ void swap() { x = x + y; y = x - y; x = x - y; }
 
 \begin{figure}[h!]
 \centering
-\includegraphics[scale=0.8]{images/eval/cmp_refactor.png}
+\includegraphics[scale=0.75]{images/eval/cmp_refactor.png}
 \caption{Semantičko poređenje refaktorisane implementacije algoritma \texttt{swap} sa slike \ref{fig:ExampleSwapRefactor} sa implementacijom u programskom jeziku C sa slike \ref{fig:ExampleSwap}.}
 \label{fig:ExampleSwapCompareRefactor}
 \end{figure}
+
+Kompletan prikaz rada alata LICC za algoritam razmene vrednosti se može naći u okviru repozitorijuma na adresi \url{https://github.com/ivan-ristovic/LICC/tree/master/LICC.Core/Samples/swap}. U okviru ovog direktorijuma su, uz ispravne i izmenjene izvorne datoteke algoritma, pružene i slike izlaza alata LICC za svaki par izvornih datoteka.
+
+Kao primer prikaza poređenja deklaratora (promenljivih, nizovnih i funkcijskih), dat je primer koji se može pogledati na stranici \url{https://github.com/ivan-ristovic/LICC/tree/master/LICC.Core/Samples/declarations}. Ovaj primer ilustruje poređenje više naredbi deklaracija čiji redosled nije nužno isti u izvornim datotekama, kao i detektovanje razlika u deklaratorima. U okviru ovog primera takođe se pokazuje i evaluacija izraza, kroz inicijalizatore celobrojnih i nizovnih promenljivih.
+
+Osim primera u kojima se ilustruje semantičko poređenje, u okviru repozitorijuma je moguće pronaći još primera upotrebe alata LICC za kreiranje AST. Na stranici \url{https://github.com/ivan-ristovic/LICC/tree/master/LICC.AST/Samples} se mogu videti izvorni kodovi u kojima su na jednom mestu pobrojane sve podržane sintaksičke strukture od kojih se može kreirati AST u trenutku pisanja ovog rada. Trenutno, tu se nalaze izvorne datoteke pisane u programskim jezicima C, Lua i pseudojeziku. Ove datoteke služe kao integracioni testovi ali čitaocu mogu dati jasan uvid u koncepte koje LICC podržava. U okviru repozitorijuma se nalaze i uputstva za kreiranje graditelja za programske jezike koji trenutno nisu podržani, ali i upoređivača za čvorove koji trenutno nisu implementirani.
