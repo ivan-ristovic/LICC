@@ -48,6 +48,8 @@ AST je moguće generisati od izvornog koda navođenjem glagola \texttt{ast}. Uko
 \label{fig:ExampleSwapAST}
 \end{figure}
 
+U okviru repozitorijuma projekta je moguće pronaći još primera upotrebe. Na stranici \url{https://github.com/ivan-ristovic/LICC/LICC.AST/Samples} se mogu videti izvorni kodovi u kojima su na jednom mestu pobrojane sve podržane sintaksičke strukture od kojih se može kreirati AST u trenutku pisanja ovog rada. Trenutno, tu se nalaze izvorne datoteke pisane u programskim jezicima C, Lua i pseudojeziku, po jedna datoteka za svaki programski jezik. Ove datoteke u okviru projekta služe kao integracioni testovi ali čitaocu mogu dati jasan uvid u koncepte koje LICC podržava u zavisnosti od programskog jezika. U okviru repozitorijuma se nalaze i uputstva za kreiranje graditelja za programske jezike koji trenutno nisu podržani, ali i upoređivača za čvorove koji trenutno nisu implementirani.
+
 
 \subsection{Poređenje opštih AST}
 \label{subsec:ImplementationExampleComparer}
@@ -86,30 +88,31 @@ Ukoliko imamo već verifikovanu implementaciju algoritma u jednom programskom je
 \centering
 \includegraphics[scale=0.7]{images/eval/cmp_rewrite.png}
 \includegraphics[scale=0.7]{images/eval/cmp_rewrite_v.png}
-\caption{Semantičko poređenje implementacija sa slike \ref{fig:ExampleSwap} --- Lua u odnosu na C (gore), Lua u odnosu na pseudojezik (dole).}
+\caption{Semantičko poređenje implementacija sa slike \ref{fig:ExampleSwap} --- Lua u odnosu na C (gore), Lua u odnosu na pseudojezik (dole, sa detaljnim ispisom).}
 \label{fig:ExampleSwapCompareValidRewrite}
 \end{figure}
 
-Još jedan slučaj upotrebe LICC može biti verifikacija međuverzija koda u procesu refaktorisanja. LICC pretpostavlja strukturnu sličnost kodova, što u procesu refaktorisanja često implicitno važi, ili barem važi u malim koracima između polazne i finalne verzije nakon refaktorisanja. Ukoliko refaktorišemo implementaciju algoritma \texttt{swap} u programskom jeziku C i dobijemo izvorni kod sa slike \ref{fig:ExampleSwapRefactor}, možemo uporediti tu implementaciju sa već verifikovanom implementacijom u programskom jeziku C. Rezultat rada upoređivača se može videti na slici \ref{fig:ExampleSwapCompareRefactor} --- primećujemo da je jedino detektovano da nedostaje promenljiva \texttt{tmp}, vrednosti globalnih promenljivih su iste u odnosu na specifikaciju na kraju svakog od blokova.
+Još jedan slučaj upotrebe LICC može biti verifikacija međuverzija koda u procesu refaktorisanja. LICC pretpostavlja strukturnu sličnost kodova, što u procesu refaktorisanja često implicitno važi, ili barem važi u malim koracima između polazne i finalne verzije nakon refaktorisanja. 
+%Ukoliko refaktorišemo implementaciju algoritma \texttt{swap} u programskom jeziku C i dobijemo izvorni kod sa slike \ref{fig:ExampleSwapRefactor}, možemo uporediti tu implementaciju sa već verifikovanom implementacijom u programskom jeziku C. Rezultat rada upoređivača se može videti na slici \ref{fig:ExampleSwapCompareRefactor} --- primećujemo da je jedino detektovano da nedostaje promenljiva \texttt{tmp}, vrednosti globalnih promenljivih su iste u odnosu na specifikaciju na kraju svakog od blokova.
 
-\begin{figure}[h!]
-\begin{lstlisting}
-int x = vx, y = vy;
-void swap() { x = x + y; y = x - y; x = x - y; }
-\end{lstlisting}
-\caption{Refaktorisani algoritam \texttt{swap} (C).}
-\label{fig:ExampleSwapRefactor}
-\end{figure}
+% \begin{figure}[h!]
+% \begin{lstlisting}
+% int x = vx, y = vy;
+% void swap() { x = x + y; y = x - y; x = x - y; }
+% \end{lstlisting}
+% \caption{Refaktorisani algoritam \texttt{swap} (C).}
+% \label{fig:ExampleSwapRefactor}
+% \end{figure}
 
-\begin{figure}[h!]
-\centering
-\includegraphics[scale=0.75]{images/eval/cmp_refactor.png}
-\caption{Semantičko poređenje refaktorisane implementacije algoritma \texttt{swap} sa slike \ref{fig:ExampleSwapRefactor} sa implementacijom u programskom jeziku C sa slike \ref{fig:ExampleSwap}.}
-\label{fig:ExampleSwapCompareRefactor}
-\end{figure}
+% \begin{figure}[h!]
+% \centering
+% \includegraphics[scale=0.75]{images/eval/cmp_refactor.png}
+% \caption{Semantičko poređenje refaktorisane implementacije algoritma \texttt{swap} sa slike \ref{fig:ExampleSwapRefactor} sa implementacijom u programskom jeziku C sa slike \ref{fig:ExampleSwap}.}
+% \label{fig:ExampleSwapCompareRefactor}
+% \end{figure}
 
-Kompletan prikaz rada alata LICC za algoritam razmene vrednosti se može naći u okviru repozitorijuma na adresi \url{https://github.com/ivan-ristovic/LICC/tree/master/LICC.Core/Samples/swap}. U okviru ovog direktorijuma su, uz ispravne i izmenjene izvorne datoteke algoritma, pružene i slike izlaza alata LICC za svaki par izvornih datoteka.
+Kompletan prikaz rada alata LICC za algoritam razmene vrednosti se može naći u okviru repozitorijuma na adresi \url{https://github.com/ivan-ristovic/LICC/LICC.Core/Samples/swap}. U okviru ovog direktorijuma su, uz ispravne i izmenjene izvorne datoteke algoritma, pružene i slike izlaza alata LICC za svaki par izvornih datoteka.
 
-Kao primer prikaza poređenja deklaratora (promenljivih, nizovnih i funkcijskih), dat je primer koji se može pogledati na stranici \url{https://github.com/ivan-ristovic/LICC/tree/master/LICC.Core/Samples/declarations}. Ovaj primer ilustruje poređenje više naredbi deklaracija čiji redosled nije nužno isti u izvornim datotekama, kao i detektovanje razlika u deklaratorima. U okviru ovog primera takođe se pokazuje i evaluacija izraza, kroz inicijalizatore celobrojnih i nizovnih promenljivih.
+Kao primer prikaza poređenja deklaratora (promenljivih, nizovnih i funkcijskih), dat je primer koji se može pogledati na stranici \url{https://github.com/ivan-ristovic/LICC/LICC.Core/Samples/declarations}. Ovaj primer ilustruje poređenje više naredbi deklaracija čiji redosled nije nužno isti u izvornim datotekama, kao i detektovanje razlika u deklaratorima. U okviru ovog primera takođe se pokazuje i evaluacija izraza, kroz inicijalizatore celobrojnih i nizovnih promenljivih. Pošto je reč o deklaracijama, pružene su samo izvorne datoteke u programskom jeziku C i to validni primer, primer sa greškom kao i refaktorisani primer uz rezultate međusobnog poređenja parova izvornih datoteka.
 
-Osim primera u kojima se ilustruje semantičko poređenje, u okviru repozitorijuma je moguće pronaći još primera upotrebe alata LICC za kreiranje AST. Na stranici \url{https://github.com/ivan-ristovic/LICC/tree/master/LICC.AST/Samples} se mogu videti izvorni kodovi u kojima su na jednom mestu pobrojane sve podržane sintaksičke strukture od kojih se može kreirati AST u trenutku pisanja ovog rada. Trenutno, tu se nalaze izvorne datoteke pisane u programskim jezicima C, Lua i pseudojeziku. Ove datoteke služe kao integracioni testovi ali čitaocu mogu dati jasan uvid u koncepte koje LICC podržava. U okviru repozitorijuma se nalaze i uputstva za kreiranje graditelja za programske jezike koji trenutno nisu podržani, ali i upoređivača za čvorove koji trenutno nisu implementirani.
+Kao primer prikaza poređenja definicija funkcija sa parametrima, dat je primer koji se može pogledati na stranici \url{https://github.com/ivan-ristovic/LICC/LICC.Core/Samples/fparams}. Ovaj primer ilustruje poređenje funkcija čiji parametri utiču na rezultate analize unutar definicije funkcije. Kao primer prikaza poređenja kompleksnih naredbi, dat je primer koji se može pogledati na stranici \url{https://github.com/ivan-ristovic/LICC/LICC.Core/Samples/conditions}. Ovaj primer ilustruje poređenje naredbi grananja, pri čemu se detektuju izmene u uslovima grananja ali i odvojenim granama. Izvorne datoteke u okviru ova dva primera su pisane u programskim jezicima C, Lua i pseudojeziku i sastoje se od validnog primera, primera sa greškom i refaktorisanog primera uz rezultate međusobnog poređenja parova izvornih datoteka. Treba napomenuti da je provera bazirana na uparivanju grana uslova a zatim njihovom poređenju, što znači da se naredbe grananja koje imaju zamenjene grane i negiran uslov neće biti detektovane kao ekvivalentne.
