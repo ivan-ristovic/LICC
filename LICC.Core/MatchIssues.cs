@@ -57,7 +57,7 @@ namespace LICC.Core
             Log.Information("--- AST MATCH ISSUES ---");
             foreach (BaseIssue issue in this.issues)
                 issue.LogIssue();
-            Log.Information("-----------------------");
+            Log.Information("------------------------");
         }
 
         public override bool Equals(object? obj) => this.Equals(obj as MatchIssues);

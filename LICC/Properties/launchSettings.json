@@ -2,7 +2,8 @@
   "profiles": {
     "LICC": {
       "commandName": "Project",
-      "commandLineArgs": "cmp Samples/declarations/valid.c Samples/declarations/refactor.c"
+      "commandLineArgs": "cmp Samples/functions/valid.c Samples/functions/wrong.c",
+      "remoteDebugEnabled": false
     }
   }
 }

@@ -50,8 +50,9 @@ namespace LICC.Core.Comparers.Common
             this.VariableDeclarator = decl;
             if (init is { }) {
                 try {
-                    this.SymbolicInitializer = Expr.Parse(init.GetText());
+                    this.SymbolicInitializer = new SymbolicExpressionBuilder(init).Parse();
                 } catch {
+                    this.SymbolicInitializer = Expr.Variable($"i_{name}");
                     Log.Debug("Failed to create symbolic expression for: {Expression}", init.GetText());
                 }
             }

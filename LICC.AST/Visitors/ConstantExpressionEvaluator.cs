@@ -73,7 +73,7 @@ namespace LICC.AST.Visitors
 
         public override object? Visit(IdNode node)
             => throw new EvaluationException("Expression is not constant.");
-        
+
 
         private (object? left, object? right) VisitBinaryOperands(BinaryExprNode expr)
             => (this.Visit(expr.LeftOperand as ASTNode), this.Visit(expr.RightOperand as ASTNode));
