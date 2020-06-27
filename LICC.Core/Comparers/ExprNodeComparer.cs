@@ -18,7 +18,7 @@ namespace LICC.Core.Comparers
             Expr? sym1 = new SymbolicExpressionBuilder(e1).Parse();
             Expr? sym2 = new SymbolicExpressionBuilder(e2).Parse();
             if (!sym1?.ToString()?.Equals(sym2?.ToString()) ?? true)
-                this.Issues.AddError(new ExprMismatchError(e2.Line, e1, e2));
+                this.Issues.AddWarning(new ExprNodeMismatchWarning(e2.Line, e1, e2));
             return this.Issues;
         }
     }

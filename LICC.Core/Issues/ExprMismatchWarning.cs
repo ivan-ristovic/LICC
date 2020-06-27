@@ -5,7 +5,7 @@ using Serilog;
 
 namespace LICC.Core.Issues
 {
-    public sealed class ExprMismatchError : BaseError
+    public sealed class ExprNodeMismatchWarning : BaseWarning
     {
         public ExprNode Expected { get; set; }
         public ExprNode Actual { get; set; }
@@ -13,7 +13,7 @@ namespace LICC.Core.Issues
         public int Line { get; set; }
 
 
-        public ExprMismatchError(int line, ExprNode expected, ExprNode actual, string message = "Expressions differ")
+        public ExprNodeMismatchWarning(int line, ExprNode expected, ExprNode actual, string message = "Expressions differ")
         {
             if (expected.Equals(actual))
                 throw new ArgumentException("Expected different objects");
@@ -34,14 +34,14 @@ namespace LICC.Core.Issues
         }
 
         public override bool Equals(object? obj)
-            => this.Equals(obj as ExprMismatchError);
+            => this.Equals(obj as ExprNodeMismatchWarning);
 
         public override bool Equals([AllowNull] BaseIssue other)
         {
             if (!base.Equals(other))
                 return false;
 
-            var o = other as ExprMismatchError;
+            var o = other as ExprNodeMismatchWarning;
             return Equals(this.Expected, o?.Expected) && Equals(this.Actual, o?.Actual);
         }
     }
