@@ -157,7 +157,11 @@ namespace LICC.Core.Comparers
                     }
                     if (symbol is DeclaredVariableSymbol varSymbol && varSymbol.SymbolicInitializer is { }) {
                         Dictionary<string, Expr> exprs = this.ExtractSymbolExprs(src);
-                        varSymbol.SymbolicInitializer = ExpressionEvaluator.TryEvaluate(varSymbol.SymbolicInitializer, exprs);
+                        try {
+                            varSymbol.SymbolicInitializer = ExpressionEvaluator.TryEvaluate(varSymbol.SymbolicInitializer, exprs);
+                        } catch {
+                            varSymbol.SymbolicInitializer = null;
+                        }
                         symbols.Add(decl.Identifier, varSymbol);
                     } else {
                         symbols.Add(decl.Identifier, symbol);

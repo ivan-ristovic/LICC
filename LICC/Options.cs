@@ -5,13 +5,13 @@ namespace LICC
     [Verb("cmp", HelpText = "Compare source against the specification source")]
     internal sealed class CompareOptions
     {
-        [Option('v', "verbose", Required = false, HelpText = "Set output to verbose messages.")]
+        [Option('v', "verbose", Required = false, HelpText = "Set output to verbose messages")]
         public bool Verbose { get; set; }
 
-        [Value(0, Required = true, HelpText = "Specification path.")]
+        [Value(0, Required = true, HelpText = "Specification path")]
         public string? Source { get; set; }
 
-        [Value(1, Required = true, HelpText = "Test source path.")]
+        [Value(1, Required = true, HelpText = "Test source path")]
         public string? Destination { get; set; }
     }
     
@@ -21,7 +21,7 @@ namespace LICC
         [Option('v', "verbose", Default = false, Required = false, HelpText = "Verbose output")]
         public bool Verbose { get; set; }
 
-        [Option('t', "tree", Default = false, Required = false, HelpText = "Show AST tree")]
+        [Option('t', "tree", Default = false, Required = false, HelpText = "Show AST")]
         public bool Tree { get; set; }
 
         [Option('o', "output", Required = false, HelpText = "Output path")]

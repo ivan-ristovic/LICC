@@ -44,6 +44,9 @@ namespace LICC.AST.Visitors
         public override Expr Visit(IdNode node) 
             => Expr.Variable(node.Identifier);
 
+        public override Expr Visit(FuncCallExprNode node)
+            => Expr.Variable($"r_{node.Identifier}");
+
         public override Expr Visit(LitExprNode node)
             // TODO string literals need to be substituted as well...
             => node.Value is null ? Expr.Undefined : Expr.Parse(node.Value.ToString());

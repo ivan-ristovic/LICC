@@ -15,10 +15,10 @@ namespace LICC.AST.Nodes.Common
                 "/" => DividePrimitive,
                 "<<" => ShiftLeftPrimitive,
                 ">>" => ShiftRightPrimitive,
-                "%" => throw new NotImplementedException(symbol),
+                "%" => ModulusPrimitive,
                 "//" => throw new NotImplementedException(symbol),
                 "div" => throw new NotImplementedException(symbol),
-                "mod" => throw new NotImplementedException(symbol),
+                "mod" => ModulusPrimitive,
                 _ => throw new UnknownOperatorException(symbol),
             };
         }
@@ -50,6 +50,7 @@ namespace LICC.AST.Nodes.Common
                 "-=" => SubtractPrimitive,
                 "*=" => MultiplyPrimitive,
                 "/=" => DividePrimitive,
+                "%=" => ModulusPrimitive,
                 "<<=" => ShiftLeftPrimitive,
                 ">>=" => ShiftRightPrimitive,
                 "&=" => BitwiseAndPrimitive,
@@ -211,6 +212,38 @@ namespace LICC.AST.Nodes.Common
                 return Convert.ToByte(x) / Convert.ToByte(y);
             else if (x is sbyte || y is sbyte)
                 return Convert.ToSByte(x) / Convert.ToSByte(y);
+            else
+                throw new EvaluationException("Cannot divide non-primitive types");
+        }
+
+        public static object ModulusPrimitive(object x, object y)
+        {
+            ThrowIfNotPrimitiveTypes(x, y);
+
+            if (x is decimal || y is decimal)
+                return Convert.ToDecimal(x) % Convert.ToDecimal(y);
+            else if (x is double || y is double)
+                return Convert.ToDouble(x) % Convert.ToDouble(y);
+            else if (x is float || y is float)
+                return Convert.ToSingle(x) % Convert.ToSingle(y);
+            else if (x is ulong || y is ulong)
+                return Convert.ToUInt64(x) % Convert.ToUInt64(y);
+            else if (x is long || y is long)
+                return Convert.ToInt64(x) % Convert.ToInt64(y);
+            else if (x is uint || y is uint)
+                return Convert.ToUInt32(x) % Convert.ToUInt32(y);
+            else if (x is int || y is int)
+                return Convert.ToInt32(x) % Convert.ToInt32(y);
+            else if (x is ushort || y is ushort)
+                return Convert.ToUInt16(x) % Convert.ToUInt16(y);
+            else if (x is short || y is short)
+                return Convert.ToInt16(x) % Convert.ToInt16(y);
+            else if (x is char || y is char)
+                return Convert.ToChar(x) % Convert.ToChar(y);
+            else if (x is byte || y is byte)
+                return Convert.ToByte(x) % Convert.ToByte(y);
+            else if (x is sbyte || y is sbyte)
+                return Convert.ToSByte(x) % Convert.ToSByte(y);
             else
                 throw new EvaluationException("Cannot divide non-primitive types");
         }

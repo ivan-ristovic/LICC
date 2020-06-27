@@ -31,14 +31,14 @@ LICC can theoretically work with any programming language as long as the adapter
 Interested readers can read more in my ![thesis](Thesis/IvanRistovic_MasterRad.pdf) (currently only in Serbian).
 
 ## Used libraries/tools
-- ![ANTLR4](https://www.antlr.org/)
-- ![MathNET.Symbolics](https://symbolics.mathdotnet.com/)
+- [ANTLR4](https://www.antlr.org/)
+- [MathNET.Symbolics](https://symbolics.mathdotnet.com/)
 
 ## Examples
 
 ### Creating common AST
 
-Source codes which show supported syntax constructs in one place for various programming languages can be found in the ![samples](LICC.AST/Samples/) directory. Several examples will be shown below.
+Source codes which show supported syntax constructs in one place for various programming languages can be found in the ![AST.Samples](LICC.AST/Samples/) directory. Several examples will be shown below.
 
 ```sh
 $ ./LICC ast 
@@ -47,7 +47,7 @@ ERROR(S):
 
   -v, --verbose    (Default: false) Verbose output
 
-  -t, --tree       (Default: false) Show AST tree
+  -t, --tree       (Default: false) Show AST
 
   -o, --output     Output path
 
@@ -405,6 +405,8 @@ $ ./LICC ast -vc sample.lua --tree
 
 
 ## Comparing common ASTs
+
+Several examples can be found in the ![Core.Samples](LICC.Core/Samples/) directory. One sample will be shown below.
 
 ```sh 
 $ ./LICC cmp
