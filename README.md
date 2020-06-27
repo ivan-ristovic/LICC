@@ -38,7 +38,7 @@ Interested readers can read more in my ![thesis](Thesis/IvanRistovic_MasterRad.p
 
 ### Creating common AST
 
-Source codes which show supported syntax constructs in one place for various programming languages can be found in the ![samples](LICC.AST/Samples/) directory. Several examples will be shown below.
+Source codes which show supported syntax constructs in one place for various programming languages can be found in the ![AST.Samples](LICC.AST/Samples/) directory. Several examples will be shown below.
 
 ```sh
 $ ./LICC ast 
@@ -405,6 +405,8 @@ $ ./LICC ast -vc sample.lua --tree
 
 
 ## Comparing common ASTs
+
+Several examples can be found in the ![Core.Samples](LICC.Core/Samples/) directory. One sample will be shown below.
 
 ```sh 
 $ ./LICC cmp
