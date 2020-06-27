@@ -31,8 +31,8 @@ LICC can theoretically work with any programming language as long as the adapter
 Interested readers can read more in my ![thesis](Thesis/IvanRistovic_MasterRad.pdf) (currently only in Serbian).
 
 ## Used libraries/tools
-- ![ANTLR4](https://www.antlr.org/)
-- ![MathNET.Symbolics](https://symbolics.mathdotnet.com/)
+- [ANTLR4](https://www.antlr.org/)
+- [MathNET.Symbolics](https://symbolics.mathdotnet.com/)
 
 ## Examples
 
@@ -47,7 +47,7 @@ ERROR(S):
 
   -v, --verbose    (Default: false) Verbose output
 
-  -t, --tree       (Default: false) Show AST tree
+  -t, --tree       (Default: false) Show AST
 
   -o, --output     Output path
 
