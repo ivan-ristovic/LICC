@@ -9,8 +9,32 @@ AST, zbog svoje uloge u semantičkoj analizi, može poslužiti i za analizu prog
 
 Iako je AST reprezentacija neophodna za kompilaciju i primenjiva za neke druge vrste problema, ipak je specifična za konkretni programski jezik s obzirom da nastaje od stabla sintaksičke analize koje je usko vezano za gramatiku konkretnog programskog jezika. Motivacija za ovaj rad dolazi od nepostojanja opštih apstrakcija sintaksičkih stabala koje bi se mogle koristiti za analizu programa napisanih u različitim programskim jezicima. Iako je broj programskih jezika danas veoma veliki, u okviru iste programske paradigme jezici moraju implementirati koncepte koji su potrebni da bi se programiralo u toj paradigmi i ta zajednička svojstva se mogu iskoristiti za formiranje zajedničke apstrakcije. 
 
-U ovom radu će biti predstavljena opšta AST apstrakcija za imperativne programske jezike, sa ciljem da se omogući zajednička apstraktna reprezentacija velikog broja imperativnih jezika, pa čak i onih koji pripadaju skript paradigmi. Njena upotreba će biti demonstrirana na problemu semantičke ekvivalentnosti dobijenih apstrakcija kroz naivni algoritam poređenja simboličkih promenljivih. Štaviše, na apstraktnom nivou nije važno od kog se programskog jezika dobio AST, što može imati primenu u procesu migracije na nove tehnologije.
+U ovom radu će biti predstavljena opšta AST apstrakcija za imperativne programske jezike, sa ciljem da se omogući zajednička apstraktna reprezentacija velikog broja imperativnih jezika, pa čak i onih koji pripadaju skript paradigmi. Njena upotreba će biti demonstrirana na problemu semantičke ekvivalentnosti dobijenih apstrakcija kroz naivni algoritam poređenja simboličkih promenljivih. Štaviše, na apstraktnom nivou nije važno od kog se programskog jezika dobio AST, što može imati primenu u procesu migracije na nove tehnologije. Na slici \ref{fig:IntroExample} se mogu videti primeri dve funkcije pisane u različitim programskim jezicima koje se mogu apstrahovati tako da imaju skoro identičan AST. Razlike koje moraju postojati u ovom slučaju su tipovi argumenata --- u drugoj funkciji nije zagarantovano da argumenti (ali i povratna vrednost) moraju biti tipa \texttt{int}. Treba napomenuti da ovakvo apstrahovanje često dovodi do gubitka informacija --- u dobijenim apstrakcijama funkcija sa slike \ref{fig:IntroExample} nisu poznati konkretne vrste petlji od kojih se dobila apstraktna petlja (u opštem slučaju je moguće sve vrste petlji svesti na jednu).
 
-Naravno, semantička ekvivalentnost se ne mora zasnivati na apstrahovanju programa, već se takođe često rešava spuštanjem na nivo međukoda između višeg programskog jezika i asemblera. U nekim slučajevima se može ići i do asemblera pa i mašinskog jezika. Ukoliko bi se posmatrali asemblerski ili mašinski kod, vršilo bi se poređenje kodova prilagođenih određenoj arhitekturi procesora. Neki moderni radni okviri kao što je \emph{Microsoft .NET} radni okvir, imaju kao svoju komponentu i virtualnu mašinu na kojoj se izvršavaju programi koji koriste taj radni okvir, bez obzira na programski jezik u kojem su ti programi napisani. Virtualna mašina prevodi međureprezentacije  programa dobijene od prevodioca u mašinski jezik i izvršava ih. Međutim, iako je međukod isti, AST programa pisanih u različitim jezicima i dalje nije. U ovom radu je odabran pristup zasnovan na AST, s obzirom na važnosti i značaj apstraktnih sintaksičkih stabala, ali i zbog nedostatka opštih apstrakcija.
+\begin{figure}[h!]
+\begin{lstlisting}
+void array_sum(int[] arr, int n) {
+    int sum = 0, i = 0;
+    while (i < n) {
+        sum += arr[i];
+        i++;
+    }
+    return sum;
+}
+\end{lstlisting}
+\begin{lstlisting}
+function array_sum(arr, n)
+    local sum = 0
+    for i,v in ipairs(arr) do
+        sum = sum + v
+    end
+    return sum
+end
+\end{lstlisting}
+\caption{Segmenti koda pisani u različitim programskim jezicima (C gore, i Lua dole) koji se mogu apstrahovati tako da imaju identični AST.}
+\label{fig:IntroExample}
+\end{figure}
+
+Naravno, semantička ekvivalentnost se ne mora zasnivati na apstrahovanju programa, već se takođe često rešava spuštanjem na nivo međukoda između višeg programskog jezika i asemblera. U nekim slučajevima se može ići i do asemblera pa i mašinskog jezika. Ukoliko bi se posmatrali asemblerski ili mašinski k\^od, vršilo bi se poređenje kodova prilagođenih određenoj arhitekturi procesora. Neki moderni radni okviri kao što je \emph{Microsoft .NET} radni okvir, imaju kao svoju komponentu i virtualnu mašinu na kojoj se izvršavaju programi koji koriste taj radni okvir, bez obzira na programski jezik u kojem su ti programi napisani. Virtualna mašina prevodi međureprezentacije  programa dobijene od prevodioca u mašinski jezik i izvršava ih. Međutim, iako je međukod isti, AST programa pisanih u različitim jezicima i dalje nije. U ovom radu je odabran pristup zasnovan na AST, s obzirom na važnosti i značaj apstraktnih sintaksičkih stabala, ali i zbog nedostatka opštih apstrakcija.
 
 U poglavlju \ref{chp:RelevantTerms} će biti opisani relevantni pojmovi potrebni za razumevanje rada uz akcenat na apstraktnim sintaksičkim stablima i procesu njihovog dobijanja. Opšta AST apstrakcija za imperativne jezike biće opisana u poglavlju \ref{chp:MyAST}, a njena upotreba u problemu odlučivanja semantičke ekvivalentnosti kao i sam algoritam za poređenje opštih apstrakcija biće opisani u poglavlju \ref{chp:ASTComparing}. Implementacija apstrakcije i algoritma semantičkog poređenja će biti opisana u poglavlju \ref{chp:Implementation}. Na kraju, biće dati glavni zaključci ovog rada kao i moguća unapređenja i budući koraci. 

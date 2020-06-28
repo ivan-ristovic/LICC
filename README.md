@@ -444,7 +444,7 @@ $ ./LICC cmp Samples/swap/valid.psc Samples/swap/wrong.c
 ![swap](LICC.Core/Samples/swap/valid_psc-wrong_c.PNG)
 
 
-Sources: ![valid.c](LICC.Core/Samples/swap/valid.c) ![refactor.c](LICC.Core/Samples/swap/refactor.c)
+Sources: ![valid.c](LICC.Core/Samples/swap/valid.c) ![refactor.c](LICC.Core/Samples/swap/refactor.c) (*Note: Overflow is not checked at the moment*)
 
 ```sh
 $ ./LICC cmp Samples/swap/valid.c Samples/swap/refactor.c

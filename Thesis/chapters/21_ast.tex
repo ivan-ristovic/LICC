@@ -24,7 +24,7 @@ int main()
 \label{fig:CompilationProcessInit}
 \end{figure}
 
-Pre nego što prednji kraj prevodioca dobije k\^od koji treba da prevede u međureprezentaciju, vrši se \emph{pretprocesiranje} od strane programa koji se naziva \emph{pretprocesor}. U fazi pretprocesiranja se izvode operacije kao što su brisanje komentara ili zamena makroa u okviru konteksta u jezicima kao što je C\footnote{U okviru konteksta --- dakle, makroi se, na primer, neće zameniti unutar niski.}. Rezultat rada pretprocesora za izvorni k\^od sa slike \ref{fig:CompilationProcessInit} se može videti na slici \ref{fig:CompilationProcessPrep}\footnote{U nekim implementacijama C standardne biblioteke, moguće je da se poziv funckije \texttt{printf} zameni pozivom funkcije \texttt{fprintf} sa ispisom na \texttt{stdout}. U standardu se propisuje da funkcije kao što je \texttt{printf} mogu biti implementirane kao makroi. Izlaz na slici \ref{fig:CompilationProcessPrep} je generisan od strane \texttt{GCC 7.4.0} po C11 standardu i ovo nije slučaj u datom okruženju.}.
+Pre nego što prednji kraj prevodioca dobije k\^od koji treba da prevede u međureprezentaciju, vrši se \emph{pretprocesiranje} od strane programa koji se naziva \emph{pretprocesor}. U fazi pretprocesiranja se izvode operacije kao što su brisanje komentara ili zamena makroa u okviru konteksta\footnote{Makroi se, na primer, neće zameniti unutar niski.} u jezicima kao što je C. Rezultat rada pretprocesora za izvorni k\^od sa slike \ref{fig:CompilationProcessInit} se može videti na slici \ref{fig:CompilationProcessPrep}\footnote{U nekim implementacijama C standardne biblioteke, moguće je da se poziv funckije \texttt{printf} zameni pozivom funkcije \texttt{fprintf} sa ispisom na \texttt{stdout}. U standardu se propisuje da funkcije kao što je \texttt{printf} mogu biti implementirane kao makroi. Izlaz na slici \ref{fig:CompilationProcessPrep} je generisan od strane \texttt{GCC 7.4.0} po C11 standardu i ovo nije slučaj u datom okruženju.}.
 
 \begin{figure}[h!]
 \begin{lstlisting}[numbers=none]
@@ -54,7 +54,7 @@ int main()
     return 0;
 }
 \end{lstlisting}
-\caption{Prikaz rezultata rada pretprocesora za izvorni k\^od sa slike \ref{fig:CompilationProcessInit}. Pritom, prikazano je samo par linija sa početka i kraja izlaza pretprocesora --- k\^od iznad \texttt{main} funkcije je uključen iz \texttt{stdio.h} zaglavlja.}
+\caption{Prikaz rezultata rada pretprocesora za izvorni k\^od sa slike \ref{fig:CompilationProcessInit} --- k\^od iznad \texttt{main} funkcije je uključen iz \texttt{stdio.h} zaglavlja.}
 \label{fig:CompilationProcessPrep}
 \end{figure}
 

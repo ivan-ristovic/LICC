@@ -41,7 +41,29 @@ $ alias grun='java -cp "/usr/local/lib/antlr-4-complete.jar:$CLASSPATH" org.antl
 \subsection{Generisanje parsera koristeći ANTLR4}
 \label{subsec:ANTLRParserGeneration}
 
-U ovom odeljku će biti opisan proces kreiranja interfejsa za parsiranje programa pisanih u imperativnom, strogo tipiziranom pseudo-programskom jeziku (u nastavku \emph{pseudo-jezik}), sličnom pseudokodu. Dobijeni interfejs za obilazak stabla parsiranja može da se koristi u opšte svrhe, a za potrebe ovog rada će se koristiti za generisanje apstraktnog sintaksičkog stabla za izvorni k\^od pisan u pseudo-jeziku. Najpre će biti definisana gramatika pseudo-jezika prateći ANTLR4 pravila za definisanje gramatika. Tek nakon kompletnog opisa gramatike biće iskorišćen ANTLR4 kako bi se generisao parser za pseudo-jezik. Kao i za svaki drugi imperativni jezik, treba podržati neke osnovne koncepte: \emph{identifikatore}, \emph{izraze}, \emph{naredbe} i slično.
+U ovom odeljku će biti opisan proces kreiranja interfejsa za parsiranje programa pisanih u imperativnom, strogo tipiziranom pseudo-programskom jeziku (u nastavku \emph{pseudo-jezik}), sličnom pseudokodu. Dobijeni interfejs za obilazak stabla parsiranja može da se koristi u opšte svrhe, a za potrebe ovog rada će se koristiti za generisanje apstraktnog sintaksičkog stabla za izvorni k\^od pisan u pseudo-jeziku. Najpre će biti definisana gramatika pseudo-jezika prateći ANTLR4 pravila za definisanje gramatika. Tek nakon kompletnog opisa gramatike biće iskorišćen ANTLR4 kako bi se generisao parser za pseudo-jezik. Kao i za svaki drugi imperativni jezik, treba podržati neke osnovne koncepte: \emph{identifikatore}, \emph{izraze}, \emph{naredbe} i slično. Primer izvornog koda pisanog u pseudojeziku je prikazan na slici \ref{fig:PseudoCodeExample}.
+
+\begin{figure}[h!]
+\begin{lstlisting}
+algorithm Sample
+begin
+	declare real pi = 3.14
+	declare real x = (1 + x) * (1 - pi / 4)
+	declare integer array arr
+	declare point set points
+	declare boolean x = False
+	
+	function fib(n : integer) returning integer
+	begin
+		if n < 0 then error "Requiring positive integer"
+		else if n <= 1 then return n
+		else return call fib(n-1) + call fib(n-2)
+	end
+end
+\end{lstlisting}
+\caption{Primer koda pisanog u pseudojeziku.}
+\label{fig:PseudoCodeExample}
+\end{figure}
 
 Identifikatori su niske karaktera koje predstavljaju oznaku koja odgovara određenoj memorijskoj adresi. Identifikatori se koriste umesto sirovih vrednosti adresa kako bi k\^od bio čitljiviji i lakši za pisanje --- na nivou asemblera se većinom koriste adrese ili automatski generisane oznake. Na slici \ref{fig:PseudoDef4} se može videti definicija identifikatora. Identifikator se sastoji od slova, cifara i simbola \texttt{\_}, s tim što ne sme početi cifrom. Ovo je konvencija koju prati dosta jezika, uključujući programski jezik C. Primetimo da je identifikator nešto što bi lekser trebalo da prepozna tokom tokenizacije. Međutim, kada definišemo gramatiku od koje će ANTLR4 praviti lekser i parser, možemo i tokene definisati na isti način kao i gramatička pravila dajući regularni izraz za njihovo poklapanje. Listovi stabla parsiranja su uvek tokeni, drugim rečima se nazivaju i \emph{terminalni simboli}. Tokeni se, osim u listovima, mogu naći bilo gde u stablu parsiranja. ANTLR4 dozvoljava jednostavne definicije pravila u kojima figuriše promenljiv broj drugih pravila, pri čemu se koriste simboli kao u regularnim izrazima, što je iskorišćeno za definiciju pravila za definisanje identifikatora.
 
@@ -99,7 +121,7 @@ EscapeSequence : '\\' [abfnrtvz"'\\] | '\\' '\r'? '\n' ;
 \label{fig:PseudoDef7}
 \end{figure}
 
-Izrazi, iako definisani rekurzivno, se mogu posmatrati kao kombinacija promenljivih, operatora i poziva funkcija sa odlikom da se mogu \emph{evaluirati}, tj. moguće je izračunati njihovu vrednost. Iz definicije pravila \texttt{exp} sa slike \ref{fig:PseudoDef6}, mogu se uočiti tipovi izraza. Literal predstavlja validan izraz. Promenljive, definisane pravilom \texttt{var} su takođe izrazi, jer se trenutna vrednost promenljive posmatra kao vrednost izraza. Primetimo da promenljiva može biti kolekcijskog tipa, u kom slučaju se navodi redni broj elementa nakon identifikatora promenljive --- taj redni broj može biti rezultat evaluacije drugog izraza, ali ne bilo kakvog, stoga se u pravilu \texttt{iexp} definiše šta sve može biti korišćeno da se indeksira element kolekcije. Izrazima se može dati prioritet pomoću zagrada, što se vidi u trećoj alternativi pravila \texttt{exp}. U naredne tri alternative su opisani tipovi izraza: aritmetički, relacioni i logički. Aritmetički izrazi su vezani aritmetičkim operatorima definisanim preko pravila \texttt{aop}, slično važi i za ostala dva tipa. Svi tipovi izraza navedeni iznad su vezani binarnim operatorima, što znači da oni zahtevaju dva argumenta. Postoje i unarni operatori, od kojih su podržani operatori promene znake i logičke negacije, što se vidi iz pravila \texttt{uop}. Poziv funkcije je takođe validan izraz jer funkcije imaju povratne vrednosti i on je označen imenom \texttt{cexp} (skraćeno od \emph{function call expression})\footnote{Funkcije mogu vratiti vrednosti pa se stoga njihovi pozivi mogu naći u izrazima --- dakle poziv funkcije je validan izraz (stoga \texttt{expression} u imenu \texttt{function call expression}). Naravno, ta vrednost se može ignorisati ili pak sama funkcija može biti takva da nema povratnu vrednost već je samo neophodno izvršiti je zbog sporednih efekata.}.
+Izrazi, iako definisani rekurzivno, se mogu posmatrati kao kombinacija promenljivih, operatora i poziva funkcija sa odlikom da se mogu \emph{evaluirati}, tj. moguće je izračunati njihovu vrednost. Iz definicije pravila \texttt{exp} sa slike \ref{fig:PseudoDef6}, mogu se uočiti tipovi izraza. Literal predstavlja validan izraz. Promenljive, definisane pravilom \texttt{var} su takođe izrazi, jer se trenutna vrednost promenljive posmatra kao vrednost izraza. Primetimo da promenljiva može biti kolekcijskog tipa, u kom slučaju se navodi redni broj elementa nakon identifikatora promenljive --- taj redni broj može biti rezultat evaluacije drugog izraza, ali ne bilo kakvog, stoga se u pravilu \texttt{iexp} definiše šta sve može biti korišćeno da se indeksira element kolekcije. Izrazima se može dati prioritet pomoću zagrada\footnote{Prioritet i asocijativnost aritmetičkih operacija se mo\v{z}e postaviti uvođenjem zagrada ili se određuje na osnovu redosleda pravila.}, što se vidi u trećoj alternativi pravila \texttt{exp}. U naredne tri alternative su opisani tipovi izraza: aritmetički, relacioni i logički. Aritmetički izrazi su vezani aritmetičkim operatorima definisanim preko pravila \texttt{aop}, slično važi i za ostala dva tipa. Svi tipovi izraza navedeni iznad su vezani binarnim operatorima, što znači da oni zahtevaju dva argumenta. Postoje i unarni operatori, od kojih su podržani operatori promene znake i logičke negacije, što se vidi iz pravila \texttt{uop}. Poziv funkcije je takođe validan izraz jer funkcije imaju povratne vrednosti i on je označen imenom \texttt{cexp} (skraćeno od \emph{function call expression})\footnote{Funkcije mogu vratiti vrednosti pa se stoga njihovi pozivi mogu naći u izrazima --- dakle poziv funkcije je validan izraz (stoga \texttt{expression} u imenu \texttt{function call expression}). Naravno, ta vrednost se može ignorisati ili pak sama funkcija može biti takva da nema povratnu vrednost već je samo neophodno izvršiti je zbog sporednih efekata.}.
 
 \begin{figure}[h!]
 \begin{lstlisting}[language={}]
