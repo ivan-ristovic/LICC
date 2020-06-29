@@ -11,14 +11,9 @@ Kako bi se stabla parsiranja i apstraktna sintaksička stabla mogla koristiti, p
     \item posledice --- obuhvataju rezultate i ocene primena obrasca.
 \end{itemize}
 
-Projektne obrasce je moguće grupisati po situaciji u kojoj se mogu iskoristiti ili načinu na koji rešavaju zadati problem. Stoga je opšte prihvaćena podela na tri grupe:
-\begin{itemize}
-    \item \emph{gradivni obrasci} (engl. \emph{creational patterns}),
-    \item \emph{strukturni obrasci} (engl. \emph{structural patterns}),
-    \item \emph{obrasci ponašanja} (engl. \emph{behavioral patterns}).
-\end{itemize}
+Projektne obrasce je moguće grupisati po situaciji u kojoj se mogu iskoristiti ili načinu na koji rešavaju zadati problem. Stoga je opšte prihvaćena podela na \emph{gradivne obrasce} (engl. \emph{creational patterns}), \emph{strukturne obrasce} (engl. \emph{structural patterns}) i \emph{obrasce ponašanja} (engl. \emph{behavioral patterns}).
 
-Za potrebe ovog rada, projektni obrasci će se koristiti kao opšte prihvaćeno i programerski intuitivno rešenje određenih problema. Apstraktno sintaksičko stablo je primer upotrebe projektnog obrasca \emph{sastav}. Takođe, u kontekstu stabala parsiranja i apstraktnih sintaksičkih stabala, obrasci \emph{posmatrač} i \emph{posetilac} su od velikog značaja jer pružaju interfejs za obilazak takvih stabala. Ovi obrasci, opisani u narednim odeljcima, se koriste od strane ANTLR alata. Takođe, s obzirom da su ovi obrasci opšte-prihvaćeno rešenje za pružanje interfejsa obilaska stabala, biće korišćeni i u implementaciji opšte apstrakcije. U nastavku će zbog opisanih razloga biti opisani samo obrasci posmatrač i posetilac, dok zainteresovani čitalac može pročitati više u \cite{DesignPatternsBook}.
+Za potrebe ovog rada, projektni obrasci će se koristiti kao opšte prihvaćeno i programerski intuitivno rešenje određenih problema. Apstraktno sintaksičko stablo je primer upotrebe projektnog obrasca \emph{sastav}. Takođe, u kontekstu stabala parsiranja i apstraktnih sintaksičkih stabala, obrasci \emph{posmatrač} i \emph{posetilac} su od velikog značaja jer pružaju interfejs za obilazak takvih stabala. Ovi obrasci, opisani u narednim odeljcima, se koriste od strane ANTLR alata. Takođe, s obzirom da su ovi obrasci opšte-prihvaćeno rešenje za pružanje interfejsa obilaska stabala, biće korišćeni i u implementaciji opšte apstrakcije. U nastavku će zbog opisanih razloga biti opisani samo obrasci sastav, posmatrač i posetilac, dok zainteresovani čitalac može pročitati više u \cite{DesignPatternsBook}.
 
 \subsection{Projektni obrazac "Sastav"}
 \label{subsec:DesignPatternsComposite}
@@ -27,7 +22,7 @@ Projektni obrazac \emph{Sastav} je strukturni obrazac koji opisuje grupu objekat
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[scale=0.8]{images/design_composite.png}
+    \includegraphics[scale=0.7]{images/design_composite.png}
     \caption{UML dijagram projektnog obrasca "Sastav".} 
     \label{fig:UMLComposite}
 \end{figure}
@@ -39,7 +34,7 @@ Projektni obrazac \emph{Posmatrač} je obrazac ponašanja koji se koristi kada j
 
 \begin{figure}[h!]
 \centering
-\includegraphics[scale=0.8]{images/design_observer.png}
+\includegraphics[scale=0.7]{images/design_observer.png}
 \caption{UML dijagram projektnog obrasca "Posmatrač".}
 \label{fig:UMLObserver}
 \end{figure}
@@ -51,7 +46,7 @@ Projektni obrazac \emph{Posetilac} je obrazac ponašanja koji predstavlja operac
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[scale=0.8]{images/design_visitor.png}
+    \includegraphics[scale=0.7]{images/design_visitor.png}
     \caption{UML dijagram projektnog obrasca "Posetilac".} 
     \label{fig:UMLVisitor}
 \end{figure}
