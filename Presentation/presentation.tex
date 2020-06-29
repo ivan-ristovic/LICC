@@ -20,6 +20,8 @@
 
 \usepackage[figure]{algorithm}
 \floatname{algorithm}{Pseudokod}
+\usepackage{algorithmicx}
+\usepackage{algorithm} 
 \usepackage[noend]{algpseudocode}
 
 \usepackage{listings}
@@ -131,6 +133,7 @@ end
             \item "Visoki" pristup 
         \end{itemize}
         \item Razlika je u reprezentaciji na koju se dovode segmenti koda pre procesa poređenja
+        \item Ako je reprezentacija uvek ista, analiza je lakša
     \end{itemize}
 \end{frame}
 
@@ -141,7 +144,7 @@ end
             \centering
             \includegraphics[scale=0.8]{images/approach_1.PNG}
         \end{figure}
-        \item Prednosti: jedinstvena reprezentacija (?)
+        \item Prednosti: ista reprezentacija (?)
         \item Mane: vezanost sa specifi\v{c}nom arhitekturom procesora, potrebno prevoditi kod, JVM/CLR, razliciti programski jezici?
     \end{itemize}
 \end{frame}
@@ -153,7 +156,7 @@ end
             \centering
             \includegraphics[scale=0.8]{images/approach_2.PNG}
         \end{figure}
-        \item Prednosti: jedinstvena reprezentacija (?), nije potrebno prevoditi kod, kompatibilno sa bilo kojim programskim jezikom, mogu\'c{}e koristiti algoritme za poređenje stabala
+        \item Prednosti: ista reprezentacija (?), nije potrebno prevoditi kod, kompatibilno sa bilo kojim programskim jezikom, mogu\'c{}e koristiti algoritme za poređenje stabala
         \item Mane: zavisnost od eksternih servisa, skaliranje
     \end{itemize}
 \end{frame}
@@ -165,7 +168,7 @@ end
             \centering
             \includegraphics[scale=0.8]{images/approach_3.PNG}
         \end{figure}
-        \item Prednosti: jedinstvena reprezentacija (!), nema prevođenja, proizvoljan programski jezik, mogu\'c{}e koristiti algoritme za poređenje stabala, skalabilno, samo jedan servis
+        \item Prednosti: ista reprezentacija (!), nema prevođenja, proizvoljan programski jezik, mogu\'c{}e koristiti algoritme za poređenje stabala, skalabilno, samo jedan servis
     \end{itemize}
 \end{frame}
 
@@ -357,6 +360,16 @@ public interface ILuaVisitor<T> : IParseTreeVisitor<T>
         \item Deklaracije
         \begin{figure}[h!]
             \centering
+            \includegraphics[scale=0.65]{images/declaration_decomposition.png}
+        \end{figure}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Op\v{s}ti AST}
+    \begin{itemize}
+        \item Deklaracije
+        \begin{figure}[h!]
+            \centering
             \includegraphics[scale=0.5]{images/declaration_nodes.png}
         \end{figure}
     \end{itemize}
@@ -401,6 +414,122 @@ x, y = y, x
     \end{itemize}
 \end{frame}
 
+\begin{frame}{Poređenje opštih AST}
+    \begin{itemize}
+        \item Cilj: Napraviti pro\v{s}iriv sistem
+        \item Poređenje treba da radi nad bilo koja dva \v{c}vora
+        \item Ima smisla porediti samo \v{c}vorove istog tipa, ali u nekim slu\v{c}ajevima mo\v{z}da ima smisla porediti i razli\v{c}ite tipove (re\v{c}nik --- objekat)
+        \item Potrebno je voditi ra\v{c}una o vrednostima promenljivih
+        \item Naivno porediti \v{c}vorove stabla po jednakosti atributa i rekurzivno po jednakosti dece?
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Poređenje opštih AST}
+    \begin{itemize}
+        \item Simboli\v{c}ko izvr\v{s}avanje 
+\begin{lstlisting}
+int a, b, c;
+
+// ...
+
+int x = 0, y = 0, z = 0;
+if (a)      
+    x = -2;
+if (b < 5)  {
+    if (!a && c)    
+        y = 1;
+    z = 2;
+}
+
+assert(x + y + z != 3);
+\end{lstlisting}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Poređenje opštih AST}
+    \begin{itemize}
+        \item Simboli\v{c}ko izvr\v{s}avanje 
+        \begin{figure}[h!]
+            \centering
+            \includegraphics[scale=0.45]{images/sym_tree.png}
+        \end{figure}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Poređenje opštih AST}
+    \begin{itemize}
+        \item Analizirati simboli\v{c}ke promenljive na kraju svakog bloka
+    \end{itemize}
+\begin{lstlisting}[numbers=none]
+// x: 4, y: Y;
+if (x > 3) {
+    x = 1 + y;      
+}                   // x: 1 + y | y: Y
+y = 1 + x;      
+                    // x: 1 + y | y: 1 + x
+\end{lstlisting}
+\vspace{-10pt}
+\begin{lstlisting}[numbers=none]
+// x: 4, y: Y;
+if (x > 3) { 
+    x = 1 - y;       
+}                   // x: 1 - y | y: Y
+y = x;
+y++;
+                    // x: 1 - y | y: 1 + x
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{Poređenje opštih AST}
+    \begin{algorithmic}[1]
+        \Procedure{UporediBlokove}{$b_1$, $b_2$}
+        \State $gds_1 \gets $ \emph{simboli iz svih predaka bloka $b_1$}
+        \State $gds_2 \gets $ \emph{simboli iz svih predaka bloka $b_2$}
+        \State $lds_1 \gets $ \emph{lokalni simboli za blok $b_1$}
+        \State $lds_2 \gets $ \emph{lokalni simboli za blok $b_2$}
+        \State $\text{UporediSim}(lds_1, lds_2)$
+        \State $\text{IzvrsiNaredbe}(b_1, b_2, lds_1, lds_2, gds_1, gds_2)$
+        \State \textbf{return} $\text{UporediSim}(lds_1, lds_2) \wedge \text{UporediSim}(gds_1, gds_2)$
+        \EndProcedure
+    \end{algorithmic}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{{Poređenje opštih AST}}
+    \scriptsize
+    \begin{algorithmic}[1]
+    \Procedure{IzvrsiNaredbe}{$b_1$, $b_2, lds_1, lds_2, gds_1, gds_2$}
+    \State $n_1 \gets $ \emph{niz naredbi bloka $b_1$} 
+    \State $n_2 \gets $ \emph{niz naredbi bloka $b_2$}
+    \State $i \gets j \gets 0$
+    \State $ni \gets nj \gets 0$
+    \State $eq \gets $ \texttt{True}
+    \While{\texttt{True}}
+        \State $ni \gets $ \emph{indeks prve blok-naredbe u $n_1$ počev od $ni$}
+        \State $nj \gets $ \emph{indeks prve blok-naredbe u $n_2$ počev od $nj$}
+        \For{$naredba \in \{n_1[x] \mid x \in [i..ni]\}$}
+            \State $\text{IzvrsiNaredbu}(naredba, lds_1, gds_1)$
+        \EndFor
+        \State $i \gets i + ni$
+        \For{$naredba \in \{n_2[x] \mid x \in [j..nj]\}$}
+            \State $\text{IzvrsiNaredbu}(naredba, lds_2, gds_2)$
+        \EndFor
+        \State $j \gets j + nj$
+        \If{$i > \text{Duzina}(n_1) \vee j > \text{Duzina}(n_2)$}
+            \State \textbf{prekini petlju}
+        \EndIf
+        \State $nb_1 \gets $ \emph{izvuci blok iz naredbe $n_1[i]$}
+        \State $nb_2 \gets $ \emph{izvuci blok iz naredbe $n_2[j]$}
+        \State $eq \gets eq \wedge \text{UporediBlokove}(nb_1, nb_2)$
+        \State $i \gets i + 1$
+        \State $j \gets j + 1$
+    \EndWhile
+    \State \textbf{return} $eq$
+    \EndProcedure
+    \end{algorithmic}
+\end{frame}
 
 \begin{frame}{Pitanja}
     \centering
