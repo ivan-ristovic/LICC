@@ -93,8 +93,7 @@
 \begin{frame}{Teme}
     \begin{itemize}
         \item Motivacija i uvod
-        \item AST
-        \item Dobijanje AST - ANTLR
+        \item ANTLR
         \item Op\v{s}ti AST
         \item Poređenje op\v{s}tih AST
         \item LICC --- Language Invariant Code Comparer
@@ -151,6 +150,36 @@ end
 
 \begin{frame}{Uvod i motivacija}
     \begin{itemize}
+        \item AST - Abstract Syntax Tree
+        \begin{figure}[h!]
+            \centering
+            \includegraphics[scale=0.55]{images/ast.PNG}
+        \end{figure}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Uvod i motivacija}
+    \begin{itemize}
+        \item Go AST
+        \begin{figure}[h!]
+            \centering
+            \includegraphics[scale=0.6]{images/ast_go.PNG}
+        \end{figure}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Uvod i motivacija}
+    \begin{itemize}
+        \item Lua AST
+        \begin{figure}[h!]
+            \centering
+            \includegraphics[scale=0.6]{images/ast_lua.PNG}
+        \end{figure}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Uvod i motivacija}
+    \begin{itemize}
         \item Visoki pristup (varijanta 1)
         \begin{figure}[h!]
             \centering
@@ -168,7 +197,18 @@ end
             \centering
             \includegraphics[scale=0.8]{images/approach_3.PNG}
         \end{figure}
-        \item Prednosti: ista reprezentacija (!), nema prevođenja, proizvoljan programski jezik, mogu\'c{}e koristiti algoritme za poređenje stabala, skalabilno, samo jedan servis
+        \item Prednosti: ista reprezentacija (!), nema prevođenja, mogu\'c{}e koristiti algoritme za poređenje stabala, skalabilno (?)
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Uvod i motivacija}
+    \begin{itemize}
+        \item Visoki pristup (finalna varijanta)
+        \begin{figure}[h!]
+            \centering
+            \includegraphics[scale=0.8]{images/approach_4.PNG}
+        \end{figure}
+        \item Prednosti: isto kao pre uz to da postoji samo \textbf{jedan} servis i mogu\'c{}e je kod \textbf{proizvoljnog} programskog jezika prevesti u AST
     \end{itemize}
 \end{frame}
 
@@ -185,37 +225,7 @@ end
         \item Kako pro\v{s}iriti?
         \begin{figure}[h!]
             \centering
-            \includegraphics[scale=0.65]{images/approach_4.PNG}
-        \end{figure}
-    \end{itemize}
-\end{frame}
-
-\begin{frame}{AST}
-    \begin{itemize}
-        \item AST - Abstract Syntax Tree
-        \begin{figure}[h!]
-            \centering
-            \includegraphics[scale=0.55]{images/ast.PNG}
-        \end{figure}
-    \end{itemize}
-\end{frame}
-
-\begin{frame}{AST}
-    \begin{itemize}
-        \item Go AST
-        \begin{figure}[h!]
-            \centering
-            \includegraphics[scale=0.6]{images/ast_go.PNG}
-        \end{figure}
-    \end{itemize}
-\end{frame}
-
-\begin{frame}{AST}
-    \begin{itemize}
-        \item Lua AST
-        \begin{figure}[h!]
-            \centering
-            \includegraphics[scale=0.6]{images/ast_lua.PNG}
+            \includegraphics[scale=0.65]{images/approach_5.PNG}
         \end{figure}
     \end{itemize}
 \end{frame}
@@ -405,8 +415,8 @@ x, y = y, x
 
 \begin{frame}{Gde smo sada?}
     \begin{itemize}
-        \item [x] Motivacija i uvod 
-        \item [x] AST
+        \item [x] Motivacija
+        \item [x] AST zasnovan pristup
         \item [x] Dobijanje AST - ANTLR
         \item [x] Op\v{s}ti AST
         \item [ ] Poređenje op\v{s}tih AST
@@ -529,6 +539,421 @@ y++;
     \State \textbf{return} $eq$
     \EndProcedure
     \end{algorithmic}
+\end{frame}
+
+
+\begin{frame}{LICC --- Language Invariant Code Comparer}
+    \begin{itemize}
+        \item \texttt{LICC}
+        \item \texttt{LICC.AST}
+        \begin{itemize}
+            \item \texttt{LICC.AST.Builders} 
+            \item \texttt{LICC.AST.Nodes}
+            \item \texttt{LICC.AST.Visitors} 
+        \end{itemize}
+        \item \texttt{LICC.Core}
+        \begin{itemize}
+            \item \texttt{LICC.Core.Comparers} 
+            \item \texttt{LICC.Core.Issues}
+        \end{itemize}
+        \item \texttt{LICC.Visualizer}
+        \item \texttt{LICC.Tests}
+        \begin{itemize}
+            \item \texttt{LICC.Tests.AST} 
+            \item \texttt{LICC.Tests.Core}
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{LICC --- Language Invariant Code Comparer}
+\begin{lstlisting}[numbers=none,language={}]
+$ ./LICC ast [-v -c -t] source-path [-o output-path]
+\end{lstlisting}
+\begin{lstlisting}
+int gl_y = 2;
+void f(int x);
+int gl_x = 3;
+
+int main()
+{
+    int x = 1;
+    //printf("Hello world!% d\n", x);
+    return 0;
+}
+
+static int gl_z;
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{LICC --- Language Invariant Code Comparer}
+\begin{lstlisting}[language={},basicstyle=\tiny]
+{
+  "Name": null,
+  "NodeType": "SourceNode",
+  "Line": 1,
+  "Children": [
+    {
+      "NodeType": "DeclStatNode",
+      "Line": 1,
+      "Children": [
+        {
+          "Modifiers": {
+            "AccessModifiers": "Unspecified",
+            "QualifierFlags": "None"
+          },
+          "TypeName": "int",
+          "NodeType": "DeclSpecsNode",
+          "Line": 1,
+          "Children": []
+        },
+        {
+          "NodeType": "DeclListNode",
+          "Line": 1,
+          "Children": [
+            {
+              "Pointer": false,
+              "NodeType": "VarDeclNode",
+              "Line": 1,
+              "Children": [
+                {
+                  "Identifier": "gl_y",
+                  "NodeType": "IdNode",
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{LICC --- Language Invariant Code Comparer}
+\begin{lstlisting}[numbers=none,language={}]
+$ ./LICC ast [-v -c -t] source-path [-o output-path]
+\end{lstlisting}
+\begin{lstlisting}
+function fact (n)
+  if n == 0 then
+    return 1
+  else
+    return n * fact(n-1)
+  end
+end
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{LICC --- Language Invariant Code Comparer}
+\begin{lstlisting}[language={},numbers=none]
+{"Name":null,"NodeType":"SourceNode","Line":1,
+"Children":[{"NodeType":"FuncDefNode","Line":1,
+"Children":[{"Modifiers":{"AccessModifiers":
+"Unspecified","QualifierFlags":"None"},"TypeName":
+"object","NodeType":"DeclSpecsNode","Line":1,
+"Children":[]},{"Pointer":false,"NodeType":
+"FuncDeclNode","Line":1,"Children":[{"Identifier":
+"fact","NodeType":"IdNode","Line":1,"Children":[]},
+{"IsVariadic":false,"NodeType":"FuncParamsNode",
+"Line":1,"Children":[{"NodeType":"FuncParamNode",
+"Line":1,"Children":[{"Modifiers":{"AccessModifiers":
+
+...
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{LICC --- Language Invariant Code Comparer}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[scale=0.5]{images/eval/ast_c.PNG}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{LICC --- Language Invariant Code Comparer}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[scale=0.5]{images/eval/ast_lua.PNG}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{LICC --- Language Invariant Code Comparer}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[scale=0.5]{images/ast_stat.png}
+    \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{LICC --- Language Invariant Code Comparer}
+\begin{lstlisting}[numbers=none,language={}]
+$ ./LICC cmp [-v] specification-path test-path
+\end{lstlisting}
+\begin{lstlisting}
+int x = vx, y = vy;
+void swap() { int tmp = y; y = x; x = tmp; }
+\end{lstlisting}
+\begin{lstlisting}
+x = vx
+y = vy
+function swap()
+    x, y = y, x
+end
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{LICC --- Language Invariant Code Comparer}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[scale=0.6]{images/eval/swap_valid_valid.PNG}
+    \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{LICC --- Language Invariant Code Comparer}
+\begin{lstlisting}[numbers=none,language={}]
+$ ./LICC cmp [-v] specification-path test-path
+\end{lstlisting}
+\begin{lstlisting}
+int x = vx, y = vy;
+void swap() { int tmp = y; y = x; x = tmp; }
+\end{lstlisting}
+\begin{lstlisting}
+x = vx
+y = vy
+function swap()
+    x, y = x, y
+end
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{LICC --- Language Invariant Code Comparer}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[scale=0.6]{images/eval/swap_valid_wrong.PNG}
+    \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{LICC --- Language Invariant Code Comparer}
+\begin{lstlisting}[numbers=none,language={}]
+$ ./LICC cmp [-v] specification-path test-path
+\end{lstlisting}
+\begin{lstlisting}
+int x = vx, y = vy;
+void swap() { int tmp = y; y = x; x = tmp; }
+\end{lstlisting}
+\begin{lstlisting}
+int x = vx, y = vy;
+
+void swap() 
+{
+    x = x + y;
+    y = x - y;
+    x = x - y;
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{LICC --- Language Invariant Code Comparer}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[scale=0.7]{images/eval/swap_valid_refactor.PNG}
+    \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{LICC --- Language Invariant Code Comparer}
+\begin{lstlisting}
+extern int n = 5;
+int gl_y = 1 + 3 - 1 * 0 - 2 + 2 * n - 1;
+void f(MyStruct x);
+int gl_x = n + n + n;
+int arr[8] = { 1, n, n * n, n * n * n };
+static int gl_z;
+\end{lstlisting}
+\begin{lstlisting}
+extern int n = 5;
+int gl_x = 3 * n;
+int gl_y = 1 + 3 - 1 * 0 - 2 + 2 * n - 1 + 99999999;
+void f(MyStruct x);
+// missing gl_z
+int arr[n] = { 1, n, n * n, n * n * n * n };
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{LICC --- Language Invariant Code Comparer}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[scale=0.55]{images/eval/decl_valid_wrong.PNG}
+    \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{LICC --- Language Invariant Code Comparer}
+\begin{lstlisting}
+extern int n = 5;
+int gl_y = 1 + 3 - 1 * 0 - 2 + 2 * n - 1;
+void f(MyStruct x);
+int gl_x = n + n + n;
+int arr[8] = { 1, n, n * n, n * n * n };
+static int gl_z;
+\end{lstlisting}
+\begin{lstlisting}
+extern int n = 5;
+static int gl_z;
+int gl_x = 3*n;
+int gl_y = 2*n + 1;
+int arr[n] = { 1, n, n * n, n * n * n };
+void f(const MyStruct x);
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{LICC --- Language Invariant Code Comparer}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[scale=0.58]{images/eval/decl_valid_refactor.PNG}
+    \end{figure}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{LICC --- Language Invariant Code Comparer}
+\begin{lstlisting}
+declare real x = 1.3e-2
+declare real y = 1.2e-2
+procedure update(dx : real, dy : real)
+begin
+    x = x + dx
+    y = y + dy
+end
+\end{lstlisting}
+\begin{lstlisting}
+x = 1.3e-2
+y = 1.2e-2
+
+function update(dx, dy)
+    x, y = x + dx, y + dy
+end
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{LICC --- Language Invariant Code Comparer}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[scale=0.55]{images/eval/fparams_valid_valid.PNG}
+    \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{LICC --- Language Invariant Code Comparer}
+\begin{lstlisting}
+declare real x = 1.3e-2
+declare real y = 1.2e-2
+procedure update(dx : real, dy : real)
+begin
+    x = x + dx
+    y = y + dy
+end
+\end{lstlisting}
+\begin{lstlisting}
+x = 1.3e-2
+y = 1.2e-2
+
+function update(dx, dy)
+    x, y = x + dx, x + dy
+end
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{LICC --- Language Invariant Code Comparer}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[scale=0.55]{images/eval/fparams_valid_wrong.PNG}
+    \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{LICC --- Language Invariant Code Comparer}
+\begin{lstlisting}
+float x = 1.3e-2; 
+float y = 1.2e-2;
+
+void update(float dx, float dy) {
+    x = x + dx; 
+    y = y + dy;
+}
+\end{lstlisting}
+\begin{lstlisting}
+float x = 1.3e-2, y = 1.2e-2;
+
+void update(float dx, float dy) {
+    x += dx;
+    y += dy;
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{LICC --- Language Invariant Code Comparer}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[scale=0.58]{images/eval/fparams_valid_refactor.PNG}
+    \end{figure}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{LICC --- Language Invariant Code Comparer}
+\begin{lstlisting}
+declare real x = 3
+
+procedure f(y : integer)
+begin
+    if y > 5 then x = 3 else x = 1
+end
+\end{lstlisting}
+\begin{lstlisting}
+x = 3
+
+function f(y)
+    if y > 5 then x = 3 else x = 1 end
+end
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{LICC --- Language Invariant Code Comparer}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[scale=0.55]{images/eval/cond_valid_valid.PNG}
+    \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{LICC --- Language Invariant Code Comparer}
+\begin{lstlisting}
+int x = 3;
+void f(int y) {
+    if (y > 5)
+        x = 3;
+    else
+        x = 1;
+}
+\end{lstlisting}
+\begin{lstlisting}
+x = 3
+
+function f(y)
+    if y > 6 then x = 3 else x = 1 end
+end
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{LICC --- Language Invariant Code Comparer}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[scale=0.58]{images/eval/cond_valid_wrong.PNG}
+    \end{figure}
+\end{frame}
+
+
+\begin{frame}{Kraj!}
+    \centering
+    Hvala na pa\v{z}nji!
 \end{frame}
 
 \begin{frame}{Pitanja}
