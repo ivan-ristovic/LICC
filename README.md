@@ -1,3 +1,7 @@
+# Disclaimer
+This is a read-only archive of my MSc thesis repository in order to keep the links inside the thesis valid. The entire project has been restructured, moved to a separate [organization](https://github.com/LINVAST) and published to NuGet.
+
+
 # LICC - Language Invariant Code Comparer
 ![Build](https://github.com/ivan-ristovic/MSc/workflows/.NET%20Core/badge.svg)
 [![Issues](https://img.shields.io/github/issues/ivan-ristovic/LICC.svg)](https://github.com/ivan-ristovic/LICC/issues)
